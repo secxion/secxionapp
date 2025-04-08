@@ -1,0 +1,41 @@
+.footer {
+    background: #1e1e2d;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  .footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .footer-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 800px;
+    flex-wrap: wrap;
+  }
+  
+  .timezone-selector select {
+    padding: 5px;
+    border-radius: 5px;
+    background: #000000;
+    border: none;
+    color: white;
+  }
+  
+  .contact-support {
+    color: #ffcc00;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .contact-support:hover {
+    text-decoration: underline;
+  }
+  

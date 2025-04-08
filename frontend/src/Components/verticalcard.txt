@@ -1,0 +1,235 @@
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import SummaryApi from "../common";
+import { MdSend, MdClose, MdAdd } from "react-icons/md";
+import uploadImage from "../helpers/uploadImage";
+import { format } from "date-fns";
+import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import './ChatInterface.css';
+
+const ReportCard = () => {
+    const { reportId } = useParams();
+    const navigate = useNavigate();
+    const [report, setReport] = useState(null);
+    const [isLoadingInitial, setIsLoadingInitial] = useState(true);
+    const [isSending, setIsSending] = useState(false);
+    const [userReplyText, setUserReplyText] = useState("");
+    const [userReplyImage, setUserReplyImage] = useState(null);
+    const [uploadingReplyImage, setUploadingReplyImage] = useState(false);
+    const chatHistoryRef = useRef(null);
+    const pollingIntervalRef = useRef(null);
+    const { user } = useSelector((state) => state.user);
+    const [hasReceivedReply, setHasReceivedReply] = useState(false);
+
+    const fetchReport = useCallback(async () => {
+        try {
+            const response = await fetch(SummaryApi.getReports.url, {
+                method: SummaryApi.getReports.method,
+                credentials: "include",
+            });
+            if (!response.ok) throw new Error("Network response was not ok");
+            const data = await response.json();
+            const foundReport = data.data.find(r => r._id === reportId);
+            if (foundReport) {
+                setReport(foundReport);
+                const adminReply = foundReport.chatHistory?.some(msg => msg.sender === "admin");
+                setHasReceivedReply(adminReply);
+            } else {
+                navigate('/report');
+            }
+        } catch (error) {
+            console.error("Error fetching report:", error);
+            navigate('/report');
+        } finally {
+            setIsLoadingInitial(false);
+        }
+    }, [reportId, navigate]);
+
+    useEffect(() => {
+        fetchReport();
+        pollingIntervalRef.current = setInterval(fetchReport, 5000);
+        return () => clearInterval(pollingIntervalRef.current);
+    }, [fetchReport]);
+
+    useEffect(() => {
+        if (report && chatHistoryRef.current) {
+            chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
+        }
+    }, [report?.chatHistory]);
+
+    const handleUserReplyTextChange = useCallback((e) => {
+        setUserReplyText(e.target.value);
+    }, []);
+
+    const handleUserReplyImageUpload = useCallback(async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploadingReplyImage(true);
+        try {
+            const uploadResponse = await uploadImage(file);
+            setUserReplyImage(uploadResponse.url);
+        } catch (error) {
+            console.error("Error uploading user reply image:", error);
+        } finally {
+            setUploadingReplyImage(false);
+        }
+    }, []);
+
+    const handleRemoveUserReplyImage = useCallback(() => {
+        setUserReplyImage(null);
+    }, []);
+
+    const handleUserReplySubmit = useCallback(async () => {
+        if (!userReplyText && !userReplyImage) return;
+
+        setIsSending(true);
+        try {
+            const response = await fetch(SummaryApi.userReplyReport.url.replace(":id", reportId), {
+                method: SummaryApi.userReplyReport.method,
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userReply: userReplyText, userReplyImage: userReplyImage }),
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                setUserReplyText("");
+                setUserReplyImage(null);
+                await fetchReport();
+            } else {
+                console.error("Failed to send your reply.");
+            }
+        } catch (error) {
+            console.error("Error sending your reply:", error);
+        } finally {
+            setIsSending(false);
+        }
+    }, [reportId, userReplyText, userReplyImage, fetchReport]);
+
+    const handleKeyDown = useCallback((e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleUserReplySubmit();
+        }
+    }, [handleUserReplySubmit]);
+
+
+    if (isLoadingInitial) {
+        return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    }
+
+    if (!report) {
+        return null;
+    }
+
+    return (
+        <div className=" chat-container fixed w-screen h-screen min-h-screen bg-gray-100 py-6 -mt-8 sm:py-12 bg-gradient-to-r overflow-x-hidden from-gray-50 to-gray-100 z-50 p-4 flex flex-col"
+        role="region"
+        aria-label={`Chat about ${report.category || 'Report'}`}>
+            <div className="">
+            <div className="flex justify-between items-center mb-3">
+                {!hasReceivedReply && report.autoReply && (
+                        <div className="p-3 rounded-lg shadow-md bg-blue-50 bg-opacity-80 text-blue-700 text-center">
+                            <button onClick={() => navigate('/report')} 
+                            className="chat-close-button p-2 rounded-full hover:bg-gray-200 transition-colors"
+                            aria-label="Close Chat"
+                            >
+                                <MdClose className="chat-close-icon text-xl" />
+                            </button>
+                            <h3 className="chat-title text-lg font-semibold">{report.category || "No Category"}</h3>
+                            <div className="message-content flex justify-between items-center mb-1">
+                                <p className="message-text text-base break-words">{report.autoReply}</p>
+                                <p className="message-sender font-bold">Moderator</p>
+                            </div>
+                            <p className="text-xs text-gray-500 mt-1 text-right">
+                                {format(new Date(), "yyyy-MM-dd")}
+                            </p>
+                        </div>
+                    )}
+                    {hasReceivedReply && (
+                        <div className="flex items-center justify-between mb-3 p-3 rounded-lg shadow-md bg-blue-50 bg-opacity-80 text-blue-700 self-end text-center">
+                            <button onClick={() => navigate('/report')} 
+                            className="chat-close-button p-2 rounded-full hover:bg-gray-200 transition-colors"
+                            aria-label="Close Chat"
+                            >
+                                <MdClose className="chat-close-icon text-xl" />
+                            </button>
+                            <div className="flex items-center">                                
+                                <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+                            <h3 className="chat-title text-lg font-semibold">Moderator</h3></div>
+                            
+                            <div></div>
+                        </div>
+                    )}
+                </div>
+            </div>
+            <div ref={chatHistoryRef} className="chat-history overflow-y-auto flex-grow p-2 rounded-md mb-2"
+            role="list"
+            aria-live="polite"
+            >
+                {report.chatHistory && report.chatHistory.map((msg, index) => (
+                    <li
+                        key={index}
+                        className={`message flex flex-col mb-3 p-3 rounded-lg shadow-md ${msg.sender === "admin" ? "bg-blue-50 bg-opacity-80 text-blue-700 self-end text-right" : "bg-white bg-opacity-80 text-gray-700 self-start text-left"}`}
+                        aria-labelledby={`message-${index}-sender`}
+                    >
+                        <div className="message-content flex justify-between items-center mb-1">
+                            <p className="message-text text-base break-words">{msg.message}</p>
+                            <div className="flex items-center ml-2">
+                                {/* <p className="ml-2 text-sm font-semibold">{msg.sender === "admin" ? "Moderator" : user?.name}</p> */}
+                            </div>
+                        </div>
+                        {msg.image && (
+                            <img src={msg.image} alt="Chat Attachment" className="message-image max-w-xs h-auto rounded-lg mt-2" />
+                        )}
+                        <p className="message-time text-xs text-gray-500 mt-1 text-right">
+                            {format(new Date(msg.createdAt), "HH:mm:ss")}
+                        </p>
+                    </li>
+                ))}
+
+            </div>
+            <div className="chat-input-area border-t pt-3 bg-white bg-opacity-80 rounded-b-lg">
+                <div className="relative flex items-center">
+                    <textarea
+                        className="chat-input w-full p-3 border rounded-lg bg-gray-50 h-20 text-gray-700 resize-none pr-16"
+                        placeholder="Type your reply..."
+                        value={userReplyText}
+                        onChange={handleUserReplyTextChange}
+                        onKeyDown={handleKeyDown}
+                        aria-label="Reply text"
+                    />
+                    <button
+                        className="send-button absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-600 hover:text-blue-700"
+                        onClick={handleUserReplySubmit}
+                        disabled={isSending || uploadingReplyImage || (!userReplyText && !userReplyImage)}
+                        aria-label="Send message"
+                    >
+                        <MdSend className="send-icon text-2xl" />
+                    </button>
+                    <label className="attach-image-button absolute right-16 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-600">
+                        <input type="file" className="hidden" onChange={handleUserReplyImageUpload} />
+                        <MdAdd className="attach-icon text-2xl" />
+                    </label>
+                </div>
+                {userReplyImage && (
+                    <div className="reply-image-preview relative mt-2">
+                        <img src={userReplyImage} alt="Your Reply"
+                        className="w-20 h-20 object-cover rounded-lg border" />
+                        <button
+                        className="absolute top-0 right-0 p-1 bg-red-600 text-white rounded-full"
+                        onClick={handleRemoveUserReplyImage}
+                        aria-label="Remove attached image"
+                        >
+                            <MdClose />
+                        </button>
+                    </div>
+                )}
+                {uploadingReplyImage && <p className="uploading-text text-gray-500 text-sm mt-1">Uploading image...</p>}
+            </div>
+        </div>
+    );
+};
+
+export default ReportCard;

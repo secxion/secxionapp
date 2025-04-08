@@ -1,0 +1,32 @@
+.glassmorphic-card {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    overflow: hidden; 
+    position: relative; 
+}
+
+.glassmorphic-card::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(-45deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 60%,
+        transparent 80%,
+        transparent 100%);
+    transform: rotate(45deg) translate(-20px, 0);
+    animation: shine 20s infinite linear;
+    pointer-events: none; 
+}
+
+@keyframes shine {
+    0% {
+        transform: rotate(45deg) translate(-200%, 0);
+    }
+    100% {
+        transform: rotate(45deg) translate(200%, 0);
+    }
+}

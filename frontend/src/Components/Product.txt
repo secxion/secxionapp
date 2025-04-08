@@ -1,0 +1,140 @@
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useSelector } from 'react-redux';
+import TransactionCard from './TransactionCard';
+import SummaryApi from '../common';
+
+const TransactionHistory = () => {
+    const { user } = useSelector((state) => state.user);
+    const [transactions, setTransactions] = useState([]);
+    const [loadingTransactions, setLoadingTransactions] = useState(false);
+    const [errorTransactions, setErrorTransactions] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [visibleTransactions, setVisibleTransactions] = useState(3);
+    const [showAll, setShowAll] = useState(false);
+    const navRef = useRef(null);
+
+    const fetchTransactions = useCallback(async (currentStatusFilter) => {
+        if (!user?.id && !user?._id) {
+            console.warn('User not found in Redux. Cannot fetch transactions.');
+            setErrorTransactions('User authentication details not found.');
+            return;
+        }
+
+        setLoadingTransactions(true);
+        setErrorTransactions('');
+        try {
+            let url = `${SummaryApi.transactions.url}`;
+            const userId = user?.id || user?._id;
+            url += `?userId=${userId}`;
+
+            if (currentStatusFilter && currentStatusFilter !== 'all') {
+                url += `&status=${currentStatusFilter}`;
+            }
+
+            console.log('Fetching transactions from:', url);
+            const response = await fetch(url, {
+                method: 'GET',
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            console.log('Transactions data:', data);
+            if (data.success && data.transactions) {
+                setTransactions(data.transactions);
+            } else {
+                setErrorTransactions(data.message || 'Failed to fetch transactions.');
+            }
+        } catch (err) {
+            console.error('Error fetching transactions:', err);
+            setErrorTransactions('An unexpected error occurred while fetching transactions.');
+        } finally {
+            setLoadingTransactions(false);
+        }
+    }, [user, SummaryApi.transactions.url]);
+
+    useEffect(() => {
+        fetchTransactions(statusFilter);
+        setVisibleTransactions(3);
+        setShowAll(false);
+    }, [statusFilter, fetchTransactions]);
+
+    const handleFilterChange = (statusText) => {
+        const statusValue = statusText.toLowerCase().replace(/ /g, '-');
+        setStatusFilter(statusValue);
+        console.log('statusFilter updated:', statusValue);
+    };
+
+    const handleViewMore = () => {
+        setShowAll(true);
+        setVisibleTransactions(transactions.length);
+    };
+
+    const handleCloseViewMore = () => {
+        setShowAll(false);
+        setVisibleTransactions(3);
+    };
+
+    if (loadingTransactions) {
+        return <div>Loading Transaction History...</div>;
+    }
+
+    if (errorTransactions) {
+        return <div className="text-red-500">Error loading transactions: {errorTransactions}</div>;
+    }
+
+    const displayedTransactions = showAll ? transactions : transactions.slice(0, visibleTransactions);
+    const menuItems = ['All', 'Pending', 'Approved Processing', 'Rejected', 'Completed'];
+    const minMenuWidth = `${menuItems.length * 80}px`;
+
+    return (
+        <div className="bg-white shadow-md rounded-md p-4">
+            <h3 className="font-semibold text-lg mb-2">Transaction History</h3>
+            <div className="mb-4 border-b border-gray-200 overflow-x-auto overflow-y-hidden">
+                <nav ref={navRef} className="-mb-px flex space-x-4" aria-label="Tabs" style={{ minWidth: minMenuWidth }}>
+                    {menuItems.map((item) => (
+                        <button
+                            key={item.toLowerCase().replace(/ /g, '-')}
+                            onClick={() => handleFilterChange(item)}
+                            className={`${statusFilter === item.toLowerCase().replace(/ /g, '-') ? 'border-indigo-500 text-indigo-600 focus:ring-indigo-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:ring-gray-200'} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm`}
+                        >
+                            {item}
+                        </button>
+                    ))}
+                </nav>
+            </div>
+            <div className="space-y-2">
+                {displayedTransactions.length > 0 ? (
+                    displayedTransactions.map((transaction) => (
+                        <TransactionCard key={transaction._id} transaction={transaction} />
+                    ))
+                ) : (
+                    <p>No transactions found with the selected filter.</p>
+                )}
+            </div>
+            {transactions.length > visibleTransactions && !showAll && (
+                <div className="mt-4">
+                    <button
+                        onClick={handleViewMore}
+                        className="text-indigo-600 hover:underline focus:outline-none text-sm"
+                    >
+                        View More
+                    </button>
+                </div>
+            )}
+            {showAll && (
+                <div className="mt-4">
+                    <button
+                        onClick={handleCloseViewMore}
+                        className="text-gray-600 hover:underline focus:outline-none text-sm"
+                    >
+                        Close
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default TransactionHistory;

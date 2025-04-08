@@ -1,0 +1,236 @@
+/* ChatInterface.css */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Make it full viewport height */
+    background-color: #f0f2f5; /* Light background */
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #fff;
+}
+
+.chat-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #212121;
+}
+
+.chat-close-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.chat-close-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.chat-close-icon {
+    font-size: 1.5rem;
+    color: #757575;
+}
+
+.chat-history {
+    flex-grow: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #aab0bb #f0f2f5; /* Thumb and track color */
+}
+
+/* Style for WebKit browsers (Chrome, Safari) */
+.chat-history::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-history::-webkit-scrollbar-track {
+    background: #f0f2f5;
+}
+
+.chat-history::-webkit-scrollbar-thumb {
+    background-color: #aab0bb;
+    border-radius: 3px;
+}
+
+.message {
+    margin-bottom: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    max-width: 80%;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+}
+
+.message.self {
+    background-color: #e1f5fe; /* Light blue for sent messages */
+    align-self: flex-end;
+    text-align: right;
+}
+
+.message.other {
+    background-color: #f5f5f5; /* Light gray for received messages */
+    align-self: flex-start;
+    text-align: left;
+}
+
+.message-text {
+    font-size: 1rem;
+    word-break: break-word;
+    color: #212121;
+}
+
+.message-sender {
+    font-size: 0.8rem;
+    color: #757575;
+    margin-top: 0.25rem;
+}
+
+.message.self .message-sender {
+    text-align: right;
+}
+
+.message-time {
+    font-size: 0.7rem;
+    color: #9e9e9e;
+    margin-top: 0.25rem;
+    align-self: flex-end;
+}
+
+.message.other .message-time {
+    align-self: flex-start;
+}
+
+.message-image {
+    max-width: 100%; /* Make images responsive within the message */
+    height: auto;
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.chat-input-area {
+    background-color: #fff;
+    padding: 0.75rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.chat-input-box {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f5;
+    border-radius: 1.5rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.chat-input {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    padding: 0.5rem;
+    font-size: 1rem;
+    line-height: 1.4;
+    resize: none; /* Prevent manual resizing */
+    background-color: transparent;
+}
+
+.chat-input::placeholder {
+    color: #bdbdbd;
+}
+
+.chat-input-actions {
+    display: flex;
+    align-items: center;
+    margin-left: 0.5rem;
+}
+
+.attach-image-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.attach-image-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.attach-icon {
+    font-size: 1.5rem;
+    color: #757575;
+}
+
+.send-button {
+    background-color: #1976d2; /* Primary blue */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.send-button:hover:enabled {
+    background-color: #1565c0; /* Darker blue on hover */
+}
+
+.send-button:disabled {
+    background-color: #bdbdbd;
+    cursor: not-allowed;
+}
+
+.send-icon {
+    font-size: 1.2rem;
+}
+
+.reply-image-preview {
+    position: relative;
+    margin-top: 0.5rem;
+}
+
+.reply-image-preview img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+    border: 1px solid #e0e0e0;
+}
+
+.reply-image-preview button {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    background-color: #d32f2f; /* Red */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.uploading-text {
+    font-size: 0.9rem;
+    color: #757575;
+    margin-top: 0.5rem;
+}
