@@ -2,16 +2,17 @@ import React, { useState, useEffect } from 'react';
 import AddBankAccountForm from './AddBankAccountForm';
 import SummaryApi from '../common';
 import { useSelector } from 'react-redux';
-import { FaPlusCircle, FaTrashAlt, FaUniversity, FaSpinner } from 'react-icons/fa';
+import { FaPlusCircle, FaTrashAlt, FaUniversity, FaSpinner, } from 'react-icons/fa';
 
 const BankAccountList = ({ onBankAccountsUpdated, onBankAccountsUpdating }) => {
     const [bankAccounts, setBankAccounts] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState('');       
     const [showAddAccountForm, setShowAddAccountForm] = useState(false);
     const { user } = useSelector((state) => state.user);
     const [deleteLoading, setDeleteLoading] = useState(null);
     const [deleteError, setDeleteError] = useState('');
+
 
     const fetchBankAccounts = async () => {
         if (!user?.id && !user?._id) {
@@ -106,54 +107,57 @@ const BankAccountList = ({ onBankAccountsUpdated, onBankAccountsUpdating }) => {
     }
 
     return (
-        <div>
-            {!showAddAccountForm ? (
-                <>
-                    {bankAccounts.length > 0 ? (
-                        bankAccounts.map((account) => (
-                            <div key={account._id} className="bg-gray-50 rounded-md p-3 mb-2 flex items-center justify-between border border-gray-200">
-                                <div>
-                                    <h4 className="font-semibold text-gray-800 flex items-center">
-                                        <FaUniversity className="mr-2 text-gray-600" /> {account.accountNumber}
-                                    </h4>
-                                    <p className="text-sm text-gray-600">{account.bankName}</p>
-                                    <p className="text-xs text-gray-500">Holder: {account.accountHolderName}</p>
+        <>       
+        <div className='fixed w-screen h-screen px-4 right-0 left-0 mt-1'>
+
+                {!showAddAccountForm ? (
+                    <>
+                        {bankAccounts.length > 0 ? (
+                            bankAccounts.map((account) => (
+                                <div key={account._id} className="bg-gray-50 rounded-md p-6 mb-2 flex items-center justify-between border border-gray-200">
+                                    <div>
+                                        <h4 className="font-semibold text-gray-800 flex items-center">
+                                            <FaUniversity className="mr-2 text-gray-600" /> {account.accountNumber}
+                                        </h4>
+                                        <p className="text-sm text-gray-600">{account.bankName}</p>
+                                        <p className="text-xs text-gray-500">Holder: {account.accountHolderName}</p>
+                                    </div>
+                                    <button
+                                        onClick={() => handleDeleteAccount(account._id)}
+                                        className="text-red-500 hover:text-red-700 focus:outline-none text-sm ml-4 flex items-center"
+                                        disabled={deleteLoading === account._id}
+                                    >
+                                        {deleteLoading === account._id ? (
+                                            <FaSpinner className="animate-spin mr-2" />
+                                        ) : (
+                                            <FaTrashAlt className="mr-2" />
+                                        )}
+                                        Delete
+                                    </button>
                                 </div>
-                                <button
-                                    onClick={() => handleDeleteAccount(account._id)}
-                                    className="text-red-500 hover:text-red-700 focus:outline-none text-sm ml-4 flex items-center"
-                                    disabled={deleteLoading === account._id}
-                                >
-                                    {deleteLoading === account._id ? (
-                                        <FaSpinner className="animate-spin mr-2" />
-                                    ) : (
-                                        <FaTrashAlt className="mr-2" />
-                                    )}
-                                    Delete
-                                </button>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="text-gray-500 italic">No bank accounts added yet.</p>
-                    )}
-                    {deleteError && <p className="text-red-500 mt-2">{deleteError}</p>}
-                    <button
-                        className="inline-flex items-center px-4 py-2 border border-dashed border-indigo-300 rounded-md shadow-sm text-sm font-medium text-indigo-700 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mt-3"
-                        onClick={handleAddAccountClick}
-                        disabled={showAddAccountForm || bankAccounts.length >= 2}
-                    >
-                        <FaPlusCircle className="mr-2" /> Add New Account
-                    </button>
-                    {bankAccounts.length >= 2 && (
-                        <p className="text-sm text-gray-500 mt-1">You can have a maximum of 2 bank accounts.</p>
-                    )}
-                </>
-            ) : (
-                <div className="bg-white shadow rounded-md p-5 border border-gray-200">
-                    <AddBankAccountForm onAccountAdded={handleAccountAdded} onCancel={handleCancelAddAccount} userId={user?.id || user?._id} />
-                </div>
-            )}
-        </div>
+                            ))
+                        ) : (
+                            <p className="text-gray-500 italic">No bank accounts added yet.</p>
+                        )}
+                        {deleteError && <p className="text-red-500 mt-2">{deleteError}</p>}
+                        <button
+                            className="inline-flex items-center px-4 py-2 border border-dashed border-indigo-300 rounded-md shadow-sm text-sm font-medium text-indigo-700 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mt-3"
+                            onClick={handleAddAccountClick}
+                            disabled={showAddAccountForm || bankAccounts.length >= 2}
+                        >
+                            <FaPlusCircle className="mr-2" /> Add New Account
+                        </button>
+                        {bankAccounts.length >= 2 && (
+                            <p className="text-sm text-gray-500 mt-1">You can have a maximum of 2 bank accounts.</p>
+                        )}
+                    </>
+                ) : (
+                    <div className="bg-white shadow rounded-md p-3 border border-gray-200">
+                        <AddBankAccountForm onAccountAdded={handleAccountAdded} onCancel={handleCancelAddAccount} userId={user?.id || user?._id} />
+                    </div>
+                )}
+            </div>
+            </>
     );
 };
 

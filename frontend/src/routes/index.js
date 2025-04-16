@@ -33,6 +33,17 @@ import AdminRPR from "../pages/AdminRPR";
 import NotificationsPage from "../pages/Notifications";
 import ReportDetailsPage from "../pages/ReportDetailsPage";
 import ReportCard from "../Components/ReportCard";
+import Statistics from "../pages/Statistics";
+import WorldStats from "../pages/WorldStats";
+import CryptoWallet from "../pages/CryptoWallet";
+import AdminCommunity from "../pages/AdminCommunity";
+import Buzz from "../pages/Buzz";
+import Terms from "../Components/Terms";
+import Aboutus from "../Components/Aboutus";
+import Privacy from "../Components/Privacy";
+
+
+
 
 
 const publicRoutes = [
@@ -45,17 +56,26 @@ const publicRoutes = [
     element: <SignUp />,
   },
   {
-    path: "reset",
-    element: <Reset />,
-  },
-  {
     path:"system-blog",
     element: <Net />
   },
   {
     path:"contact-us",
     element: <ContactUs/>
-  }
+  },
+  {
+    path:"about-us",
+    element: <Aboutus/>
+  },
+  {
+    path:"terms",
+    element: <Terms/>
+  },
+  {
+    path:"privacy",
+    element: <Privacy/>
+  },
+
 ];
 
 const protectedRoutes = [
@@ -76,6 +96,12 @@ const protectedRoutes = [
   { path: "mywallet", element: <WalletDashboard /> },
   { path: "notifications", element: <NotificationsPage /> },
   { path: "chat/:reportId", element: <ReportCard /> },
+  { path: "reset", element: <Reset /> },
+  { path: "statistics", element: <Statistics /> },
+  { path: "crypto", element: <CryptoWallet /> },
+  { path: "stats", element: <WorldStats /> },
+  { path: "community-feed", element: <Buzz /> },
+  
 
 ];
 
@@ -88,8 +114,7 @@ const adminRoutes = [
   { path: "admin-report", element: <AdminReports /> },
   { path: "admin-rpr", element: <AdminRPR /> },
   { path: "anonymous-report", element: <AdminAnonymousReports /> },
-
-
+  { path: "community-feeds", element: <AdminCommunity /> },
 ];
 
 const router = createBrowserRouter([

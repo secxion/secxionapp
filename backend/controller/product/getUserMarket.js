@@ -1,4 +1,4 @@
-const userProduct = require("../../models/userProduct");
+const UserProduct = require("../../models/userProduct");
 
 const getMarketController = async (req, res) => {
     try {
@@ -11,7 +11,7 @@ const getMarketController = async (req, res) => {
             });
         }
 
-        const userMarket = await userProduct.find({ userId: req.userId }).sort({ createdAt: -1 });
+        const userMarket = await UserProduct.find({ userId: req.userId }).sort({ createdAt: -1 });
 
         res.json({
             message: "User Products",

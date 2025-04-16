@@ -1,6 +1,6 @@
-import React, { useContext, useState, useMemo, useCallback, useEffect } from "react";
+import React, { useContext, useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { FcSearch } from "react-icons/fc";
-import { PiUserSquare, PiBell } from "react-icons/pi"; // Import the notification bell icon
+import { PiUserSquare } from "react-icons/pi";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SummaryApi from "../common";
@@ -8,21 +8,93 @@ import { toast } from "react-toastify";
 import { setUserDetails } from "../store/userSlice";
 import Context from "../Context";
 import ROLE from "../common/role";
+import { useDebounce } from "../hooks/useDebounce";
+import NotificationBadge from "../helper/NotificationBadge";
+import { Dialog, Transition } from '@headlessui/react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import SidePanel from "./SidePanel";
+import { BiSearch } from 'react-icons/bi';
+import { BiExpand } from 'react-icons/bi';
 
-const useDebounce = (value, delay) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
 
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
+const SearchPanelMobile = ({ open, setOpen, search, setSearch, handleSearch }) => {
+  return (
+    <Transition.Root show={open} as={React.Fragment}>
+      <Dialog as="div" className="relative z-50" onClose={setOpen}>
+        <Transition.Child
+          as={React.Fragment}
+          enter="ease-out duration-200"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+        </Transition.Child>
 
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
+        <div className="fixed inset-0 overflow-hidden">
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="pointer-events-none fixed inset-x-0 bottom-0 flex max-w-full">
+              <Transition.Child
+                as={React.Fragment}
+                enter="transform transition ease-in-out duration-200 sm:duration-200"
+                enterFrom="translate-y-full"
+                enterTo="translate-y-0"
+                leave="transform transition ease-in-out duration-200 sm:duration-200"
+                leaveFrom="translate-y-0"
+                leaveTo="translate-y-full"
+              >
+                <Dialog.Panel className="pointer-events-auto relative w-full max-w-md">
+                  <div className="bg-white py-6 shadow-lg rounded-t-lg">
+                    <div className="px-4 sm:px-6">
+                      <div className="flex items-start justify-between">
+                        <Dialog.Title className="text-lg font-medium text-gray-900">
+                          Search
+                        </Dialog.Title>
+                        <div className="ml-3 h-7 flex items-center">
+                          <button
+                            type="button"
+                            className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-indigo-500"
+                            onClick={() => setOpen(false)}
+                          >
+                            <span className="sr-only">Close panel</span>
+                            <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-6 px-4 sm:px-6">
+                      <div className="relative rounded-md shadow-sm">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                          <BiSearch className="h-5 w-5" aria-hidden="true" />
+                        </div>
+                        <input
+                          type="text"
+                          name="search"
+                          id="search"
+                          className="block w-full rounded-md border-gray-300 pl-10 pr-3 py-2 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          placeholder="Search Trade..."
+                          value={search}
+                          onChange={(e) => setSearch(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' && search.trim()) {
+                              handleSearch();
+                              setOpen(false);
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </div>
+      </Dialog>
+    </Transition.Root>
+  );
 };
 
 const Header = () => {
@@ -42,14 +114,14 @@ const Header = () => {
   }, [searchInput]);
 
   const [search, setSearch] = useState(searchQuery);
-  const debouncedSearch = useDebounce(search, 300);
+  const debouncedSearch = useDebounce(search, 300); 
 
   useEffect(() => {
     if (debouncedSearch.trim()) {
       navigate(`/search?q=${encodeURIComponent(debouncedSearch)}`);
-    }
+    } 
   }, [debouncedSearch, navigate]);
-
+  
   const handleLogout = useCallback(async () => {
     setLoading(true);
     try {
@@ -82,14 +154,15 @@ const Header = () => {
   const toggleSearchPanelOpen = useCallback(() => setSearchPanelOpen(prev => !prev), []);
 
   return (
-    <nav className="h-16 bg-white shadow-lg fixed w-full z-50 border-b-2 border-gray-400 transition-all duration-300">
-      <div className="h-full w-full container mx-auto flex items-center justify-between px-4">
+    <nav className="h-14 -mt-3 bg-gray-50 fixed w-full z-50 border-b border-t border-gray-400 transition-all duration-300 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="w-full mx-auto flex items-center justify-between px-4">
         {user?._id && (
           <div className="flex items-center flex-shrink-0">
-            <Link to="/">
-              <svg
+            
+          <Link to="/" className="flex items-center">
+          <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-10 w-10 md:h-12 md:w-12"
+                className="h-9 w-9 md:h-10 md:w-10"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -102,6 +175,7 @@ const Header = () => {
                 <path d="M3 9.5L12 3l9 6.5" stroke="#4F46E5" strokeWidth="2" />
               </svg>
             </Link>
+            
           </div>
         )}
         {user?._id && (
@@ -109,7 +183,7 @@ const Header = () => {
             <input
               type="text"
               placeholder="Search Trade..."
-              className="w-full px-4 py-2 rounded-full outline-none focus:ring-2 focus:ring-blue-700 bg-gray-100 border border-gray-300 shadow-md transition duration-300"
+              className="w-full px-4 py-2 outline-none focus:ring-2 focus:ring-gray-700 bg-gray-100 border border-gray-300 shadow-md transition duration-300"
               onChange={(e) => setSearch(e.target.value)}
               value={search}
             />
@@ -118,64 +192,34 @@ const Header = () => {
             </div>
           </div>
         )}
-
-        <div className="flex items-center gap-6">
-          {user?._id && (
-            <Link to="/notifications" className="relative cursor-pointer" title="Notifications" aria-label="Notifications">
-              <PiBell size={28} className="text-gray-700 hover:text-blue-700 transition duration-200" />
-              {/* You can add a notification badge here if you have unread notifications */}
-              <span className="absolute -top-3 right-4 inline-flex items-center justify-center px-2 py-2 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
-                9+
-              </span>
-            </Link>
-          )}
-
+        <button
+            className=""
+            onClick={toggleSidebarOpen}
+            aria-label="Open menu"
+          >
           {user?._id && (
             <div className="relative">
-              <div className="cursor-pointer" onClick={toggleMenuDisplay} aria-expanded={menuDisplay}>
+               <div className="cursor-pointer" >
                 {user?.profilePic ? (
                   <img
                     src={user?.profilePic}
-                    className="w-10 h-10 object-cover rounded-lg border-2 border-gray-300 shadow-sm"
+                    className="w-12 h-12 object-cover rounded-lg border-4 border-gradient-to-r from-yellow-400 to-red-500 shadow-lg"
                     alt="Profile"
                   />
                 ) : (
-                  <PiUserSquare size={32} className="text-blue-700" />
+                  <PiUserSquare size={30} className="text-blue-700" />
                 )}
               </div>
 
-              {menuDisplay && (
-                <div className="absolute top-12 right-0 w-48 bg-white shadow-md rounded-md overflow-hidden z-50 border border-gray-300">
-                  {user?.role === ROLE.ADMIN && (
-                    <Link
-                      to="/admin-panel/all-products"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                      onClick={toggleMenuDisplay}
-                    >
-                      Admin Panel
-                    </Link>
-                  )}
-                  <Link
-                    to="/profile"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                    onClick={toggleMenuDisplay}
-                  >
-                    My Profile
-                  </Link>
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      toggleMenuDisplay();
-                    }}
-                    className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                    disabled={loading}
-                  >
-                    {loading ? "Logging out..." : "Logout"}
-                  </button>
-                </div>
-              )}
             </div>
-          )}
+          )}          
+          </button>
+
+
+        <div className="flex items-center gap-6">
+          <Link to="/notifications" title="Notifications" aria-label="Notifications" className="relative">
+          <NotificationBadge />
+        </Link>
 
           {user?._id && (
             <button
@@ -205,91 +249,30 @@ const Header = () => {
         </div>
 
         {user?._id && (
-          <button
-            className="lg:hidden text-gray-700 text-2xl"
-            onClick={toggleSidebarOpen}
-            aria-label="Open menu"
-          >
-            ☰
-          </button>
-        )}
-      </div>
-
-      {user?._id && (
         <button
-          className="fixed bottom-6 right-6 bg-blue-700 text-white p-4 rounded-full shadow-lg md:hidden border border-gray-300"
+          className="fixed bottom-32 right-4 bg-blue-500 text-white p-3 rounded-full shadow-lg md:hidden border border-gray-200 hover:bg-blue-600 transition duration-300 z-40"
           onClick={toggleSearchPanelOpen}
           aria-label="Toggle search panel"
         >
-          <FcSearch size={28} />
+          <BiSearch size={24} />
         </button>
       )}
+      </div>
+      <SearchPanelMobile
+        open={searchPanelOpen}
+        setOpen={toggleSearchPanelOpen}
+        search={search}
+        setSearch={setSearch}
+        handleSearch={search}
+      />
 
-      {searchPanelOpen && (
-        <div
-          className="fixed bottom-0 left-0 w-full bg-white shadow-lg p-4 z-50 md:hidden transition-transform transform translate-y-0 border-t border-gray-300"
-        >
-          <button
-            className="absolute top-4 right-6 z-50 text-gray-700 text-2xl bg-white rounded-full p-6 shadow-md"
-            onClick={toggleSearchPanelOpen}
-            aria-label="Close search panel"
-          >
-            ✕
-          </button>
-          <div className="flex items-center w-full relative mt-6">
-            <input
-              type="text"
-              placeholder="Search Trade..."
-              className="w-full px-4 py-2 rounded-full outline-none focus:ring-2 focus:ring-blue-700 bg-gray-100 border border-gray-300 shadow-md transition duration-300"
-              onChange={(e) => setSearch(e.target.value)}
-              value={search}
-            />
-            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer">
-              <FcSearch size={22} />
-            </div>
-          </div>
-        </div>
-      )}
+<SidePanel
+        open={sidebarOpen}
+        setOpen={toggleSidebarOpen}
+        handleLogout={handleLogout}
+        loading={loading}
+      />
 
-      {sidebarOpen && user?._id && (
-        <div className="fixed top-0 left-0 w-3/4 h-full bg-white z-50 border-r border-gray-400 transition-transform transform translate-x-0 shadow-lg">
-          <div className="p-6">
-            <button
-              onClick={toggleSidebarOpen}
-              className="text-gray-700 text-2xl mb-4"
-              aria-label="Close menu"
-            >
-              ✕
-            </button>
-            <nav className="mt-4">
-              <Link
-                to="/home"
-                className="block text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition duration-200"
-                onClick={toggleSidebarOpen}
-              >
-                Home
-              </Link>
-              <Link
-                to="/notifications"
-                className="block text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition duration-200"
-                onClick={toggleSidebarOpen}
-              >
-                Notifications
-              </Link>
-              <button
-                onClick={() => {
-                  handleLogout();
-                  toggleSidebarOpen();
-                }}
-                className="block text-gray-700 py-3 px-4 rounded-lg text-left w-full hover:bg-gray-200 transition duration-200"
-                disabled={loading}
-              >
-                {loading ? "Logging out..." : "Logout"}
-              </button>
-            </nav>
-          </div>
-        </div>
-      )}
     </nav>
   );
 };

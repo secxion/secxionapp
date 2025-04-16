@@ -1,4 +1,3 @@
-// NotificationsPage.js
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import NotificationItem from '../Components/NotificationItems';
@@ -17,6 +16,7 @@ const NotificationsPage = () => {
     const [filter, setFilter] = useState('all');
     const navigate = useNavigate();
     const [selectedNotification, setSelectedNotification] = useState(null);
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
     const fetchNotifications = async () => {
         setLoading(true);
@@ -34,9 +34,16 @@ const NotificationsPage = () => {
             });
             const reportData = await reportResponse.json();
 
-            console.log('Report Data from API:', reportData);
+            const marketResponse = await fetch(SummaryApi.getMarketNotifications.url, {
+                method: 'GET',
+                credentials: 'include',
+            });
+            const marketData = await marketResponse.json();
 
-            if (transactionData.success && reportData.success) {
+            console.log('Report Data from API (NotificationsPage):', reportData);
+            console.log('Market Data from API (NotificationsPage):', marketData);
+
+            if (transactionData.success && reportData.success && marketData.success) {
                 const transactionNotifications = transactionData.data.filter(
                     (n) =>
                         n.type === 'transaction:debit' ||
@@ -46,14 +53,22 @@ const NotificationsPage = () => {
                         n.type === 'transaction:rejected'
                 );
                 const reportNotifications = reportData.data;
-                const allNotifications = [...transactionNotifications, ...reportNotifications].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                const marketNotifications = marketData.data;
+
+                const allNotifications = [...transactionNotifications, ...reportNotifications, ...marketNotifications].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 setNotifications(allNotifications);
-                console.log('All Notifications State:', allNotifications);
+                console.log('All Notifications (NotificationsPage):', allNotifications);
             } else {
-                setError((transactionData.message || '') + ' ' + (reportData.message || 'Failed to fetch notifications.'));
+                setError(
+                    (transactionData.message || '') +
+                    ' ' +
+                    (reportData.message || '') +
+                    ' ' +
+                    (marketData.message || 'Failed to fetch notifications.')
+                );
             }
         } catch (err) {
-            console.error('Error fetching notifications:', err);
+            console.error('Error fetching notifications (NotificationsPage):', err);
             setError('An unexpected error occurred while fetching notifications.');
         } finally {
             setLoading(false);
@@ -84,7 +99,7 @@ const NotificationsPage = () => {
                 toast.error(data.message || 'Failed to mark notification as read. ❌');
             }
         } catch (error) {
-            console.error('Error marking notification as read:', error);
+            console.error('Error marking notification as read (NotificationsPage):', error);
             toast.error('Failed to mark notification as read. ⚠️');
         }
     };
@@ -105,7 +120,7 @@ const NotificationsPage = () => {
                 toast.error(data.message || 'Failed to delete notification. 🚫');
             }
         } catch (error) {
-            console.error('Error deleting notification:', error);
+            console.error('Error deleting notification (NotificationsPage):', error);
             toast.error('Failed to delete notification. ⚠️');
         }
     };
@@ -126,7 +141,7 @@ const NotificationsPage = () => {
                 toast.error(data.message || 'Failed to mark all notifications as read. ❌');
             }
         } catch (error) {
-            console.error('Error marking all as read:', error);
+            console.error('Error marking all as read (NotificationsPage):', error);
             toast.error('Failed to mark all as read. ⚠️');
         }
     };
@@ -145,7 +160,7 @@ const NotificationsPage = () => {
                 toast.error(data.message || 'Failed to delete all notifications. 🚫');
             }
         } catch (error) {
-            console.error('Error deleting all notifications:', error);
+            console.error('Error deleting all notifications (NotificationsPage):', error);
             toast.error('Failed to delete all notifications. ⚠️');
         }
     };
@@ -159,9 +174,17 @@ const NotificationsPage = () => {
 
     const handleViewDetails = (notification) => {
         setSelectedNotification(notification);
+        setIsDetailsOpen(true);
+    };
+
+    const handleOpenMarketDetails = (marketId) => {
+        const marketNotification = notifications.find(n => n.relatedObjectId === marketId && n.onModel === 'userproduct');
+        setSelectedNotification(marketNotification);
+        setIsDetailsOpen(true);
     };
 
     const handleCloseDetails = () => {
+        setIsDetailsOpen(false);
         setSelectedNotification(null);
     };
 
@@ -239,7 +262,7 @@ const NotificationsPage = () => {
                 <ul className="divide-y divide-gray-200">
                     {filteredNotifications().length > 0 ? (
                         filteredNotifications().map(notification => {
-                            console.log('Notification Type:', notification.type);
+                            console.log('Notification Item Data (NotificationsPage):', notification);
                             return (
                                 <NotificationItem
                                     key={notification._id}
@@ -248,6 +271,7 @@ const NotificationsPage = () => {
                                     onDelete={handleDeleteNotification}
                                     onOpenReportReply={handleOpenReportReply}
                                     onViewDetails={handleViewDetails}
+                                    onOpenMarketDetails={handleOpenMarketDetails}
                                 />
                             );
                         })
@@ -257,7 +281,7 @@ const NotificationsPage = () => {
                 </ul>
             </div>
 
-            {selectedNotification && (
+            {isDetailsOpen && selectedNotification && (
                 <NotificationDetails
                     notification={selectedNotification}
                     onClose={handleCloseDetails}

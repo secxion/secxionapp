@@ -1,0 +1,13 @@
+.postcard-container {
+    overflow-x: hidden; 
+  }
+  
+  .postcard-comments {
+    max-height: 400px;
+    max-width: fit-content;
+    overflow-y: auto;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  

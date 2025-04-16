@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { FaCloudUploadAlt, FaPaperclip } from "react-icons/fa";
+import { FaPaperclip } from "react-icons/fa";
 import { MdSend, MdDelete } from "react-icons/md";
 import uploadImage from "../helpers/uploadImage";
 import { toast } from "react-toastify";

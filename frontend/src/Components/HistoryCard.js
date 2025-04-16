@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import HistoryDetailView from './HistoryDetailView';
 
-const HistoryCard = ({ data }) => {
+
+const HistoryCard = ({ data, isDetailViewOpen, onCloseDetailView }) => {
   const [showDetailView, setShowDetailView] = useState(false);
   
   const initialStatus = data.status || 'WAIT';
@@ -9,7 +10,6 @@ const HistoryCard = ({ data }) => {
   const handleViewMore = () => {
     setShowDetailView(true);
   }; 
-
   const renderStatusIndicator = (status) => {
     switch (status) {
       case 'PROCESSING':
@@ -41,7 +41,10 @@ const HistoryCard = ({ data }) => {
 
   return (
     <>
-      <div className='bg-cream p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 duration-300'>
+      <div
+        className='bg-cream p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 duration-300 cursor-pointer'
+        onClick={onCloseDetailView} 
+      >
         <div className='w-full'>
           <p className="text-purple font-semibold">
             Market ID: <span className='truncate block'>{data._id}</span>
@@ -57,12 +60,11 @@ const HistoryCard = ({ data }) => {
               Cancel Reason: <span className='truncate block'>{data.cancelReason || 'N/A'}</span>
             </p>
           )}
-          <button 
+            <button 
             onClick={handleViewMore} 
             className="mt-4 bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition duration-200 w-full">
             View More
-          </button>
-        </div>
+          </button>        </div>
       </div>
 
       {showDetailView && (
@@ -76,6 +78,7 @@ const HistoryCard = ({ data }) => {
           />
         </div>
       )}
+      
     </>
   );
 };

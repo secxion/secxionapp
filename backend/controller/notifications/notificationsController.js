@@ -1,6 +1,8 @@
 const Notification = require("../../models/notificationModel");
 const report = require("../../models/report");
-const PaymentRequest = require("../../models/paymentRequestModel"); 
+const PaymentRequest = require("../../models/paymentRequestModel");
+const userProduct = require("../../models/userProduct");
+
 
 const createTransactionNotification = async (userId, amount, type, message, link, relatedObjectId, additionalData = {}) => {
     try {
@@ -13,25 +15,20 @@ const createTransactionNotification = async (userId, amount, type, message, link
             link,
             relatedObjectId,
             isRead: false,
-            ...additionalData, 
+            ...additionalData,
         };
 
-       
         if (type === 'rejected' && relatedObjectId) {
             const paymentRequest = await PaymentRequest.findById(relatedObjectId);
             if (paymentRequest && paymentRequest.rejectionReason) {
                 newNotificationData.rejectionReason = paymentRequest.rejectionReason;
-                console.log('Rejection Reason found:', paymentRequest.rejectionReason);
-            } else {
-                console.log('Rejection Reason NOT found for PaymentRequest ID:', relatedObjectId);
             }
-            newNotificationData.onModel = 'PaymentRequest'; 
-            newNotificationData.type = 'transaction:rejected'; 
+            newNotificationData.onModel = 'PaymentRequest';
+            newNotificationData.type = 'transaction:rejected';
         }
 
         const newNotification = new Notification(newNotificationData);
-        const savedNotification = await newNotification.save();
-        console.log('Notification created:', savedNotification);
+        await newNotification.save();
     } catch (error) {
         console.error('Error creating transaction notification:', error);
     }
@@ -48,9 +45,44 @@ const createReportReplyNotification = async (userId, reportId, message, link) =>
             onModel: 'Report',
             isRead: false,
         });
-        const savedNotification = await newNotification.save();
+        await newNotification.save();
     } catch (error) {
         console.error('Error creating report reply notification:', error);
+    }
+};
+
+const createMarketUploadNotification = async (userId, userProductId, status, productName, cancelReason = null) => {
+    try {
+        console.log('createMarketUploadNotification - userId:', userId);
+        console.log('createMarketUploadNotification - userProductId:', userProductId);
+        console.log('createMarketUploadNotification - status:', status);
+        console.log('createMarketUploadNotification - productName:', productName);
+        console.log('createMarketUploadNotification - cancelReason:', cancelReason);
+
+        const product = await userProduct.findById(userProductId).select('_id'); // Fetch only the _id for Market ID
+
+        let message = `Market ID "${product?._id || 'N/A'}" is now "${status.toUpperCase()}"`;
+        if (status === 'CANCEL' && cancelReason) {
+            message += ` due to: ${cancelReason}`;
+        }
+
+        const newNotification = new Notification({
+            userId,
+            type: `market_upload:${status}`,
+            message,
+            relatedObjectId: userProductId,
+            onModel: 'userproduct',
+            isRead: false,
+            cancelReason: cancelReason,
+        });
+
+        console.log('createMarketUploadNotification - newNotification object:', newNotification);
+
+        await newNotification.save();
+
+        console.log('createMarketUploadNotification - Notification saved successfully:', newNotification);
+    } catch (error) {
+        console.error('Error creating market upload notification:', error);
     }
 };
 
@@ -60,10 +92,9 @@ const getUserTransactionNotifications = async (req, res) => {
         const userId = req.userId;
         const transactionNotifications = await Notification.find({
             userId: userId,
-            type: { $in: ['transaction:debit', 'transaction:credit', 'transaction:payment_completed', 'transaction:withdrawal', 'transaction:rejected'] } 
+            type: { $in: ['transaction:debit', 'transaction:credit', 'transaction:payment_completed', 'transaction:withdrawal', 'transaction:rejected'] }
         }).sort({ createdAt: -1 });
 
-        console.log('Transaction Notifications fetched:', transactionNotifications);
         res.status(200).json({
             success: true,
             data: transactionNotifications,
@@ -99,6 +130,33 @@ const getUserReportNotifications = async (req, res) => {
         });
     }
 };;
+
+const getMarketNotifications = async (req, res) => {
+    try {
+        const userId = req.userId;
+        console.log(`Fetching market notifications for user ID: ${userId}`); // Log when fetching market notifications
+        const marketNotifications = await Notification.find({
+            userId: userId,
+            onModel: 'userproduct',
+            type: { $in: ['market_upload:DONE', 'market_upload:CANCEL', 'market_upload:PROCESSING'] }
+        }).sort({ createdAt: -1 });
+        console.log(`Market notifications found: ${marketNotifications.length}`); // Log the number of market notifications found
+        console.log('Market Notifications:', marketNotifications); // Log the actual market notifications
+
+        res.status(200).json({
+            success: true,
+            data: marketNotifications,
+        });
+    } catch (error) {
+        console.error('Error fetching market notifications:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch market notifications.',
+            error: error.message,
+        });
+    }
+};
+
 
 const fetchReportDetails = async (req, res) => {
     try {
@@ -230,14 +288,72 @@ const deleteAllNotifications = async (req, res) => {
     }
 };
 
+const getUnreadNotificationCount = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const count = await Notification.countDocuments({ userId: userId, isRead: false });
+        res.status(200).json({
+            success: true,
+            count: count,
+        });
+    } catch (error) {
+        console.error('Error fetching unread notification count:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch unread notification count.',
+            error: error.message,
+        });
+    }
+};
+
+const getNewNotifications = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const cutoffTime = new Date(Date.now() - 60 * 1000);
+        const newNotifications = await Notification.find({
+            userId: userId,
+            createdAt: { $gt: cutoffTime },
+            isRead: false,
+            type: {
+                $in: [
+                    'report_reply',
+                    'transaction:debit',
+                    'transaction:credit',
+                    'transaction:payment_completed',
+                    'transaction:withdrawal',
+                    'transaction:rejected',
+                    'market_upload:DONE',
+                    'market_upload:CANCEL',
+                    'market_upload:PROCESSING'
+                ]
+            }
+        }).sort({ createdAt: -1 }).limit(5).lean();
+        res.status(200).json({
+            success: true,
+            newNotifications: newNotifications,
+        });
+    } catch (error) {
+        console.error('Error fetching new notifications:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch new notifications.',
+            error: error.message,
+        });
+    }
+};
+
 module.exports = {
     createTransactionNotification,
     createReportReplyNotification,
+    createMarketUploadNotification,
     getUserTransactionNotifications,
     getUserReportNotifications,
+    getMarketNotifications,
     fetchReportDetails,
     markNotificationAsRead,
     deleteNotification,
     markAllNotificationsAsRead,
     deleteAllNotifications,
+    getUnreadNotificationCount,
+    getNewNotifications,
 };

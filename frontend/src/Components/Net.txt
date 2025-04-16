@@ -1,0 +1,40 @@
+import React from 'react';
+import CommunityFeed from '../Components/CommunityFeed';
+import CreatePostCard from '../Components/CreatePostCard';
+import MyPosts from '../Components/MyPosts';
+
+const Buzz = () => {
+  return (
+    <div className="fixed top-0 left-0 right-0 bottom-0 bg-white mt-14 overflow-hidden flex z-40">
+      {/* Sidebar (My Posts) */}
+      <div className="w-full md:w-1/3 lg:w-1/4 border-r border-gray-200 bg-gray-50 dark:bg-gray-900 overflow-y-auto hidden md:block">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 text-lg font-semibold text-gray-800 dark:text-white">
+          Your Posts
+        </div>
+        <div className="overflow-y-auto max-h-full">
+          <MyPosts />
+        </div>
+      </div>
+
+      {/* Main Buzz Section */}
+      <div className="flex-grow flex flex-col overflow-hidden">
+        {/* Header */}
+        <div className="bg-white w-full font-semibold text-lg text-gray-800 pt-3 mt-1 px-6 border-b border-gray-200 flex items-center justify-center">
+          BUZZ
+        </div>
+
+        {/* Create Post */}
+        <div className="bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+          <CreatePostCard />
+        </div>
+
+        {/* Feed */}
+        <div className="overflow-y-auto flex-grow mt-0">
+          <CommunityFeed />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Buzz;

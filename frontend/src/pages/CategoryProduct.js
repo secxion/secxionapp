@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import productCategory from "../helpers/productCategory";
 import SummaryApi from "../common";
 import { FaCreditCard, FaGift, FaMoneyBillWave, FaBars, FaFilter } from "react-icons/fa";
 import VerticalCard from "../Components/VerticalCard";
 import debounce from "lodash.debounce";
 import ClipLoader from "react-spinners/ClipLoader";
+import './InlinePod.css'
 
 const CategoryProduct = () => {
     const [data, setData] = useState([]);
@@ -15,6 +16,7 @@ const CategoryProduct = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
+
 
     const urlSearch = new URLSearchParams(location.search);
     const urlCategoryListinArray = urlSearch.getAll("category");
@@ -33,7 +35,7 @@ const CategoryProduct = () => {
 
         const fetchData = debounce(async (categories) => {
             if (categories.length === 0) {
-                setData([]); // Clear data when no categories are selected
+                setData([]); 
                 return;
             }
             setLoading(true);
@@ -67,7 +69,7 @@ const CategoryProduct = () => {
     };
 
     return (
-        <div className="fixed top-[80px] left-0 right-0 bottom-0 flex flex-col md:flex-row bg-gray-50 dark:bg-gray-900">
+        <div className="fixed top-[70px] left-0 right-0 bottom-0 flex flex-col md:flex-row bg-gray-50 dark:bg-gray-900">
             {/* Mobile Toggle Button */}
             <div className="md:hidden flex justify-between items-center bg-blue-500 dark:bg-blue-800 text-white p-3">
               <h3 className="text-lg font-bold">
@@ -91,6 +93,7 @@ const CategoryProduct = () => {
                 <h4 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
                     <FaFilter className="inline-block mr-2" /> Filter by Category
                 </h4>
+                
                 <form className="space-y-3">
                     {productCategory.map((category) => (
                         <label
@@ -112,14 +115,20 @@ const CategoryProduct = () => {
                         </label>
                     ))}
                 </form>
-            </aside>
+                <br/>
+                    <span>Can't find what you looking for here ? <br/> 
+                    <p><Link to={'/report'} className="text-green-400 cursor-pointer " >Get in Touch,</Link>
+                    we always <Link to={'/report'} className="text-green-400 cursor-pointer" >here </Link>for you!</p>
+                    </span>
+
+                        </aside>
 
             {/* Product Display Section */}
             <main className="flex-1 bg-gray-100 dark:bg-gray-800 shadow-lg p-4 overflow-hidden">
                 <div className="container mx-auto h-full flex flex-col">
                     <div className="mb-4">
                         <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
-                            🛍️ Explore Products
+                            <Link to={'/inlinepod'} className="inlinepod">InlinePod</Link>
                         </h2>
                         {filterCategoryList.length > 0 && (
                             <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -152,6 +161,7 @@ const CategoryProduct = () => {
                     </div>
                 </div>
             </main>
+            
         </div>
     );
 };

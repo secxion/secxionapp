@@ -5,6 +5,19 @@ const SummaryApi = {
         url : `${backendDomain}/api/signup`,
         method : "post"
     },
+    fetchLatestCryptoNews : {
+        url : `${backendDomain}/api/fetch-latest-cryptonews`,
+        method : "get"
+    },
+    fetchCryptoGlobalData : {
+        url : `${backendDomain}/api/fetch-crypto-globaldata`,
+        method : "get"
+    },
+    fetchCurrencyRates : {
+        url : `${backendDomain}/api/fetch-currency-rates`,
+        method : "get"
+    },
+
     signIn : {
         url : `${backendDomain}/api/signin`,
         method : "post"
@@ -45,7 +58,7 @@ const SummaryApi = {
     },
     marketRecord : {
         url : `${backendDomain}/api/market-record`,
-        method : 'post'
+        method : 'get'
     },
     userMarket : {
         url : `${backendDomain}/api/upload-market`,
@@ -53,6 +66,10 @@ const SummaryApi = {
     },
     myMarket : {
         url : `${backendDomain}/api/get-market`,
+        method : 'get'
+    },
+    myMarketById : {
+        url : `${backendDomain}/api/get-market/:marketId`,
         method : 'get'
     },
     allUserMarkets : {
@@ -219,10 +236,21 @@ const SummaryApi = {
         url: `${backendDomain}/api/report/notifications`,
         method: 'GET',
       },
+      notificationCount: {
+        url: `${backendDomain}/api/unread-notificationCount`,
+        method: 'GET',
+      },
+      getNewNotifications: {
+        url: `${backendDomain}/api/get-new-notifications`,
+        method: 'GET',
+      },
+      getMarketNotifications: {
+        url: `${backendDomain}/api/get-market-notifications`,
+        method: 'GET',
+      },
       fetchReportDetails: {
         url: `${backendDomain}/api/notifications/report-details`,
         method: 'GET',
-
     },
     fetchReportDetail: {
         url: `${backendDomain}/api/user-report-details`,
@@ -240,7 +268,55 @@ const SummaryApi = {
         url: `${backendDomain}/api/reports/admin/:id/sendchat`,
         method: "POST",
     },
- 
+    getUserProfile: {
+        url: `${backendDomain}/api/profile`,
+        method: "GET",
+      },
+      getUserProfileBankAccounts: {
+        url: `${backendDomain}/api/profile/bank-accounts`,
+        method: "GET",
+      },
+      getUserProfileWalletBalance: {
+        url: `${backendDomain}/api/profile/wallet-balance`,
+        method: "GET",
+      },
+      editProfile: {
+        url: `${backendDomain}/api/profile/edit`,
+        method: 'PUT', 
+    },
+    getApprovedPosts: {
+        url: `${backendDomain}/api/posts/approved`,
+        method: 'GET', 
+    },
+    submitNewPost: {
+        url: `${backendDomain}/api/posts/submit`,
+        method: 'POST', 
+    },
+    deletePost: (postId) => ({
+        url: `${backendDomain}/api/posts/${postId}/delete`,
+        method: 'DELETE', 
+    }),
+    addComment:(postId) => ({
+        url: `${backendDomain}/api/posts/${postId}/comment`,
+        method: 'POST', 
+    }),
+    getPendingPosts: {
+        url: `${backendDomain}/api/community/pending`,
+        method: 'GET',
+    },
+    approvePost: (postId) => ({
+        url: `${backendDomain}/api/community/post/${postId}/approve`,
+        method: 'PUT',
+    }),
+    rejectPost: (postId) => ({
+        url: `${backendDomain}/api/community/post/${postId}/reject`,
+        method: 'PUT',
+    }),
+    myposts: {
+        url: `${backendDomain}/api/myposts`,
+        method: "GET",
+      }
+    
 }
 
 export default SummaryApi;

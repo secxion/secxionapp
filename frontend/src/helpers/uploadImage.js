@@ -9,7 +9,7 @@ const uploadImage = async (image) => {
     const response = await fetch(url, {
       method: "POST",
       body: formData,
-      credentials: "include",
+      // credentials: "include",
     });
 
     if (!response.ok) {

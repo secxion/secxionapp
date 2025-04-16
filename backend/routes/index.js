@@ -31,16 +31,23 @@ const {getWalletBalance, getOtherUserWalletBalance } = require('../controller/wa
 const { createPaymentRequest, getAllPaymentRequests, getUserPaymentRequests, updatePaymentRequestStatus } = require('../controller/wallet/paymentRequestController')
 const { addBankAccount, getBankAccounts, deleteBankAccount } = require('../controller/wallet/bankAccounController')
 const { getUserTransactions } = require('../controller/wallet/transactionsController')
-const { getUserTransactionNotifications, markNotificationAsRead, deleteNotification, markAllNotificationsAsRead, deleteAllNotifications, getUserReportNotifications, fetchReportDetails } = require('../controller/notifications/notificationsController')
+const { getUserTransactionNotifications, markNotificationAsRead, deleteNotification, markAllNotificationsAsRead, deleteAllNotifications, getUserReportNotifications, fetchReportDetails, getUnreadNotificationCount, getNewNotifications, getMarketNotifications } = require('../controller/notifications/notificationsController')
 const getReportDetailsController = require('../controller/user/getReportDetailsController')
 const userReplyReportController = require('../controller/report/userReplyReportController')
 const getReportChatController = require('../controller/report/getReportChatController')
 const sendChatMessageController = require('../controller/report/sendChatMessageController')
+const userProfileController = require('../controller/userProfileController')
+const getMarketByIdController = require('../controller/product/getMarketByIDController')
+const { getApprovedPostsController, submitNewPostController, deletePostController, addCommentController } = require('../controller/user/communityController')
+const { getPendingPostsController, approvePostController, rejectPostController } = require('../controller/user/adminCommunityController')
+const getUserPostsController = require('../controller/user/getUserPostsController')
 
 router.post("/signup", userSignUpController)
-router.post("/signin",userSignInController)
-router.get("/user-details",authToken,userDetailsController)
-router.get("/userLogout",userLogout)
+router.post("/signin", userSignInController)
+router.get("/user-details", authToken, userDetailsController)
+router.get("/userLogout", userLogout)
+
+
 
 //admin panel
 router.get("/all-user",authToken,allUsers)
@@ -66,7 +73,8 @@ router.post("/filter-product", filterProductController)
 //user market
 router.post("/upload-market",authToken,UserUploadMarketController)
 router.get("/get-market",authToken, getMarketController)
-router.post("/market-record",authToken,marketRecordController)
+router.get("/get-market/:marketId", authToken, getMarketByIdController);
+router.get("/market-record",authToken,marketRecordController)
 
 //system blog
 router.post("/create-blog",createBlogNote)
@@ -120,7 +128,27 @@ router.delete("/tr-notifications/all", authToken, deleteAllNotifications)
 router.get('/report/notifications', authToken, getUserReportNotifications);
 router.get('/report-details/:reportId', authToken, fetchReportDetails);
 router.get('/user-report-details/:reportId', authToken, getReportDetailsController);
+router.get('/unread-notificationCount', authToken, getUnreadNotificationCount);
+router.get('/get-new-notifications', authToken, getNewNotifications);
+router.get('/get-market-notifications', authToken, getMarketNotifications);
 
+//profile
+router.get('/profile', authToken, userProfileController);
+router.get('/profile/bank-accounts', authToken, userProfileController.getUserBankAccounts);
+router.get('/profile/wallet-balance', authToken, userProfileController.getUserWalletBalance);
+router.put('/profile/edit', authToken, userProfileController.editProfile);
+
+//community feed
+router.get('/posts/approved', getApprovedPostsController);
+router.post('/posts/submit', authToken, submitNewPostController);
+router.delete('/posts/:postId/delete', authToken, deletePostController);
+router.post('/posts/:postId/comment', authToken, addCommentController);
+
+//admin community ct
+router.get('/community/pending', authToken, getPendingPostsController); 
+router.put('/community/post/:postId/approve', authToken, approvePostController); 
+router.put('/community/post/:postId/reject', authToken, rejectPostController);
+router.get('/myposts', authToken, getUserPostsController);
 
 
 module.exports = router

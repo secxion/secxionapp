@@ -21,7 +21,7 @@
 }
 
 /* Existing styles - ensure these are still relevant or adjust as needed */
-/* body {
+body {
     background-color: #f5f5dc;
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -55,7 +55,6 @@
     -webkit-line-clamp: 2;
 }
 
-
 h3 {
     font-weight: 600;
 }
@@ -66,4 +65,4 @@ h3 {
 
 .text-blue-600 {
     color: #3B82F6;
-} */
+}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FaGlobe, FaClock, FaCaretDown } from "react-icons/fa"; // Import dropdown icon
+import { FaGlobe, FaClock, FaCaretDown } from "react-icons/fa"; 
 import timezones from "../helpers/timeZones";
 import "./Footer.css"
 
@@ -88,13 +88,13 @@ const Footer = () => {
         }).format(currentTime);
     };
 
-    const handleSupportClick = () => {
-        document.body.classList.add("fade-out");
-        setTimeout(() => {
-            navigate("/report");
-            document.body.classList.remove("fade-out");
-        }, 300);
-    };
+    // const handleSupportClick = () => {
+    //     document.body.classList.add("fade-out");
+    //     setTimeout(() => {
+    //         navigate("/report");
+    //         document.body.classList.remove("fade-out");
+    //     }, 300);
+    // };
 
     const toggleTimezoneDropdownMobile = () => {
         setShowTimezoneDropdownMobile(!showTimezoneDropdownMobile);
@@ -103,14 +103,14 @@ const Footer = () => {
     return (
         <footer className=" bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 py-4 border-t border-gray-300 dark:border-gray-700">
             <div className="container mx-auto px-4 flex flex-col items-center md:flex-row md:justify-between gap-y-3 md:gap-y-0">
-                <motion.button
+                {/* <motion.button
                     className="flex flex-col bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition-colors duration-200"
                     onClick={handleSupportClick}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                 >
                     Get In touch With Us
-                </motion.button>
+                </motion.button> */}
 
                 <div className="flex items-center gap-2 md:hidden">
                     <div className="flex items-center">

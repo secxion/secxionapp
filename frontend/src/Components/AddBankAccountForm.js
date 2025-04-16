@@ -59,12 +59,12 @@ const AddBankAccountForm = ({ onAccountAdded, onCancel, userId }) => {
     };
 
     return (
-        <div className="bg-white shadow rounded-md p-6">
-            <h3 className="font-semibold text-xl text-gray-800 mb-4 flex items-center">
+        <div className="bg-white shadow rounded-md p-6 space-y-16">
+            <h3 className="font-semibold text-xl text-gray-800 -mt-4 flex items-center">
                 <FaUniversity className="mr-2 text-gray-600" /> Add New Bank Account
             </h3>
             {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-3" role="alert">
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded relative mb-2" role="alert">
                     <strong className="font-bold">Error!</strong>
                     <span className="block sm:inline">{error}</span>
                 </div>
@@ -75,7 +75,7 @@ const AddBankAccountForm = ({ onAccountAdded, onCancel, userId }) => {
                     <span className="block sm:inline">{successMessage}</span>
                 </div>
             )}
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-2">
                 <div>
                     <label htmlFor="accountNumber" className="block text-sm font-medium text-gray-700">
                         Account Number

@@ -1,21 +1,47 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { FaWallet, FaUser, FaCog, FaStore, FaBook, FaClipboardList, FaComment } from "react-icons/fa";
-import './Home.css'; // Import the CSS file
+import { FaWallet, FaUser, FaStore, FaBook, FaClipboardList } from "react-icons/fa";
+import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
+import HomeFooter from '../Components/HomeFooter';
+import NetBlog from '../Components/NetBlog';
+
+import './Home.css';
 
 const menuItems = [
-    { label: "Wallet", path: "/mywallet", color: "bg-blue-600", icon: <FaWallet className="text-4xl md:text-5xl" /> },
-    { label: "Profile", path: "/profile", color: "bg-green-600", icon: <FaUser className="text-4xl md:text-5xl" /> },
-    { label: "Settings", path: "/settings", color: "bg-yellow-600", icon: <FaCog className="text-4xl md:text-5xl" /> },
-    { label: "Market", path: "/section", color: "bg-red-600", icon: <FaStore className="text-4xl md:text-5xl" /> },
-    { label: "DataPad", path: "/datapad", color: "bg-purple-600", icon: <FaBook className="text-4xl md:text-5xl" /> },
-    { label: "Record", path: "/record", color: "bg-indigo-600", icon: <FaClipboardList className="text-4xl md:text-5xl" /> },
+    { label: "Marketplace", path: "/section", color: "bg-black", icon: <FaStore className="text-4xl md:text-5xl" /> },
+    { label: "Transaction Record", path: "/record", color: "bg-purple-900", icon: <FaClipboardList className="text-4xl md:text-5xl" /> },
+    { label: "Wallet", path: "/mywallet", color: "bg-green-900", icon: <FaWallet className="text-4xl md:text-5xl" /> },
+    { label: "Profile", path: "/profile", color: "bg-blue-900", icon: <FaUser className="text-4xl md:text-5xl" /> },
+    { label: "Data Pad", path: "/datapad", color: "bg-gray-900", icon: <FaBook className="text-4xl md:text-5xl" /> },
+    { label: "Contact Support", path: "/report", color: "bg-yellow-900", icon: <IoChatbubbleEllipsesOutline className="text-4xl md:text-5xl" /> },
 ];
 
+const cardVariants = {
+    initial: { opacity: 0, y: 50, scale: 0.95 },
+    animate: { opacity: 1, y: 0, scale: 1 },
+    hover: { scale: 1.02, boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.2)" },
+};
+
 const Home = () => {
+    const blogSectionRef = useRef(null);
+    const menuSectionRef = useRef(null);
+    const [isBlogVisible, setIsBlogVisible] = useState(false);
+  
+
+    const scrollToBlogSection = () => {
+        blogSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+        setIsBlogVisible(true);
+    };
+
+    const scrollToMenuSection = () => {
+        menuSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+        setIsBlogVisible(false);
+    };
+
+
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-start p-6 pt-20 md:pt-24 w-full relative">
+        <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col items-center justify-start p-6 pt-20 md:pt-14 w-full relative pb-20">
             {/* Header */}
             <motion.h1
                 className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-gray-100"
@@ -26,31 +52,49 @@ const Home = () => {
                 Welcome to Secxion
             </motion.h1>
 
-            <p className="text-gray-700 dark:text-gray-300 text-center mt-4 text-lg md:text-xl max-w-2xl">
+            <motion.p
+                className="text-gray-600 dark:text-gray-400 text-center mt-2 text-lg md:text-xl max-w-2xl"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeInOut", delay: 0.2 }}
+            >
                 Your trusted platform for gift card trading and seamless digital transactions.
-            </p>
+                </motion.p>
 
             {/* Menu Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-10 w-full max-w-6xl">
+            <div ref={menuSectionRef} className="menu-grid">
                 {menuItems.map((item, index) => (
                     <motion.div
                         key={index}
-                        className={`rounded-xl shadow-lg transition-shadow ${item.color} transform w-full glassmorphic-card`}
+                        variants={cardVariants}
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: index * 0.1, duration: 0.5 }}
+                        whileHover="hover"
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                        className={`rounded-xl shadow-lg transition-shadow ${item.color} transform w-full glassmorphic-card`}
                     >
-                        <Link to={item.path} className="flex flex-col items-center justify-center p-6 text-white w-full h-full" aria-label={item.label}>
-                            <div className="p-3 rounded-full bg-black/15">
+                        <Link to={item.path} className="menu-link" aria-label={item.label}>
+                            <div className="icon-container">
                                 {item.icon}
                             </div>
-                            <span className="text-lg md:text-xl font-semibold mt-3 text-gray-100">{item.label}</span>
+                            <span className="menu-label">{item.label}</span>
                         </Link>
                     </motion.div>
                 ))}
             </div>
+
+            {/* Blog Section */}
+            <div ref={blogSectionRef} className={`mt-12 w-full max-w-5xl ${isBlogVisible ? '' : 'hidden'}`}>
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4 border-b-2 border-gray-300 dark:border-gray-700 pb-2">
+                    Latest Insights
+                </h2>
+                <NetBlog />
+            </div>
+
+            {/* Footer */}
+            <HomeFooter onBlogClick={scrollToBlogSection} onMenuClick={scrollToMenuSection} isBlogVisible={isBlogVisible} />
         </div>
     );
-};
+}
 
 export default Home;

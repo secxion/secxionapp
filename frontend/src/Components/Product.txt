@@ -1,140 +1,432 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import TransactionCard from './TransactionCard';
-import SummaryApi from '../common';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-const TransactionHistory = () => {
-    const { user } = useSelector((state) => state.user);
-    const [transactions, setTransactions] = useState([]);
-    const [loadingTransactions, setLoadingTransactions] = useState(false);
-    const [errorTransactions, setErrorTransactions] = useState('');
-    const [statusFilter, setStatusFilter] = useState('all');
-    const [visibleTransactions, setVisibleTransactions] = useState(3);
-    const [showAll, setShowAll] = useState(false);
-    const navRef = useRef(null);
+html {
+  scrollbar-gutter: stable;
+}
 
-    const fetchTransactions = useCallback(async (currentStatusFilter) => {
-        if (!user?.id && !user?._id) {
-            console.warn('User not found in Redux. Cannot fetch transactions.');
-            setErrorTransactions('User authentication details not found.');
-            return;
-        }
+body {
+  @apply bg-white;
+  font-family: Roboto, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+  line-height: 1.5;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.2s ease;
+  padding: 12px;
+  border-radius: 4px;
+}
 
-        setLoadingTransactions(true);
-        setErrorTransactions('');
-        try {
-            let url = `${SummaryApi.transactions.url}`;
-            const userId = user?.id || user?._id;
-            url += `?userId=${userId}`;
+.glass-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  transition: box-shadow 0.2s ease;
+}
+.glass-card:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
 
-            if (currentStatusFilter && currentStatusFilter !== 'all') {
-                url += `&status=${currentStatusFilter}`;
-            }
+.button {
+  @apply px-4 py-2 rounded font-semibold text-white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: none;
+}
 
-            console.log('Fetching transactions from:', url);
-            const response = await fetch(url, {
-                method: 'GET',
-                credentials: 'include',
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            console.log('Transactions data:', data);
-            if (data.success && data.transactions) {
-                setTransactions(data.transactions);
-            } else {
-                setErrorTransactions(data.message || 'Failed to fetch transactions.');
-            }
-        } catch (err) {
-            console.error('Error fetching transactions:', err);
-            setErrorTransactions('An unexpected error occurred while fetching transactions.');
-        } finally {
-            setLoadingTransactions(false);
-        }
-    }, [user, SummaryApi.transactions.url]);
+.button-primary {
+  background: linear-gradient(90deg, #06b6d4, #3b82f6);
+  color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+.button-primary:hover {
+  background: linear-gradient(90deg, #3b82f6, #06b6d4);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
 
-    useEffect(() => {
-        fetchTransactions(statusFilter);
-        setVisibleTransactions(3);
-        setShowAll(false);
-    }, [statusFilter, fetchTransactions]);
+::-webkit-scrollbar {
+width: 4px;
+height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f8a409, #c08d01);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(42, 182, 0, 0.4);
+}
 
-    const handleFilterChange = (statusText) => {
-        const statusValue = statusText.toLowerCase().replace(/ /g, '-');
-        setStatusFilter(statusValue);
-        console.log('statusFilter updated:', statusValue);
-    };
+.neon-text {
+  color: #1a73e8;
+  text-shadow: 0 0 2px #06b6d4;
+}
+.neon2-text {
+  color: #1e6470;
+  text-shadow: 0 02px #06b6d4;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  padding: 16px;
+}
 
-    const handleViewMore = () => {
-        setShowAll(true);
-        setVisibleTransactions(transactions.length);
-    };
+a {
+  @apply text-cyan-500 hover:text-cyan-600 transition-colors;
+  text-decoration: none;
+}
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 16px;
+}
 
-    const handleCloseViewMore = () => {
-        setShowAll(false);
-        setVisibleTransactions(3);
-    };
+.table-container {
+  max-height: 450px;
+  overflow-y: auto;
+}
 
-    if (loadingTransactions) {
-        return <div>Loading Transaction History...</div>;
-    }
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
-    if (errorTransactions) {
-        return <div className="text-red-500">Error loading transactions: {errorTransactions}</div>;
-    }
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
 
-    const displayedTransactions = showAll ? transactions : transactions.slice(0, visibleTransactions);
-    const menuItems = ['All', 'Pending', 'Approved Processing', 'Rejected', 'Completed'];
-    const minMenuWidth = `${menuItems.length * 80}px`;
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
 
-    return (
-        <div className="bg-white shadow-md rounded-md p-4">
-            <h3 className="font-semibold text-lg mb-2">Transaction History</h3>
-            <div className="mb-4 border-b border-gray-200 overflow-x-auto overflow-y-hidden">
-                <nav ref={navRef} className="-mb-px flex space-x-4" aria-label="Tabs" style={{ minWidth: minMenuWidth }}>
-                    {menuItems.map((item) => (
-                        <button
-                            key={item.toLowerCase().replace(/ /g, '-')}
-                            onClick={() => handleFilterChange(item)}
-                            className={`${statusFilter === item.toLowerCase().replace(/ /g, '-') ? 'border-indigo-500 text-indigo-600 focus:ring-indigo-500' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:ring-gray-200'} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm`}
-                        >
-                            {item}
-                        </button>
-                    ))}
-                </nav>
-            </div>
-            <div className="space-y-2">
-                {displayedTransactions.length > 0 ? (
-                    displayedTransactions.map((transaction) => (
-                        <TransactionCard key={transaction._id} transaction={transaction} />
-                    ))
-                ) : (
-                    <p>No transactions found with the selected filter.</p>
-                )}
-            </div>
-            {transactions.length > visibleTransactions && !showAll && (
-                <div className="mt-4">
-                    <button
-                        onClick={handleViewMore}
-                        className="text-indigo-600 hover:underline focus:outline-none text-sm"
-                    >
-                        View More
-                    </button>
-                </div>
-            )}
-            {showAll && (
-                <div className="mt-4">
-                    <button
-                        onClick={handleCloseViewMore}
-                        className="text-gray-600 hover:underline focus:outline-none text-sm"
-                    >
-                        Close
-                    </button>
-                </div>
-            )}
-        </div>
-    );
-};
+@media (max-width: 768px) {
+  .flex-container {
+    flex-direction: column;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 
-export default TransactionHistory;
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  @apply bg-white;
+  font-family: Roboto, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+  line-height: 1.5;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.2s ease;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+@media (min-width: 640px) { 
+  body {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 768px) {
+  body {
+    font-size: 14px;
+    padding: 12px;
+  }
+}
+
+@media (min-width: 1024px) { 
+  body {
+    font-size: 14px;
+    padding: 12px;
+  }
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  padding: 12px; 
+  transition: box-shadow 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  .glass-card {
+    padding: 15px;
+  }
+}
+
+@media (min-width: 768px) { 
+  .glass-card {
+    padding: 18px; 
+  }
+}
+
+@media (min-width: 1024px) { 
+  .glass-card {
+    padding: 15px; 
+  }
+}
+
+.button {
+  @apply px-4 py-2 rounded font-semibold text-white;
+  font-size: 0.8rem; 
+  font-weight: 500;
+  text-transform: none;
+}
+
+@media (min-width: 640px) { 
+  .button {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 768px) { 
+  .button {
+    font-size: 1rem; 
+  }
+}
+
+@media (min-width: 1024px) { 
+  .button {
+    font-size: 0.9rem; 
+  }
+}
+
+.button-primary {
+  background: linear-gradient(90deg, #06b6d4, #3b82f6);
+  color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+.button-primary:hover {
+  background: linear-gradient(90deg, #3b82f6, #06b6d4);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f8a409, #c08d01);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(42, 182, 0, 0.4);
+}
+
+.neon-text {
+  color: #1a73e8;
+  text-shadow: 0 0 2px #06b6d4;
+}
+.neon2-text {
+  color: #1e6470;
+  text-shadow: 0 0 2px #06b6d4;
+}
+
+.card-grid {
+  display: grid;
+  gap: 8px; 
+  padding: 8px; 
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); /* Ensures cards don't overflow on very small screens */
+}
+
+@media (min-width: 640px) { 
+  .card-grid {
+    gap: 10px;
+    padding: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+  .card-grid {
+    gap: 12px;
+    padding: 12px;
+  }
+}
+
+@media (min-width: 1024px) { 
+  .card-grid {
+    gap: 16px;
+    padding: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+  }
+}
+
+a {
+  @apply text-cyan-500 hover:text-cyan-600 transition-colors;
+  text-decoration: none;
+}
+
+.container {
+  max-width: 100%; 
+  margin: 0 auto;
+  padding: 8px; 
+}
+
+@media (min-width: 640px) { 
+  .container {
+    padding: 16px;
+  }
+}
+
+@media (min-width: 768px) { 
+  .container {
+    max-width: 768px;
+    padding: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1440px; 
+    padding: 16px;
+  }
+}
+
+.table-container {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) { 
+  .table-container {
+    max-height: 450px; 
+  }
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; 
+}
+
+@media (min-width: 768px) { 
+  .flex-container {
+    gap: 16px; 
+  }
+}
+
+.parent-flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+import React from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { FaWallet, FaUser, FaStore, FaBook, FaClipboardList } from "react-icons/fa";
+import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
+import HomeFooter from '../Components/HomeFooter';
+
+import './Home.css';
+
+const menuItems = [
+  { label: "Market", path: "/section", color: "bg-black", icon: <FaStore className="text-4xl md:text-5xl" /> },
+  { label: "Record", path: "/record", color: "bg-purple-900", icon: <FaClipboardList className="text-4xl md:text-5xl" /> },
+  { label: "Wallet", path: "/mywallet", color: "bg-green-900", icon: <FaWallet className="text-4xl md:text-5xl" /> },
+  { label: "Profile", path: "/profile", color: "bg-blue-900", icon: <FaUser className="text-4xl md:text-5xl" /> },
+  { label: "DataPad", path: "/datapad", color: "bg-gray-900", icon: <FaBook className="text-4xl md:text-5xl" /> },
+  { label: "Contact Support", path: "/report", color: "bg-yellow-900", icon: <IoChatbubbleEllipsesOutline className="text-4xl md:text-5xl" /> },
+];
+
+const Home = () => {
+  return (
+    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col items-center justify-start p-6 pt-20 md:pt-24 w-full relative pb-20">
+      {/* Header */}
+      <motion.h1
+        className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-gray-100"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+      >
+        Welcome to Secxion
+      </motion.h1>
+
+      <p className="text-gray-700 dark:text-gray-300 text-center mt-4 text-lg md:text-xl max-w-2xl">
+        Your trusted platform for gift card trading and seamless digital transactions.
+      </p>
+
+      {/* Menu Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-10 w-full max-w-6xl">
+        {menuItems.map((item, index) => (
+          <motion.div
+            key={index}
+            className={`rounded-xl shadow-lg transition-shadow ${item.color} transform w-full glassmorphic-card`}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.1, duration: 0.5 }}
+          >
+            <Link to={item.path} className="flex flex-col items-center justify-center p-6 text-white w-full h-full" aria-label={item.label}>
+              <div className="p-3 rounded-full bg-black/15">
+                {item.icon}
+              </div>
+              <span className="text-lg md:text-xl font-semibold mt-3 text-gray-100">{item.label}</span>
+            </Link>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Footer */}
+      <HomeFooter />
+    </div>
+  );
+}
+
+export default Home;

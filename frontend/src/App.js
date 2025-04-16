@@ -1,7 +1,7 @@
-import { lazy, Suspense } from "react";
-import { Outlet, useLocation } from "react-router-dom";
-// import "react-toastify/dist/ReactToastify.css";
-// import { ToastContainer } from "react-toastify";
+import { lazy, Suspense, useEffect } from "react";
+import { Outlet } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserDetails, setLoading } from "./store/userSlice";
 import Context from "./Context";
@@ -9,8 +9,12 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchUserDetailsAPI, fetchMarketDataAPI, fetchBlogsAPI, fetchWalletBalanceAPI } from "./services/apiService";
 import "./styles/Loader.css";
 
+function setViewportHeight() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
 const Header = lazy(() => import("./Components/Header"));
-const Footer = lazy(() => import("./Components/Footer"));
 const Net = lazy(() => import("./Components/Net"));
 
 function Loader() {
@@ -25,9 +29,15 @@ function Loader() {
 function App() {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.user);
-    const location = useLocation();
 
-    const hiddenFooterRoutes = ["/report", "/notifications", "/mywallet", "/contact-us", "/admin-panel/anonymous-report", "/admin-panel/users-datapad", "/admin-panel/users-market", "/product-category", "/datapad", "/login", "/sign-up", "/admin-panel/all-products", "/admin-panel/all-users", "/admin-panel/users-market", "/admin-panel/users-wallet", "/admin-panel/system-blog", "/admin-panel/admin-report", "/admin-panel/analytics", "/admin-panel/settings"];
+    useEffect(() => {
+        setViewportHeight(); 
+        window.addEventListener('resize', setViewportHeight); 
+
+        return () => {
+            window.removeEventListener('resize', setViewportHeight);
+        };
+    }, []);
 
     const { refetch: fetchUserDetails, isLoading: isUserLoading } = useQuery({
         queryKey: ["user"],
@@ -69,30 +79,31 @@ function App() {
         return <Loader />;
     }
 
-    const shouldHideFooter = hiddenFooterRoutes.includes(location.pathname) || location.pathname.startsWith("/chat/");
-
     return (
         <Context.Provider value={{ fetchUserDetails, fetchMarketData, marketData, user, fetchBlogs, blogs, walletBalance, fetchWalletBalance }}>
-            <Suspense fallback={<Loader />}>
-                {user && <Net blogs={blogs} fetchBlogs={fetchBlogs} />}
-                <main className="min-h-[calc(100vh-120px)] pt-1 mt-6">
-                    {user && <Header />}
-                    <Outlet />
-                </main>
-                {!shouldHideFooter && <Footer />}
-            </Suspense>
-            {/* <ToastContainer
-                position="top-right"
-                autoClose={2000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="colored"
-            /> */}
+            <div className="fixed top-0 left-0 w-full h-full bg-white overflow-y-auto">
+                <Suspense fallback={<Loader />}>
+                    {user && <Net blogs={blogs} fetchBlogs={fetchBlogs} />}
+                    <main className="h-full w-full pt-1 mt-6">
+                        {user && <Header />}
+                        <div className="h-full w-full">
+                            <Outlet />
+                        </div>
+                    </main>
+                </Suspense>
+                <ToastContainer
+                    position="top-center"
+                    autoClose={1000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="colored"
+                />
+            </div>
         </Context.Provider>
     );
 }

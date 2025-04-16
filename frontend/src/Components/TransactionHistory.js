@@ -10,7 +10,7 @@ const TransactionHistory = () => {
     const [loadingTransactions, setLoadingTransactions] = useState(false);
     const [errorTransactions, setErrorTransactions] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
-    const [visibleTransactions, setVisibleTransactions] = useState(2); 
+    const [visibleTransactions, setVisibleTransactions] = useState(3); 
     const [showAll, setShowAll] = useState(false);
     const navRef = useRef(null);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -58,7 +58,7 @@ const TransactionHistory = () => {
 
     useEffect(() => {
         fetchTransactions(statusFilter);
-        setVisibleTransactions(2);
+        setVisibleTransactions(3);
         setShowAll(false);
     }, [statusFilter, fetchTransactions]);
 
@@ -76,7 +76,7 @@ const TransactionHistory = () => {
 
     const handleCloseViewMore = () => {
         setShowAll(false);
-        setVisibleTransactions(2);
+        setVisibleTransactions(3);
     };
 
     const toggleFilter = () => {
@@ -93,23 +93,13 @@ const TransactionHistory = () => {
 
     const displayedTransactions = showAll ? transactions : transactions.slice(0, visibleTransactions);
     const menuItems = ['All', 'Pending', 'Approved Processing', 'Rejected', 'Completed'];
-    const minMenuWidth = `${menuItems.length * 10}px`;
+    const minMenuWidth = `${menuItems.length * 5}px`;
 
-    return (
-        <div className="bg-white shadow rounded-md p-5">
-            <div className="flex justify-between items-center mb-4">
-                <h3 className="font-semibold text-xl text-gray-800">Transaction History</h3>
-                <button
-                    onClick={toggleFilter}
-                    className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    <FaFilter className="mr-2" /> Filter
-                </button>
-            </div>
-
-            {isFilterOpen && (
-                <div className="mb-4 border-b border-gray-200 overflow-x-auto overflow-y-hidden">
-                    <nav ref={navRef} className="-mb-px flex space-x-4" aria-label="Tabs" style={{ minWidth: minMenuWidth }}>
+    return (       
+            <div className='min-w-screen max-w-screen'>
+            <nav className='pt-20 bg-white shadow-md w-screen overflow-x-auto fixed top-0 left-0 right-0 z-30 flex items-center justify-between py-2 px-4' >
+                    <ul ref={navRef}  className="flex items-center space-x-4 overflow-x-auto "
+                     aria-label="Tabs" style={{ minWidth: minMenuWidth }}>
                         {menuItems.map((item) => (
                             <button
                                 key={item.toLowerCase().replace(/ /g, '-')}
@@ -119,11 +109,11 @@ const TransactionHistory = () => {
                                 {item}
                             </button>
                         ))}
-                    </nav>
-                </div>
-            )}
+                    </ul>
+                </nav>
+            
 
-            <div className="space-y-3">
+            <div className="space-y-6 w-full right-0 left-0 ">
                 {displayedTransactions.length > 0 ? (
                     displayedTransactions.map((transaction) => (
                         <TransactionCard key={transaction._id} transaction={transaction} />
@@ -134,7 +124,7 @@ const TransactionHistory = () => {
             </div>
 
             {transactions.length > visibleTransactions && !showAll && (
-                <div className="mt-4 flex justify-center">
+                <div className=" mt-4 flex justify-center">
                     <button
                         onClick={handleViewMore}
                         className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -154,7 +144,8 @@ const TransactionHistory = () => {
                     </button>
                 </div>
             )}
-        </div>
+                    </div>    
+                    
     );
 };
 

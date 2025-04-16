@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
-import { FaUserCircle, FaTachometerAlt, FaUsers, FaBoxOpen, FaMoneyBillAlt, FaShoppingCart, FaMobileAlt, FaPenAlt, FaFileAlt, FaUserSecret, FaChartBar, FaCog } from 'react-icons/fa'; // Import more icons
+import { FaTachometerAlt, FaUsers, FaBoxOpen, FaMoneyBillAlt, FaShoppingCart, FaMobileAlt, FaPenAlt, FaFileAlt, FaUserSecret, FaChartBar, FaCog } from 'react-icons/fa'; // Import more icons
 
 const AdminPanel = () => {
     const user = useSelector(state => state?.user?.user);
@@ -41,11 +41,10 @@ const AdminPanel = () => {
         { path: "admin-rpr", label: "RPR", icon: <FaMoneyBillAlt className="mr-2" /> },
         { path: "users-market", label: "Market", icon: <FaShoppingCart className="mr-2" /> },
         { path: "users-datapad", label: "Datapad", icon: <FaMobileAlt className="mr-2" /> },
-        // { path: "users-wallet", label: "Wallet", icon: <FaWallet className="mr-2" /> },
         { path: "system-blog", label: "Blog", icon: <FaPenAlt className="mr-2" /> },
         { path: "admin-report", label: "Reports", icon: <FaFileAlt className="mr-2" /> },
         { path: "anonymous-report", label: "Anonymous", icon: <FaUserSecret className="mr-2" /> },
-        { path: "analytics", label: "Analytics", icon: <FaChartBar className="mr-2" /> },
+        { path: "community-feeds", label: "Community", icon: <FaChartBar className="mr-2" /> },
         { path: "settings", label: "Settings", icon: <FaCog className="mr-2" /> }
     ];
 
@@ -53,7 +52,7 @@ const AdminPanel = () => {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <nav className='pt-24 bg-white shadow-md w-full overflow-x-auto scrollbar-hide fixed top-0 left-0 right-0 z-30 flex items-center justify-between py-2 px-4'>
+            <nav className='pt-20 bg-white shadow-md w-full overflow-x-auto scrollbar-hide fixed top-0 left-0 right-0 z-30 flex items-center justify-between py-2 px-4'>
             <div className="flex items-center cursor-pointer" onClick={toggleUserInfo}>
                     <div className="rounded-full bg-gray-300 h-10 w-10 flex items-center justify-center mr-3">
                         {user?.name?.charAt(0).toUpperCase()}

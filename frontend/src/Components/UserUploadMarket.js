@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { CgClose } from "react-icons/cg";
 import { FaCloudUploadAlt } from "react-icons/fa";
@@ -182,12 +181,13 @@ const UserUploadMarket = ({
                             />
                             <div>
                                 <h3 className='font-bold text-gray-800 text-lg'>{productDetails.productName}</h3>
-                                <p className='text-gray-600'>Currency: {productDetails.currency}</p>
-                                <p className='text-gray-600'>Face Value: {productDetails.faceValue}</p>
-                                <p className='text-gray-600'>Rate: {productDetails.rate}</p>
+                                <p className='text-gray-600'><span className="font-bold">Currency:</span> {productDetails.currency}</p>
+                                <p className='text-gray-600'><span className="font-bold">Face Value:</span> {productDetails.faceValue}</p>
+                                <p className='text-gray-600'><span className="font-bold">Rate:</span> {productDetails.rate}</p>
+                                <p className='text-gray-600'><span className="font-bold">Require:</span> {productDetails.description}</p>
+
                             </div>
                         </div>
-                        <p className='text-gray-600 mt-4'>{productDetails.description}</p>
                     </div>
                 )}
 

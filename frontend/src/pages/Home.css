@@ -1,11 +1,53 @@
-.glassmorphic-card {
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
-    overflow: hidden; 
-    position: relative; 
-}
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+    width: 100%;
+    max-width: 60rem;
+  }
 
-.glassmorphic-card::before {
+ .menu-item:hover {
+    transform: scale(1.05);
+  }
+  
+ .menu-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    color: white;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    text-align: center;
+  }
+  .icon-container {
+    padding: 0.75rem;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.15);
+  }
+  .menu-label {
+    margin-top: 0.75rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #f1f1f1;
+  }
+  
+  @media (min-width: 768px) {
+    .menu-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .glassmorphic-card {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .glassmorphic-card::before {
     content: "";
     position: absolute;
     top: -50%;
@@ -13,20 +55,21 @@
     width: 200%;
     height: 200%;
     background: linear-gradient(-45deg,
-        rgba(255, 255, 255, 0.1) 0%,
-        rgba(255, 255, 255, 0.05) 60%,
-        transparent 80%,
-        transparent 100%);
+      rgba(104, 104, 104, 0.1) 0%,
+      rgba(255, 255, 255, 0.05) 60%,
+      transparent 80%,
+      transparent 100%);
     transform: rotate(45deg) translate(-20px, 0);
-    animation: shine 20s infinite linear;
-    pointer-events: none; 
-}
-
-@keyframes shine {
+    animation: shine 10s infinite linear;
+    pointer-events: none;
+  }
+  
+  @keyframes shine {
     0% {
-        transform: rotate(45deg) translate(-200%, 0);
+      transform: rotate(45deg) translate(-200%, 0);
     }
     100% {
-        transform: rotate(45deg) translate(200%, 0);
+      transform: rotate(45deg) translate(200%, 0);
     }
-}
+  }
+  

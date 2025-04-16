@@ -10,6 +10,8 @@ const userSchema = new mongoose.Schema({
     password : String,
     profilePic : String,
     role : String,
+    tag : String,
+    telegramNumber : String,
 },{
     timestamps : true
 })
