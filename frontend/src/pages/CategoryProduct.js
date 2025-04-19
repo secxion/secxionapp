@@ -69,9 +69,9 @@ const CategoryProduct = () => {
     };
 
     return (
-        <div className="fixed top-[70px] left-0 right-0 bottom-0 flex flex-col md:flex-row bg-gray-50 dark:bg-gray-900">
+        <div className="fixed top-[70px] left-0 right-0 bottom-0 flex flex-col md:flex-row bg-gray-600 dark:bg-gray-900">
             {/* Mobile Toggle Button */}
-            <div className="md:hidden flex justify-between items-center bg-blue-500 dark:bg-blue-800 text-white p-3">
+            <div className="md:hidden flex justify-between items-center border-b border-black shadow-sm bg-gray-500 dark:bg-blue-800 text-white p-3">
               <h3 className="text-lg font-bold">
                   <FaFilter className="inline-block mr-2" />
               </h3>
@@ -86,11 +86,11 @@ const CategoryProduct = () => {
 
             {/* Sidebar for Category Selection */}
             <aside
-                className={`md:w-[300px] bg-gradient-to-br from-blue-100 dark:from-gray-800 via-white dark:via-gray-900 to-blue-50 dark:to-gray-800 p-6 shadow-lg overflow-y-auto transition-all duration-300 ${
+                className={`md:w-[300px] bg-gradient-to-br from-blue-400 dark:from-gray-300 via-black dark:via-gray-900 to-blue-50 dark:to-gray-800 p-6 shadow-lg overflow-y-auto transition-all duration-300 ${
                     mobileMenuOpen ? "block" : "hidden md:block"
                 }`}
             >
-                <h4 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                <h4 className="text-xl font-semibold mb-4 text-gray-200 dark:text-gray-200">
                     <FaFilter className="inline-block mr-2" /> Filter by Category
                 </h4>
                 
@@ -98,7 +98,7 @@ const CategoryProduct = () => {
                     {productCategory.map((category) => (
                         <label
                             key={category.id}
-                            className="flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors duration-200 hover:bg-blue-100 dark:hover:bg-gray-700"
+                            className="flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors duration-200 hover:bg-blue-600 dark:hover:bg-gray-700"
                         >
                             {category.value === "gift cards" && <FaGift className="text-emerald-500 w-5 h-5" />}
                             {category.value === "visa / creditcards" && <FaCreditCard className="text-yellow-500 w-5 h-5" />}
@@ -111,12 +111,12 @@ const CategoryProduct = () => {
                                 onChange={handleSelectCategory}
                                 className="form-checkbox h-5 w-5 text-blue-600 dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 rounded border-gray-300"
                             />
-                            <span className="text-gray-700 dark:text-gray-300">{category.label}</span>
+                            <span className="text-gray-200 dark:text-gray-300">{category.label}</span>
                         </label>
                     ))}
                 </form>
                 <br/>
-                    <span>Can't find what you looking for here ? <br/> 
+                    <span className="text-gray-200">Can't find what you looking for here ? <br/> 
                     <p><Link to={'/report'} className="text-green-400 cursor-pointer " >Get in Touch,</Link>
                     we always <Link to={'/report'} className="text-green-400 cursor-pointer" >here </Link>for you!</p>
                     </span>
@@ -124,14 +124,14 @@ const CategoryProduct = () => {
                         </aside>
 
             {/* Product Display Section */}
-            <main className="flex-1 bg-gray-100 dark:bg-gray-800 shadow-lg p-4 overflow-hidden">
-                <div className="container mx-auto h-full flex flex-col">
+            <main className="flex-1 bg-gray-600 dark:bg-gray-800 shadow-lg p-4 overflow-hidden">
+                <div className="container bg-gray-600 mx-auto h-full flex flex-col">
                     <div className="mb-4">
                         <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
                             <Link to={'/inlinepod'} className="inlinepod">InlinePod</Link>
                         </h2>
                         {filterCategoryList.length > 0 && (
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-sm text-gray-900 dark:text-gray-400">
                                 Filtering by: {filterCategoryList.map((cat, index) => (
                                     <span key={cat}>
                                         <span className="font-semibold">{productCategory.find(p => p.value === cat)?.label || cat}</span>
@@ -142,7 +142,7 @@ const CategoryProduct = () => {
                         )}
                     </div>
 
-                    <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-200 dark:scrollbar-track-gray-700">
+                    <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 bg-gray-100 border-2 border-blue-600 shadow-sm scrollbar-track-gray-200 dark:scrollbar-track-gray-700">
                         {loading ? (
                             <div className="flex justify-center items-center h-full">
                                 <ClipLoader loading={loading} size={50} color="#3b82f6" />

@@ -15,6 +15,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import SidePanel from "./SidePanel";
 import { BiSearch } from 'react-icons/bi';
 import { BiExpand } from 'react-icons/bi';
+import './Header.css'
 
 
 const SearchPanelMobile = ({ open, setOpen, search, setSearch, handleSearch }) => {
@@ -154,7 +155,7 @@ const Header = () => {
   const toggleSearchPanelOpen = useCallback(() => setSearchPanelOpen(prev => !prev), []);
 
   return (
-    <nav className="h-14 -mt-3 bg-gray-50 fixed w-full z-50 border-b border-t border-gray-400 transition-all duration-300 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+    <nav className="header-spa h-14 -mt-3 bg-gray-100 fixed w-full z-50 border-b-gray-500 border-t-black shadow-md transition-all duration-300 flex items-center justify-between px-4 sm:px-6 lg:px-8">
       <div className="w-full mx-auto flex items-center justify-between px-4">
         {user?._id && (
           <div className="flex items-center flex-shrink-0">

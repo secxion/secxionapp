@@ -63,6 +63,21 @@
     animation: shine 10s infinite linear;
     pointer-events: none;
   }
+
+  .home-feel {     
+    padding-top: 16px;
+    position: relative;
+    z-index: 3;
+    max-width: var(--exp-content-width);
+    grid-template-columns: repeat(12, 1fr);
+    padding: 56px 24px;
+    padding-bottom: 112px;
+    scrollbar-color: auto;
+    scrollbar-width: auto;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
   
   @keyframes shine {
     0% {

@@ -41,10 +41,10 @@ const Home = () => {
 
 
     return (
-        <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col items-center justify-start p-6 pt-20 md:pt-14 w-full relative pb-20">
+        <div className="home-feel min-h-screen bg-gray-800 dark:bg-gray-900 border-t-2 border-black flex flex-col items-center justify-start p-6 pt-20 md:pt-14 w-full relative pb-20">
             {/* Header */}
             <motion.h1
-                className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-gray-100"
+                className="text-3xl md:text-5xl font-extrabold text-gray-300"
                 initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1 }}
@@ -53,7 +53,7 @@ const Home = () => {
             </motion.h1>
 
             <motion.p
-                className="text-gray-600 dark:text-gray-400 text-center mt-2 text-lg md:text-xl max-w-2xl"
+                className="text-gray-400 dark:text-gray-400 text-center mt-2 text-lg md:text-xl max-w-2xl"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: "easeInOut", delay: 0.2 }}

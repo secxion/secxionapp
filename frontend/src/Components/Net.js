@@ -28,7 +28,7 @@ const Net = ({ blogs }) => {
   }, [blogs]);
 
   return (
-    <div className="net-container">
+    <div className="mt-0 net-container">
       <div className="net-label">
         <span className="label">🤖 Blog:</span>
       </div>

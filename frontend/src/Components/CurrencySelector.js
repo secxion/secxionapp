@@ -3,7 +3,7 @@ import currencyFullNames from "../helpers/currencyFullNames";
 
 const CurrencySelector = ({ pricing, activeCurrency, onCurrencyChange }) => {
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 py-3.5 px-4 border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
+    <div className="bg-gray-800 dark:bg-gray-900 py-3.5 px-4 overflow-x-auto">
       <div className=" mx-auto flex space-x-2 md:space-x-4">
         {pricing?.map((currency) => {
           const fullCurrencyName =
@@ -13,8 +13,8 @@ const CurrencySelector = ({ pricing, activeCurrency, onCurrencyChange }) => {
               key={currency.currency}
               className={`flex-shrink-0 py-2 px-3 rounded-md text-sm font-semibold transition-colors duration-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 activeCurrency?.currency === currency.currency
-                  ? "bg-emerald-500 text-white border-emerald-500"
-                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  ? "bg-emerald-500 text-white"
+                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
               onClick={() => onCurrencyChange(currency.currency)}
             >

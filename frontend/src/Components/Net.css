@@ -1,6 +1,6 @@
 .net-container {
-    height: 1rem;
-    background: rgb(226, 225, 225);
+    height: 1.8rem;
+    background: #00684A;
     position: fixed;
     top: 0;
     left: 0;
@@ -10,17 +10,41 @@
     align-items: center;
     padding: 0 20px;
     overflow: hidden;
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Orbitron',"Source Code Pro", sans-serif;
+    color: #00684A;
+    padding-bottom: 8px;
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-top: 8px;
   }
   
   .net-label {
     font-size: 0.85rem;
-    font-weight: 700;
     color: black;
     white-space: nowrap;
     flex-shrink: 0;
-    background-color: #c5a804;
-    font-style: italic;
+    background-color: rgb(177, 255, 5);
+/* border-bottom-left-radius: 999px;
+border-bottom-right-radius: 999px;
+border-top-left-radius: 999px;
+border-top-right-radius: 999px; */
+box-sizing:border-box;
+color: rgb(0, 30, 43);
+cursor: pointer;
+display: block;
+font-size: 9px;
+font-weight: 600;
+height: 24px;
+letter-spacing: 2.5px;
+line-height: 24px;
+margin-right: 16px;
+padding-bottom: 0px;
+padding-left: 12px;
+padding-right: 12px;
+padding-top: 0px;
+scrollbar-color: auto;
+scrollbar-width: auto;
+text-transform: uppercase;
   }
   
   .blog-wrapper {
@@ -38,11 +62,29 @@
     padding-left: 20px;
     color: #ffffff;
     font-size: 1rem;
-    /* Remove animation */
+    box-sizing: border-box;
+color: rgb(255, 255, 255);
+cursor: pointer;
+display: flow-root;
+font-family: "Source Code Pro", "Noto Sans KR", "Noto Sans SC", "Noto Sans JP";
+font-weight: 400;
+/* height: 16px;
+line-height: 16px; */
+overflow-x: hidden;
+overflow-y: hidden;
+scrollbar-color: auto;
+scrollbar-width: auto;
+text-overflow: ellipsis;
+user-select: none;
+/* visibility: hidden; */
+width: 424.812px;
+-webkit-box-orient: vertical;
+-webkit-font-smoothing: antialiased;
+-webkit-line-clamp: 1;
   }
   
   .blog-item {
-    margin-right: 40px; /* Still keep some right margin for potential future use or spacing */
+    margin-right: 40px;
     font-size: 0.8rem;
     font-weight: 800;
     color: #000000;
@@ -56,9 +98,10 @@
   }
   
   .blog-text {
-    font-weight: 600;
-    color: #000000;
+    font-weight: 300;
+    color: #ebebeb;
     font-size: 0.9rem;
+    font-family: 'Franklin Gothic Medium',"Source Code Pro", 'Arial Narrow', Arial, sans-serif;
   }
   
   .loading-text {
@@ -68,12 +111,11 @@
     text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
   }
   
-  /* Remove keyframes animation */
-  /* @keyframes scroll {
+  @keyframes scroll {
     from {
       transform: translateX(0%);
     }
     to {
       transform: translateX(-100%);
     }
-  } */
+  }

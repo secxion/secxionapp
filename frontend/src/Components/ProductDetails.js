@@ -85,9 +85,9 @@ const ProductDetails = () => {
   };
 
   return (
-    <div className="mt-11 flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-      <header className="fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-md z-50">
-      <div className="flex items-center justify-between p-2">
+    <div className="mt-11 flex flex-col min-h-screen bg-gray-700 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+      <header className="fixed top-0 left-0 right-0 bg-gray-300 dark:bg-gray-800 shadow-md z-50">
+      <div className="flex items-center shadow-sm justify-between p-2">
       <button
             onClick={handleGoBack}
             className="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium py-2 px-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -102,7 +102,7 @@ const ProductDetails = () => {
             <FaBars className="h-5 w-5" />
           </button>
         </div>
-        <div className="border-t border-gray-200 dark:border-gray-700">
+        <div className=" bg-gray-500 dark:border-gray-700">
           <CurrencySelector
             pricing={data?.pricing}
             activeCurrency={activeCurrency}
@@ -111,7 +111,7 @@ const ProductDetails = () => {
         </div>
       </header>
 
-      <main className="mt-[140px] mb-[60px] flex-1 overflow-y-auto p-4 bg-gray-100 dark:bg-gray-900">
+      <main className="mt-[140px] mb-[60px] flex-1 overflow-y-auto p-4 bg-gray-200 dark:bg-gray-900">
         {loading ? (
           <div className="py-10 flex flex-col items-center justify-center gap-4">
             <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-10 rounded-full w-3/4"></div>
@@ -129,7 +129,7 @@ const ProductDetails = () => {
             </button>
           </div>
         ) : (
-          <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+          <div className="bg-gray-800 dark:bg-gray-800 rounded-lg overflow-hidden">
             <FaceValueTable activeCurrency={activeCurrency} onSell={handleSell} />
             {activeCurrency && activeCurrency?.faceValues?.length === 0 && (
               <p className="text-gray-500 dark:text-gray-400 p-4 text-center">

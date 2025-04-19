@@ -190,8 +190,8 @@ const PaymentRequestForm = () => {
                 <strong className="font-bold">Error!</strong>
                 <span className="block sm:inline">{error}</span>
             </div>}            
-            <div className="fixed w-screen right-0 left-0 top-0 mt-14 bg-indigo-100 p-2 border-b border-gray-400 flex items-center justify-between z-40">
-            <p className='text-md pt-3 text-gray-800 font-bold'>Balance: </p>
+            <div className="fixed w-screen right-0 left-0 top-0 mt-16 bg-indigo-100 p-1 border-b border-gray-400 flex items-center justify-between z-40">
+            <p className='text-md pt-5 text-gray-800 font-bold'>Balance: </p>
             {isLoadingBalance && loadingBalance ? (              
                                 <>
                     <p className="text-sm font-bold text-gray-600">
@@ -204,7 +204,7 @@ const PaymentRequestForm = () => {
             ) : errorBalance ? (
                 <p className="text-red-500 mt-2">{errorBalance}</p>
             ) : walletBalance !== null && (
-                <p className="text-lg font-bold text-indigo-700 mt-0 pt-3">
+                <p className="text-lg font-bold text-indigo-700 mt-0 pt-5">
                                                    
                     ₦{walletBalance.toLocaleString()}
                                                  
@@ -213,7 +213,7 @@ const PaymentRequestForm = () => {
             )}
             <button
                  onClick={handleRefreshBalance}
-                        className={`items-center pt-3 text-md font-medium text-indigo-700 ${loadingBalance ? 'cursor-not-allowed' : ''}`}
+                        className={`items-center pt-5 text-md font-medium text-indigo-700 ${loadingBalance ? 'cursor-not-allowed' : ''}`}
                                                     disabled={loadingBalance}
                                                 >
                                                     <FaSyncAlt className="mr-2" />

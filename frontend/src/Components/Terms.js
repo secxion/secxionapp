@@ -28,7 +28,7 @@ const Terms = () => {
           <ul className="list-disc list-inside text-gray-700 leading-relaxed mb-4">
             <li>You are at least the legal age of majority in your jurisdiction.</li>
             <li>You have the legal right and authority to sell the gift cards you submit.</li>
-            <li>The gift cards you submit are valid, unredeemed, and obtained through legitimate means.</li>
+            <li>The gift cards you submit are valid and unredeemed.</li>
             <li>You will provide accurate and complete information during the transaction process.</li>
             <li>You will comply with all applicable laws and regulations.</li>
             <li>You will not engage in any fraudulent or unlawful activities through the Service.</li>

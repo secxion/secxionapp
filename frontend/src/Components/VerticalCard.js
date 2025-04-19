@@ -11,7 +11,7 @@ const VerticalCard = React.memo(({ loading, data = [] }) => {
     }
   
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 p-1 md:p-2">
+        <div className="bg-gray-200 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 p-1 md:p-2">
             
             {loading
                 ? loadingList.map((_, index) => (
@@ -27,7 +27,7 @@ const VerticalCard = React.memo(({ loading, data = [] }) => {
                 : data.map((product) => (
                     <div
                         key={product._id}
-                        className="bg-white dark:bg-gray-800 p-2 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 transition-transform transform hover:shadow-md hover:scale-101"
+                        className="bg-gray-100 dark:bg-gray-800 p-2 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 transition-transform transform hover:shadow-md hover:scale-101"
                     >
                         <Link to={`/product/${product._id}`} onClick={scrollTop} className="block">
                             <div className="h-16 md:h-20 overflow-hidden rounded-md mb-2 bg-gray-100 dark:bg-gray-900 flex items-center justify-center border-b border-gray-200 dark:border-gray-700 shadow-inner">
