@@ -9,7 +9,6 @@ import { toast } from 'react-toastify';
 import CurrencySelector from './CurrencySelector';
 import FaceValueTable from './FaceValueTable';
 import GetInTouchFooter from './GetInTouchFooter';
-import ProductImageCarousel from './ProductImageCarousel';
 import Shimmer from './Shimmer';
 import { setUserDetails } from "../store/userSlice";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -187,25 +186,8 @@ const ProductDetails = () => {
                 )}
             </header>
 
-            <main className="py-6 px-4 sm:px-6 lg:px-8">
+            <main className="py-2 px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        {data?.productImage && data?.productImage.length > 0 ? (
-                            <ProductImageCarousel images={data.productImage} />
-                        ) : (
-                            <div className="bg-gray-200 dark:bg-gray-700 rounded-lg aspect-w-16 aspect-h-9 flex items-center justify-center">
-                                <span className="text-gray-500 dark:text-gray-400">No Image Available</span>
-                            </div>
-                        )}
-                        <div className="mt-4">
-                            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                                {data?.brandName} - {data?.productName} ({data?.category})
-                            </h3>
-                            <p className="mt-2 text-gray-600 dark:text-gray-400">
-                                {data?.description}
-                            </p>
-                        </div>
-                    </div>
                     <div>
                         {activeCurrency && activeCurrency?.faceValues && activeCurrency?.faceValues.length > 0 ? (
                             <FaceValueTable activeCurrency={activeCurrency} onSell={handleSell} />
