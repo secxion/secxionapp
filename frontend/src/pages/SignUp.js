@@ -81,7 +81,7 @@ const SignUp = () => {
     };
 
     return (
-        <section id="signup" className="min-h-screen bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center p-4">
+        <section id="signup" className="container min-h-screen bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center p-4">
             <div className="bg-white p-6 w-full max-w-md rounded-2xl shadow-lg flex flex-col">
 
                  {/* Profile Picture Container */}

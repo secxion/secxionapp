@@ -146,7 +146,7 @@ const ReportChat = ({ category, newReport, setNewReport }) => {
     };
 
     return (
-        <div className="flex flex-col h-screen">
+        <div className="container flex flex-col h-screen">
             <h2 className="text-2xl font-semibold mb-4">Chat with Moderator</h2>
 
             <div ref={chatContainerRef} className="overflow-y-auto flex-grow mb-4 p-3 bg-gray-100 rounded">

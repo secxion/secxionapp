@@ -117,7 +117,7 @@ const UploadData = ({ editingDataPad, setEditingDataPad, closeUpload }) => {
   };
 
   return (
-<div className="mt-24 fixed inset-0 bg-white p-6 flex flex-col shadow-lg overflow-auto z-50 mx-auto">
+<div className="container mt-24 fixed inset-0 bg-white p-6 flex flex-col shadow-lg overflow-auto z-50 mx-auto">
       {/* Close Button */}
       <button
           onClick={closeUpload}

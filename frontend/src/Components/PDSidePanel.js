@@ -19,7 +19,7 @@ const PDSidePanel = ({ isSidePanelOpen, onCloseSidePanel, onLogout }) => {
 
     return (
         <div
-            className={`fixed top-0 left-0 h-full bg-white dark:bg-gray-800 shadow-lg z-50 transition-transform duration-300 ease-in-out w-64 md:hidden ${
+            className={`container fixed top-0 left-0 h-full bg-white dark:bg-gray-800 shadow-lg z-50 transition-transform duration-300 ease-in-out w-64 md:hidden ${
                 isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'
             }`}
         >

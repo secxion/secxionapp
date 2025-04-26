@@ -22,11 +22,11 @@ const HomeFooter = ({ onBlogClick, onMenuClick, isBlogVisible }) => {
     };
 
     return (
-        <footer className="fixed bottom-0 left-0 right-0 bg-gray-700 dark:bg-gray-800 shadow-md border-t border-black dark:border-gray-700 shadow-md z-40">
-            <div className="flex justify-around items-center py-3 px-4">
+        <footer className="fixed bottom-0 left-0 right-0 shadow-md bg-white border-t-2 border-gray-300 dark:border-gray-700 shadow-md z-40">
+            <div className="flex justify-around items-center px-4">
             <button
                     onClick={isBlogVisible ? onMenuClick : onBlogClick}
-                    className="flex flex-col items-center text-sm text-gray-200 dark:text-gray-200 hover:text-blue-500 focus:outline-none"
+                    className="flex flex-col items-center text-sm text-gray-700 dark:text-gray-200 hover:text-blue-500 focus:outline-none"
                     aria-label={isBlogVisible ? 'Navigate to Menu' : 'View Blogs'}
                 >
                     {isBlogVisible ? (
@@ -36,17 +36,17 @@ const HomeFooter = ({ onBlogClick, onMenuClick, isBlogVisible }) => {
                     )}
                     {isBlogVisible ? 'Menu' : 'Blogs'}
                 </button>              
-                <div className="relative items-center text-sm text-gray-200 dark:text-gray-200">
+                <div className="relative items-center text-sm text-gray-700 dark:text-gray-200">
                     <div className="items-center space-x-2 cursor-pointer" onClick={toggleTimezones}>
                         <Clock format={'HH:mm:ss'} ticking={true} timezone={timezone} />
                         <div className="text-xs mt-1">{getSelectedTimezoneLabel()}</div>
                         {showTimezones && (
-                            <div className="absolute bottom-full text-gray-200 left-0 bg-gray-800 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-md z-10 overflow-y-auto max-h-40">
+                            <div className="absolute bottom-full text-gray-700 left-0  border border-gray-300 dark:border-gray-600 rounded-md shadow-md z-10 overflow-y-auto max-h-40">
                                 {timezones.map((tz) => (
                                     <div
                                         key={tz.value}
                                         onClick={() => handleTimezoneChange(tz.value)}
-                                        className="px-3 py-2 text-xs text-gray-200 cursor-pointer hover:bg-gray-500 dark:hover:bg-gray-600"
+                                        className="px-3 py-2 text-xs text-gray-700 cursor-pointer hover:bg-gray-500 dark:hover:bg-gray-600"
                                     >
                                         {tz.label}
                                     </div>

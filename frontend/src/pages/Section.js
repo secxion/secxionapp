@@ -4,7 +4,7 @@ import './Section.css';
 
 const Section = () => {
   return (
-    <div className='sticky'>
+    <div className='container sticky'>
       <CategoryProduct />
     </div>
   );

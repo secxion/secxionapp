@@ -3,7 +3,7 @@ import React from 'react';
 const TransactionHistoryPlaceholder = () => {
   return (
     <div>
-      <div className="bg-gray-100 rounded-md p-2 mb-2">
+      <div className="container bg-gray-100 rounded-md p-2 mb-2">
         <div className="flex justify-between items-center">
           <span className="font-semibold">Deposit</span>
           <span className="font-bold text-green-600">+ $500.00</span>

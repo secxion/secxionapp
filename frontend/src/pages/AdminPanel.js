@@ -51,7 +51,7 @@ const AdminPanel = () => {
     const minMenuWidth = `${menuItems.length * 10}px`; 
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="container min-h-screen bg-gray-100">
             <nav className='pt-28 bg-white shadow-md w-full overflow-x-auto scrollbar-hide fixed top-0 left-0 right-0 z-30 flex items-center justify-between py-2 px-4'>
             <div className="flex items-center cursor-pointer" onClick={toggleUserInfo}>
                     <div className="rounded-full bg-gray-300 h-10 w-10 flex items-center justify-center mr-3">

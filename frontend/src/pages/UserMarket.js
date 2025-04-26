@@ -79,7 +79,7 @@ const UserMarket = () => {
 
   return (
     <div>
-      <div className="bg-cream py-2 px-4 flex justify-between items-center">
+      <div className="container bg-cream py-2 px-4 flex justify-between items-center">
         <h2 className="font-bold text-lg">Record</h2>
       </div>
 

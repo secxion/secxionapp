@@ -108,7 +108,7 @@ const AdminCommunity = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-6">
+        <div className="container min-h-screen bg-gray-100 dark:bg-gray-900 py-6">
             <div className="container mx-auto max-w-3xl">
                 <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4 text-center">Pending Community Posts</h2>
                 {pendingPosts.length > 0 ? (

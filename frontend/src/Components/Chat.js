@@ -79,7 +79,7 @@ const Chat = ({ receiver }) => {
   };
 
   return (
-    <div className="chat-container">
+    <div className="container chat-container">
       <div className="chat-box">
         {messages.map((msg, index) => (
           <div key={index} className={`message ${msg.sender === "admin" ? "admin" : "user"}`}>

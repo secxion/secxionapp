@@ -69,7 +69,7 @@ const ReportDetailsPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 py-6 sm:py-12">
+        <div className="container min-h-screen bg-gray-100 py-6 sm:py-12">
             <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-md overflow-hidden">
                 <div className="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">

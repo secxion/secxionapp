@@ -100,7 +100,7 @@ const Settings = () => {
     };
 
     return (
-        <div className="mt-16 p-8 m-5 space-y-6 bg-white rounded-md shadow">
+        <div className="container mt-16 p-8 m-5 space-y-6 bg-white rounded-md shadow">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Edit Profile</h2>
 
             {error && <p className="text-red-500 mb-2">{error}</p>}

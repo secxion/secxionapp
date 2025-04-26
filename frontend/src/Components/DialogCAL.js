@@ -26,7 +26,7 @@ const DialogCal = () => {
     <>
       {/* Mobile Menu Button */}
       <button
-        className="fixed top-4 left-4 bg-primary-500 text-white rounded-md p-2 z-20 lg:hidden"
+        className="container fixed top-4 left-4 bg-primary-500 text-white rounded-md p-2 z-20 lg:hidden"
         onClick={toggleSidebar}
       >
         {isOpen ? <FiX size={20} /> : <FiMenu size={20} />}

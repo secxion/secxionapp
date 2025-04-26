@@ -8,7 +8,7 @@ const BlogCard = ({ blog, onEdit, onDelete }) => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md w-full max-w-xs transition-all hover:shadow-lg">
+    <div className="container bg-white p-4 rounded-lg shadow-md w-full max-w-xs transition-all hover:shadow-lg">
       <h4 className="font-semibold text-lg truncate">{blog.title}</h4>
       <p className="text-gray-600 text-sm line-clamp-2">
         {blog.content.length > 100 ? `${blog.content.substring(0, 100)}...` : blog.content}

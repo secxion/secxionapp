@@ -33,9 +33,6 @@ import AdminRPR from "../pages/AdminRPR";
 import NotificationsPage from "../pages/Notifications";
 import ReportDetailsPage from "../pages/ReportDetailsPage";
 import ReportCard from "../Components/ReportCard";
-import Statistics from "../pages/Statistics";
-import WorldStats from "../pages/WorldStats";
-import CryptoWallet from "../pages/CryptoWallet";
 import AdminCommunity from "../pages/AdminCommunity";
 import Buzz from "../pages/Buzz";
 import Terms from "../Components/Terms";
@@ -97,9 +94,6 @@ const protectedRoutes = [
   { path: "notifications", element: <NotificationsPage /> },
   { path: "chat/:reportId", element: <ReportCard /> },
   { path: "reset", element: <Reset /> },
-  { path: "statistics", element: <Statistics /> },
-  { path: "crypto", element: <CryptoWallet /> },
-  { path: "stats", element: <WorldStats /> },
   { path: "community-feed", element: <Buzz /> },
   
 

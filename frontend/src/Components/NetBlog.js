@@ -65,7 +65,7 @@ const NetBlog = () => {
     };
 
     return (
-        <div className="mt-6">
+        <div className="container mt-6">
             <div className="flex justify-end mb-4">
                 <button
                     onMouseEnter={fetchCommunityFeedData}

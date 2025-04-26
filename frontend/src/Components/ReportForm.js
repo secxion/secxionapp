@@ -97,7 +97,7 @@ const ReportForm = ({ onReportSubmit }) => {
     };
 
     return (
-        <div className="mt-10 bg-white p-4 rounded-lg shadow-md">
+        <div className="container mt-10 bg-white p-4 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-3">Submit Report</h2>
             <div className="mb-3">
                 <label className="block text-sm font-medium text-gray-700">Category:</label>

@@ -35,7 +35,7 @@ const AllProducts = () => {
   });
 
   return (
-    <div className=" mx-auto mt-10 fixed h-screen w-screen pr-8">
+    <div className="container mx-auto mt-10 fixed h-screen w-screen pr-8">
       <header className="bg-white py-2 px-4 flex justify-between items-center shadow-md rounded">
       <h2 className="font-semibold text-xl text-gray-800 flex items-center">
                     <FaBoxOpen className="mr-2 text-gray-600" /> Products

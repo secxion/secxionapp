@@ -17,7 +17,7 @@ const UserDatapadCard = ({ user }) => {
   };
 
   return (
-    <div className="mb-6 border p-4 rounded-md shadow-sm">
+    <div className="container mb-6 border p-4 rounded-md shadow-sm">
       <div className="flex items-center justify-between cursor-pointer" onClick={toggleExpand}>
         <h3 className="font-semibold text-lg">{user.name} ({user.email})</h3>
         <button className="text-blue-500 focus:outline-none">

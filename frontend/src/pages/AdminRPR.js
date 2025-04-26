@@ -142,7 +142,7 @@ const AdminRPR = () => {
     };
 
     return (
-        <div className="p-6 md:p-8 lg:p-10 xl:p-12 bg-gray-50 min-h-screen">
+        <div className="container p-6 md:p-8 lg:p-10 xl:p-12 bg-gray-50 min-h-screen">
             <div className="bg-white shadow-md rounded-md p-6">
                 <h2 className="text-2xl font-semibold mb-6 flex items-center text-indigo-700">
                     <span role="img" aria-label="payment requests" className="mr-2">💰</span> Review Payment Requests

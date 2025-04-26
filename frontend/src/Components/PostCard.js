@@ -83,7 +83,7 @@ const PostCard = ({ post, onDelete, onCommentAdded }) => {
   return (
     <motion.div
       key={post._id}
-      className="postcard-container mb-6 px-4 py-5 bg-white dark:bg-gray-900 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-300 break-words"
+      className="postcard-container container mb-6 px-4 py-5 bg-white dark:bg-gray-900 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-300 break-words"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
     >

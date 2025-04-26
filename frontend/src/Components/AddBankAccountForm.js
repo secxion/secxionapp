@@ -59,7 +59,7 @@ const AddBankAccountForm = ({ onAccountAdded, onCancel, userId }) => {
     };
 
     return (
-        <div className="bg-white shadow rounded-md p-6 space-y-16">
+        <div className="container bg-white shadow rounded-md p-6 space-y-16">
             <h3 className="font-semibold text-xl text-gray-800 -mt-4 flex items-center">
                 <FaUniversity className="mr-2 text-gray-600" /> Add New Bank Account
             </h3>

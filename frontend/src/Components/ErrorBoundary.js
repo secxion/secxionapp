@@ -23,7 +23,7 @@ class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-red-100 p-6 text-center">
+        <div className="container flex flex-col items-center justify-center min-h-screen bg-red-100 p-6 text-center">
           <h2 className="text-red-600 text-2xl font-semibold">Oops! Something went wrong.</h2>
           <p className="text-gray-700 mt-2">{this.state.errorMessage}</p>
 

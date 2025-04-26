@@ -52,7 +52,7 @@ const TransactionCard = ({ transaction }) => {
     }
 
     return (
-        <div className="bg-white rounded-md p-4 mb-3 border border-gray-200 shadow-sm">
+        <div className="container bg-white rounded-md p-4 mb-3 border border-gray-200 shadow-sm">
             <div className="flex justify-between items-center mb-2">
                 <div className="flex items-center">
                     {transactionIcon}

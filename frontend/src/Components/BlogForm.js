@@ -50,7 +50,7 @@ const BlogForm = ({ onClose, fetchBlogs, editingBlog }) => {
   };
 
   return (
-    <div className="bg-white p-5 rounded-lg shadow-md mb-4">
+    <div className="container bg-white p-5 rounded-lg shadow-md mb-4">
       <h3 className="font-bold text-lg mb-3">{editingBlog ? "Edit Blog" : "Create Blog"}</h3>
 
       {error && <p className="text-red-500 mb-3">{error}</p>}

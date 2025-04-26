@@ -80,7 +80,7 @@ const CreatePostCard = ({ onPostCreated, loading, error }) => {
   return (
     <motion.form
       onSubmit={handlePostSubmit}
-      className="bg-white dark:bg-gray-800 shadow-sm p-4"
+      className="container bg-white dark:bg-gray-800 shadow-sm p-4"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}

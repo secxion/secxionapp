@@ -50,7 +50,7 @@ const AdminAnonymousReports = () => {
   };
 
   return (
-    <div className="p-4 mt-12 max-w-4xl mx-auto bg-white rounded-xl shadow-lg h-[650px] flex flex-col overflow-hidden">
+    <div className="container p-4 mt-12 max-w-4xl mx-auto bg-white rounded-xl shadow-lg h-[650px] flex flex-col overflow-hidden">
       <h2 className="text-xl font-bold mb-4">Anonymous Contact Messages</h2>
 
       {loading ? (

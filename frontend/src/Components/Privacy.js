@@ -2,7 +2,7 @@ import React from 'react';
 
 const Privacy = () => {
   return (
-    <div className="fixed top-0 bg-gray-100 py-20 h-screen overflow-auto">
+    <div className="container fixed top-0 bg-gray-100 py-20 h-screen overflow-auto">
       <div className=" mx-auto px-4">
         <h2 className="text-3xl font-semibold text-gray-800 mb-6">Privacy Policy for Secxion.com</h2>
         <div className="bg-white rounded-lg shadow-md p-8">

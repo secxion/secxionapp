@@ -212,7 +212,7 @@ const NotificationsPage = () => {
     const hasUnread = notifications.some(n => !n.isRead);
 
     return (
-        <div className="min-h-screen bg-gray-100 py-6 mt-4 sm:py-12">
+        <div className="container min-h-screen bg-gray-100 py-6 mt-4 sm:py-12">
             <div className="max-w-4xl mx-auto shadow-md rounded-md overflow-hidden bg-white">
                 <div className="bg-gray-50 border-b border-gray-200 py-3 px-4 sm:px-6 flex items-center justify-between">
                     <h2 className="text-xl font-semibold text-gray-800 flex items-center">

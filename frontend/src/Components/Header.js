@@ -158,7 +158,7 @@ const Header = () => {
 
     return (
         <>
-            <header className="left-0 right-0 top-0 pt-6 mb-4 header-spa bg-white fixed w-full z-50 border-b-gray-500 border-t-black shadow-md transition-all duration-300 flex items-center justify-between px-6 sm:px-6 lg:px-8">
+            <header className=" left-0 right-0 top-0 pt-6 mb-4 header-spa bg-white fixed w-full z-50 border-b-gray-500 border-t-black shadow-md transition-all duration-300 flex items-center justify-between px-6 sm:px-6 lg:px-8">
                 <div className="w-full mx-auto flex items-center justify-between px-4 md:px-6 lg:px-8">
                     {/* Mobile Menu Button */}
                     <button

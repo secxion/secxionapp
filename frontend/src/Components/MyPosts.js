@@ -52,7 +52,7 @@ const MyPosts = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
+    <div className="container max-w-2xl mx-auto p-4">
       <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Your Posts</h2>
 
       {posts.length === 0 ? (

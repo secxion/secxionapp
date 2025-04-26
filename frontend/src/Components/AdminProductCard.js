@@ -8,7 +8,7 @@ const AdminProductCard = ({ data, fetchdata }) => {
     const [isEditing, setIsEditing] = useState(false);
 
     return (
-        <div className='bg-white p-4 rounded shadow-md'>
+        <div className='container bg-white p-4 rounded shadow-md'>
             <div className='w-40'>
                 <div className='w-32 h-32 flex justify-center items-center'>
                     <img 

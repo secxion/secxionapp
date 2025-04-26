@@ -11,7 +11,7 @@ const VerticalCard = React.memo(({ loading, data = [] }) => {
     }
   
     return (
-        <div className="bg-gray-200 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 p-1 md:p-2">
+        <div className="container bg-gray-200 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 p-1 md:p-2">
             
             {loading
                 ? loadingList.map((_, index) => (

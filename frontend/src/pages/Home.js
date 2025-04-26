@@ -56,7 +56,7 @@ const Home = () => {
     const currentImage = giftCardImages[currentImageIndex];
 
     return (
-        <div className="global-container home-container space-y-4">
+        <div className="container home-container space-y-4">
             {/* Hero Section */}
             <div
                 className="hero-section"

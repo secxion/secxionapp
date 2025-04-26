@@ -40,7 +40,7 @@ const AdminGetAllData = () => {
   }
 
   return (
-    <div className='pt-16'>
+    <div className='container pt-16'>
       <h2 className="text-xl font-semibold mb-4">Users and Their Datapad Information</h2>
       {usersWithData.length > 0 ? (
         usersWithData.map((user) => (

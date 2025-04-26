@@ -136,7 +136,7 @@ const UploadProduct = ({ onClose, fetchData }) => {
     };
 
     return (
-        <div className="fixed w-full mt-6 h-full bg-slate-200 bg-opacity-35 top-0 left-0 right-0 bottom-0 flex justify-center items-center"> 
+        <div className="container fixed w-full mt-6 h-full bg-slate-200 bg-opacity-35 top-0 left-0 right-0 bottom-0 flex justify-center items-center"> 
             <div className="bg-white p-4 rounded w-full max-w-2xl h-full max-h-[80%] overflow-y-auto mt-20"> 
                 <div className="flex justify-between items-center pb-3"> 
                     <h2 className="font-semibold text-xl text-gray-800">Upload Product</h2>

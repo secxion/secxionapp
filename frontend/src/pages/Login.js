@@ -49,7 +49,7 @@ const Login = () => {
   };
 
   return (
-    <section className="w-screen h-screen flex items-center justify-center bg-gray-100 fixed top-0 left-0 overflow-hidden">
+    <section className="container w-screen h-screen flex items-center justify-center bg-gray-100 fixed top-0 left-0 overflow-hidden">
       <div className="bg-white p-8 w-full max-w-md rounded-xl shadow-lg">
         <div className="w-20 h-20 rounded-full bg-blue-500 flex items-center justify-center text-3xl font-bold text-white mb-6">
           S

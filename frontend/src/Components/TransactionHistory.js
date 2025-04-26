@@ -97,7 +97,7 @@ const TransactionHistory = () => {
 
     return (       
             <div className='min-w-screen max-w-screen'>
-            <nav className='pt-20 bg-white shadow-md w-screen overflow-x-auto fixed top-0 left-0 right-0 z-30 flex items-center justify-between py-2 px-4' >
+            <nav className='pt-24 bg-white shadow-md w-screen overflow-x-auto fixed top-0 left-0 right-0 z-30 flex items-center justify-between py-2 px-4' >
                     <ul ref={navRef}  className="flex items-center space-x-4 overflow-x-auto "
                      aria-label="Tabs" style={{ minWidth: minMenuWidth }}>
                         {menuItems.map((item) => (

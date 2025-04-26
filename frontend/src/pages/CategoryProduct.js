@@ -69,7 +69,7 @@ const CategoryProduct = () => {
     };
 
     return (
-        <div className="fixed top-[90px] left-0 right-0 bottom-0 flex flex-col md:flex-row bg-gray-600 dark:bg-gray-900">
+        <div className="container fixed top-[90px] left-0 right-0 bottom-0 flex flex-col md:flex-row bg-gray-600 dark:bg-gray-900">
             {/* Mobile Toggle Button */}
             <div className="md:hidden flex justify-between items-center border-b border-black shadow-sm bg-gray-500 dark:bg-blue-800 text-white p-3">
               <h3 className="text-lg font-bold">

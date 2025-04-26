@@ -61,8 +61,8 @@ const ContactUs = () => {
   };
 
   return (
-    <section className="-mt-16 bg-gray-100 py-16">
-      <div className="container mx-auto px-4">
+    <section className="container -mt-16 bg-gray-100 py-16">
+      <div className=" mx-auto px-4">
         <div className="max-w-lg mx-auto bg-white rounded-md shadow-md p-8">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Contact Us</h2>
 

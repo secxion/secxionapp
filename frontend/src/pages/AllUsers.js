@@ -76,7 +76,7 @@ const AllUsers = () => {
     };
 
     return (
-        <div className='pt-6 pb-4 h-full flex flex-col'>
+        <div className='container pt-6 pb-4 h-full flex flex-col'>
             {/* Bulk Actions */}
             <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 flex justify-end items-center">
                 <button

@@ -42,7 +42,7 @@ const HistoryCard = ({ data, isDetailViewOpen, onCloseDetailView }) => {
   return (
     <>
       <div
-        className='bg-cream p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 duration-300 cursor-pointer'
+        className='container mt-10 bg-cream p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 duration-300 cursor-pointer'
         onClick={onCloseDetailView} 
       >
         <div className='w-full'>

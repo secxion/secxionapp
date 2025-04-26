@@ -66,7 +66,7 @@ const ChangeUserRole = ({
     };
 
     return (
-        <div className='fixed top-0 bottom-0 left-0 right-0 w-full h-full z-10 flex justify-center items-center bg-purple-600 bg-opacity-50'>
+        <div className='container fixed top-0 bottom-0 left-0 right-0 w-full h-full z-10 flex justify-center items-center bg-purple-600 bg-opacity-50'>
             <div className='bg-yellow-600 shadow-md p-6 w-full max-w-sm rounded-lg'>
                 <button className='block ml-auto text-2xl text-gray-800 hover:text-red-600' onClick={onClose}>
                     <IoMdClose />

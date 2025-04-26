@@ -64,7 +64,7 @@ const ChatBox = ({ userId, recipientId, messages, setMessages }) => {
   };
 
   return (
-    <div className=" pb-48 flex flex-col h-full">
+    <div className="container pb-48 flex flex-col h-full">
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-gray-900">
         {messages.length > 0 ? (

@@ -2,7 +2,7 @@ import React from 'react';
 
 const MarketCard = ({ market }) => {
     return (
-        <div className="border p-4 rounded-lg shadow-md mt-4 bg-gray-100">
+        <div className="container border p-4 rounded-lg shadow-md mt-4 bg-gray-100">
             <h3 className="font-bold text-lg text-gray-800">{market.productName}</h3>
             <p className="text-gray-600"><strong>Description:</strong> {market.description}</p>
             <p className="text-gray-700"><strong>Total Amount:</strong> {market.totalAmount}</p>

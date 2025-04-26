@@ -37,7 +37,7 @@ const DataPadList = ({ onOpen, dataPads, setDataPads }) => {
     };
 
     return (
-      <div className="overflow-x-hidden space-y-4 overflow-y-auto max-h-[calc(100vh-160px)] p-2">
+      <div className="container overflow-x-hidden space-y-4 overflow-y-auto max-h-[calc(100vh-160px)] p-2">
             {dataPads.map((dataPad) => (
                 <motion.div
                     key={dataPad._id}

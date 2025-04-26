@@ -52,7 +52,7 @@ const HistoryDetailView = ({
   };
 
   return (
-    <div className="fixed inset-0 flex items-start justify-center bg-gray-800 bg-opacity-50 p-4 z-50">
+    <div className="container fixed inset-0 flex items-start justify-center bg-gray-800 bg-opacity-50 p-4 z-50">
   <div className="bg-white p-6 rounded-2xl w-full max-w-2xl shadow-lg mt-20"
        style={{ maxHeight: '85vh', overflowY: 'auto' }}>
 

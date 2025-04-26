@@ -116,7 +116,7 @@ const ReportCard = () => {
   if (!report) return null;
 
   return (
-    <div className="fixed w-full h-screen flex flex-col bg-gradient-to-br from-white to-gray-50">
+    <div className="container fixed w-full h-screen flex flex-col bg-gradient-to-br from-white to-gray-50">
       {/* Header */}
       <div className="w-full px-4 py-4 mt-8 border-b flex items-center justify-between bg-white shadow-sm">
         <div className="flex flex-col">
