@@ -212,9 +212,9 @@ const NotificationsPage = () => {
     const hasUnread = notifications.some(n => !n.isRead);
 
     return (
-        <div className="container min-h-screen bg-gray-100 py-6 mt-4 sm:py-12">
+        <div className="container bg-gray-100 ">
             <div className="max-w-4xl mx-auto shadow-md rounded-md overflow-hidden bg-white">
-                <div className="bg-gray-50 border-b border-gray-200 py-3 px-4 sm:px-6 flex items-center justify-between">
+                <div className="bg-gray-50 border-b border-gray-200 py-6 px-4 sm:px-6 flex items-center justify-between">
                     <h2 className="text-xl font-semibold text-gray-800 flex items-center">
                         <FaBell className="mr-2 text-gray-600" /> Notifications
                     </h2>
@@ -223,14 +223,14 @@ const NotificationsPage = () => {
                             onClick={handleDeleteAll}
                             className="inline-flex items-center bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm"
                         >
-                            <FaTimesCircle className="mr-2" /> Delete All
+                            <FaTimesCircle className="mr-2" /> <bg/>
                         </button>
                         {hasUnread && (
                             <button
                                 onClick={handleMarkAllAsRead}
                                 className="inline-flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2 focus:outline-none focus:shadow-outline text-sm"
                             >
-                                <FaCheckDouble className="mr-2" /> Mark All Read
+                                <FaCheckDouble className="mr-2" /><bg/>
                             </button>
                         )}
                     </div>
