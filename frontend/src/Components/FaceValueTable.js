@@ -29,7 +29,7 @@ const FaceValueTable = ({ activeCurrency, onSell }) => {
   if (!activeCurrency || activeCurrency?.faceValues?.length === 0) return null;
 
   return (
-    <div className="fixed mt-24 py-5 left-0 top-0 right-o w-full overflow-y-auto h-[calc(100vh-190px)] sm:h-[calc(100vh-160px)]">
+    <div className="fixed mt-44 py-20 left-0 top-0 right-o w-full overflow-y-auto h-[calc(100vh-190px)] sm:h-[calc(100vh-160px)]">
       <table className="min-w-full table-auto text-left">
         <thead className="bg-gray-200 dark:bg-gray-700 sticky top-0 z-50">
           <tr>

@@ -3,7 +3,7 @@ import currencyFullNames from "../helpers/currencyFullNames";
 
 const CurrencySelector = ({ pricing, activeCurrency, onCurrencyChange }) => {
   return (
-    <div className="bg-gray-800 dark:bg-gray-900 py-3.5 px-4 overflow-x-auto">
+    <div className="bg-gray-800 dark:bg-gray-900 py-2 px-4 overflow-x-auto">
       <div className=" mx-auto flex space-x-2 md:space-x-4">
         {pricing?.map((currency) => {
           const fullCurrencyName =

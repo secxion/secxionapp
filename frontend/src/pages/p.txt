@@ -1,99 +1,102 @@
-// Home.js
-import React, { useRef, useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState } from 'react';
+import PaymentRequestForm from '../Components/PaymentRequestForm';
+import BankAccountList from '../Components/BankAccountList';
+import { useSelector } from 'react-redux';
+import TransactionHistory from '../Components/TransactionHistory';
 import { Link } from "react-router-dom";
-import { FaWallet, FaUser, FaStore, FaBook, FaClipboardList } from "react-icons/fa";
-import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
-import HomeFooter from '../Components/HomeFooter';
-import NetBlog from '../Components/NetBlog';
+import WalletFooter from '../Components/WalletFooter';
+import { FaWallet, FaHistory, FaUniversity, FaMoneyBill, FaBars } from 'react-icons/fa';
+import SidePanel from '../Components/SidePanel';
 
-import './Home.css';
 
-const menuItems = [
-    { label: "Marketplace", path: "/section", color: "bg-black", icon: <FaStore className="text-4xl md:text-5xl" /> },
-    { label: "Transaction Record", path: "/record", color: "bg-purple-900", icon: <FaClipboardList className="text-4xl md:text-5xl" /> },
-    { label: "Wallet", path: "/mywallet", color: "bg-green-900", icon: <FaWallet className="text-4xl md:text-5xl" /> },
-    { label: "Profile", path: "/profile", color: "bg-blue-900", icon: <FaUser className="text-4xl md:text-5xl" /> },
-    { label: "Data Pad", path: "/datapad", color: "bg-gray-900", icon: <FaBook className="text-4xl md:text-5xl" /> },
-    { label: "Contact Support", path: "/report", color: "bg-yellow-900", icon: <IoChatbubbleEllipsesOutline className="text-4xl md:text-5xl" /> },
-];
+const WalletDashboard = () => {
+    const { user } = useSelector((state) => state.user);
+    const [activeTab, setActiveTab] = useState('wallet');
+    const [isSidePanelOpen, setIsSidePanelOpen] = useState(false); 
 
-const cardVariants = {
-    initial: { opacity: 0, y: 50, scale: 0.95 },
-    animate: { opacity: 1, y: 0, scale: 1 },
-    hover: { scale: 1.02, boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.2)" },
-};
-
-const Home = () => {
-    const blogSectionRef = useRef(null);
-    const menuSectionRef = useRef(null);
-    const [isBlogVisible, setIsBlogVisible] = useState(false);
-
-    const scrollToBlogSection = () => {
-        blogSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-        setIsBlogVisible(true);
+    const toggleSidePanel = () => {
+        setIsSidePanelOpen(!isSidePanelOpen);
     };
 
-    const scrollToMenuSection = () => {
-        menuSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-        setIsBlogVisible(false);
+    const handleCloseSidePanel = () => {
+        setIsSidePanelOpen(false);
     };
 
-    return (
-        <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col items-center justify-start p-6 pt-20 md:pt-14 w-full relative pb-20">
-            {/* Header */}
-            <motion.h1
-                className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-gray-100"
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1 }}
-            >
-                Welcome to Secxion
-            </motion.h1>
+    const handleNavigation = (tab) => {
+        setActiveTab(tab);
+        handleCloseSidePanel();
+    };
 
-            <motion.p
-                className="text-gray-600 dark:text-gray-400 text-center mt-2 text-lg md:text-xl max-w-2xl"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeInOut", delay: 0.2 }}
-            >
-                Your trusted platform for gift card trading and seamless digital transactions.
-            </motion.p>
-
-            {/* Menu Grid */}
-            <div ref={menuSectionRef} className="menu-grid">
-                {menuItems.map((item, index) => (
-                    <motion.div
-                        key={index}
-                        variants={cardVariants}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        whileHover="hover"
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                        className={`rounded-xl shadow-lg transition-shadow ${item.color} transform w-full glassmorphic-card`}
-                    >
-                        <Link to={item.path} className="menu-link" aria-label={item.label}>
-                            <div className="icon-container">
-                                {item.icon}
+    const renderContent = () => {
+        switch (activeTab) {
+            case 'wallet':
+                return (
+                    <>
+                        <div className="fixed w-screen top-0 bottom-0 right-0 left-0 bg-white shadow border border-gray-200">
+                            <h3 className="font-semibold text-lg text-gray-800 py-4 mt-28 px-6 border-b border-gray-200 flex items-center">
+                                <FaMoneyBill className="mr-2 text-gray-600" /> Request Payment
+                            </h3>
+                            <div className="p-6">
+                                <PaymentRequestForm />
                             </div>
-                            <span className="menu-label">{item.label}</span>
-                        </Link>
-                    </motion.div>
-                ))}
-            </div>
+                        </div>
+                    </>
+                );
+            case 'accounts':
+                return (
+                    <div className="fixed w-screen -mt-10 top-0 bottom-0 right-0 left-0 bg-white shadow border border-gray-200">
+                            <h3 className="font-semibold text-lg text-gray-800 pt-9 py-2 mt-24 px-6 border-b border-gray-200 flex items-center">
+                            <FaUniversity className="mr-2 text-gray-600" /> Bank Accounts
+                        </h3>
+                        <div className="overflow-auto " style={{ maxHeight: 'calc(100vh - 300px)' }}> 
+                            <BankAccountList />
+                        </div>
+                    </div>
+                );
+            case 'history':
+                return (
+                    <nav className="fixed w-screen right-0 left-0 bg-white shadow border border-gray-200">
+                        <h3 className="font-semibold px-4 w-screen text-xl text-gray-800 py-2 border-b border-gray-200 flex items-center">
+                            <FaHistory className="mr-2 right-0 left-0 text-gray-600" /> Transaction History
+                        </h3>
+                        <div className="overflow-auto w-screen p-2 px-6 right-0 left-0" style={{ maxHeight: 'calc(100vh - 300px)' }}>
+                            <TransactionHistory />
+                        </div>
+                    </nav>
+                );
+            default:
+                return null;
+        }
+    };
+    return (
+        <div className="flex flex-col bg-white mt-8 sm:mt-3 md:mt-2 "> {/* Added bg-gray-100 to the main container */}
+            <header className="fixed left-0 w-full bg-white shadow-md border-b border-gray-200 z-50">
+                <div className="flex items-center justify-between p-4 max-w-7xl mx-auto">
+                    <h2 className="text-sm font-semibold flex items-center">
+                        <FaWallet className="mr-2 text-blue-500" />
+                        <span className="text-gray-800">Wallet Dashboard</span>
+                    </h2>
+                        <Link to={'/profile'} className="mr-4 text-gray-700 hover:text-blue-500 transition-colors">
+                    Hi, {user.name}! 👋</Link>
+                        <button onClick={toggleSidePanel} className="md:hidden">
+                            <FaBars className="text-gray-600 hover:text-blue-500 transition-colors" />
+                    </button>
+                    </div>
+            </header>
 
-            {/* Blog Section */}
-            <div ref={blogSectionRef} className={`mt-12 w-full max-w-5xl ${isBlogVisible ? '' : 'hidden'}`}>
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4 border-b-2 border-gray-300 dark:border-gray-700 pb-2">
-                    Latest Insights
-                </h2>
-                <NetBlog />
-            </div>
+           {/* Side Panel (for mobile) */}
+            <SidePanel open={isSidePanelOpen} setOpen={setIsSidePanelOpen} />
 
-            {/* Footer */}
-            <HomeFooter onBlogClick={scrollToBlogSection} onMenuClick={scrollToMenuSection} isBlogVisible={isBlogVisible} />
+            {/* Main Content Area */}
+            <main className={`flex-grow pt-16 transition-all duration-300 ${isSidePanelOpen ? 'ml-80' : ''}`}> {/* Added pt-20 */}
+                <div className="max-w-7xl mx-auto px-4 py-8">
+                    {renderContent()}
+                </div>
+            </main>
+
+            <WalletFooter activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
     );
-}
+};
 
-export default Home;
+export default WalletDashboard;

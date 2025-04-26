@@ -127,7 +127,7 @@ export const ContextProvider = ({ children }) => {
             console.error("Error fetching wallet balance:", error);
             setWalletBalance(null);
         }
-    }, [token, user, setWalletBalance]); // 🛠 FIX: Add `setWalletBalance` here
+    }, [token, user, setWalletBalance]);
     ;
 
     useEffect(() => {

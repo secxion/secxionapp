@@ -11,19 +11,18 @@
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    font-family: Euclid Circular A, Noto Sans KR, Noto Sans SC, Noto Sans JP;
     font-weight: 300;
     overflow: hidden;
-    height: 56px;
+    height: 76px;
     -webkit-box-pack: justify;
     -webkit-justify-content: space-between;
     justify-content: space-between;
     width: 100%;
     padding-left: 24px;
     padding-right: 24px;
-    border-bottom: 1px solid #b8c4c2;
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
+    margin-top: 20px;
 }

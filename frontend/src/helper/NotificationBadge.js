@@ -81,7 +81,7 @@ const NotificationBadge = () => {
 
     return (
         <div className="relative">
-            <PiBell size={28} className="text-gray-200 hover:text-blue-700 transition duration-200 cursor-pointer" onClick={handleNotificationClick} />
+            <PiBell size={28} className="text-gray-600 hover:text-blue-700 transition duration-200 cursor-pointer" onClick={handleNotificationClick} />
             {unreadNotificationCount > 0 && (
                 <span className="absolute -top-2 right-0.5 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
                     {unreadNotificationCount > 20 ? '20+' : unreadNotificationCount}

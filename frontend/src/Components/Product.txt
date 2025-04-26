@@ -1,432 +1,254 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+import React, { useContext, useState, useMemo, useCallback, useEffect } from "react";
+import { FcSearch } from "react-icons/fc";
+import { PiUserSquare } from "react-icons/pi";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { setUserDetails } from "../store/userSlice";
+import Context from "../Context";
+import { useDebounce } from "../hooks/useDebounce";
+import NotificationBadge from "../helper/NotificationBadge";
+import { Dialog, Transition } from '@headlessui/react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import SidePanel from "./SidePanel";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faTimes, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import ROLE from "../common/role";
+import SummaryApi from "../common";
+import { BiSearch } from 'react-icons/bi';
+import './Header.css';
 
-html {
-  scrollbar-gutter: stable;
-}
+// ===============================
+// Search Panel Component (Mobile)
+// ===============================
+const SearchPanelMobile = ({ open, setOpen, search, setSearch, handleSearch }) => {
+    return (
+        <Transition.Root show={open} as={React.Fragment}>
+            <Dialog as="div" className="relative z-50" onClose={setOpen}>
+                <Transition.Child
+                    as={React.Fragment}
+                    enter="ease-out duration-200"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
+                    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                </Transition.Child>
 
-body {
-  @apply bg-white;
-  font-family: Roboto, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-size: 14px;
-  line-height: 1.5;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  transition: box-shadow 0.2s ease;
-  padding: 12px;
-  border-radius: 4px;
-}
+                <div className="fixed inset-0 overflow-hidden">
+                    <div className="absolute inset-0 overflow-hidden">
+                        <div className="pointer-events-none fixed inset-x-0 bottom-0 flex max-w-full">
+                            <Transition.Child
+                                as={React.Fragment}
+                                enter="transform transition ease-in-out duration-200 sm:duration-200"
+                                enterFrom="translate-y-full"
+                                enterTo="translate-y-0"
+                                leave="transform transition ease-in-out duration-200 sm:duration-200"
+                                leaveFrom="translate-y-0"
+                                leaveTo="translate-y-full"
+                            >
+                                <Dialog.Panel className="pointer-events-auto relative w-full max-w-md">
+                                    <div className="bg-gray-200 py-4 shadow-lg rounded-t-lg">
+                                        <div className="px-4 sm:px-6">
+                                            <div className="flex items-start justify-between">
+                                                <Dialog.Title className="text-lg font-medium text-gray-900">
+                                                    Search
+                                                </Dialog.Title>
+                                                <div className="ml-3 h-7 flex items-center">
+                                                    <button
+                                                        type="button"
+                                                        className="rounded-md text-red-500 hover:text-red-800 focus:outline-none focus:ring-indigo-500"
+                                                        onClick={() => setOpen(false)}
+                                                    >
+                                                        <span className="sr-only">Close panel</span>
+                                                        <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="mt-10 px-4 sm:px-6">
+                                        <div className="relative rounded-md shadow-sm">
+                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                                <BiSearch className="h-5 w-5" aria-hidden="true" />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                name="search"
+                                                id="search"
+                                                className="block w-full rounded-md border-gray-300 pl-10 pr-3 py-8 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                placeholder="Search Trade..."
+                                                value={search}
+                                                onChange={(e) => setSearch(e.target.value)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' && search.trim()) {
+                                                        handleSearch();
+                                                        setOpen(false);
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </div>
+            </Dialog>
+        </Transition.Root>
+    );
+};
+const Header = () => {
+    const dispatch = useDispatch();
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [searchPanelOpen, setSearchPanelOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const { user } = useSelector((state) => state.user);
+    const { token } = useContext(Context);
+    const navigate = useNavigate();
+    const searchInput = useLocation();
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  padding: 15px;
-  transition: box-shadow 0.2s ease;
-}
-.glass-card:hover {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-}
+    const searchQuery = useMemo(() => {
+        const URLSearch = new URLSearchParams(searchInput.search);
+        return URLSearch.get("q") || "";
+    }, [searchInput]);
 
-.button {
-  @apply px-4 py-2 rounded font-semibold text-white;
-  font-size: 0.9rem;
-  font-weight: 500;
-  text-transform: none;
-}
+    const [search, setSearch] = useState(searchQuery);
+    const debouncedSearch = useDebounce(search, 300);
 
-.button-primary {
-  background: linear-gradient(90deg, #06b6d4, #3b82f6);
-  color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-}
-.button-primary:hover {
-  background: linear-gradient(90deg, #3b82f6, #06b6d4);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-}
+    useEffect(() => {
+        if (debouncedSearch.trim()) {
+            navigate(`/search?q=${encodeURIComponent(debouncedSearch)}`);
+        }
+    }, [debouncedSearch, navigate]);
 
-::-webkit-scrollbar {
-width: 4px;
-height: 6px;
-}
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #f8a409, #c08d01);
-  border-radius: 2px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(42, 182, 0, 0.4);
-}
+    const handleLogout = useCallback(async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(SummaryApi.logout_user.url, {
+                method: SummaryApi.logout_user.method,
+                credentials: "include",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const data = await response.json();
 
-.neon-text {
-  color: #1a73e8;
-  text-shadow: 0 0 2px #06b6d4;
-}
-.neon2-text {
-  color: #1e6470;
-  text-shadow: 0 02px #06b6d4;
-}
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 12px;
-  padding: 16px;
-}
+            if (data.success) {
+                toast.success(data.message);
+                dispatch(setUserDetails(null));
+                navigate("/login");
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error("Logout failed. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    }, [dispatch, navigate, token]);
 
-a {
-  @apply text-cyan-500 hover:text-cyan-600 transition-colors;
-  text-decoration: none;
-}
-.container {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 16px;
-}
+    const toggleMobileMenu = useCallback(() => setMobileMenuOpen(prev => !prev), []);
+    const toggleSearchPanelOpen = useCallback(() => setSearchPanelOpen(prev => !prev), []);
 
-.table-container {
-  max-height: 450px;
-  overflow-y: auto;
-}
+    const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
 
-.flex-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+    return (
+        <>
+            <header className="left-0 right-0 top-0 pt-6 mb-4 header-spa bg-white fixed w-full z-50 border-b-gray-500 border-t-black shadow-md transition-all duration-300 flex items-center justify-between px-6 sm:px-6 lg:px-8">
+                <div className="w-full mx-auto flex items-center justify-between px-4 md:px-6 lg:px-8">
+                    {/* Mobile Menu Button */}
+                    <button
+                        onClick={toggleMobileMenu}
+                        className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 md:hidden"
+                        aria-expanded={mobileMenuOpen}
+                        aria-controls="mobile-menu"
+                    >
+                        <FontAwesomeIcon icon={faBars} className="h-6 w-6" />
+                    </button>
 
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
+                    {/* Logo / Brand */}
+                    <Link to="/" className="font-bold text-xl text-primary-500 mr-4">
+                        Secxion
+                    </Link>
 
-.animate-bounce {
-  animation: bounce 1s infinite;
-}
+                    {/* Search Bar (Desktop) */}
+                    <div className="hidden md:flex items-center rounded-md bg-gray-100 px-4 py-2 w-72 lg:w-80">
+                        <FcSearch className="h-5 w-5 text-gray-400 mr-2" />
+                        <input
+                            type="text"
+                            placeholder="Search gift cards..."
+                            className="bg-transparent border-none outline-none w-full text-sm text-gray-700 placeholder-gray-400"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
 
-@media (max-width: 768px) {
-  .flex-container {
-    flex-direction: column;
-  }
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
+                    {/* Navigation Links (Desktop) */}
+                    <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
+                        <Link to="/record" className="text-gray-600 hover:text-primary-500 transition duration-300">Trade status</Link>
+                        <Link to="/mywallet" className="text-gray-600 hover:text-primary-500 transition duration-300">Wallet</Link>
+                        <Link to="/datapad" className="text-gray-600 hover:text-primary-500 transition duration-300">DataPad</Link>
+                        {user?.role === ROLE.ADMIN && (
+                            <Link to="/admin-panel" className="text-gray-600 hover:text-primary-500 transition duration-300">Admin</Link>
+                        )}
+                    </nav>
 
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-}
+                    {/* User Actions (Desktop) */}
+                    <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
+                        <Link to="/notifications" title="Notifications" aria-label="Notifications" className="relative">
+                            <NotificationBadge />
+                        </Link>
+                        {user?._id && (
+                                <button
+                                    onClick={handleLogout}
+                                    className="hidden md:flex items-center justify-center bg-transparent group"
+                                    title="Logout"
+                                    aria-label="Logout"
+                                    disabled={loading}
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="w-8 h-8"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle cx="12" cy="12" r="10" fill="#1E293B" />
+                                        <path
+                                            d="M8 12h8m-3-3l3 3-3 3"
+                                            stroke="#F43F5E"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        />
+                                        <circle cx="12" cy="12" r="2" fill="#FACC15" />
+                                    </svg>
+                                </button>
+                            )}
+                    </div>
 
+                    {/* Mobile Search Button */}
+                    <button
+                        onClick={toggleSearchPanelOpen}
+                        className="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 ml-4"
+                    >
+                        <BiSearch className="h-6 w-6" />
+                    </button>
+                </div>
+                {/* Mobile Search Panel */}
+                <SearchPanelMobile open={searchPanelOpen} setOpen={setSearchPanelOpen} search={search} setSearch={setSearch} handleSearch={() => {
+                    if (search.trim()) {
+                        navigate(`/search?q=${encodeURIComponent(search)}`);
+                        setSearchPanelOpen(false);
+                    }
+                }} />
+                {/* Mobile Menu / SidePanel */}
+                <SidePanel open={mobileMenuOpen} setOpen={setMobileMenuOpen} handleLogout={handleLogout} loading={loading} onCloseMenu={closeMobileMenu} />
+            </header>
+        </>
+    );
+};
 
-
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-html {
-  scrollbar-gutter: stable;
-}
-
-body {
-  @apply bg-white;
-  font-family: Roboto, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-size: 14px;
-  line-height: 1.5;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  transition: box-shadow 0.2s ease;
-  padding: 8px;
-  border-radius: 4px;
-}
-
-@media (min-width: 640px) { 
-  body {
-    font-size: 14px;
-  }
-}
-
-@media (min-width: 768px) {
-  body {
-    font-size: 14px;
-    padding: 12px;
-  }
-}
-
-@media (min-width: 1024px) { 
-  body {
-    font-size: 14px;
-    padding: 12px;
-  }
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  padding: 12px; 
-  transition: box-shadow 0.2s ease;
-}
-
-@media (min-width: 640px) {
-  .glass-card {
-    padding: 15px;
-  }
-}
-
-@media (min-width: 768px) { 
-  .glass-card {
-    padding: 18px; 
-  }
-}
-
-@media (min-width: 1024px) { 
-  .glass-card {
-    padding: 15px; 
-  }
-}
-
-.button {
-  @apply px-4 py-2 rounded font-semibold text-white;
-  font-size: 0.8rem; 
-  font-weight: 500;
-  text-transform: none;
-}
-
-@media (min-width: 640px) { 
-  .button {
-    font-size: 0.9rem;
-  }
-}
-
-@media (min-width: 768px) { 
-  .button {
-    font-size: 1rem; 
-  }
-}
-
-@media (min-width: 1024px) { 
-  .button {
-    font-size: 0.9rem; 
-  }
-}
-
-.button-primary {
-  background: linear-gradient(90deg, #06b6d4, #3b82f6);
-  color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-}
-.button-primary:hover {
-  background: linear-gradient(90deg, #3b82f6, #06b6d4);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-}
-
-::-webkit-scrollbar {
-  width: 4px;
-  height: 6px;
-}
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #f8a409, #c08d01);
-  border-radius: 2px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(42, 182, 0, 0.4);
-}
-
-.neon-text {
-  color: #1a73e8;
-  text-shadow: 0 0 2px #06b6d4;
-}
-.neon2-text {
-  color: #1e6470;
-  text-shadow: 0 0 2px #06b6d4;
-}
-
-.card-grid {
-  display: grid;
-  gap: 8px; 
-  padding: 8px; 
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); /* Ensures cards don't overflow on very small screens */
-}
-
-@media (min-width: 640px) { 
-  .card-grid {
-    gap: 10px;
-    padding: 10px;
-  }
-}
-
-@media (min-width: 768px) {
-  .card-grid {
-    gap: 12px;
-    padding: 12px;
-  }
-}
-
-@media (min-width: 1024px) { 
-  .card-grid {
-    gap: 16px;
-    padding: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-  }
-}
-
-a {
-  @apply text-cyan-500 hover:text-cyan-600 transition-colors;
-  text-decoration: none;
-}
-
-.container {
-  max-width: 100%; 
-  margin: 0 auto;
-  padding: 8px; 
-}
-
-@media (min-width: 640px) { 
-  .container {
-    padding: 16px;
-  }
-}
-
-@media (min-width: 768px) { 
-  .container {
-    max-width: 768px;
-    padding: 20px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .container {
-    max-width: 1440px; 
-    padding: 16px;
-  }
-}
-
-.table-container {
-  max-height: 350px;
-  overflow-y: auto;
-}
-
-@media (min-width: 768px) { 
-  .table-container {
-    max-height: 450px; 
-  }
-}
-
-.flex-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px; 
-}
-
-@media (min-width: 768px) { 
-  .flex-container {
-    gap: 16px; 
-  }
-}
-
-.parent-flex-row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-.animate-bounce {
-  animation: bounce 1s infinite;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-
-import React from "react";
-import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { FaWallet, FaUser, FaStore, FaBook, FaClipboardList } from "react-icons/fa";
-import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
-import HomeFooter from '../Components/HomeFooter';
-
-import './Home.css';
-
-const menuItems = [
-  { label: "Market", path: "/section", color: "bg-black", icon: <FaStore className="text-4xl md:text-5xl" /> },
-  { label: "Record", path: "/record", color: "bg-purple-900", icon: <FaClipboardList className="text-4xl md:text-5xl" /> },
-  { label: "Wallet", path: "/mywallet", color: "bg-green-900", icon: <FaWallet className="text-4xl md:text-5xl" /> },
-  { label: "Profile", path: "/profile", color: "bg-blue-900", icon: <FaUser className="text-4xl md:text-5xl" /> },
-  { label: "DataPad", path: "/datapad", color: "bg-gray-900", icon: <FaBook className="text-4xl md:text-5xl" /> },
-  { label: "Contact Support", path: "/report", color: "bg-yellow-900", icon: <IoChatbubbleEllipsesOutline className="text-4xl md:text-5xl" /> },
-];
-
-const Home = () => {
-  return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col items-center justify-start p-6 pt-20 md:pt-24 w-full relative pb-20">
-      {/* Header */}
-      <motion.h1
-        className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-gray-100"
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-      >
-        Welcome to Secxion
-      </motion.h1>
-
-      <p className="text-gray-700 dark:text-gray-300 text-center mt-4 text-lg md:text-xl max-w-2xl">
-        Your trusted platform for gift card trading and seamless digital transactions.
-      </p>
-
-      {/* Menu Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-10 w-full max-w-6xl">
-        {menuItems.map((item, index) => (
-          <motion.div
-            key={index}
-            className={`rounded-xl shadow-lg transition-shadow ${item.color} transform w-full glassmorphic-card`}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.1, duration: 0.5 }}
-          >
-            <Link to={item.path} className="flex flex-col items-center justify-center p-6 text-white w-full h-full" aria-label={item.label}>
-              <div className="p-3 rounded-full bg-black/15">
-                {item.icon}
-              </div>
-              <span className="text-lg md:text-xl font-semibold mt-3 text-gray-100">{item.label}</span>
-            </Link>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* Footer */}
-      <HomeFooter />
-    </div>
-  );
-}
-
-export default Home;
+export default Header;

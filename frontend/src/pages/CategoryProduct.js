@@ -69,7 +69,7 @@ const CategoryProduct = () => {
     };
 
     return (
-        <div className="fixed top-[70px] left-0 right-0 bottom-0 flex flex-col md:flex-row bg-gray-600 dark:bg-gray-900">
+        <div className="fixed top-[90px] left-0 right-0 bottom-0 flex flex-col md:flex-row bg-gray-600 dark:bg-gray-900">
             {/* Mobile Toggle Button */}
             <div className="md:hidden flex justify-between items-center border-b border-black shadow-sm bg-gray-500 dark:bg-blue-800 text-white p-3">
               <h3 className="text-lg font-bold">
@@ -126,10 +126,7 @@ const CategoryProduct = () => {
             {/* Product Display Section */}
             <main className="flex-1 bg-gray-600 dark:bg-gray-800 shadow-lg p-4 overflow-hidden">
                 <div className="container bg-gray-600 mx-auto h-full flex flex-col">
-                    <div className="mb-4">
-                        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
-                            <Link to={'/inlinepod'} className="inlinepod">InlinePod</Link>
-                        </h2>
+                    <div className="mb-4">                     
                         {filterCategoryList.length > 0 && (
                             <p className="text-sm text-gray-900 dark:text-gray-400">
                                 Filtering by: {filterCategoryList.map((cat, index) => (

@@ -8,187 +8,162 @@ import { PiUserSquare as UserIcon } from "react-icons/pi";
 import { FaBlog, FaWallet } from 'react-icons/fa';
 import Clock from 'react-live-clock';
 import timezones from '../helpers/timeZones';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import NotificationBadge from "../helper/NotificationBadge";
 
-const SidePanel = ({ open, setOpen, handleLogout, loading }) => {
-  const [timezone, setTimezone] = useState('Africa/Lagos');
-  const [showTimezones, setShowTimezones] = useState(false);
+
+const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
+    const [timezone, setTimezone] = useState('Africa/Lagos');
+    const [showTimezones, setShowTimezones] = useState(false);
     const { user } = useSelector((state) => state.user);
-  
 
-  const toggleTimezones = () => {
-    setShowTimezones(!showTimezones);
-  };
+    const toggleTimezones = () => {
+        setShowTimezones(!showTimezones);
+    };
 
-  const handleTimezoneChange = (newTimezone) => {
-    setTimezone(newTimezone);
-    setShowTimezones(false);
-  };
+    const handleTimezoneChange = (newTimezone) => {
+        setTimezone(newTimezone);
+        setShowTimezones(false);
+    };
 
-  const getSelectedTimezoneLabel = () => {
-    const selected = timezones.find((tz) => tz.value === timezone);
-    return selected ? selected.label : '';
-  };
+    const getSelectedTimezoneLabel = () => {
+        const selected = timezones.find((tz) => tz.value === timezone);
+        return selected ? selected.label : '';
+    };
 
-  return (
-    <Transition.Root show={open} as={React.Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={setOpen}>
-        <Transition.Child
-          as={React.Fragment}
-          enter="ease-in-out duration-200"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in-out duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-        </Transition.Child>
-        <div className="fixed inset-0 overflow-hidden">
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="pointer-events-none fixed inset-y-0 left-0 flex max-w-100 pr-10">
-              <Transition.Child
-                as={React.Fragment}
-                enter="transform transition ease-in-out duration-200 sm:duration-200"
-                enterFrom="-translate-x-full"
-                enterTo="translate-x-0"
-                leave="transform transition ease-in-out duration-200 sm:duration-200"
-                leaveFrom="translate-x-0"
-                leaveTo="-translate-x-full"
-              >
-                <Dialog.Panel className="pointer-events-auto w-80 max-w-md">
-                  <div className="flex h-full flex-col overflow-y-scroll bg-white dark:bg-gray-800 shadow-xl justify-between">
-                    <div className="flex-shrink-0 px-4 py-6 sm:px-6">
-                      <div className="flex items-center justify-between">
-                        <Link to="/" onClick={() => setOpen(false)} className="flex items-center">
-                          <span className="text-lg font-semibold text-gray-800 dark:text-gray-100">S E C X I O N</span>
-                        </Link>
-                        <button
-                          type="button"
-                          className="-m-2.5 rounded-md p-2.5 text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
-                          onClick={() => setOpen(false)}
-                        >
-                          <span className="sr-only">Close panel</span>
-                          <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                        </button>
-                      </div>
-                    </div>
-                    <div className="mt-6 relative flex-1 px-4 sm:px-6">
-                      <nav className="space-y-6">
-                        <div className="space-y-1">
-                          <div className="space-y-1">
-                            <Link
-                              to="/home"
-                              className="group flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 text-gray-600 dark:text-gray-300"
-                              onClick={() => setOpen(false)}
-                            >
-                              <HomeIcon className="mr-3 h-6 w-6 flex-shrink-0 text-gray-400 dark:text-gray-500" aria-hidden="true" />
-                              Home
-                            </Link>
-                            <Link
-                              to="/report"
-                              className="group flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 text-gray-600 dark:text-gray-300"
-                              onClick={() => setOpen(false)}
-                            >
-                              <InformationCircleIcon className="mr-3 h-6 w-6 flex-shrink-0 text-gray-400 dark:text-gray-500" aria-hidden="true" />
-                              Get In Touch
-                            </Link>
-                           
-                          </div>
-                        </div>
-                        <div className="space-y-1">
-                          <h3 className="px-3 text-sm font-medium text-gray-500 dark:text-gray-400">Account</h3>
-                          <div className="space-y-1">
-                            <Link
-                              to="/mywallet"
-                              className="group flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 text-gray-600 dark:text-gray-300"
-                              onClick={() => setOpen(false)}
-                            >
-                              <FaWallet className="mr-3 h-6 w-6 flex-shrink-0 text-gray-400 dark:text-gray-500" aria-hidden="true" />                              
-                              Wallet
-                            </Link>
-                            <Link
-                              to="/profile"
-                              className="group flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 text-gray-600 dark:text-gray-300"
-                              onClick={() => setOpen(false)}
-                            >
-                              <UserIcon className="mr-3 h-6 w-6 flex-shrink-0 text-gray-400 dark:text-gray-500" aria-hidden="true" />
-                              My Profile
-                            </Link>
-                            {useSelector((state) => state.user.user)?.role === ROLE.ADMIN && (
-                              <Link
-                                to="/admin-panel/all-products"
-                                className="group flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 text-gray-600 dark:text-gray-300"
-                                onClick={() => setOpen(false)}
-                              >
-                                <Cog6ToothIcon className="mr-3 h-6 w-6 flex-shrink-0 text-gray-400 dark:text-gray-500" aria-hidden="true" />
-                                Admin Panel
-                              </Link>
-                            )}
+    const handleLinkClick = () => {
+        if (onCloseMenu) {
+            onCloseMenu();
+        }
+    };
+
+    return (
+        <Transition.Root show={open} as={React.Fragment}>
+            <Dialog as="div" className="fixed inset-0 z-50 md:hidden" onClose={() => setOpen(false)}>
+                <Transition.Child
+                    as={React.Fragment}
+                    enter="ease-in-out duration-300 transform"
+                    enterFrom="-translate-x-full"
+                    enterTo="translate-x-0"
+                    leave="ease-in-out duration-300 transform"
+                    leaveFrom="translate-x-0"
+                    leaveTo="-translate-x-full"
+                >
+                    <Dialog.Panel className="relative flex w-screen max-w-md flex-col bg-white pt-12 pb-4">
+                        <div className="absolute bg-white top-0 right-0 pt-10">
                             <button
-                              onClick={() => {
-                                handleLogout();
-                                setOpen(false);
-                              }}
-                              className="group flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 text-gray-600 dark:text-gray-300 w-full text-left"
-                              disabled={loading}
+                                type="button"
+                                className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+                                onClick={() => setOpen(false)}
                             >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="mr-3 h-6 w-6 flex-shrink-0 text-gray-400 dark:text-gray-500"
-                                viewBox="0 0 24 24"
-                              >
-                                  <path
-                                    fill="currentColor"
-                                    d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 0 1 2 2v2h-2V4H5v16h9v-2h2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9Z"
-                                  />
-                                </svg>
-                                {loading ? "Logging out..." : "Logout"}
-                              </button>
-                            </div>
-                          </div>
-                          <div className="space-y-1">
-                            <h3 className="px-3 text-sm font-medium text-gray-500 dark:text-gray-400">Timezone</h3>
-                            <div className="px-3 py-2">
-                              <div className="flex items-center space-x-2 mb-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-gray-400 dark:text-gray-500">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <Clock format={'HH:mm:ss'} ticking={true} timezone={timezone} className="text-sm text-gray-600 dark:text-gray-300" />
-                              </div>
-                              <div className="relative">
-                                <div onClick={toggleTimezones} className="cursor-pointer text-xs text-gray-500 dark:text-gray-400">
-                                  {getSelectedTimezoneLabel() || 'Select Timezone'}
-                                  <svg className="w-3 h-3 inline-block ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
-                                </div>
-                                {showTimezones && (
-                                  <div className="absolute left-0 mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-md z-10 overflow-y-auto max-h-40">
-                                    {timezones.map((tz) => (
-                                      <div
-                                        key={tz.value}
-                                        onClick={() => handleTimezoneChange(tz.value)}
-                                        className="px-3 py-2 text-xs cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300"
-                                      >
-                                        {tz.label}
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
+                                <span className="sr-only">Close sidebar</span>
+                                <XMarkIcon className="h-6 w-6 text-red-400 hover:text-red-700" aria-hidden="true" />
+                            </button>
+                        </div>
+                        <div className="flex flex-shrink-0 items-center justify-center px-4 mt-2 -mb-2">
+                            <Link to="/notifications" title="Notifications" aria-label="Notifications" className="relative" onClick={handleLinkClick}>
+                            <NotificationBadge />
+                        </Link>
+                        </div>
+                        <nav className="mt-5 space-y-1 px-2">
+                            <Link to="/home" className="bg-gray-100 text-gray-900 group flex items-center rounded-md px-2 py-2 text-base font-medium hover:bg-gray-200 hover:text-primary-500" onClick={handleLinkClick}>
+                                <HomeIcon className="mr-3 h-6 w-6 text-gray-500 group-hover:text-primary-500" aria-hidden="true" />
+                                Home
+                            </Link>
+                            <Link to="/section" className="text-gray-600 group flex items-center rounded-md px-2 py-2 text-base font-medium hover:bg-gray-200 hover:text-primary-500" onClick={handleLinkClick}>
+                                <GlobeAltIcon className="mr-3 h-6 w-6 text-gray-500 group-hover:text-primary-500" aria-hidden="true" />
+                                Marketplace
+                            </Link>
+                            <Link to="/profile" className="text-gray-600 group flex items-center rounded-md px-2 py-2 text-base font-medium hover:bg-gray-200 hover:text-primary-500" onClick={handleLinkClick}>
+                                <UserIcon className="mr-3 h-6 w-6 text-gray-500 group-hover:text-primary-500" />
+                                Profile
+                            </Link>
+                            <Link to="/record" className="text-gray-600 group flex items-center rounded-md px-2 py-2 text-base font-medium hover:bg-gray-200 hover:text-primary-500" onClick={handleLinkClick}>
+                                <InformationCircleIcon className="mr-3 h-6 w-6 text-gray-500 group-hover:text-primary-500" aria-hidden="true" />
+                                Trade Status
+                            </Link>
+                            <Link to="/mywallet" className="text-gray-600 group flex items-center rounded-md px-2 py-2 text-base font-medium hover:bg-gray-200 hover:text-primary-500" onClick={handleLinkClick}>
+                                <FaWallet className="mr-3 h-6 w-6 text-gray-500 group-hover:text-primary-500" />
+                                Wallet
+                            </Link>
+                            <Link to="/datapad" className="text-gray-600 group flex items-center rounded-md px-2 py-2 text-base font-medium hover:bg-gray-200 hover:text-primary-500" onClick={handleLinkClick}>
+                                <FaBlog className="mr-3 h-6 w-6 text-gray-500 group-hover:text-primary-500" />
+                                DataPad
+                            </Link>
+                            <Link to="/report" className="text-gray-600 group flex items-center rounded-md px-2 py-2 text-base font-medium hover:bg-gray-200 hover:text-primary-500" onClick={handleLinkClick}>
+                                <PhoneIcon className="mr-3 h-6 w-6 text-gray-500 group-hover:text-primary-500" aria-hidden="true" />
+                                Connect
+                            </Link>
+                            {user?.role === ROLE.ADMIN && (
+                                <Link to="/admin-panel" className="text-gray-600 group flex items-center rounded-md px-2 py-2 text-base font-medium hover:bg-gray-200 hover:text-primary-500" onClick={handleLinkClick}>
+                                    <Cog6ToothIcon className="mr-3 h-6 w-6 text-gray-500 group-hover:text-primary-500" aria-hidden="true" />
+                                    Admin Panel
+                                </Link>
+                            )}
                         </nav>
-                      </div>
-                      <div className="py-6 px-4 sm:px-6 text-center text-sm text-gray-500 dark:text-gray-400">
-                        <p className="mb-2">© 2025 SecXion, Inc.</p>
-                      </div>
-                    </div>
-                  </Dialog.Panel>
+                        <div className="mt-8 px-2">
+                            <div className="relative">
+                                <button
+                                    type="button"
+                                    className="group flex items-center rounded-md bg-gray-100 px-2 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-200 hover:text-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                    onClick={toggleTimezones}
+                                >
+                                    <GlobeAltIcon className="mr-3 h-5 w-5 text-gray-500 group-hover:text-primary-500" aria-hidden="true" />
+                                    {getSelectedTimezoneLabel() || 'Select Timezone'}
+                                    <svg
+                                        className={`ml-auto h-5 w-5 text-gray-400 transition-transform ${showTimezones ? 'rotate-180' : ''}`}
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                        aria-hidden="true"
+                                    >
+                                        <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                                    </svg>
+                                </button>
+                                {showTimezones && (
+                                    <div className="mt-1 rounded-md bg-white shadow-lg">
+                                        <ul className="max-h-48 scroll-py-1 overflow-y-auto rounded-md py-1 text-sm">
+                                            {timezones.map((tz) => (
+                                                <li key={tz.value}>
+                                                    <button
+                                                        onClick={() => handleTimezoneChange(tz.value)}
+                                                        className={`group flex w-full items-center py-2 pl-3 pr-9 hover:bg-gray-100 hover:text-primary-500 ${timezone === tz.value ? 'text-primary-500' : 'text-gray-900'}`}
+                                                    >
+                                                        <span className="truncate">{tz.label}</span>
+                                                        {timezone === tz.value && (
+                                                            <span className="absolute right-4 text-primary-500">
+                                                                <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                                </svg>
+                                                            </span>
+                                                        )}
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="mt-4 text-center">
+                                <Clock format={'HH:mm:ss'} ticking={true} timezone={timezone} className="text-xl font-semibold text-gray-700" />
+                                <Clock format={'dddd, MMMM Do YYYY'} ticking={true} timezone={timezone} className="text-sm text-gray-500" />
+                            </div>
+                            <div className="mt-6">
+                                <button
+                                    onClick={handleLogout}
+                                    className="w-full flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                    disabled={loading}
+                                >
+                                    <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" /> Logout
+                                </button>
+                            </div>
+                        </div>
+                    </Dialog.Panel>
                 </Transition.Child>
-              </div>
-            </div>
-          </div>
-        </Dialog>
-      </Transition.Root>
+            </Dialog>
+        </Transition.Root>
     );
-  };
-  export default SidePanel;
+};
+
+export default SidePanel;

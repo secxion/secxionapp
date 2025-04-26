@@ -3,7 +3,7 @@ import SummaryApi from '../common';
 import { formatDistanceToNow } from 'date-fns';
 import { FaCircle } from 'react-icons/fa';
 import { motion } from "framer-motion";
-import FullBlogDialog from './FullBlogDialog'; // Import FullBlogDialog
+import FullBlogDialog from './FullBlogDialog'; 
 
 const blogCardVariants = {
     initial: { opacity: 0, y: 20 },
@@ -18,7 +18,7 @@ const NetBlog = () => {
     const [communityFeedData, setCommunityFeedData] = useState(null);
     const [loadingFeed, setLoadingFeed] = useState(false);
     const [errorFeed, setErrorFeed] = useState(null);
-    const [selectedBlog, setSelectedBlog] = useState(null); // State for the selected blog
+    const [selectedBlog, setSelectedBlog] = useState(null);
 
     useEffect(() => {
         const fetchBlogs = async () => {

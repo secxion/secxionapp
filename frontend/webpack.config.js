@@ -1,4 +1,5 @@
 const webpack = require("webpack");
+const path = require('path');
 
 module.exports = {
   resolve: {
@@ -7,8 +8,11 @@ module.exports = {
       "stream": require.resolve("stream-browserify"),
       "zlib": require.resolve("browserify-zlib"),
       "path": require.resolve("path-browserify"),
-      "fs": false, 
+      "fs": false,
       "querystring": require.resolve("querystring-es3"),
+    },
+    alias: {
+      '@/components': path.resolve(__dirname, 'src/components/'), // Alias for @/components
     },
   },
   plugins: [

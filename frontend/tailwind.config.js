@@ -5,10 +5,27 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        'xxs': '320px',
+        'xs': '480px',
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
+      },
       colors: {
-        "cream-white": "#f5f5f1",
+        primary: 'white',
+        'primary-dark': '#fff',
+        secondary: 'black',
+        'secondary-dark': '#000',
+      },
+      fontFamily: {
+        sans: ['Graphik', 'sans-serif'],
+        serif: ['Merriweather', 'serif'],
+        'body': ['Open Sans', 'sans-serif'],
       },
     },
   },
   plugins: [require('@tailwindcss/line-clamp')],
-}
+};

@@ -190,7 +190,7 @@ const PaymentRequestForm = () => {
                 <strong className="font-bold">Error!</strong>
                 <span className="block sm:inline">{error}</span>
             </div>}            
-            <div className="fixed w-screen right-0 left-0 top-0 mt-16 bg-indigo-100 p-1 border-b border-gray-400 flex items-center justify-between z-40">
+            <div className="fixed w-screen right-0 left-0 top-3 mt-20 bg-indigo-100 p-1 border-b border-gray-400 flex items-center justify-between z-40">
             <p className='text-md pt-5 text-gray-800 font-bold'>Balance: </p>
             {isLoadingBalance && loadingBalance ? (              
                                 <>
