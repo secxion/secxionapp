@@ -31,7 +31,7 @@ const Profile = () => {
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error("Profile.js: fetchUserProfile - Error:", errorData);
-                throw new Error(errorData.message || 'Failed to fetch profile data');
+                throw new Error(errorData.message || 'Failed to fetch initial profile data');
             }
 
             const data = await response.json();
@@ -45,7 +45,32 @@ const Profile = () => {
         }
     }, []);
 
-    // Removed the separate fetchUserDetails function as we're assuming fetchUserProfile gets the necessary data
+    const fetchUserDetails = useCallback(async () => {
+        try {
+            const response = await fetch(SummaryApi.current_user.url, {
+                method: SummaryApi.current_user.method,
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success && data.data) {
+                    setProfileData(data.data);
+                } else {
+                    console.error("Profile.js: fetchUserDetails - Error:", data.message);
+                    toast.error(data.message || "Failed to fetch updated user details.");
+                }
+            } else {
+                const errorData = await response.json();
+                console.error("Profile.js: fetchUserDetails - API Error:", errorData);
+                toast.error(errorData.message || "Failed to fetch updated user details.");
+            }
+        } catch (error) {
+            console.error("Profile.js: fetchUserDetails - Catch error:", error);
+            toast.error("Error fetching updated user details.");
+        }
+    }, []);
+
 
     const fetchBankAccounts = useCallback(async () => {
         if (!user?.id && !user?._id) {
@@ -106,8 +131,8 @@ const Profile = () => {
 
     useEffect(() => {
         fetchUserProfile();
-        // Removed fetchUserDetails here
-    }, [fetchUserProfile]);
+        fetchUserDetails();
+    }, [fetchUserProfile, fetchUserDetails]);
 
     useEffect(() => {
         if (user) {
@@ -145,7 +170,6 @@ const Profile = () => {
     if (profileData) {
         return (
             <div className="container fixed w-screen left-0 right-0 mt-12 flex flex-col p-8 m-5 space-y-6 bg-white rounded-md shadow">
-                {/* ... (rest of your rendering logic for profile data) */}
                 <div className="flex items-center justify-between border-b pb-4">
                     <div className="flex items-center">
                         <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mr-5 overflow-hidden">
