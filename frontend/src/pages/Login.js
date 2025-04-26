@@ -26,8 +26,7 @@ const Login = () => {
       const response = await fetch(SummaryApi.signIn.url, {
         method: SummaryApi.signIn.method,
         credentials: "include",
-        headers: { "Content-Type": "application/json"
-        
+        headers: { "Content-Type": "application/json",
          },
         body: JSON.stringify(data),
       });
@@ -37,7 +36,7 @@ const Login = () => {
       if (result.success) {
         toast.success(result.message);
         fetchUserDetails();
-        navigate("/");
+        navigate("/home");
       } else {
         setErrorMessage(result.message || "Invalid credentials. Please try again.");
         toast.error(result.message);
