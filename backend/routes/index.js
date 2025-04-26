@@ -54,7 +54,7 @@ router.get("/all-user",authToken,allUsers)
 router.post("/update-user",authToken,updateUser)
 router.get("/get-all-users-market",authToken, getAllUserMarkets)
 router.post("/update-market-status/:id", updateMarketStatus)
-router.get("/getAllDataForAdmin",getAllUserDataPadsForAdmin)
+router.get("/getAllDataForAdmin",authToken, getAllUserDataPadsForAdmin)
 
 //walletbalance
 router.get("/wallet/balane/:userId",authToken, getOtherUserWalletBalance);

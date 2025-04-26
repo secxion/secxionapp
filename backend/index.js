@@ -9,6 +9,8 @@ const app = express();
 // Define the allowed origins
 const allowedOrigins = [
     process.env.FRONTEND_URL, // For the live Render frontend
+    'https://secxion.onrender.com', // Explicitly add your Render frontend URL
+    "https://secxionx.onrender.com",
 ];
 
 // Configure CORS options
