@@ -37,6 +37,7 @@ import Buzz from "../pages/Buzz";
 import Terms from "../Components/Terms";
 import Aboutus from "../Components/Aboutus";
 import Privacy from "../Components/Privacy";
+import Profiler from "../Components/Profiler";
 
 
 
@@ -83,7 +84,7 @@ const protectedRoutes = [
   { path: "product-category", element: <CategoryProduct /> },
   { path: "product/:id", element: <ProductDetails /> },
   { path: "search", element: <SearchProduct /> },
-  { path: "profile", element: <Profile /> },
+  { path: "profile", element: <Profiler /> },
   { path: "settings", element: <Settings /> },
   { path: "report", element: <Report /> },
   { path: "reports/:reportId", element: <ReportDetailsPage /> },
