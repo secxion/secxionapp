@@ -8,7 +8,7 @@ import Context from "./Context";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserDetailsAPI, fetchMarketDataAPI, fetchBlogsAPI, fetchWalletBalanceAPI } from "./services/apiService";
 import "./styles/Loader.css";
-import Profiler from "./Components/Profiler"; // Import the Profiler component
+import Profiler from "./Components/Profiler";
 
 function setViewportHeight() {
   const vh = window.innerHeight * 0.01;
