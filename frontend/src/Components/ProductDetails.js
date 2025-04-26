@@ -1,19 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import UserUploadMarket from './UserUploadMarket';
 import { useDispatch, useSelector } from "react-redux";
-
 import SummaryApi from '../common';
 import { FaArrowLeft } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import CurrencySelector from './CurrencySelector';
-import FaceValueTable from './FaceValueTable';
 import GetInTouchFooter from './GetInTouchFooter';
+import ProductImageCarousel from './ProductImageCarousel';
 import Shimmer from './Shimmer';
 import { setUserDetails } from "../store/userSlice";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import PDSidePanel from "./PDSidePanel"; // Import the new PDSidePanel
+import PDSidePanel from "./PDSidePanel";
+import currencyFullNames from "../helpers/currencyFullNames";
 
 const ProductDetails = () => {
     const [data, setData] = useState({
@@ -25,11 +24,11 @@ const ProductDetails = () => {
         pricing: [],
     });
     const dispatch = useDispatch();
-    const { user } = useSelector((state) => state.user); // Use useSelector to get user
+    const { user } = useSelector((state) => state.user);
 
     const [loading, setLoading] = useState(true);
     const [showUploadForm, setShowUploadForm] = useState(false);
-    const [isPDSidePanelOpen, setIsPDSidePanelOpen] = useState(false); // State for the new sidebar
+    const [isPDSidePanelOpen, setIsPDSidePanelOpen] = useState(false);
 
     const [activeCurrency, setActiveCurrency] = useState(null);
     const [selectedFaceValue, setSelectedFaceValue] = useState(null);
@@ -96,14 +95,14 @@ const ProductDetails = () => {
                     'Content-Type': 'application/json',
                 }
             });
-            const data = await response.json();
+            const logoutData = await response.json();
 
-            if (data.success) {
-                toast.success(data.message);
+            if (logoutData.success) {
+                toast.success(logoutData.message);
                 dispatch(setUserDetails(null));
                 navigate("/login");
             } else {
-                toast.error(data.message);
+                toast.error(logoutData.message);
             }
         } catch (error) {
             toast.error("Logout failed. Please try again.");
@@ -112,11 +111,8 @@ const ProductDetails = () => {
         }
     }, [navigate, dispatch]);
 
-
     const toggleMobileMenu = useCallback(() => setIsPDSidePanelOpen(prev => !prev), []);
-
     const closePDSidePanel = useCallback(() => setIsPDSidePanelOpen(false), []);
-
 
     if (loading) {
         return (
@@ -160,44 +156,98 @@ const ProductDetails = () => {
     }
 
     return (
-        <div className="fixed min-h-screen w-screen left-0 right-0 bg-gray-100 dark:bg-gray-900 z-50">
-            <header className="bg-white dark:bg-gray-800 shadow-md py-4 border-b-6 border-gray-400 px-4 sm:px-6 lg:px-8 sticky top-0 z-50">
-                <div className="flex items-center justify-between">
-                    <button onClick={handleGoBack} className="focus:outline-none">
-                        <FaArrowLeft className="h-6 w-6 text-gray-500 dark:text-gray-400" />
-                    </button>
-                    <button
-                        onClick={toggleMobileMenu}
-                        className="text-xl font-semibold text-gray-800 dark:text-gray-200 focus:outline-none z-50"
-                        aria-expanded={isPDSidePanelOpen}
-                        aria-controls="pd-mobile-menu"
-                    >
-                        <FontAwesomeIcon icon={faBars} className="h-6 w-6" />
-                    </button>
-                </div>
+        <div className="">
+            <header className="fixed w-screen left-0 dark:bg-gray-800  py-20 px-4 sm:px-6 lg:px-8 top-0">
                 {data?.pricing && data?.pricing.length > 0 && (
-                    <div className="mt-4 px-4 sm:px-6 lg:px-8">
-                        <CurrencySelector
-                            pricing={data.pricing}
-                            activeCurrency={activeCurrency}
-                            onCurrencyChange={handleCurrencyChange}
-                        />
+                    <div className="mt-4">
+                        <div className="bg-gray-100 dark:bg-gray-700 rounded-lg shadow-inner overflow-x-auto py-2 px-4">
+                            <div className="flex items-center -py-10 space-x-3">
+                                {data.pricing.map((currency) => {
+                                    const fullCurrencyName =
+                                        currencyFullNames[currency.currency] || currency.currency;
+                                    return (
+                                        <button
+                                            key={currency.currency}
+                                            className={`flex-shrink-0 py-2 px-3 rounded-md text-sm font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1 ${
+                                                activeCurrency?.currency === currency.currency
+                                                    ? 'bg-emerald-500 text-white shadow-md'
+                                                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                            }`}
+                                            onClick={() => handleCurrencyChange(currency.currency)}
+                                        >
+                                            {fullCurrencyName}
+                                        </button>
+                                    );
+                                })}
+                                {data.pricing?.length === 0 && (
+                                    <p className="text-gray-500 dark:text-gray-400">
+                                        No currencies available.
+                                    </p>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 )}
+                
             </header>
 
-            <main className="py-2 px-4 sm:px-6 lg:px-8">
+            <main className="min-h-screen py-32 px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        {activeCurrency && activeCurrency?.faceValues && activeCurrency?.faceValues.length > 0 ? (
-                            <FaceValueTable activeCurrency={activeCurrency} onSell={handleSell} />
+                    {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                        {data?.productImage && data?.productImage.length > 0 ? (
+                            <ProductImageCarousel images={data.productImage} />
                         ) : (
-                            <div className="bg-gray-200 dark:bg-gray-700 rounded-lg p-6 flex items-center justify-center h-48">
-                                <span className="text-gray-500 dark:text-gray-400">
-                                    No face values available for the selected currency.
-                                </span>
+                            <div className="bg-gray-200 dark:bg-gray-700 rounded-lg aspect-w-8 aspect-h-4 flex items-center justify-center">
+                                <span className="text-gray-500 dark:text-gray-400">No Image Available</span>
                             </div>
                         )}
+                        <div className="p-6">
+                            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                                {data?.brandName} - {data?.productName}
+                            </h2>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                Category: <span className="font-medium">{data?.category}</span>
+                            </p>
+                            <p className="text-gray-700 dark:text-gray-300">{data?.description}</p>
+                        </div>
+                    </div> */}
+
+                    <div className=" w-full left-0 rounded-lg shadow-md overflow-y-auto">
+                        <div className=" p-6 ">
+                            {activeCurrency && activeCurrency?.faceValues && activeCurrency?.faceValues.length > 0 ? (
+                                <div className="space-y-3">
+                                    {activeCurrency.faceValues.map((fv) => (
+                                        <div
+                                            key={fv.faceValue}
+                                            className="bg-gray-100 dark:bg-gray-700 rounded-md p-4 flex items-center justify-between"
+                                        >
+                                            <div>
+                                                <span className="font-semibold text-gray-800 dark:text-gray-200">
+                                                    {fv.faceValue} {activeCurrency?.currency}
+                                                </span>
+                                                {fv.description && (
+                                                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                        ({fv.description})
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <button
+                                                className="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-md shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1"
+                                                onClick={() => handleSell(fv)}
+                                            >
+                                                Sell Now
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="bg-gray-100 dark:bg-gray-700 rounded-md p-6 text-center">
+                                    <span className="text-gray-500 dark:text-gray-400">
+                                        No denominations available for the selected currency.
+                                    </span>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -207,9 +257,9 @@ const ProductDetails = () => {
                             <div className="relative bg-white dark:bg-gray-800 w-full max-w-md rounded-lg shadow-xl">
                                 <button
                                     onClick={() => setShowUploadForm(false)}
-                                    className="absolute top-2 right-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none"
+                                    className="absolute top-3 right-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none"
                                 >
-                                    <svg className="h-6 w-6 fill-current" viewBox="0 0 20 20">
+                                    <svg className="h-5 w-5 fill-current" viewBox="0 0 20 20">
                                         <path
                                             fillRule="evenodd"
                                             d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -217,7 +267,7 @@ const ProductDetails = () => {
                                         />
                                     </svg>
                                 </button>
-                                <div className="py-6 px-8">
+                                <div className="py-6 px-6">
                                     <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
                                         Upload Market Item ({activeCurrency?.currency} {selectedFaceValue?.faceValue})
                                     </h2>

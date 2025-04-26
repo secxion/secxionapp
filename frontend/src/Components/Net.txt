@@ -1,650 +1,344 @@
-import React, { useContext, useState, useMemo, useCallback, useEffect } from "react";
-import { FcSearch } from "react-icons/fc";
-import { PiUserSquare } from "react-icons/pi";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import UserUploadMarket from './UserUploadMarket';
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+
+import SummaryApi from '../common';
+import { FaArrowLeft } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import GetInTouchFooter from './GetInTouchFooter';
+import Shimmer from './Shimmer';
 import { setUserDetails } from "../store/userSlice";
-import Context from "../Context";
-import { useDebounce } from "../hooks/useDebounce";
-import NotificationBadge from "../helper/NotificationBadge";
-import { Dialog, Transition } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTimes, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import ROLE from "../common/role";
-import SummaryApi from "../common";
-import { BiSearch } from 'react-icons/bi';
-import './Header.css';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import PDSidePanel from "./PDSidePanel";
+import currencyFullNames from "../helpers/currencyFullNames";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
-// ===============================
-// Search Panel Component (Mobile)
-// ===============================
-const SearchPanelMobile = ({ open, setOpen, search, setSearch, handleSearch }) => {
-    return (
-        <Transition.Root show={open} as={React.Fragment}>
-            <Dialog as="div" className="relative z-50" onClose={setOpen}>
-                <Transition.Child
-                    as={React.Fragment}
-                    enter="ease-out duration-200"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="ease-in duration-200"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                >
-                    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-                </Transition.Child>
+const ProductDetails = () => {
+    const [data, setData] = useState({
+        productName: '',
+        brandName: '',
+        category: '',
+        productImage: [],
+        description: '',
+        pricing: [],
+    });
+    const dispatch = useDispatch();
+    const { user } = useSelector((state) => state.user);
 
-                <div className="fixed inset-0 overflow-hidden">
-                    <div className="absolute inset-0 overflow-hidden">
-                        <div className="pointer-events-none fixed inset-x-0 bottom-0 flex max-w-full">
-                            <Transition.Child
-                                as={React.Fragment}
-                                enter="transform transition ease-in-out duration-200 sm:duration-200"
-                                enterFrom="translate-y-full"
-                                enterTo="translate-y-0"
-                                leave="transform transition ease-in-out duration-200 sm:duration-200"
-                                leaveFrom="translate-y-0"
-                                leaveTo="translate-y-full"
-                            >
-                                <Dialog.Panel className="pointer-events-auto relative w-full max-w-md">
-                                    <div className="bg-white py-6 shadow-lg rounded-t-lg">
-                                        <div className="px-4 sm:px-6">
-                                            <div className="flex items-start justify-between">
-                                                <Dialog.Title className="text-lg font-medium text-gray-900">
-                                                    Search
-                                                </Dialog.Title>
-                                                <div className="ml-3 h-7 flex items-center">
-                                                    <button
-                                                        type="button"
-                                                        className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-indigo-500"
-                                                        onClick={() => setOpen(false)}
-                                                    >
-                                                        <span className="sr-only">Close panel</span>
-                                                        <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="mt-6 px-4 sm:px-6">
-                                        <div className="relative rounded-md shadow-sm">
-                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                                <BiSearch className="h-5 w-5" aria-hidden="true" />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                name="search"
-                                                id="search"
-                                                className="block w-full rounded-md border-gray-300 pl-10 pr-3 py-2 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                                                placeholder="Search Trade..."
-                                                value={search}
-                                                onChange={(e) => setSearch(e.target.value)}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter' && search.trim()) {
-                                                        handleSearch();
-                                                        setOpen(false);
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </Dialog.Panel>
-                            </Transition.Child>
+    const [loading, setLoading] = useState(true);
+    const [showUploadForm, setShowUploadForm] = useState(false);
+    const [isPDSidePanelOpen, setIsPDSidePanelOpen] = useState(false);
+
+    const [activeCurrency, setActiveCurrency] = useState(null);
+    const [selectedFaceValue, setSelectedFaceValue] = useState(null);
+    const [error, setError] = useState(null);
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const tableContainerRef = useRef(null);
+    const [isOverflowing, setIsOverflowing] = useState(false);
+
+    const handleCurrencyChange = (currency) => {
+        const selectedCurrency = data.pricing.find(
+            (item) => item.currency === currency
+        );
+        setActiveCurrency(selectedCurrency);
+        setSelectedFaceValue(null);
+    };
+
+    const handleSell = (faceValue) => {
+        setSelectedFaceValue(faceValue);
+        setShowUploadForm(true);
+    };
+
+    const handleGoBack = () => {
+        navigate(-1);
+    };
+
+    useEffect(() => {
+        if (!id) return;
+        const fetchProductDetails = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const response = await fetch(SummaryApi.productDetails.url, {
+                    method: SummaryApi.productDetails.method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ productId: id }),
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData?.message || 'Failed to fetch product details');
+                }
+                const dataResponse = await response.json();
+                setData(dataResponse?.data);
+                setActiveCurrency(dataResponse?.data?.pricing?.[0] || null);
+            } catch (err) {
+                console.error('⚠️ Error fetching product details:', err);
+                setError(err.message);
+                toast.error(`⚠️ ${err.message}. Please try again later.`);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProductDetails();
+    }, [id]);
+
+    const handleLogout = useCallback(async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(SummaryApi.logout_user.url, {
+                method: SummaryApi.logout_user.method,
+                credentials: "include",
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                toast.success(data.message);
+                dispatch(setUserDetails(null));
+                navigate("/login");
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error("Logout failed. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    }, [navigate, dispatch]);
+
+    const toggleMobileMenu = useCallback(() => setIsPDSidePanelOpen(prev => !prev), []);
+
+    const closePDSidePanel = useCallback(() => setIsPDSidePanelOpen(false), []);
+
+    useEffect(() => {
+        const checkOverflow = () => {
+            if (tableContainerRef.current) {
+                setIsOverflowing(
+                    tableContainerRef.current.scrollHeight >
+                    tableContainerRef.current.clientHeight
+                );
+            }
+        };
+
+        checkOverflow();
+        window.addEventListener("resize", checkOverflow);
+
+        return () => {
+            window.removeEventListener("resize", checkOverflow);
+        };
+    }, [activeCurrency]);
+
+    const shouldShowOverflowIndicator = activeCurrency?.faceValues?.length > 5;
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-6 flex flex-col justify-center sm:py-12">
+                <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+                    <div className="relative px-4 py-10 bg-white dark:bg-gray-800 shadow-lg sm:rounded-3xl sm:p-20">
+                        <Shimmer type="heading" />
+                        <div className="mt-6 grid grid-cols-1 gap-6">
+                            <Shimmer type="paragraph" />
+                            <Shimmer type="paragraph" />
+                            <Shimmer type="paragraph" />
+                            <Shimmer type="button" />
                         </div>
                     </div>
                 </div>
-            </Dialog>
-        </Transition.Root>
-    );
-};
+            </div>
+        );
+    }
 
-// ===============================
-// Side Panel Component (Mobile Menu)
-// ===============================
-const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
-    const { user } = useSelector((state) => state.user);
-
-    return (
-        <Transition.Root show={open} as={React.Fragment}>
-            <Dialog as="div" className="fixed inset-0 z-50" onClose={onCloseMenu}>
-                <Transition.Child
-                    as={React.Fragment}
-                    enter="ease-in-out duration-300 transform"
-                    enterFrom="-translate-x-full"
-                    enterTo="translate-x-0"
-                    leave="ease-in-out duration-300 transform"
-                    leaveFrom="translate-x-0"
-                    leaveTo="-translate-x-full"
-                >
-                    <Dialog.Panel className="relative flex w-full max-w-xs flex-col bg-white pt-5 pb-4">
-                        <Transition.Child
-                            as={React.Fragment}
-                            enter="ease-in-out duration-300"
-                            enterFrom="opacity-0"
-                            enterTo="opacity-100"
-                            leave="ease-in-out duration-300"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-6 flex flex-col justify-center sm:py-12">
+                <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+                    <div className="absolute inset-0 bg-red-400 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+                    <div className="relative px-4 py-10 bg-white dark:bg-gray-800 shadow-lg sm:rounded-3xl sm:p-20 text-center">
+                        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
+                            Error Loading Product
+                        </h2>
+                        <p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
+                        <button
+                            onClick={handleGoBack}
+                            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         >
-                            <div className="absolute top-0 right-0 -mr-14 pt-2">
-                                <button
-                                    type="button"
-                                    className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                                    onClick={onCloseMenu}
-                                >
-                                    <span className="sr-only">Close menu</span>
-                                    <FontAwesomeIcon icon={faTimes} className="h-6 w-6 text-white" />
-                                </button>
-                            </div>
-                        </Transition.Child>
-                        <div className="flex flex-shrink-0 items-center px-4">
-                            <Link to="/" className="font-bold text-xl text-primary-500 mr-4" onClick={onCloseMenu}>
-                                Secxion
-                            </Link>
-                        </div>
-                        <div className="mt-5 h-0 flex-1 overflow-y-auto">
-                            <nav className="space-y-1 px-2">
-                                <Link to="/record" onClick={onCloseMenu} className="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
-                                    Transactions
-                                </Link>
-                                <Link to="/mywallet" onClick={onCloseMenu} className="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
-                                    Wallet
-                                </Link>
-                                <Link to="/profile" onClick={onCloseMenu} className="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
-                                    Profile
-                                </Link>
-                                <Link to="/datapad" onClick={onCloseMenu} className="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
-                                    DataPad
-                                </Link>
-                                {user?.role === ROLE.ADMIN && (
-                                    <Link to="/admin" onClick={onCloseMenu} className="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
-                                        Admin
-                                    </Link>
+                            Go Back
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="fixed min-h-screen w-screen left-0 right-0 bg-gray-50 dark:bg-gray-900 z-50">
+            <header className="bg-white dark:bg-gray-800 shadow-md py-4 border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 lg:px-8 sticky top-0 z-50">
+                <div className="flex items-center justify-between">
+                    <button onClick={handleGoBack} className="focus:outline-none">
+                        <FaArrowLeft className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                    </button>
+                    <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                        {data?.productName}
+                    </h2>
+                    <button
+                        onClick={toggleMobileMenu}
+                        className="text-xl font-semibold text-gray-800 dark:text-gray-200 focus:outline-none z-50"
+                        aria-expanded={isPDSidePanelOpen}
+                        aria-controls="pd-mobile-menu"
+                    >
+                        <FontAwesomeIcon icon={faBars} className="h-5 w-5" />
+                    </button>
+                </div>
+                {data?.pricing && data?.pricing.length > 0 && (
+                    <div className="mt-4">
+                        <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-inner overflow-x-auto py-2 px-4">
+                            <div className="flex items-center space-x-3">
+                                {data.pricing.map((currency) => {
+                                    const fullCurrencyName =
+                                        currencyFullNames[currency.currency] || currency.currency;
+                                    return (
+                                        <button
+                                            key={currency.currency}
+                                            className={`py-2 px-4 rounded-md text-sm font-medium focus:outline-none transition-colors duration-200 ${
+                                                activeCurrency?.currency === currency.currency
+                                                    ? 'bg-emerald-500 text-white shadow-md'
+                                                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                            }`}
+                                            onClick={() => handleCurrencyChange(currency.currency)}
+                                        >
+                                            {fullCurrencyName}
+                                        </button>
+                                    );
+                                })}
+                                {data.pricing?.length === 0 && (
+                                    <p className="text-gray-500 dark:text-gray-400">
+                                        No currencies available.
+                                    </p>
                                 )}
-                                <button
-                                    onClick={handleLogout}
-                                    className="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
-                                    disabled={loading}
-                                >
-                                    <FontAwesomeIcon icon={faSignOutAlt} className="mr-3 h-6 w-6" />
-                                    Logout
-                                </button>
-                            </nav>
+                            </div>
                         </div>
-                    </Dialog.Panel>
-                </Transition.Child>
-            </Dialog>
-        </Transition.Root>
-    );
-};
-
-const Header = () => {
-    const dispatch = useDispatch();
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [searchPanelOpen, setSearchPanelOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const { user } = useSelector((state) => state.user);
-    const { token } = useContext(Context);
-    const navigate = useNavigate();
-    const searchInput = useLocation();
-
-    const searchQuery = useMemo(() => {
-        const URLSearch = new URLSearchParams(searchInput.search);
-        return URLSearch.get("q") || "";
-    }, [searchInput]);
-
-    const [search, setSearch] = useState(searchQuery);
-    const debouncedSearch = useDebounce(search, 300);
-
-    useEffect(() => {
-        if (debouncedSearch.trim()) {
-            navigate(`/search?q=${encodeURIComponent(debouncedSearch)}`);
-        }
-    }, [debouncedSearch, navigate]);
-
-    const handleLogout = useCallback(async () => {
-        setLoading(true);
-        try {
-            const response = await fetch(SummaryApi.logout_user.url, {
-                method: SummaryApi.logout_user.method,
-                credentials: "include",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            const data = await response.json();
-
-            if (data.success) {
-                toast.success(data.message);
-                dispatch(setUserDetails(null));
-                navigate("/login");
-            } else {
-                toast.error(data.message);
-            }
-        } catch (error) {
-            toast.error("Logout failed. Please try again.");
-        } finally {
-            setLoading(false);
-        }
-    }, [dispatch, navigate, token]);
-
-    const toggleMobileMenu = useCallback(() => setMobileMenuOpen(prev => !prev), []);
-    const toggleSearchPanelOpen = useCallback(() => setSearchPanelOpen(prev => !prev), []);
-
-    const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
-
-    return (
-        <>
-            <header className="left-0 right-0 top-0 pt-6 mb-4 header-spa bg-white fixed w-full z-50 border-b-gray-500 border-t-black shadow-md transition-all duration-300 flex items-center justify-between px-6 sm:px-6 lg:px-8">
-                <div className="w-full mx-auto flex items-center justify-between px-4 md:px-6 lg:px-8">
-                    {/* Mobile Menu Button */}
-                    <button
-                        onClick={toggleMobileMenu}
-                        className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 md:hidden"
-                        aria-expanded={mobileMenuOpen}
-                        aria-controls="mobile-menu"
-                    >
-                        <FontAwesomeIcon icon={faBars} className="h-6 w-6" />
-                    </button>
-
-                    {/* Logo / Brand */}
-                    <Link to="/" className="font-bold text-xl text-primary-500 mr-4">
-                        Secxion
-                    </Link>
-
-                    {/* Search Bar (Desktop) */}
-                    <div className="hidden md:flex items-center rounded-md bg-gray-100 px-4 py-2 w-72 lg:w-80">
-                        <FcSearch className="h-5 w-5 text-gray-400 mr-2" />
-                        <input
-                            type="text"
-                            placeholder="Search gift cards..."
-                            className="bg-transparent border-none outline-none w-full text-sm text-gray-700 placeholder-gray-400"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
                     </div>
-
-                    {/* Navigation Links (Desktop) */}
-                    <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
-                        <Link to="/record" className="text-gray-600 hover:text-primary-500 transition duration-300">Transactions</Link>
-                        <Link to="/mywallet" className="text-gray-600 hover:text-primary-500 transition duration-300">Wallet</Link>
-                        <Link to="/profile" className="text-gray-600 hover:text-primary-500 transition duration-300">Profile</Link>
-                        <Link to="/datapad" className="text-gray-600 hover:text-primary-500 transition duration-300">DataPad</Link>
-                        {user?.role === ROLE.ADMIN && (
-                            <Link to="/admin" className="text-gray-600 hover:text-primary-500 transition duration-300">Admin</Link>
-                        )}
-                    </nav>
-
-                    {/* User Actions (Desktop) */}
-                    <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
-                        <Link to="/notifications" title="Notifications" aria-label="Notifications" className="relative">
-                            <NotificationBadge />
-                        </Link>
-                        {user?._id && (
-                            <button
-                                onClick={handleLogout}
-                                className="hidden md:flex items-center justify-center bg-transparent group"
-                                title="Logout"
-                                aria-label="Logout"
-                                disabled={loading}
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="w-8 h-8"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <circle cx="12" cy="12" r="10" fill="#1E293B" />
-                                    <path
-                                        d="M8 12h8m-3-3l3 3-3 3"
-                                        stroke="#F43F5E"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    />
-                                    <circle cx="12" cy="12" r="2" fill="#FACC15" />
-                                </svg>
-                            </button>
-                        )}
-                    </div>
-
-                    {/* Mobile Search Button */}
-                    <button
-                        onClick={toggleSearchPanelOpen}
-                        className="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 ml-4"
-                    >
-                        <BiSearch className="h-6 w-6" />
-                    </button>
-                </div>
-                {/* Mobile Search Panel */}
-                <SearchPanelMobile open={searchPanelOpen} setOpen={setSearchPanelOpen} search={search} setSearch={setSearch} handleSearch={() => {
-                    if (search.trim()) {
-                        navigate(`/search?q=${encodeURIComponent(search)}`);
-                        setSearchPanelOpen(false);
-                    }
-                }} />
+                )}
             </header>
-            {/* Mobile Menu / SidePanel */}
-            <SidePanel open={mobileMenuOpen} setOpen={setMobileMenuOpen} handleLogout={handleLogout} loading={loading} onCloseMenu={closeMobileMenu} />
-        </>
-    );
-};
 
-export default Header;
-
-
-
-
-///////////////////////
-
-
-
-import React, { useContext, useState, useMemo, useCallback, useEffect } from "react";
-import { FcSearch } from "react-icons/fc";
-import { PiUserSquare } from "react-icons/pi";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { setUserDetails } from "../store/userSlice";
-import Context from "../Context";
-import { useDebounce } from "../hooks/useDebounce";
-import NotificationBadge from "../helper/NotificationBadge";
-import { Dialog, Transition } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
-import SidePanel from "./SidePanel";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTimes, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import ROLE from "../common/role";
-import SummaryApi from "../common";
-import { BiSearch } from 'react-icons/bi';
-import './Header.css';
-
-// ===============================
-// Search Panel Component (Mobile)
-// ===============================
-const SearchPanelMobile = ({ open, setOpen, search, setSearch, handleSearch }) => {
-    return (
-        <Transition.Root show={open} as={React.Fragment}>
-            <Dialog as="div" className="relative z-50" onClose={setOpen}>
-                <Transition.Child
-                    as={React.Fragment}
-                    enter="ease-out duration-200"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="ease-in duration-200"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                >
-                    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-                </Transition.Child>
-
-                <div className="fixed inset-0 overflow-hidden">
-                    <div className="absolute inset-0 overflow-hidden">
-                        <div className="pointer-events-none fixed inset-x-0 bottom-0 flex max-w-full">
-                            <Transition.Child
-                                as={React.Fragment}
-                                enter="transform transition ease-in-out duration-200 sm:duration-200"
-                                enterFrom="translate-y-full"
-                                enterTo="translate-y-0"
-                                leave="transform transition ease-in-out duration-200 sm:duration-200"
-                                leaveFrom="translate-y-0"
-                                leaveTo="translate-y-full"
-                            >
-                                <Dialog.Panel className="pointer-events-auto relative w-full max-w-md">
-                                    <div className="bg-white py-6 shadow-lg rounded-t-lg">
-                                        <div className="px-4 sm:px-6">
-                                            <div className="flex items-start justify-between">
-                                                <Dialog.Title className="text-lg font-medium text-gray-900">
-                                                    Search
-                                                </Dialog.Title>
-                                                <div className="ml-3 h-7 flex items-center">
+            <main className="py-6 px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 gap-8">
+                    <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
+                        {activeCurrency && activeCurrency?.faceValues && activeCurrency?.faceValues.length > 0 ? (
+                            <div className="overflow-x-auto">
+                                <table ref={tableContainerRef} className="min-w-full table-auto text-left">
+                                    <thead className="bg-gray-100 dark:bg-gray-700 sticky top-0 z-10">
+                                        <tr>
+                                            <th className="px-4 py-3 text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                                Face Value
+                                            </th>
+                                            <th className="px-4 py-3 text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                                Rate ({activeCurrency?.currency})
+                                            </th>
+                                            <th className="px-4 py-3 text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                                Description
+                                            </th>
+                                            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                                Action
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white dark:bg-gray-800">
+                                        {activeCurrency.faceValues.map((fv, index) => (
+                                            <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                                <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-200">
+                                                    {fv.faceValue}
+                                                </td>
+                                                <td className="px-4 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">
+                                                    {fv.sellingPrice}
+                                                </td>
+                                                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                                                    {fv.description}
+                                                </td>
+                                                <td className="px-4 py-3 text-center">
                                                     <button
-                                                        type="button"
-                                                        className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-indigo-500"
-                                                        onClick={() => setOpen(false)}
+                                                        className="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50"
+                                                        onClick={() => handleSell(fv)}
                                                     >
-                                                        <span className="sr-only">Close panel</span>
-                                                        <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                                                        Sell Now
                                                     </button>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                {shouldShowOverflowIndicator && (
+                                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-blue-500 animate-bounce z-10">
+                                        <FontAwesomeIcon icon={faChevronDown} size="lg" />
                                     </div>
-                                    <div className="mt-6 px-4 sm:px-6">
-                                        <div className="relative rounded-md shadow-sm">
-                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                                <BiSearch className="h-5 w-5" aria-hidden="true" />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                name="search"
-                                                id="search"
-                                                className="block w-full rounded-md border-gray-300 pl-10 pr-3 py-2 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                                                placeholder="Search Trade..."
-                                                value={search}
-                                                onChange={(e) => setSearch(e.target.value)}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter' && search.trim()) {
-                                                        handleSearch();
-                                                        setOpen(false);
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </Dialog.Panel>
-                            </Transition.Child>
-                        </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-8 flex items-center justify-center h-48">
+                                <span className="text-gray-500 dark:text-gray-400">
+                                    No face values available for the selected currency.
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
-            </Dialog>
-        </Transition.Root>
-    );
-};
-const Header = () => {
-    const dispatch = useDispatch();
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [searchPanelOpen, setSearchPanelOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const { user } = useSelector((state) => state.user);
-    const { token } = useContext(Context);
-    const navigate = useNavigate();
-    const searchInput = useLocation();
 
-    const searchQuery = useMemo(() => {
-        const URLSearch = new URLSearchParams(searchInput.search);
-        return URLSearch.get("q") || "";
-    }, [searchInput]);
-
-    const [search, setSearch] = useState(searchQuery);
-    const debouncedSearch = useDebounce(search, 300);
-
-    useEffect(() => {
-        if (debouncedSearch.trim()) {
-            navigate(`/search?q=${encodeURIComponent(debouncedSearch)}`);
-        }
-    }, [debouncedSearch, navigate]);
-
-    const handleLogout = useCallback(async () => {
-        setLoading(true);
-        try {
-            const response = await fetch(SummaryApi.logout_user.url, {
-                method: SummaryApi.logout_user.method,
-                credentials: "include",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            const data = await response.json();
-
-            if (data.success) {
-                toast.success(data.message);
-                dispatch(setUserDetails(null));
-                navigate("/login");
-            } else {
-                toast.error(data.message);
-            }
-        } catch (error) {
-            toast.error("Logout failed. Please try again.");
-        } finally {
-            setLoading(false);
-        }
-    }, [dispatch, navigate, token]);
-
-    const toggleMobileMenu = useCallback(() => setMobileMenuOpen(prev => !prev), []);
-    const toggleSearchPanelOpen = useCallback(() => setSearchPanelOpen(prev => !prev), []);
-
-    const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
-
-    return (
-        <>
-            <header className="left-0 right-0 top-0 pt-6 mb-4 header-spa bg-white fixed w-full z-50 border-b-gray-500 border-t-black shadow-md transition-all duration-300 flex items-center justify-between px-6 sm:px-6 lg:px-8">
-                <div className="w-full mx-auto flex items-center justify-between px-4 md:px-6 lg:px-8">
-                    {/* Mobile Menu Button */}
-                    <button
-                        onClick={toggleMobileMenu}
-                        className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 md:hidden"
-                        aria-expanded={mobileMenuOpen}
-                        aria-controls="mobile-menu"
-                    >
-                        <FontAwesomeIcon icon={faBars} className="h-6 w-6" />
-                    </button>
-
-                    {/* Logo / Brand */}
-                    <Link to="/" className="font-bold text-xl text-primary-500 mr-4">
-                        Secxion
-                    </Link>
-
-                    {/* Search Bar (Desktop) */}
-                    <div className="hidden md:flex items-center rounded-md bg-gray-100 px-4 py-2 w-72 lg:w-80">
-                        <FcSearch className="h-5 w-5 text-gray-400 mr-2" />
-                        <input
-                            type="text"
-                            placeholder="Search gift cards..."
-                            className="bg-transparent border-none outline-none w-full text-sm text-gray-700 placeholder-gray-400"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                    </div>
-
-                    {/* Navigation Links (Desktop) */}
-                    <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
-                        <Link to="/record" className="text-gray-600 hover:text-primary-500 transition duration-300">Transactions</Link>
-                        <Link to="/mywallet" className="text-gray-600 hover:text-primary-500 transition duration-300">Wallet</Link>
-                        <Link to="/profile" className="text-gray-600 hover:text-primary-500 transition duration-300">Profile</Link>
-                        <Link to="/datapad" className="text-gray-600 hover:text-primary-500 transition duration-300">DataPad</Link>
-                        {user?.role === ROLE.ADMIN && (
-                            <Link to="/admin" className="text-gray-600 hover:text-primary-500 transition duration-300">Admin</Link>
-                        )}
-                    </nav>
-
-                    {/* User Actions (Desktop) */}
-                    <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
-                        <Link to="/notifications" title="Notifications" aria-label="Notifications" className="relative">
-                            <NotificationBadge />
-                        </Link>
-                        {user?._id && (
+                {showUploadForm && selectedFaceValue && activeCurrency && (
+                    <div className="fixed z-50 inset-0 overflow-y-auto bg-black bg-opacity-50">
+                        <div className="flex items-center justify-center min-h-screen p-4">
+                            <div className="relative bg-white dark:bg-gray-800 w-full max-w-md rounded-lg shadow-xl">
                                 <button
-                                    onClick={handleLogout}
-                                    className="hidden md:flex items-center justify-center bg-transparent group"
-                                    title="Logout"
-                                    aria-label="Logout"
-                                    disabled={loading}
+                                    onClick={() => setShowUploadForm(false)}
+                                    className="absolute top-3 right-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none"
                                 >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="w-8 h-8"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <circle cx="12" cy="12" r="10" fill="#1E293B" />
+                                    <svg className="h-5 w-5 fill-current" viewBox="0 0 20 20">
                                         <path
-                                            d="M8 12h8m-3-3l3 3-3 3"
-                                            stroke="#F43F5E"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
+                                            fillRule="evenodd"
+                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                            clipRule="evenodd"
                                         />
-                                        <circle cx="12" cy="12" r="2" fill="#FACC15" />
                                     </svg>
                                 </button>
-                            )}
-                    </div>
-
-                    {/* Mobile Search Button */}
-                    <button
-                        onClick={toggleSearchPanelOpen}
-                        className="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 ml-4"
-                    >
-                        <BiSearch className="h-6 w-6" />
-                    </button>
-                </div>
-                {/* Mobile Search Panel */}
-                <Transition.Root show={searchPanelOpen} as={React.Fragment}>
-                    <Dialog as="div" className="fixed inset-0 z-50" onClose={toggleSearchPanelOpen}>
-                        <Transition.Child
-                            as={React.Fragment}
-                            enter="ease-out duration-300"
-                            enterFrom="opacity-0"
-                            enterTo="opacity-100"
-                            leave="ease-in duration-200"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                        >
-                            <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" />
-                        </Transition.Child>
-
-                        <div className="fixed inset-0 overflow-hidden">
-                            <div className="absolute inset-0 overflow-y-auto">
-                                <div className="flex min-h-full items-center justify-center p-4 text-center">
-                                    <Transition.Child
-                                        as={React.Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0 scale-95"
-                                        enterTo="opacity-100 scale-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100 scale-100"
-                                        leaveTo="opacity-0 scale-95"
-                                    >
-                                        <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-md bg-white p-6 text-left align-middle shadow-xl transition-all">
-                                            <div className="flex items-center justify-between">
-                                                <Dialog.Title
-                                                    as="h3"
-                                                    className="text-lg font-medium leading-6 text-gray-900"
-                                                >
-                                                    Search
-                                                </Dialog.Title>
-                                                <button
-                                                    type="button"
-                                                    className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
-                                                    onClick={toggleSearchPanelOpen}
-                                                >
-                                                    <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                                                </button>
-                                            </div>
-                                            <div className="mt-2">
-                                                <input
-                                                    type="text"
-                                                    placeholder="Search gift cards..."
-                                                    className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                                    value={search}
-                                                    onChange={(e) => setSearch(e.target.value)}
-                                                />
-                                            </div>
-                                        </Dialog.Panel>
-                                    </Transition.Child>
+                                <div className="py-6 px-6">
+                                    <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
+                                        Upload Market Item ({activeCurrency?.currency} {selectedFaceValue?.faceValue})
+                                    </h2>
+                                    <UserUploadMarket
+                                        onClose={() => setShowUploadForm(false)}
+                                        fetchData={() => setShowUploadForm(false)}
+                                        productDetails={{
+                                            productName: data.productName,
+                                            productImage: data.productImage[0],
+                                            currency: activeCurrency.currency,
+                                            rate: selectedFaceValue.sellingPrice,
+                                            faceValue: selectedFaceValue.faceValue,
+                                            description: selectedFaceValue.description,
+                                        }}
+                                    />
                                 </div>
                             </div>
                         </div>
-                    </Dialog>
-                </Transition.Root>
-                {/* Mobile Menu / SidePanel */}
-                <SidePanel open={mobileMenuOpen} setOpen={setMobileMenuOpen} handleLogout={handleLogout} loading={loading} onCloseMenu={closeMobileMenu} />
-            </header>
-        </>
+                    </div>
+                )}
+            </main>
+
+            <GetInTouchFooter />
+            <PDSidePanel
+                isSidePanelOpen={isPDSidePanelOpen}
+                onCloseSidePanel={closePDSidePanel}
+                onLogout={handleLogout}
+            />
+        </div>
     );
 };
 
-export default Header;
+export default ProductDetails;
