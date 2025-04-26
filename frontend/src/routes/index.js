@@ -40,9 +40,6 @@ import Privacy from "../Components/Privacy";
 import Profiler from "../Components/Profiler";
 
 
-
-
-
 const publicRoutes = [
   {
     path: "login",
@@ -84,7 +81,8 @@ const protectedRoutes = [
   { path: "product-category", element: <CategoryProduct /> },
   { path: "product/:id", element: <ProductDetails /> },
   { path: "search", element: <SearchProduct /> },
-  { path: "profile", element: <Profiler /> },
+  { path: "myprofile", element: <Profiler /> },
+  { path: "profile", element: <Profile /> },
   { path: "settings", element: <Settings /> },
   { path: "report", element: <Report /> },
   { path: "reports/:reportId", element: <ReportDetailsPage /> },
