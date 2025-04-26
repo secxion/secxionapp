@@ -14,7 +14,6 @@ import {
     signupUserAPI,
 } from "./services/apiService";
 import "./styles/Loader.css";
-import Profiler from "./Components/Profiler";
 
 function setViewportHeight() {
     const vh = window.innerHeight * 0.01;
@@ -93,7 +92,6 @@ function App() {
                     {user && <Net blogs={blogs} fetchBlogs={fetchBlogs} />}
                     <main className="main-content">
                         {user && <Header />}
-                        {user && <Profiler />} {/* Render the Profiler component */}
                         <div>
                             <Outlet />
                         </div>
