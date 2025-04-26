@@ -138,8 +138,8 @@ export const ContextProvider = ({ children }) => {
     }, [token, user, fetchWalletBalance]);
 
     const login = async (userData, userToken) => {
-        if (!userToken) {
-            console.error("⚠️ Cannot log in without a token!");
+        if (!userData) {
+            console.error("⚠️ Cannot log in without user!");
             return;
         }
 
