@@ -1,4 +1,4 @@
-const backendDomain = process.env.REACT_APP_BACKEND_URL//"http://localhost:5000";
+const backendDomain = process.env.REACT_APP_BACKEND_URL//"http://localhost:5000"//"https://secxionx.onrender.com";
 
 const SummaryApi = {
     signUP : {

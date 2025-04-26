@@ -191,26 +191,13 @@ const ProductDetails = () => {
                 
             </header>
 
-            <main className="min-h-screen py-32 px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-                        {data?.productImage && data?.productImage.length > 0 ? (
-                            <ProductImageCarousel images={data.productImage} />
-                        ) : (
-                            <div className="bg-gray-200 dark:bg-gray-700 rounded-lg aspect-w-8 aspect-h-4 flex items-center justify-center">
-                                <span className="text-gray-500 dark:text-gray-400">No Image Available</span>
-                            </div>
-                        )}
-                        <div className="p-6">
-                            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
-                                {data?.brandName} - {data?.productName}
-                            </h2>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                                Category: <span className="font-medium">{data?.category}</span>
-                            </p>
+            <main className="min-h-screen py-24 px-4 sm:px-6 lg:px-8">
+            <div className='border rounded-lg p-4 bg-gray-50 shadow-inner mb-2'>
+            <div className='flex items-center gap-2'>
+                        <div className="p-6">      
                             <p className="text-gray-700 dark:text-gray-300">{data?.description}</p>
                         </div>
-                    </div> */}
+                    </div>
 
                     <div className=" w-full left-0 rounded-lg shadow-md overflow-y-auto">
                         <div className=" p-6 ">
