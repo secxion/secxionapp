@@ -74,7 +74,7 @@ const WalletDashboard = () => {
                         <FaWallet className="mr-2 text-blue-500" />
                         <span className="text-gray-800">Wallet Dashboard</span>
                     </h2>
-                        <Link to={'/'} className="mr-4 text-gray-700 hover:text-blue-500 transition-colors">
+                        <Link to={'/profile'} className="mr-4 text-gray-700 hover:text-blue-500 transition-colors">
                     Hi, {user.name}! 👋</Link>
                         <button onClick={toggleSidePanel} className="md:hidden">
                             <FaBars className="text-gray-600 hover:text-blue-500 transition-colors" />

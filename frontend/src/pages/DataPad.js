@@ -61,7 +61,7 @@ const DataPad = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.2 }}
-                            className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex justify-center items-center"
+                            className="fixed left-0 w-full h-full bg-black bg-opacity-50 z-50 flex justify-center items-center"
                             onClick={(e) => { if (e.target === e.currentTarget) closeUpload(); }} // Close on backdrop click
                         >
                             <UploadData
@@ -77,7 +77,7 @@ const DataPad = () => {
                 {/* Notes List */}
                 <main className="w-full flex-1">
                     
-                    <div className="mt-4 bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+                    <div className="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
                         <div className="p-4">
                             {isLoading ? (
                                 <div className="flex flex-col items-center justify-center py-10">

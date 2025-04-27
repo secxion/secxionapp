@@ -10,7 +10,7 @@ const Report = () => {
     }, []);
 
     return (
-        <div>
+        <div className="mt-12">
             <ReportForm onReportSubmit={handleReportSubmit} />
             <ReportList newReport={newReport} />
         </div>

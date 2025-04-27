@@ -67,7 +67,7 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
                         </Link>
                         </div>
                         <nav className="mt-5 space-y-1 px-2">
-                            <Link to="/home" className="bg-gray-100 text-gray-900 group flex items-center rounded-md px-2 py-2 text-base font-medium hover:bg-gray-200 hover:text-primary-500" onClick={handleLinkClick}>
+                            <Link to="/" className="bg-gray-100 text-gray-900 group flex items-center rounded-md px-2 py-2 text-base font-medium hover:bg-gray-200 hover:text-primary-500" onClick={handleLinkClick}>
                                 <HomeIcon className="mr-3 h-6 w-6 text-gray-500 group-hover:text-primary-500" aria-hidden="true" />
                                 Home
                             </Link>
@@ -93,7 +93,7 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
                             </Link>
                             <Link to="/report" className="text-gray-600 group flex items-center rounded-md px-2 py-2 text-base font-medium hover:bg-gray-200 hover:text-primary-500" onClick={handleLinkClick}>
                                 <PhoneIcon className="mr-3 h-6 w-6 text-gray-500 group-hover:text-primary-500" aria-hidden="true" />
-                                Connect
+                                Connect with us
                             </Link>
                             {user?.role === ROLE.ADMIN && (
                                 <Link to="/admin-panel" className="text-gray-600 group flex items-center rounded-md px-2 py-2 text-base font-medium hover:bg-gray-200 hover:text-primary-500" onClick={handleLinkClick}>

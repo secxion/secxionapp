@@ -61,11 +61,11 @@ const NetBlog = () => {
     };
 
     const handleCommunityFeedClick = () => {
-        window.open('/community-feed', '_blank');
+        window.open('/community-feed');
     };
 
     return (
-        <div className="container mt-6">
+        <div className="container mt-4">
             <div className="flex justify-end mb-4">
                 <button
                     onMouseEnter={fetchCommunityFeedData}

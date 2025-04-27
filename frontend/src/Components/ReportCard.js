@@ -1,4 +1,3 @@
-// ReportCard.js
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import SummaryApi from "../common";
 import { MdSend, MdClose, MdAdd } from "react-icons/md";
@@ -118,14 +117,14 @@ const ReportCard = () => {
   return (
     <div className="container fixed w-full h-screen flex flex-col bg-gradient-to-br from-white to-gray-50">
       {/* Header */}
-      <div className="w-full px-4 py-4 mt-8 border-b flex items-center justify-between bg-white shadow-sm">
+      <div className="w-full px-4 mt-16 border-b flex items-center justify-between bg-white shadow-sm">
         <div className="flex flex-col">
           <h2 className="text-lg font-semibold text-blue-700">{report.category}</h2>
           <span className="text-xs text-gray-500">Report ID: {report._id.slice(-6)}</span>
         </div>
         <button
           onClick={() => navigate("/report")}
-          className="text-gray-500 hover:text-red-500 p-2 rounded-full"
+          className="text-gray-500 hover:text-red-500 p-2 mt-8 rounded-full"
         >
           <MdClose className="text-2xl" />
         </button>

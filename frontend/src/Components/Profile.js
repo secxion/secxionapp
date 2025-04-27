@@ -142,9 +142,9 @@ const Profile = () => {
 
     if (loadingProfile || isLoadingBankAccounts) {
         return (
-            <div className="mt-16 flex flex-col p-4 m-5 space-y-4 border-b bg-gray-100 rounded-md shadow">
-                <div className="flex items-center">
-                    <div className="w-20 h-20 rounded-full bg-gray-300 animate-pulse mr-5"></div>
+            <div className="mt-20 flex flex-col p-4 m-5 space-y-4 border-b bg-gray-100 rounded-md shadow">
+                <div className="flex items-center justify-between border-b pt-20">
+                <div className="w-20 h-20 rounded-full bg-gray-300 animate-pulse mr-5"></div>
                     <div className="flex-grow">
                         <div className="bg-gray-300 h-6 w-3/4 rounded-md animate-pulse mb-2"></div>
                         <div className="bg-gray-300 h-4 w-1/2 rounded-md animate-pulse"></div>
@@ -160,7 +160,7 @@ const Profile = () => {
 
     if (errorProfile || errorBankAccounts) {
         return (
-            <div className="mt-16 p-5 text-red-500 border border-red-500 bg-red-100 rounded-md m-5">
+            <div className="mt-20 p-5 text-red-500 border border-red-500 bg-red-100 rounded-md m-5">
                 {errorProfile && <p>Error loading profile: {errorProfile}</p>}
                 {errorBankAccounts && <p>Error loading bank accounts: {errorBankAccounts}</p>}
             </div>
@@ -169,8 +169,8 @@ const Profile = () => {
 
     if (profileData) {
         return (
-            <div className="container fixed w-screen left-0 right-0 mt-12 flex flex-col p-8 m-5 space-y-6 bg-white rounded-md shadow">
-                <div className="flex items-center justify-between border-b pb-4">
+            <div className="container fixed w-screen left-0 right-0 mt-20 flex flex-col p-8 m-5 space-y-6 bg-white rounded-md shadow">
+                <div className="flex items-center justify-between border-b pt-24">
                     <div className="flex items-center">
                         <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mr-5 overflow-hidden">
                             {profileData?._id && (
@@ -205,7 +205,7 @@ const Profile = () => {
                         onClick={handleEditProfile}
                         className="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
                     >
-                        <FaEdit className="mr-2" /> Edit Profile
+                        <FaEdit className="mr-2" />
                     </button>
                 </div>
 

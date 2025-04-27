@@ -4,7 +4,6 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-
 import uploadImage from '../helpers/uploadImage';
 import DisplayImage from './DisplayImage';
 import SummaryApi from '../common';
@@ -235,7 +234,7 @@ const UserUploadMarket = ({
                                     </div>
                                 ))
                             ) : (
-                                <p className='text-red-600 text-sm'>⚠️ Please upload at least one product image.</p>
+                                <p className='text-red-600 text-sm'></p>
                             )}
                         </div>
                     </div>
@@ -259,7 +258,7 @@ const UserUploadMarket = ({
 
                     <div className='mt-4'>
                         <label className='block font-medium text-gray-700 mb-2'>
-                            💲 Calculated Total Amount:
+                           = Calculated Total Amount:
                         </label>
                         <div className='p-3 border rounded-lg bg-gray-50 text-gray-800 font-semibold'>
                             ₦{parseFloat(data.calculatedTotalAmount || 0).toLocaleString("en-NG", { minimumFractionDigits: 2 })}
@@ -278,7 +277,7 @@ const UserUploadMarket = ({
                             onChange={handleOnChange}
                             rows={4}
                             className='w-full p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring focus:ring-blue-300 shadow-sm'
-                            placeholder="Any specific notes or details?"
+                            placeholder="Code, specific notes or details?"
                         ></textarea>
                     </div>
                     <button

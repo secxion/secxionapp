@@ -208,9 +208,12 @@ const ProductDetails = () => {
                                             key={fv.faceValue}
                                             className="bg-gray-100 dark:bg-gray-700 rounded-md p-4 flex items-center justify-between"
                                         >
-                                            <div>
+                                            <div className='grid grid-col-3'>
                                                 <span className="font-semibold text-gray-800 dark:text-gray-200">
-                                                    {fv.faceValue} {activeCurrency?.currency}
+                                                    facevalue: {fv.faceValue} {activeCurrency?.currency}
+                                                </span>
+                                                <span className="font-semibold text-gray-800 dark:text-gray-200">
+                                                    rate: {fv.sellingPrice}
                                                 </span>
                                                 {fv.description && (
                                                     <p className="text-sm text-gray-600 dark:text-gray-400">

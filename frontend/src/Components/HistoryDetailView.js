@@ -52,13 +52,12 @@ const HistoryDetailView = ({
   };
 
   return (
-    <div className="container fixed inset-0 flex items-start justify-center bg-gray-800 bg-opacity-50 p-4 z-50">
+    <div className=" fixed inset-0 flex items-start justify-center bg-gray-800 bg-opacity-50 p-4 z-50">
   <div className="bg-white p-6 rounded-2xl w-full max-w-2xl shadow-lg mt-20"
        style={{ maxHeight: '85vh', overflowY: 'auto' }}>
 
-        
         <div className="flex justify-between items-center mb-6">
-          <h2 className="font-extrabold text-2xl text-gray-800">Record Details</h2>
+          <h2 className="font-extrabold text-2xl text-gray-800">Details</h2>
           <button className="text-2xl text-gray-500 hover:text-red-600 cursor-pointer" onClick={onClose}>
             <CgClose />
           </button>
