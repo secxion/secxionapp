@@ -158,7 +158,7 @@ const UserUploadMarket = ({
     };
 
     return (
-        <div className='container fixed w-full h-full bg-gray-800 bg-opacity-50 top-0 left-0 flex justify-center items-center pt-16'>
+        <div className=' fixed w-full h-full bg-gray-800 bg-opacity-50 top-0 left-0 flex justify-center items-center pt-16'>
             <div className='bg-white p-6 rounded-2xl w-full max-w-2xl shadow-lg transition-transform transform scale-95 hover:scale-100 duration-300' style={{ maxHeight: '90vh', overflowY: 'auto' }}>
                 <div className='flex justify-between items-center mb-6'>
                     <h2 className='font-extrabold text-2xl text-gray-800'>📦 Upload Product Details</h2>
