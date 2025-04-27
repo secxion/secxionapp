@@ -62,8 +62,7 @@ export const fetchWalletBalanceAPI = async () => {
     }
 };
 
-// New API function for signup
-export const signupUserAPI = async (userData) => {
+export const signinUserAPI = async (userData) => {
     try {
         const response = await fetch(SummaryApi.signIn.url, {
             method: SummaryApi.signIn.method,

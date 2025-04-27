@@ -16,7 +16,7 @@ const Profiler = () => {
 
   return (
     <div className="relative">
-      <AnimatePresence>
+      <AnimatePresence>       
         {isVisible && (
           <motion.div
             initial={{ opacity: 0, x: 100 }}

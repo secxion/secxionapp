@@ -11,7 +11,7 @@ const Buzz = () => {
       </div>
 
       {/* Create Post Section (Fixed at the top below the header) */}
-      <div className="bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <div className="bg-gray-100 mt-8 md:mt-6 sm:mt-6 lg:mt-6 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <CreatePostCard />
       </div>
 

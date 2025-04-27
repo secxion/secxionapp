@@ -36,7 +36,7 @@ const Login = () => {
       if (result.success) {
         toast.success(result.message);
         fetchUserDetails();
-        navigate("/home");
+        navigate("/");
       } else {
         setErrorMessage(result.message || "Invalid credentials. Please try again.");
         toast.error(result.message);

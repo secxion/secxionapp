@@ -81,7 +81,7 @@ const CommunityFeed = () => {
     );
   }, []);
 
-  if (loading) return <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">Loading community feed...</div>;
+  if (loading) return <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">Loading feed...</div>;
   if (error) return <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center text-red-500">Error loading community feed: {error}</div>;
 
   return (

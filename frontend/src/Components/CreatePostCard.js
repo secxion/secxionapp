@@ -63,7 +63,7 @@ const CreatePostCard = ({ onPostCreated, loading, error }) => {
       });
       const data = await response.json();
       if (data.success) {
-        toast.success('Post submitted, await approval.');
+        toast.success('Post submitted, await approval');
         setNewPostContent('');
         setUploadedImage("");
         window.dispatchEvent(new CustomEvent('newPostCreated'));
@@ -80,7 +80,7 @@ const CreatePostCard = ({ onPostCreated, loading, error }) => {
   return (
     <motion.form
       onSubmit={handlePostSubmit}
-      className="container bg-white dark:bg-gray-800 shadow-sm p-4"
+      className="container bg-white dark:bg-gray-800 shadow-sm p-8"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}

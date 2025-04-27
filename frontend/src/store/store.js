@@ -6,7 +6,7 @@ import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist
 import userReducer from "./userSlice";
 
 const persistConfig = {
-  key: "user",
+  key: "user, token",
   storage,
   whitelist: ["token", "user", "isLoggedIn"], 
 };

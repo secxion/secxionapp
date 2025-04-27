@@ -74,7 +74,6 @@ const publicRoutes = [
 
 const protectedRoutes = [
   { path: "/", element: <Home /> },
-  { path: "home", element: <Home /> },
   { path: "section", element: <Section /> },
   { path: "userMarketUpload", element: <UserUploadMarket /> },
   { path: "record", element: <UserMarket /> },

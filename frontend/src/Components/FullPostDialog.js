@@ -1,4 +1,3 @@
-// FullPostDialog.js
 import React, { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { formatDistanceToNow } from 'date-fns';
@@ -44,7 +43,7 @@ const FullPostDialog = ({ post, onClose, onCommentAdded }) => {
 
   return (
     <motion.div
-      className="container fixed top-0 left-0 mt-6 bottom-0 w-full h-full bg-black bg-opacity-50 z-50 flex items-center justify-center"
+      className="container fixed top-8 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex items-center justify-center"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}

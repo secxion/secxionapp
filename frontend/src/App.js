@@ -11,7 +11,7 @@ import {
     fetchMarketDataAPI,
     fetchBlogsAPI,
     fetchWalletBalanceAPI,
-    signupUserAPI,
+    signinUserAPI,
 } from "./services/apiService";
 import "./styles/Loader.css";
 
@@ -86,7 +86,7 @@ function App() {
     }
 
     return (
-        <Context.Provider value={{ fetchUserDetails, fetchMarketData, marketData, user, fetchBlogs, blogs, walletBalance, fetchWalletBalance, signupUserAPI }}> {/* Pass signupUserAPI in context */}
+        <Context.Provider value={{ fetchUserDetails, fetchMarketData, marketData, user, fetchBlogs, blogs, walletBalance, fetchWalletBalance, signinUserAPI }}>
             <div className="global-container">
                 <Suspense fallback={<Loader />}>
                     {user && <Net blogs={blogs} fetchBlogs={fetchBlogs} />}

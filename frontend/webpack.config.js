@@ -12,7 +12,7 @@ module.exports = {
       "querystring": require.resolve("querystring-es3"),
     },
     alias: {
-      '@/components': path.resolve(__dirname, 'src/components/'), // Alias for @/components
+      '@/components': path.resolve(__dirname, 'src/components/'),
     },
   },
   plugins: [

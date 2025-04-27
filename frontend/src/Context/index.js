@@ -13,23 +13,17 @@ export const ContextProvider = ({ children }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log("Checking local storage for user and token...");
-
         const storedUser = localStorage.getItem("user");
         const storedToken = localStorage.getItem("token");
 
-        console.log("Raw stored user:", storedUser);
-        console.log("Raw stored token:", storedToken);
 
         if (storedUser) {
             try {
                 const parsedUser = JSON.parse(storedUser);
-                console.log("Parsed User:", parsedUser);
 
                 setUser(parsedUser);
                 if (storedToken) {
                     setToken(storedToken);
-                    console.log("Token set successfully:", storedToken);
                 } else {
                     console.warn("⚠️ No token found, but user exists.");
                 }
@@ -58,8 +52,6 @@ export const ContextProvider = ({ children }) => {
     const fetchUserDetails = useCallback(async () => {
         if (!token) return;
 
-        console.log("Fetching user details...");
-
         try {
             const response = await fetch(SummaryApi.current_user.url, {
                 method: SummaryApi.current_user.method,
@@ -75,7 +67,6 @@ export const ContextProvider = ({ children }) => {
             }
 
             const data = await response.json();
-            console.log("User details fetched successfully:", data);
             setUser(data);
             dispatch(setUserDetails(data));
 
@@ -91,9 +82,7 @@ export const ContextProvider = ({ children }) => {
             console.warn("⚠️ No token or user available. Cannot fetch wallet balance.");
             return;
         }
-    
-        console.log("Fetching wallet balance...");
-        try {
+            try {
             let url = SummaryApi.walletBalance.url;
             let headers = { "Content-Type": "application/json" };
     
@@ -117,7 +106,6 @@ export const ContextProvider = ({ children }) => {
     
             const data = await response.json();
             if (data.success) {
-                console.log("Wallet balance fetched successfully:", data.balance);
                 setWalletBalance(data.balance);
             } else {
                 console.error("Failed to fetch wallet balance:", data.message);
@@ -143,10 +131,6 @@ export const ContextProvider = ({ children }) => {
             return;
         }
 
-        console.log("User logging in...");
-        console.log("User Data:", userData);
-        console.log("User Token:", userToken);
-
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("token", userToken);
         setUser(userData);
@@ -156,12 +140,9 @@ export const ContextProvider = ({ children }) => {
     };
 
     const logout = () => {
-        console.log("Logging out...");
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         setUser(null);
-        setToken(null);
-        setWalletBalance(null);
         dispatch(setUserDetails(null));
     };
 
