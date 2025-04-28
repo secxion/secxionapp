@@ -8,6 +8,7 @@ import uploadImage from '../helpers/uploadImage';
 import DisplayImage from './DisplayImage';
 import SummaryApi from '../common';
 import currencyData from '../helpers/currencyData';
+import flagImageMap from '../helpers/flagImageMap';
 
 const UserUploadMarket = ({
     onClose = () => { },
@@ -171,20 +172,34 @@ const UserUploadMarket = ({
                 </div>
 
                 {productDetails && (
-                    <div className='border rounded-lg p-4 bg-gray-50 shadow-inner mb-6'>
-                        <div className='flex items-center gap-4'>
-                            <img
-                                src={productDetails.productImage || ''}
-                                alt='Product Preview'
-                                className='w-24 h-24 object-cover rounded-lg border'
-                            />
+                    <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 mb-6">
+                        <div className="flex items-center p-6">
+                            <div className="relative w-24 h-24 mr-6 rounded-lg overflow-hidden shadow-sm">
+                                <img
+                                    src={productDetails.productImage || ''}
+                                    alt="Product Preview"
+                                    className="object-cover w-full h-full"
+                                />
+                            </div>
                             <div>
-                                <h3 className='font-bold text-gray-800 text-lg'>{productDetails.productName}</h3>
-                                <p className='text-gray-600'><span className="font-bold">Currency:</span> {productDetails.currency}</p>
-                                <p className='text-gray-600'><span className="font-bold">Face Value:</span> {productDetails.faceValue}</p>
-                                <p className='text-gray-600'><span className="font-bold">Rate:</span> {productDetails.rate}</p>
-                                <p className='text-gray-600'><span className="font-bold">Require:</span> {productDetails.description}</p>
-
+                                <h3 className="font-semibold text-indigo-700 text-xl mb-1">{productDetails.productName}</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700 items-center">
+                                    <p>
+                                        <span className="font-medium text-gray-800">Currency:</span>
+                                        {flagImageMap[productDetails.currency] && (
+                                            <img
+                                                src={flagImageMap[productDetails.currency]}
+                                                alt={`${productDetails.currency} Flag`}
+                                                className="w-5 h-5 mr-1 rounded-sm object-contain shadow-inner inline-block"
+                                                style={{ minWidth: '20px', minHeight: '20px' }}
+                                            />
+                                        )}
+                                        {productDetails.currency}
+                                    </p>
+                                    <p><span className="font-medium text-gray-800">Face Value:</span> {productDetails.faceValue}</p>
+                                    <p><span className="font-medium text-gray-800">Rate:</span> {productDetails.rate}</p>
+                                    <p><span className="font-medium text-gray-800">Requirement:</span> {productDetails.description}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -240,7 +255,16 @@ const UserUploadMarket = ({
                     </div>
                     <div>
                         <label htmlFor='totalAmount' className='block font-medium text-gray-700 mb-2'>
-                            💰 Total Face Value ({currencySymbol}):
+                            💰 Total Face Value ({currencySymbol}
+                            {flagImageMap[productDetails.currency] && (
+                                <img
+                                    src={flagImageMap[productDetails.currency]}
+                                    alt={`${productDetails.currency} Flag`}
+                                    className="w-5 h-5 ml-1 rounded-sm object-contain shadow-inner inline-block"
+                                    style={{ minWidth: '20px', minHeight: '20px' }}
+                                />
+                            )}
+                            ):
                         </label>
                         <div className='relative'>
                             <input
@@ -258,7 +282,7 @@ const UserUploadMarket = ({
 
                     <div className='mt-4'>
                         <label className='block font-medium text-gray-700 mb-2'>
-                           = Calculated Total Amount:
+                            = Calculated Total Amount:
                         </label>
                         <div className='p-3 border rounded-lg bg-gray-50 text-gray-800 font-semibold'>
                             ₦{parseFloat(data.calculatedTotalAmount || 0).toLocaleString("en-NG", { minimumFractionDigits: 2 })}

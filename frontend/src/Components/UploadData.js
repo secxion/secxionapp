@@ -5,7 +5,7 @@ import { MdSend, MdClose, MdUpdate, MdEdit } from "react-icons/md";
 import { toast } from "react-toastify";
 import SummaryApi from "../common";
 import uploadImage from "../helpers/uploadImage";
-import Loader from "./Loader"; // Assuming you have a Loader component
+import Loader from "./Loader";
 
 
 const UploadData = ({ editingDataPad, setEditingDataPad, closeUpload }) => {
@@ -117,7 +117,7 @@ const UploadData = ({ editingDataPad, setEditingDataPad, closeUpload }) => {
   };
 
   return (
-<div className="container mt-24 fixed inset-0 bg-white p-6 flex flex-col shadow-lg overflow-auto z-50 mx-auto">
+<div className=" mt-24 fixed inset-0 bg-white p-6 flex flex-col shadow-lg overflow-auto z-50 mx-auto">
       {/* Close Button */}
       <button
           onClick={closeUpload}
@@ -129,6 +129,7 @@ const UploadData = ({ editingDataPad, setEditingDataPad, closeUpload }) => {
       <h2 className="text-xl font-bold mb-4">{editingDataPad ? "Edit" : "Create"} Note</h2>
 
       {/* Title Input */}
+      <h2 class="text-base/7 font-semibold text-gray-900">Title</h2>
       <input
         type="text"
         className="w-full p-3 border rounded-lg bg-gray-50 mb-3"
@@ -138,6 +139,7 @@ const UploadData = ({ editingDataPad, setEditingDataPad, closeUpload }) => {
       />
 
       {/* Content Editable Section */}
+      <h2 class="text-base/7 font-semibold text-gray-900">Content</h2>
       <div className="relative w-full border rounded-lg bg-gray-50 p-3 mb-3">
         {isEditingContent ? (
           <textarea

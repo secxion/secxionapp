@@ -3,7 +3,6 @@ import { formatDistanceToNow } from 'date-fns';
 import { FaCheck, FaTrash, FaExternalLinkAlt, FaCommentDots, FaExclamationTriangle, FaInfoCircle, FaShoppingCart, FaClock, FaCheckCircle, FaTimesCircle, FaFileInvoice } from 'react-icons/fa';
 
 const NotificationItem = ({ notification, onMarkAsRead, onDelete, onOpenReportReply, onViewDetails, onOpenMarketDetails }) => {
-    console.log('Notification Item Props:', { notification, onMarkAsRead, onDelete, onOpenReportReply, onViewDetails, onOpenMarketDetails });
     const timeAgo = formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true });
     const truncateLength = 60;
     const truncatedMessage = notification.message.length > truncateLength

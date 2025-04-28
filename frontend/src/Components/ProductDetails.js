@@ -1,18 +1,15 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import UserUploadMarket from './UserUploadMarket';
 import { useDispatch, useSelector } from "react-redux";
 import SummaryApi from '../common';
-import { FaArrowLeft } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import GetInTouchFooter from './GetInTouchFooter';
-import ProductImageCarousel from './ProductImageCarousel';
 import Shimmer from './Shimmer';
 import { setUserDetails } from "../store/userSlice";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
 import PDSidePanel from "./PDSidePanel";
 import currencyFullNames from "../helpers/currencyFullNames";
+import flagImageMap from "../helpers/flagImageMap";
 
 const ProductDetails = () => {
     const [data, setData] = useState({
@@ -168,13 +165,21 @@ const ProductDetails = () => {
                                     return (
                                         <button
                                             key={currency.currency}
-                                            className={`flex-shrink-0 py-2 px-3 rounded-md text-sm font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1 ${
+                                            className={`flex-shrink-0 py-2 px-3 rounded-md text-sm font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1 flex items-center ${
                                                 activeCurrency?.currency === currency.currency
                                                     ? 'bg-emerald-500 text-white shadow-md'
                                                     : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                                             }`}
                                             onClick={() => handleCurrencyChange(currency.currency)}
                                         >
+                                            {flagImageMap[currency.currency] && (
+                                                <img
+                                                    src={flagImageMap[currency.currency]}
+                                                    alt={`${currency.currency} Flag`}
+                                                    className="w-5 h-5 mr-2 rounded-sm object-contain shadow-inner"
+                                                    style={{ minWidth: '20px', minHeight: '20px' }}
+                                                />
+                                            )}
                                             {fullCurrencyName}
                                         </button>
                                     );
@@ -188,13 +193,13 @@ const ProductDetails = () => {
                         </div>
                     </div>
                 )}
-                
+
             </header>
 
             <main className="min-h-screen py-24 px-4 sm:px-6 lg:px-8">
-            <div className='border rounded-lg p-4 bg-gray-50 shadow-inner mb-2'>
-            <div className='flex items-center gap-2'>
-                        <div className="p-6">      
+                <div className='border rounded-lg p-4 bg-gray-50 shadow-inner mb-2'>
+                    <div className='flex items-center gap-2'>
+                        <div className="p-6">
                             <p className="text-gray-700 dark:text-gray-300">{data?.description}</p>
                         </div>
                     </div>
@@ -208,7 +213,15 @@ const ProductDetails = () => {
                                             key={fv.faceValue}
                                             className="bg-gray-100 dark:bg-gray-700 rounded-md p-4 flex items-center justify-between"
                                         >
-                                            <div className='grid grid-col-3'>
+                                            <div className='grid grid-col-3 items-center'>
+                                                {flagImageMap[activeCurrency?.currency] && (
+                                                    <img
+                                                        src={flagImageMap[activeCurrency?.currency]}
+                                                        alt={`${activeCurrency?.currency} Flag`}
+                                                        className="w-5 h-5 mr-2 rounded-sm object-contain shadow-inner"
+                                                        style={{ minWidth: '20px', minHeight: '20px' }}
+                                                    />
+                                                )}
                                                 <span className="font-semibold text-gray-800 dark:text-gray-200">
                                                     facevalue: {fv.faceValue} {activeCurrency?.currency}
                                                 </span>
