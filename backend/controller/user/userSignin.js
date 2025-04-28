@@ -29,35 +29,32 @@ async function userSignInController(req,res){
         const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET_KEY, { expiresIn: 60 * 60 * 8 });
 
         const tokenOption = {
-            httpOnly : true,
-            secure : true
-        }
-
-        res.cookie("token",token,tokenOption).status(200).json({
-            message : "Login successfully",
-            data : token,
-            success : true,
-            error : false
-        })
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Lax', // Or 'Strict' depending on your needs
+            domain: '.onrender.com', // VERY IMPORTANT: Adjust if your Render URL doesn't have a subdomain
+            path: '/',
+            maxAge: 60 * 60 * 8 * 1000, // 8 hours
+          };
+      
+          res.cookie("token", token, tokenOption).status(200).json({
+            message: "Login successfully",
+            data: token,
+            success: true,
+            error: false
+          });
 
        }else{
          throw new Error("Please check Password")
        }
 
-
-
-
-
-
-
-    }catch(err){
+    } catch (err) {
         res.json({
-            message : err.message || err  ,
-            error : true,
-            success : false,
-        })
+          message: err.message || err,
+          error: true,
+          success: false,
+        });
+      }
     }
-
-}
 
 module.exports = userSignInController
