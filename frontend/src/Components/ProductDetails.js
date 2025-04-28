@@ -199,7 +199,7 @@ const ProductDetails = () => {
             <main className="min-h-screen py-24 px-4 sm:px-6 lg:px-8">
                 <div className='border rounded-lg p-4 bg-gray-50 shadow-inner mb-2'>
                     <div className='flex items-center gap-2'>
-                        <div className="p-6">
+                        <div className="p-6 mt-4">
                             <p className="text-gray-700 dark:text-gray-300">{data?.description}</p>
                         </div>
                     </div>
