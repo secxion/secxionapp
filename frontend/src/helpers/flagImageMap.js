@@ -1,5 +1,5 @@
 const flagImageMap = {
-    USD: "https://flagcdn.com/w40/us.png", // 40px width, PNG format
+    USD: "https://flagcdn.com/w40/us.png",
     EUR: "https://flagcdn.com/w40/eu.png",
     EUR_PT: "https://flagcdn.com/w40/pt.png",
     EUR_DE: "https://flagcdn.com/w40/de.png",
@@ -58,7 +58,7 @@ const flagImageMap = {
     QAR: "https://flagcdn.com/w40/qa.png",
     ILS: "https://flagcdn.com/w40/il.png",
     TRY: "https://flagcdn.com/w40/tr.png",
-    "...": "https://flagcdn.com/w40/xx.png", // Or a generic globe icon
+    "...": "https://flagcdn.com/w40/xx.png",
 };
 
 export default flagImageMap;

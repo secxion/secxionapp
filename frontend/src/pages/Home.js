@@ -57,6 +57,7 @@ const Home = () => {
 
     return (
         <div className="container home-container space-y-4">
+            {/* Hero Section */}
             <div
                 className="hero-section"
                 style={{ backgroundImage: `url(${currentImage.url})` }}
