@@ -32,7 +32,7 @@ async function userSignInController(req,res){
             httpOnly: true,
             secure: true,
             sameSite: 'Lax', // Or 'Strict' depending on your needs
-            domain: '.onrender.com', // VERY IMPORTANT: Adjust if your Render URL doesn't have a subdomain
+            domain: '.onrender.com',
             path: '/',
             maxAge: 60 * 60 * 8 * 1000, // 8 hours
           };
