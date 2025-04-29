@@ -5,18 +5,18 @@ require('dotenv').config();
 const connectDB = require('./config/db');
 const router = require('./routes');
 const app = express();
+const mongoose = require('mongoose');
 
-// Define the allowed origins
+
 const allowedOrigins = [
-    process.env.FRONTEND_URL, // For the live Render frontend
-    'https://secxion.onrender.com', // Explicitly add your Render frontend URL
+    process.env.FRONTEND_URL,
+    'https://secxion.onrender.com', 
     "https://secxionx.onrender.com",
 ];
 
-// Configure CORS options
 const corsOptions = {
     origin: (origin, callback) => {
-        if (allowedOrigins.includes(origin) || !origin) { // Allow requests from allowed origins and no origin (e.g., mobile apps)
+        if (allowedOrigins.includes(origin) || !origin) { 
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -27,31 +27,41 @@ const corsOptions = {
     allowedHeaders: 'Content-Type, Authorization',
 };
 
-// Apply CORS middleware
 app.use(cors(corsOptions));
-
-// Enable JSON body parsing
 app.use(express.json());
 
-// Enable cookie parsing
+
 app.use(cookieParser());
 
-// Mount your API routes
-app.use("/api", router);
-
-// Define the port for the server
+app.use('/api', router, (req, res, next) => {
+    console.log("index.js: Received request to /");
+    const token = "test_token";
+    const tokenOption = {
+        httpOnly: true,
+        secure: true,
+        path: '/',
+        maxAge: 60 * 60 * 8 * 1000,
+    };
+    res.cookie("token", token, tokenOption);
+    console.log("index.js: Cookie 'token' set with options:", tokenOption);
+    next();
+});
 const PORT = process.env.PORT || 5000;
 
-// Connect to the database and start the server
 connectDB()
-    .then(() => {
+    .then(async () => {
+        const db = mongoose.connection; 
+        console.log("index.js: Connected to MongoDB at:", db.host, db.port, db.name);
+
         app.listen(PORT, () => {
             console.log("Connected to MongoDB");
-            console.log(`Server is running on port ${PORT}`);
-            console.log("Allowed CORS origins:", allowedOrigins);
+            console.log("index.js: Server is running on port", PORT);
+            console.log("index.js: Allowed CORS origins:", allowedOrigins);
         });
     })
     .catch((error) => {
-        console.error("Error connecting to MongoDB:", error);
-        process.exit(1); 
+        console.error("index.js: Error connecting to MongoDB:", error);
+        process.exit(1);
     });
+
+    

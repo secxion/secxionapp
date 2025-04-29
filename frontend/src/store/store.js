@@ -8,7 +8,7 @@ import userReducer from "./userSlice";
 const persistConfig = {
   key: "user",
   storage,
-  whitelist: ["user", "isLoggedIn"], 
+  whitelist: ["token", "user", "isLoggedIn"], 
 };
 
 const persistedUserReducer = persistReducer(persistConfig, userReducer);
