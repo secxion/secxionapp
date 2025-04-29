@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux"; // Import useSelector
+import { useDispatch, useSelector } from "react-redux"; 
 import { setUserDetails } from "../store/userSlice";
 import SummaryApi from "../common";
 
@@ -9,8 +9,8 @@ export const ContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [walletBalance, setWalletBalance] = useState(null);
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.user.user); // Get user from Redux
-    const isLoggedIn = useSelector((state) => state.user.isLoggedIn); // Get isLoggedIn from Redux
+    const user = useSelector((state) => state.user.user); 
+    const isLoggedIn = useSelector((state) => state.user.isLoggedIn); 
 
     useEffect(() => {
         console.log("Context: isLoggedIn state on mount:", isLoggedIn);

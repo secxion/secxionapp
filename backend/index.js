@@ -54,7 +54,7 @@ connectDB()
         console.log("index.js: Connected to MongoDB at:", db.host, db.port, db.name);
 
         app.listen(PORT, () => {
-            console.log("Connected to MongoDB");
+            console.log("Connected to MongoDB");+
             console.log("index.js: Server is running on port", PORT);
             console.log("index.js: Allowed CORS origins:", allowedOrigins);
         });
@@ -64,4 +64,3 @@ connectDB()
         process.exit(1);
     });
 
-    
