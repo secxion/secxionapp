@@ -9,7 +9,6 @@ export const ContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [walletBalance, setWalletBalance] = useState(null);
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.user.user); 
     const isLoggedIn = useSelector((state) => state.user.isLoggedIn); 
 
     useEffect(() => {

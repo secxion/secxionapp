@@ -37,10 +37,11 @@ app.use('/api', router, (req, res, next) => {
     console.log("index.js: Received request to /");
     const token = "test_token";
     const tokenOption = {
+        maxAge: 24 * 60 * 60 * 1000, 
         httpOnly: true,
-        secure: true,
-        path: '/',
-        maxAge: 60 * 60 * 8 * 1000,
+        secure: true,  
+        sameSite: 'none', 
+        path: '/'
     };
     res.cookie("token", token, tokenOption);
     console.log("index.js: Cookie 'token' set with options:", tokenOption);
@@ -63,4 +64,3 @@ connectDB()
         console.error("index.js: Error connecting to MongoDB:", error);
         process.exit(1);
     });
-
