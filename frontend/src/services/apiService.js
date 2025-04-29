@@ -5,6 +5,9 @@ export const fetchUserDetailsAPI = async () => {
         const response = await fetch(SummaryApi.current_user.url, {
             method: SummaryApi.current_user.method,
             credentials: "include",
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            },
         });
 
         return await response.json();
@@ -18,6 +21,9 @@ export const fetchMarketDataAPI = async () => {
     try {
         const response = await fetch(SummaryApi.myMarket.url, {
             method: "GET",
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            },
             credentials: "include",
         });
 

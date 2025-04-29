@@ -44,12 +44,6 @@ async function userSignInController(req,res){
          throw new Error("Please check Password")
        }
 
-
-
-
-
-
-
     }catch(err){
         res.json({
             message : err.message || err  ,
