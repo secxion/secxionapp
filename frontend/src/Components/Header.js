@@ -18,9 +18,6 @@ import SummaryApi from "../common";
 import { BiSearch } from 'react-icons/bi';
 import './Header.css';
 
-// ===============================
-// Search Panel Component (Mobile)
-// ===============================
 const SearchPanelMobile = ({ open, setOpen, search, setSearch, handleSearch }) => {
     return (
         <Transition.Root show={open} as={React.Fragment}>
