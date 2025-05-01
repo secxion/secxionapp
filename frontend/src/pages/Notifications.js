@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import NotificationItem from '../Components/NotificationItems';
 import NotificationDetails from '../Components/NotificationDetails';
 import SummaryApi from '../common';
@@ -7,12 +6,13 @@ import { toast } from 'react-toastify';
 import { FaBell, FaEnvelopeOpen, FaCheckDouble, FaTimesCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './Notification.css';
+import { useAuth } from '../Context';
 
 const NotificationsPage = () => {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const { user } = useSelector((state) => state.user);
+    const { user, getAuthHeaders } = useAuth();
     const [filter, setFilter] = useState('all');
     const navigate = useNavigate();
     const [selectedNotification, setSelectedNotification] = useState(null);
@@ -22,20 +22,25 @@ const NotificationsPage = () => {
         setLoading(true);
         setError('');
         try {
+            const headers = getAuthHeaders();
+
             const transactionResponse = await fetch(SummaryApi.getTransactionNotifications.url, {
                 method: SummaryApi.getTransactionNotifications.method,
+                headers,
                 credentials: 'include',
             });
             const transactionData = await transactionResponse.json();
 
             const reportResponse = await fetch(SummaryApi.getReportNotifications.url, {
                 method: SummaryApi.getReportNotifications.method,
+                headers,
                 credentials: 'include',
             });
             const reportData = await reportResponse.json();
 
             const marketResponse = await fetch(SummaryApi.getMarketNotifications.url, {
                 method: 'GET',
+                headers,
                 credentials: 'include',
             });
             const marketData = await marketResponse.json();
@@ -79,12 +84,16 @@ const NotificationsPage = () => {
         if (user?._id) {
             fetchNotifications();
         }
-    }, [user]);
+        // Fetch notifications again every 60 second
+        const intervalId = setInterval(fetchNotifications, 60000);
+        return () => clearInterval(intervalId);
+    }, [user, getAuthHeaders]);
 
     const handleMarkAsRead = async (notificationId) => {
         try {
             const response = await fetch(`${SummaryApi.markNotificationAsRead.url}/${notificationId}`, {
                 method: SummaryApi.markNotificationAsRead.method,
+                headers: getAuthHeaders(),
                 credentials: 'include',
             });
             const data = await response.json();
@@ -108,6 +117,7 @@ const NotificationsPage = () => {
         try {
             const response = await fetch(`${SummaryApi.deleteNotification.url}/${notificationId}`, {
                 method: SummaryApi.deleteNotification.method,
+                headers: getAuthHeaders(),
                 credentials: 'include',
             });
             const data = await response.json();
@@ -129,6 +139,7 @@ const NotificationsPage = () => {
         try {
             const response = await fetch(SummaryApi.markAllNotificationsAsRead.url, {
                 method: SummaryApi.markAllNotificationsAsRead.method,
+                headers: getAuthHeaders(),
                 credentials: 'include',
             });
             const data = await response.json();
@@ -150,6 +161,7 @@ const NotificationsPage = () => {
         try {
             const response = await fetch(SummaryApi.deleteAllNotifications.url, {
                 method: SummaryApi.deleteAllNotifications.method,
+                headers: getAuthHeaders(),
                 credentials: 'include',
             });
             const data = await response.json();
@@ -223,14 +235,14 @@ const NotificationsPage = () => {
                             onClick={handleDeleteAll}
                             className="inline-flex items-center bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm"
                         >
-                            <FaTimesCircle className="mr-2" /> <bg/>
+                            <FaTimesCircle className="mr-2" /> Clear All
                         </button>
                         {hasUnread && (
                             <button
                                 onClick={handleMarkAllAsRead}
                                 className="inline-flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2 focus:outline-none focus:shadow-outline text-sm"
                             >
-                                <FaCheckDouble className="mr-2" /><bg/>
+                                <FaCheckDouble className="mr-2" /> Mark All Read
                             </button>
                         )}
                     </div>

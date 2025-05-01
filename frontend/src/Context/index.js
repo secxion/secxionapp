@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback } from "react";
+import { createContext, useState, useEffect, useCallback, useContext } from "react";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "../store/userSlice";
 import SummaryApi from "../common";
@@ -91,30 +91,30 @@ export const ContextProvider = ({ children }) => {
             console.warn("⚠️ No token or user available. Cannot fetch wallet balance.");
             return;
         }
-    
+
         console.log("Fetching wallet balance...");
         try {
             let url = SummaryApi.walletBalance.url;
             let headers = { "Content-Type": "application/json" };
-    
+
             if (token) {
                 headers.Authorization = `Bearer ${token}`;
             } else if (user?._id) {
                 url = `${SummaryApi.walletBalance.url}?userId=${user._id}`;
             }
-    
+
             const response = await fetch(url, {
                 method: SummaryApi.walletBalance.method,
                 headers,
                 credentials: "include",
             });
-    
+
             if (!response.ok) {
                 console.error("Failed to fetch wallet balance:", response.status);
                 setWalletBalance(null);
                 return;
             }
-    
+
             const data = await response.json();
             if (data.success) {
                 console.log("Wallet balance fetched successfully:", data.balance);
@@ -169,13 +169,17 @@ export const ContextProvider = ({ children }) => {
 
     return (
         <Context.Provider value={{
-            user, token, login, logout, getAuthHeaders, 
-            fetchUserDetails, isLoggedIn, loading, 
+            user, token, login, logout, getAuthHeaders,
+            fetchUserDetails, isLoggedIn, loading,
             walletBalance, fetchWalletBalance
         }}>
             {children}
         </Context.Provider>
     );
+};
+
+export const useAuth = () => {
+    return useContext(Context);
 };
 
 export default Context;
