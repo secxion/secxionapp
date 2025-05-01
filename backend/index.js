@@ -7,7 +7,6 @@ const router = require('./routes');
 const app = express();
 const mongoose = require('mongoose');
 
-
 const allowedOrigins = [
     process.env.FRONTEND_URL,
     'https://secxion.onrender.com', 
@@ -32,7 +31,6 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/', router, (req, res, next) => {
-    console.log("index.js: Received request to /");
     const token = "test_token";
     const tokenOption = {
         maxAge: 24 * 60 * 60 * 1000, 
@@ -42,12 +40,10 @@ app.use('/', router, (req, res, next) => {
         path: '/'
     };
     res.cookie("token", token, tokenOption);
-    console.log("index.js: Cookie 'token' set with options:", tokenOption);
     next();
 });
 
 app.use('/api', router);
-
 
 const PORT = process.env.PORT || 5000;
 
