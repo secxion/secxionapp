@@ -7,15 +7,16 @@ const router = require('./routes');
 const app = express();
 const mongoose = require('mongoose');
 
+
 const allowedOrigins = [
     process.env.FRONTEND_URL,
-    'https://secxion.onrender.com',
+    'https://secxion.onrender.com', 
     "https://secxionx.onrender.com",
 ];
 
 const corsOptions = {
     origin: (origin, callback) => {
-        if (allowedOrigins.includes(origin) || !origin) {
+        if (allowedOrigins.includes(origin) || !origin) { 
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -28,33 +29,33 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+
+
 app.use(cookieParser());
 
-// New route to set cookie on every request to '/'
-app.use('/', (req, res, next) => {
-    console.log("index.js: Received request to /");
+app.use('/api', router, (req, res, next) => {
+    console.log("index.js: Received request to /api");
     const token = "test_token";
     const tokenOption = {
+        maxAge: 24 * 60 * 60 * 1000, 
         httpOnly: true,
-        secure: true,
-        path: '/',
-        maxAge: 60 * 60 * 8 * 1000,
+        secure: true,  
+        sameSite: 'none', 
+        path: '/'
     };
     res.cookie("token", token, tokenOption);
     console.log("index.js: Cookie 'token' set with options:", tokenOption);
-    next(); // Pass control to the next middleware or route handler
+    next();
 });
-
-app.use("/api", router);
-
 const PORT = process.env.PORT || 5000;
 
 connectDB()
-    .then(async () => { // Made connectDB async to handle the connection object
-        const db = mongoose.connection; // Get the connection object
-        console.log("index.js: Connected to MongoDB at:", db.host, db.port, db.name); // Log db info
+    .then(async () => {
+        const db = mongoose.connection; 
+        console.log("index.js: Connected to MongoDB at:", db.host, db.port, db.name);
 
         app.listen(PORT, () => {
+            console.log("Connected to MongoDB");+
             console.log("index.js: Server is running on port", PORT);
             console.log("index.js: Allowed CORS origins:", allowedOrigins);
         });
