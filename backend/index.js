@@ -29,11 +29,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-
-
 app.use(cookieParser());
 
-app.use('/api', router, (req, res, next) => {
+app.use('/', router, (req, res, next) => {
     console.log("index.js: Received request to /");
     const token = "test_token";
     const tokenOption = {
@@ -47,6 +45,10 @@ app.use('/api', router, (req, res, next) => {
     console.log("index.js: Cookie 'token' set with options:", tokenOption);
     next();
 });
+
+app.use('/api', router);
+
+
 const PORT = process.env.PORT || 5000;
 
 connectDB()
