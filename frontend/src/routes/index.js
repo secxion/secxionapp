@@ -38,6 +38,7 @@ import Terms from "../Components/Terms";
 import Aboutus from "../Components/Aboutus";
 import Privacy from "../Components/Privacy";
 import Profiler from "../Components/Profiler";
+import NotFound from "../pages/NotFound";
 
 
 const publicRoutes = [
@@ -130,6 +131,10 @@ const router = createBrowserRouter([
         })),
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 
