@@ -3,6 +3,14 @@ import Wallet from '../../models/walletModel.js';
 import { createTransactionNotification } from '../notifications/notificationsController.js';
 import { updateWalletBalance } from '../wallet/walletController.js';
 
+const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-NG', {
+        style: 'currency',
+        currency: 'NGN',
+        minimumFractionDigits: 2
+    }).format(amount);
+};
+
 export const createPaymentRequest = async (req, res) => {
     try {
         const userId = req.userId;
@@ -61,7 +69,7 @@ export const createPaymentRequest = async (req, res) => {
                 userId,
                 amount,
                 'debit',
-                `Payment request of $${amount} initiated.`,
+                `Payment request of ${formatCurrency(amount)} initiated.`,
                 `/payment-requests`,
                 savedRequest._id
             );
@@ -144,6 +152,7 @@ export const updatePaymentRequestStatus = async (req, res) => {
 
         if (rejectionReason && status === 'rejected') {
             paymentRequest.rejectionReason = rejectionReason;
+
             const refundResult = await updateWalletBalance(
                 userId,
                 amount,
@@ -160,7 +169,7 @@ export const updatePaymentRequestStatus = async (req, res) => {
                     userId,
                     amount,
                     'credit',
-                    `Payment request rejected. Refund of $${amount} credited to your wallet. Reason: ${rejectionReason}`,
+                    `Payment request rejected. Refund of ${formatCurrency(amount)} credited to your wallet. Reason: ${rejectionReason}`,
                     `/payment-requests`,
                     paymentRequest._id
                 );
@@ -169,7 +178,9 @@ export const updatePaymentRequestStatus = async (req, res) => {
             const wallet = await Wallet.findOne({ userId });
             if (wallet) {
                 wallet.transactions = wallet.transactions.map(tx =>
-                    tx.referenceId && tx.referenceId.equals(paymentRequest._id) ? { ...tx, status: 'rejected' } : tx
+                    tx.referenceId && tx.referenceId.equals(paymentRequest._id)
+                        ? { ...tx, status: 'rejected' }
+                        : tx
                 );
                 await wallet.save();
             }
@@ -200,7 +211,9 @@ export const updatePaymentRequestStatus = async (req, res) => {
             const wallet = await Wallet.findOne({ userId });
             if (wallet) {
                 wallet.transactions = wallet.transactions.map(tx =>
-                    tx.referenceId && tx.referenceId.equals(paymentRequest._id) ? { ...tx, status: 'approved-processing' } : tx
+                    tx.referenceId && tx.referenceId.equals(paymentRequest._id)
+                        ? { ...tx, status: 'approved-processing' }
+                        : tx
                 );
                 await wallet.save();
             }
@@ -209,7 +222,7 @@ export const updatePaymentRequestStatus = async (req, res) => {
                 userId,
                 amount,
                 'withdrawal',
-                `Your payment request of $${amount} has been approved and is being processed.`,
+                `Your payment request of ${formatCurrency(amount)} approved and processing.`,
                 `/payment-requests`,
                 paymentRequest._id
             );
@@ -217,7 +230,9 @@ export const updatePaymentRequestStatus = async (req, res) => {
             const wallet = await Wallet.findOne({ userId });
             if (wallet) {
                 wallet.transactions = wallet.transactions.map(tx =>
-                    tx.referenceId && tx.referenceId.equals(paymentRequest._id) ? { ...tx, status: 'completed' } : tx
+                    tx.referenceId && tx.referenceId.equals(paymentRequest._id)
+                        ? { ...tx, status: 'completed' }
+                        : tx
                 );
                 await wallet.save();
             }
@@ -226,7 +241,7 @@ export const updatePaymentRequestStatus = async (req, res) => {
                 userId,
                 amount,
                 'payment_completed',
-                `Your payment request of $${amount} has been completed.`,
+                `Your payment request of ${formatCurrency(amount)} completed.`,
                 `/payment-requests`,
                 paymentRequest._id
             );
