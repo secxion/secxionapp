@@ -97,7 +97,6 @@ const PaymentRequestForm = () => {
         setShouldRefreshAccounts(true);
     };
 
-    // Format amount with commas
     const formatAmount = (value) => {
         const num = value.replace(/\D/g, '');
         return num.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -105,8 +104,18 @@ const PaymentRequestForm = () => {
 
     const handleAmountChange = (e) => {
         const rawValue = e.target.value;
-        const numericOnly = rawValue.replace(/,/g, '').replace(/[^\d.]/g, '');
+        const numericOnly = rawValue.replace(/,/g, '').replace(/[^\d]/g, '');
+        if (!numericOnly) {
+            setAmount('');
+            return;
+        }
         setAmount(formatAmount(numericOnly));
+    };
+
+    const handleWithdrawAll = () => {
+        if (walletBalance !== null) {
+            setAmount(formatAmount(walletBalance.toString()));
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -181,7 +190,6 @@ const PaymentRequestForm = () => {
                 </div>
             )}
 
-            {/* Wallet Balance Section */}
             <div className="fixed w-screen right-0 left-0 top-3 mt-20 bg-indigo-100 p-2 border-b border-gray-400 flex items-center justify-between z-40 px-4">
                 <div className="flex items-center gap-3">
                     <p className='text-md font-semibold text-gray-800'>Balance:</p>
@@ -219,25 +227,33 @@ const PaymentRequestForm = () => {
                 </div>
             </div>
 
-            {/* Amount Input */}
             <div>
                 <label htmlFor="amount" className="block font-medium text-gray-700">
                     Amount to Withdraw (Minimum ₦{MIN_REQUEST_AMOUNT.toLocaleString()})
                 </label>
-                <input
-                    type="text"
-                    id="amount"
-                    className="w-full p-3 mt-1 pl-10 border rounded-lg bg-gray-50 shadow-sm"
-                    placeholder={`${MIN_REQUEST_AMOUNT.toLocaleString()}.00`}
-                    value={amount}
-                    onChange={handleAmountChange}
-                    required
-                />
+                <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-bold">₦</span>
+                    <input
+                        type="text"
+                        id="amount"
+                        className="w-full p-3 pl-10 pr-24 mt-1 border rounded-lg bg-gray-50 shadow-sm"
+                        placeholder={`${MIN_REQUEST_AMOUNT.toLocaleString()}.00`}
+                        value={amount}
+                        onChange={handleAmountChange}
+                        required
+                    />
+                    <button
+                        type="button"
+                        onClick={handleWithdrawAll}
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-indigo-600 font-semibold hover:underline text-sm"
+                    >
+                        All
+                    </button>
+                </div>
             </div>
 
-            {/* Payment Method */}
             <div>
-                <label htmlFor="paymentMethod" className="block font-medium text-gray-700">
+                <label htmlFor="paymentMethod" className="block font-medium text-gray-700">    
                     Payment Method
                 </label>
                 <select
@@ -250,7 +266,6 @@ const PaymentRequestForm = () => {
                 </select>
             </div>
 
-            {/* Bank Account Selection */}
             <div>
                 <label htmlFor="bankAccount" className="block text-sm font-medium text-gray-700">
                     Select Bank Account
@@ -280,7 +295,6 @@ const PaymentRequestForm = () => {
                 </select>
             </div>
 
-            {/* Submit Button */}
             <div>
                 <button
                     type="submit"
