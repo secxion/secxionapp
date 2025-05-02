@@ -1,5 +1,5 @@
-const productModel = require("../../models/productModel");
-const uploadProductPermission = require("../../helpers/permission");
+import productModel from "../../models/productModel.js";
+import uploadProductPermission from "../../helpers/permission.js";
 
 async function updateProductController(req, res) {
   try {
@@ -44,4 +44,4 @@ async function updateProductController(req, res) {
   }
 }
 
-module.exports = updateProductController;
+export default updateProductController;

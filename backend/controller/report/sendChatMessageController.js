@@ -1,5 +1,5 @@
-const Report = require("../../models/report");
-const { createReportReplyNotification } = require("../notifications/notificationsController");
+import Report from '../../models/report.js';
+import { createReportReplyNotification } from '../notifications/notificationsController.js';
 
 const sendChatMessageController = async (req, res) => {
     try {
@@ -69,4 +69,4 @@ const sendChatMessageController = async (req, res) => {
     }
 };
 
-module.exports = sendChatMessageController;
+export default sendChatMessageController;

@@ -1,6 +1,6 @@
-const BlogNote = require("../models/systemBlogModel");
+import BlogNote from "../models/systemBlogModel.js";
 
-exports.createBlogNote = async (req, res) => {
+export const createBlogNote = async (req, res) => {
   try {
     const { title, content } = req.body;
     const newNote = new BlogNote({ title, content });
@@ -11,7 +11,7 @@ exports.createBlogNote = async (req, res) => {
   }
 };
 
-exports.getAllBlogNotes = async (req, res) => {
+export const getAllBlogNotes = async (req, res) => {
   try {
     const notes = await BlogNote.find({ isActive: true }).sort({ createdAt: -1 });
     res.status(200).json(notes);
@@ -20,11 +20,15 @@ exports.getAllBlogNotes = async (req, res) => {
   }
 };
 
-exports.updateBlogNote = async (req, res) => {
+export const updateBlogNote = async (req, res) => {
   try {
     const { id } = req.params;
     const { title, content } = req.body;
-    const updatedNote = await BlogNote.findByIdAndUpdate(id, { title, content, updatedAt: Date.now() }, { new: true });
+    const updatedNote = await BlogNote.findByIdAndUpdate(
+      id,
+      { title, content, updatedAt: Date.now() },
+      { new: true }
+    );
     if (!updatedNote) {
       return res.status(404).json({ message: 'Note not found' });
     }
@@ -34,10 +38,14 @@ exports.updateBlogNote = async (req, res) => {
   }
 };
 
-exports.deleteBlogNote = async (req, res) => {
+export const deleteBlogNote = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedNote = await BlogNote.findByIdAndUpdate(id, { isActive: false }, { new: true });
+    const deletedNote = await BlogNote.findByIdAndUpdate(
+      id,
+      { isActive: false },
+      { new: true }
+    );
     if (!deletedNote) {
       return res.status(404).json({ message: 'Note not found' });
     }

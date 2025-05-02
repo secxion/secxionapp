@@ -1,6 +1,6 @@
-const Wallet = require("../../models/walletModel");
+import Wallet from "../../models/walletModel.js";
 
-const addBankAccount = async (req, res) => {
+export const addBankAccount = async (req, res) => {
   try {
     const userId = req.userId;
     const { accountNumber, bankName, accountHolderName } = req.body;
@@ -54,7 +54,7 @@ const addBankAccount = async (req, res) => {
   }
 };
 
-const getBankAccounts = async (req, res) => {
+export const getBankAccounts = async (req, res) => {
   try {
     const userId = req.userId;
 
@@ -80,7 +80,7 @@ const getBankAccounts = async (req, res) => {
   }
 };
 
-const deleteBankAccount = async (req, res) => {
+export const deleteBankAccount = async (req, res) => {
   try {
     const userId = req.userId;
     const { accountId } = req.params;
@@ -120,10 +120,4 @@ const deleteBankAccount = async (req, res) => {
       error: error.message,
     });
   }
-};
-
-module.exports = {
-  addBankAccount,
-  getBankAccounts,
-  deleteBankAccount,
 };

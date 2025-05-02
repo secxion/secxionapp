@@ -1,4 +1,4 @@
-const Report = require("../../models/report");
+import Report from "../../models/report.js";
 
 const userReplyReportController = async (req, res) => {
     try {
@@ -34,4 +34,4 @@ const userReplyReportController = async (req, res) => {
     }
 };
 
-module.exports = userReplyReportController;
+export default userReplyReportController;

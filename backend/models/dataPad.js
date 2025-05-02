@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const dataPadSchema = new mongoose.Schema(
     {
@@ -28,4 +28,4 @@ const dataPadSchema = new mongoose.Schema(
 );
 
 const DataPad = mongoose.model("DataPad", dataPadSchema);
-module.exports = DataPad;
+export default DataPad;

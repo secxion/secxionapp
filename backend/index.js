@@ -1,14 +1,16 @@
-const express = require('express');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-require('dotenv').config();
-const connectDB = require('./config/db');
-const router = require('./routes');
-const mongoose = require('mongoose');
-const path = require('path');
+import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
+import connectDB from './config/db.js';
+import router from './routes/index.js';
+import mongoose from 'mongoose';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+dotenv.config();
 
 const app = express();
-
 
 // ====== CORS Setup ======
 const allowedOrigins = [
@@ -51,17 +53,18 @@ app.use('/api', router, (req, res, next) => {
 });
 
 // ====== Serve Frontend in Production ======
-const __dirnamePath = path.resolve();
+// For ES Modules, __dirname workaround:
+const __filename = fileURLToPath(import.meta.url);
+const __dirnamePath = path.dirname(__filename);
 
 if (process.env.NODE_ENV === 'production') {
-    const frontendPath = path.resolve(__dirname, '..', 'frontend', 'build');
-
+    const frontendPath = path.join(__dirnamePath, '..', 'frontend', 'build');
+    
     app.use(express.static(frontendPath));
     
     app.get('*', (req, res) => {
-      res.sendFile(path.join(frontendPath, 'index.html'));
+        res.sendFile(path.join(frontendPath, 'index.html'));
     });
-    
 }
 
 const PORT = process.env.PORT || 5000;
@@ -72,7 +75,6 @@ connectDB()
         console.log("index.js: Connected to MongoDB at:", db.host, db.port, db.name);
 
         app.listen(PORT, () => {
-            console.log("Connected to MongoDB");+
             console.log("index.js: Server is running on port", PORT);
             console.log("index.js: Allowed CORS origins:", allowedOrigins);
         });

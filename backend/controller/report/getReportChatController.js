@@ -1,4 +1,4 @@
-const Report = require("../../models/report");
+import Report from "../../models/report.js";
 
 const getReportChatController = async (req, res) => {
     try {
@@ -18,4 +18,4 @@ const getReportChatController = async (req, res) => {
     }
 };
 
-module.exports = getReportChatController;
+export default getReportChatController;

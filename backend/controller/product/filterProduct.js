@@ -1,4 +1,4 @@
-const productModel = require("../../models/productModel");
+import productModel from "../../models/productModel.js";
 
 const filterProductController = async (req, res) => {
     try {
@@ -25,4 +25,4 @@ const filterProductController = async (req, res) => {
     }
 };
 
-module.exports = filterProductController;
+export default filterProductController;

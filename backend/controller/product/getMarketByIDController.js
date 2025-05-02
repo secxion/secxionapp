@@ -1,4 +1,4 @@
-const UserProduct = require("../../models/userProduct");
+import UserProduct from "../../models/userProduct.js";
 
 const getMarketByIdController = async (req, res) => {
     try {
@@ -47,4 +47,4 @@ const getMarketByIdController = async (req, res) => {
     }
 };
 
-module.exports = getMarketByIdController;
+export default getMarketByIdController;

@@ -1,9 +1,9 @@
-const PaymentRequest = require('../../models/paymentRequestModel');
-const Wallet = require('../../models/walletModel');
-const { createTransactionNotification } = require('../notifications/notificationsController');
-const { updateWalletBalance } = require('../wallet/walletController');
+import PaymentRequest from '../../models/paymentRequestModel.js';
+import Wallet from '../../models/walletModel.js';
+import { createTransactionNotification } from '../notifications/notificationsController.js';
+import { updateWalletBalance } from '../wallet/walletController.js';
 
-const createPaymentRequest = async (req, res) => {
+export const createPaymentRequest = async (req, res) => {
     try {
         const userId = req.userId;
         const { amount, paymentMethod, bankAccountId } = req.body;
@@ -62,7 +62,7 @@ const createPaymentRequest = async (req, res) => {
                 amount,
                 'debit',
                 `Payment request of $${amount} initiated.`,
-                `/payment-requests`, 
+                `/payment-requests`,
                 savedRequest._id
             );
         }
@@ -82,7 +82,7 @@ const createPaymentRequest = async (req, res) => {
     }
 };
 
-const getAllPaymentRequests = async (req, res) => {
+export const getAllPaymentRequests = async (req, res) => {
     try {
         const paymentRequests = await PaymentRequest.find().populate('userId', 'name email');
         res.status(200).json({
@@ -99,7 +99,7 @@ const getAllPaymentRequests = async (req, res) => {
     }
 };
 
-const getUserPaymentRequests = async (req, res) => {
+export const getUserPaymentRequests = async (req, res) => {
     try {
         const userId = req.userId;
         const paymentRequests = await PaymentRequest.find({ userId }).sort({ requestDate: -1 });
@@ -117,7 +117,7 @@ const getUserPaymentRequests = async (req, res) => {
     }
 };
 
-const updatePaymentRequestStatus = async (req, res) => {
+export const updatePaymentRequestStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const { status, rejectionReason } = req.body;
@@ -141,6 +141,7 @@ const updatePaymentRequestStatus = async (req, res) => {
         const amount = paymentRequest.amount;
 
         paymentRequest.status = status;
+
         if (rejectionReason && status === 'rejected') {
             paymentRequest.rejectionReason = rejectionReason;
             const refundResult = await updateWalletBalance(
@@ -193,7 +194,9 @@ const updatePaymentRequestStatus = async (req, res) => {
                     error: walletUpdateResult.error,
                 });
             }
+
             paymentRequest.approvalDate = new Date();
+
             const wallet = await Wallet.findOne({ userId });
             if (wallet) {
                 wallet.transactions = wallet.transactions.map(tx =>
@@ -201,6 +204,7 @@ const updatePaymentRequestStatus = async (req, res) => {
                 );
                 await wallet.save();
             }
+
             await createTransactionNotification(
                 userId,
                 amount,
@@ -217,6 +221,7 @@ const updatePaymentRequestStatus = async (req, res) => {
                 );
                 await wallet.save();
             }
+
             await createTransactionNotification(
                 userId,
                 amount,
@@ -242,11 +247,4 @@ const updatePaymentRequestStatus = async (req, res) => {
             error: error.message,
         });
     }
-};
-
-module.exports = {
-    createPaymentRequest,
-    getAllPaymentRequests,
-    getUserPaymentRequests,
-    updatePaymentRequestStatus,
 };

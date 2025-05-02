@@ -1,6 +1,6 @@
-const CommunityPost = require("../../models/CommunityPost");
+import CommunityPost from "../../models/CommunityPost.js";
 
-async function getApprovedPostsController(req, res) {
+export const getApprovedPostsController = async (req, res) => {
     try {
         const approvedPosts = await CommunityPost.find({ status: 'approved' })
             .populate('userId', 'name profilePic') 
@@ -11,9 +11,9 @@ async function getApprovedPostsController(req, res) {
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
 
-async function submitNewPostController(req, res) {
+export const submitNewPostController = async (req, res) => {
     if (!req.userId) {
         return res.status(401).json({ message: "Unauthorized! Please login to post.", success: false });
     }
@@ -36,9 +36,9 @@ async function submitNewPostController(req, res) {
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
 
-async function deletePostController(req, res) {
+export const deletePostController = async (req, res) => {
     if (!req.userId) {
         return res.status(401).json({ message: "Unauthorized! Please login to delete your post.", success: false });
     }
@@ -60,9 +60,9 @@ async function deletePostController(req, res) {
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
 
-async function addCommentController(req, res) {
+export const addCommentController = async (req, res) => {
     if (!req.userId) {
         return res.status(401).json({ message: "Unauthorized! Please login to comment.", success: false });
     }
@@ -70,7 +70,7 @@ async function addCommentController(req, res) {
     const { postId } = req.params;
     const { content, feedImage } = req.body;
 
-    if (!content ) {
+    if (!content) {
         return res.status(400).json({ message: "Comment content is required.", success: false });
     }
 
@@ -87,11 +87,4 @@ async function addCommentController(req, res) {
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
-
-module.exports = {
-    getApprovedPostsController,
-    submitNewPostController,
-    deletePostController,
-    addCommentController
 };

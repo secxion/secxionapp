@@ -1,4 +1,4 @@
-const productModel = require("../../models/productModel")
+import productModel from "../../models/productModel.js";
 
 const getProductController = async(req,res)=>{
     try{
@@ -22,4 +22,4 @@ const getProductController = async(req,res)=>{
 
 }
 
-module.exports = getProductController
+export default getProductController

@@ -1,4 +1,4 @@
-const CommunityPost = require("../../models/CommunityPost");
+import CommunityPost from "../../models/CommunityPost.js";
 
 const getUserPostsController = async (req, res) => {
   if (!req.userId && !(req.user && req.user._id)) {
@@ -28,4 +28,4 @@ const getUserPostsController = async (req, res) => {
   }
 };
 
-module.exports = getUserPostsController;
+export default getUserPostsController;

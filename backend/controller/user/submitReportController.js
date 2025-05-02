@@ -1,4 +1,4 @@
-const Report = require("../../models/report");
+import Report from "../../models/report.js";
 
 async function submitReportController(req, res) {
   try {
@@ -29,4 +29,4 @@ async function submitReportController(req, res) {
   }
 }
 
-module.exports = submitReportController;
+export default submitReportController;

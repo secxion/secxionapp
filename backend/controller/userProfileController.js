@@ -1,8 +1,8 @@
-const userModel = require("../models/userModel");
-const Wallet = require("../models/walletModel");
-const bcrypt = require('bcryptjs'); // For password hashing
+import bcrypt from 'bcryptjs'; // For password hashing
+import userModel from "../models/userModel.js";
+import Wallet from "../models/walletModel.js";
 
-async function userProfileController(req, res) {
+const userProfileController = async (req, res) => {
     try {
         if (!req.userId) {
             return res.status(401).json({
@@ -51,10 +51,10 @@ async function userProfileController(req, res) {
             success: false,
         });
     }
-}
+};
 
 // Controller function to edit user profile
-async function editProfileController(req, res) {
+const editProfileController = async (req, res) => {
     console.log("editProfileController - Request received:", req.body); // Log the entire request body
 
     try {
@@ -121,10 +121,10 @@ async function editProfileController(req, res) {
             success: false,
         });
     }
-}
+};
 
 // Controller function to get a specific user's bank accounts
-async function getUserBankAccountsController(req, res) {
+const getUserBankAccountsController = async (req, res) => {
     try {
         if (!req.userId) {
             return res.status(401).json({
@@ -153,10 +153,10 @@ async function getUserBankAccountsController(req, res) {
             error: error.message,
         });
     }
-}
+};
 
 // Controller function to get a specific user's wallet balance
-async function getUserWalletBalanceController(req, res) {
+const getUserWalletBalanceController = async (req, res) => {
     try {
         if (!req.userId) {
             return res.status(401).json({
@@ -185,10 +185,10 @@ async function getUserWalletBalanceController(req, res) {
             error: error.message,
         });
     }
-}
+};
 
 // Controller function to add a bank account to a user's wallet
-async function addBankAccountController(req, res) {
+const addBankAccountController = async (req, res) => {
     try {
         const userId = req.userId;
         const { accountNumber, bankName, accountHolderName } = req.body;
@@ -240,10 +240,10 @@ async function addBankAccountController(req, res) {
             error: error.message,
         });
     }
-}
+};
 
 // Controller function to delete a bank account from a user's wallet
-async function deleteBankAccountController(req, res) {
+const deleteBankAccountController = async (req, res) => {
     try {
         const userId = req.userId;
         const { accountId } = req.params;
@@ -283,11 +283,14 @@ async function deleteBankAccountController(req, res) {
             error: error.message,
         });
     }
-}
+};
 
-module.exports = userProfileController;
-module.exports.editProfile = editProfileController;
-module.exports.getUserBankAccounts = getUserBankAccountsController;
-module.exports.getUserWalletBalance = getUserWalletBalanceController;
-module.exports.addBankAccount = addBankAccountController;
-module.exports.deleteBankAccount = deleteBankAccountController;
+// Default export of all controllers
+export default {
+    userProfileController,
+    editProfileController,
+    getUserBankAccountsController,
+    getUserWalletBalanceController,
+    addBankAccountController,
+    deleteBankAccountController,
+};

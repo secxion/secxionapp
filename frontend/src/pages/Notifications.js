@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import NotificationItem from '../Components/NotificationItems';
 import NotificationDetails from '../Components/NotificationDetails';
 import SummaryApi from '../common';
@@ -6,13 +7,12 @@ import { toast } from 'react-toastify';
 import { FaBell, FaEnvelopeOpen, FaCheckDouble, FaTimesCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './Notification.css';
-import { useAuth } from '../Context';
 
 const NotificationsPage = () => {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const { user, getAuthHeaders } = useAuth();
+    const { user } = useSelector((state) => state.user);
     const [filter, setFilter] = useState('all');
     const navigate = useNavigate();
     const [selectedNotification, setSelectedNotification] = useState(null);
@@ -22,58 +22,44 @@ const NotificationsPage = () => {
         setLoading(true);
         setError('');
         try {
-            const headers = getAuthHeaders();
+            const [transactionRes, reportRes, marketRes] = await Promise.all([
+                fetch(SummaryApi.getTransactionNotifications.url, {
+                    method: SummaryApi.getTransactionNotifications.method,
+                    credentials: 'include',
+                }),
+                fetch(SummaryApi.getReportNotifications.url, {
+                    method: SummaryApi.getReportNotifications.method,
+                    credentials: 'include',
+                }),
+                fetch(SummaryApi.getMarketNotifications.url, {
+                    method: 'GET',
+                    credentials: 'include',
+                }),
+            ]);
 
-            const transactionResponse = await fetch(SummaryApi.getTransactionNotifications.url, {
-                method: SummaryApi.getTransactionNotifications.method,
-                headers,
-                credentials: 'include',
-            });
-            const transactionData = await transactionResponse.json();
-
-            const reportResponse = await fetch(SummaryApi.getReportNotifications.url, {
-                method: SummaryApi.getReportNotifications.method,
-                headers,
-                credentials: 'include',
-            });
-            const reportData = await reportResponse.json();
-
-            const marketResponse = await fetch(SummaryApi.getMarketNotifications.url, {
-                method: 'GET',
-                headers,
-                credentials: 'include',
-            });
-            const marketData = await marketResponse.json();
-
-            console.log('Report Data from API (NotificationsPage):', reportData);
-            console.log('Market Data from API (NotificationsPage):', marketData);
+            const [transactionData, reportData, marketData] = await Promise.all([
+                transactionRes.json(),
+                reportRes.json(),
+                marketRes.json(),
+            ]);
 
             if (transactionData.success && reportData.success && marketData.success) {
-                const transactionNotifications = transactionData.data.filter(
-                    (n) =>
-                        n.type === 'transaction:debit' ||
-                        n.type === 'transaction:credit' ||
-                        n.type === 'transaction:payment_completed' ||
-                        n.type === 'transaction:withdrawal' ||
-                        n.type === 'transaction:rejected'
+                const transactionNotifications = transactionData.data.filter(n =>
+                    ['transaction:debit', 'transaction:credit', 'transaction:payment_completed', 'transaction:withdrawal', 'transaction:rejected'].includes(n.type)
                 );
-                const reportNotifications = reportData.data;
-                const marketNotifications = marketData.data;
 
-                const allNotifications = [...transactionNotifications, ...reportNotifications, ...marketNotifications].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                const allNotifications = [...transactionNotifications, ...reportData.data, ...marketData.data].sort(
+                    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+                );
+
                 setNotifications(allNotifications);
-                console.log('All Notifications (NotificationsPage):', allNotifications);
             } else {
                 setError(
-                    (transactionData.message || '') +
-                    ' ' +
-                    (reportData.message || '') +
-                    ' ' +
-                    (marketData.message || 'Failed to fetch notifications.')
+                    `${transactionData.message || ''} ${reportData.message || ''} ${marketData.message || 'Failed to fetch notifications.'}`
                 );
             }
         } catch (err) {
-            console.error('Error fetching notifications (NotificationsPage):', err);
+            console.error('[Fetch Notifications Error]', err);
             setError('An unexpected error occurred while fetching notifications.');
         } finally {
             setLoading(false);
@@ -81,35 +67,27 @@ const NotificationsPage = () => {
     };
 
     useEffect(() => {
-        if (user?._id) {
-            fetchNotifications();
-        }
-        // Fetch notifications again every 60 second
-        const intervalId = setInterval(fetchNotifications, 60000);
-        return () => clearInterval(intervalId);
-    }, [user, getAuthHeaders]);
+        if (user?._id) fetchNotifications();
+    }, [user]);
 
     const handleMarkAsRead = async (notificationId) => {
         try {
             const response = await fetch(`${SummaryApi.markNotificationAsRead.url}/${notificationId}`, {
                 method: SummaryApi.markNotificationAsRead.method,
-                headers: getAuthHeaders(),
                 credentials: 'include',
             });
             const data = await response.json();
             if (data.success) {
-                setNotifications(prevNotifications =>
-                    prevNotifications.map(n =>
-                        n._id === notificationId ? { ...n, isRead: true, read: 'READ' } : n
-                    )
+                setNotifications(prev =>
+                    prev.map(n => n._id === notificationId ? { ...n, isRead: true, read: 'READ' } : n)
                 );
-                toast.success(data.message || 'Notification marked as read. ✅');
+                toast.success(data.message || 'Notification marked as read.');
             } else {
-                toast.error(data.message || 'Failed to mark notification as read. ❌');
+                toast.error(data.message || 'Failed to mark notification as read.');
             }
         } catch (error) {
-            console.error('Error marking notification as read (NotificationsPage):', error);
-            toast.error('Failed to mark notification as read. ⚠️');
+            console.error('[Mark As Read Error]', error);
+            toast.error('Failed to mark notification as read.');
         }
     };
 
@@ -117,21 +95,18 @@ const NotificationsPage = () => {
         try {
             const response = await fetch(`${SummaryApi.deleteNotification.url}/${notificationId}`, {
                 method: SummaryApi.deleteNotification.method,
-                headers: getAuthHeaders(),
                 credentials: 'include',
             });
             const data = await response.json();
             if (data.success) {
-                setNotifications(prevNotifications =>
-                    prevNotifications.filter(n => n._id !== notificationId)
-                );
-                toast.success(data.message || 'Notification deleted successfully. 🗑️');
+                setNotifications(prev => prev.filter(n => n._id !== notificationId));
+                toast.success(data.message || 'Notification deleted.');
             } else {
-                toast.error(data.message || 'Failed to delete notification. 🚫');
+                toast.error(data.message || 'Failed to delete notification.');
             }
         } catch (error) {
-            console.error('Error deleting notification (NotificationsPage):', error);
-            toast.error('Failed to delete notification. ⚠️');
+            console.error('[Delete Notification Error]', error);
+            toast.error('Failed to delete notification.');
         }
     };
 
@@ -139,21 +114,18 @@ const NotificationsPage = () => {
         try {
             const response = await fetch(SummaryApi.markAllNotificationsAsRead.url, {
                 method: SummaryApi.markAllNotificationsAsRead.method,
-                headers: getAuthHeaders(),
                 credentials: 'include',
             });
             const data = await response.json();
             if (data.success) {
-                setNotifications(prevNotifications =>
-                    prevNotifications.map(n => ({ ...n, isRead: true, read: 'READ' }))
-                );
-                toast.success(data.message || 'All notifications marked as read. ✅✅');
+                setNotifications(prev => prev.map(n => ({ ...n, isRead: true, read: 'READ' })));
+                toast.success(data.message || 'All notifications marked as read.');
             } else {
-                toast.error(data.message || 'Failed to mark all notifications as read. ❌');
+                toast.error(data.message || 'Failed to mark all as read.');
             }
         } catch (error) {
-            console.error('Error marking all as read (NotificationsPage):', error);
-            toast.error('Failed to mark all as read. ⚠️');
+            console.error('[Mark All As Read Error]', error);
+            toast.error('Failed to mark all as read.');
         }
     };
 
@@ -161,27 +133,24 @@ const NotificationsPage = () => {
         try {
             const response = await fetch(SummaryApi.deleteAllNotifications.url, {
                 method: SummaryApi.deleteAllNotifications.method,
-                headers: getAuthHeaders(),
                 credentials: 'include',
             });
             const data = await response.json();
             if (data.success) {
                 setNotifications([]);
-                toast.success(data.message || 'All notifications deleted successfully. 🗑️🗑️');
+                toast.success(data.message || 'All notifications deleted.');
             } else {
-                toast.error(data.message || 'Failed to delete all notifications. 🚫');
+                toast.error(data.message || 'Failed to delete all.');
             }
         } catch (error) {
-            console.error('Error deleting all notifications (NotificationsPage):', error);
-            toast.error('Failed to delete all notifications. ⚠️');
+            console.error('[Delete All Notifications Error]', error);
+            toast.error('Failed to delete all notifications.');
         }
     };
 
     const handleOpenReportReply = (notification) => {
         navigate(`/chat/${notification.relatedObjectId}`);
-        if (!notification.isRead) {
-            handleMarkAsRead(notification._id);
-        }
+        if (!notification.isRead) handleMarkAsRead(notification._id);
     };
 
     const handleViewDetails = (notification) => {
@@ -190,8 +159,18 @@ const NotificationsPage = () => {
     };
 
     const handleOpenMarketDetails = (marketId) => {
-        const marketNotification = notifications.find(n => n.relatedObjectId === marketId && n.onModel === 'userproduct');
-        setSelectedNotification(marketNotification);
+        const marketNotification = notifications.find(n =>
+            n.relatedObjectId === marketId && n.onModel === 'userproduct'
+        );
+        if (marketNotification) {
+            setSelectedNotification(marketNotification);
+            setIsDetailsOpen(true);
+        }
+    };
+
+    const handleViewCreditDetails = (notification) => {
+        // You can replace this with actual credit modal, drawer, or page routing logic
+        setSelectedNotification(notification);
         setIsDetailsOpen(true);
     };
 
@@ -201,30 +180,32 @@ const NotificationsPage = () => {
     };
 
     const filteredNotifications = () => {
-        if (filter === 'unread') {
-            return notifications.filter(n => !n.isRead);
-        }
-        if (filter === 'read') {
-            return notifications.filter(n => n.isRead);
-        }
+        if (filter === 'unread') return notifications.filter(n => !n.isRead);
+        if (filter === 'read') return notifications.filter(n => n.isRead);
         return notifications;
     };
 
+    const hasUnread = notifications.some(n => !n.isRead);
+
     if (loading) {
-        return <div className="flex justify-center items-center h-60"><div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div></div>;
+        return (
+            <div className="flex justify-center items-center h-60">
+                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+            </div>
+        );
     }
 
     if (error) {
-        return <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <strong className="font-bold">Error!</strong>
-            <span className="block sm:inline">{error}</span>
-        </div>;
+        return (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong className="font-bold">Error!</strong>
+                <span className="block sm:inline">{error}</span>
+            </div>
+        );
     }
 
-    const hasUnread = notifications.some(n => !n.isRead);
-
     return (
-        <div className="container bg-gray-100 ">
+        <div className="container bg-gray-100">
             <div className="max-w-4xl mx-auto shadow-md rounded-md overflow-hidden bg-white">
                 <div className="bg-gray-50 border-b border-gray-200 py-6 px-4 sm:px-6 flex items-center justify-between">
                     <h2 className="text-xl font-semibold text-gray-800 flex items-center">
@@ -233,14 +214,14 @@ const NotificationsPage = () => {
                     <div>
                         <button
                             onClick={handleDeleteAll}
-                            className="inline-flex items-center bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm"
+                            className="inline-flex items-center bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm"
                         >
-                            <FaTimesCircle className="mr-2" /> Clear All
+                            <FaTimesCircle className="mr-2" /> Delete All
                         </button>
                         {hasUnread && (
                             <button
                                 onClick={handleMarkAllAsRead}
-                                className="inline-flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2 focus:outline-none focus:shadow-outline text-sm"
+                                className="inline-flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2 text-sm"
                             >
                                 <FaCheckDouble className="mr-2" /> Mark All Read
                             </button>
@@ -250,43 +231,38 @@ const NotificationsPage = () => {
 
                 <div className="border-b border-gray-200">
                     <nav className="-mb-px flex space-x-4 px-4 sm:px-6" aria-label="Tabs">
-                        <button
-                            onClick={() => setFilter('all')}
-                            className={`${filter === 'all' ? 'border-indigo-500 text-indigo-600 focus:border-indigo-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm focus:outline-none transition duration-150 ease-in-out`}
-                        >
-                            <FaBell className="mr-1 inline-block" /> All
-                        </button>
-                        <button
-                            onClick={() => setFilter('unread')}
-                            className={`${filter === 'unread' ? 'border-indigo-500 text-indigo-600 focus:border-indigo-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm focus:outline-none transition duration-150 ease-in-out`}
-                        >
-                            <FaEnvelopeOpen className="mr-1 inline-block" /> Unread
-                        </button>
-                        <button
-                            onClick={() => setFilter('read')}
-                            className={`${filter === 'read' ? 'border-indigo-500 text-indigo-600 focus:border-indigo-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm focus:outline-none transition duration-150 ease-in-out`}
-                        >
-                            <FaCheckDouble className="mr-1 inline-block" /> Read
-                        </button>
+                        {['all', 'unread', 'read'].map(tab => (
+                            <button
+                                key={tab}
+                                onClick={() => setFilter(tab)}
+                                className={`${
+                                    filter === tab
+                                        ? 'border-indigo-500 text-indigo-600'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                            >
+                                {tab === 'all' && <><FaBell className="mr-1 inline-block" /> All</>}
+                                {tab === 'unread' && <><FaEnvelopeOpen className="mr-1 inline-block" /> Unread</>}
+                                {tab === 'read' && <><FaCheckDouble className="mr-1 inline-block" /> Read</>}
+                            </button>
+                        ))}
                     </nav>
                 </div>
 
                 <ul className="divide-y divide-gray-200">
                     {filteredNotifications().length > 0 ? (
-                        filteredNotifications().map(notification => {
-                            console.log('Notification Item Data (NotificationsPage):', notification);
-                            return (
-                                <NotificationItem
-                                    key={notification._id}
-                                    notification={notification}
-                                    onMarkAsRead={handleMarkAsRead}
-                                    onDelete={handleDeleteNotification}
-                                    onOpenReportReply={handleOpenReportReply}
-                                    onViewDetails={handleViewDetails}
-                                    onOpenMarketDetails={handleOpenMarketDetails}
-                                />
-                            );
-                        })
+                        filteredNotifications().map(notification => (
+                            <NotificationItem
+                                key={notification._id}
+                                notification={notification}
+                                onMarkAsRead={handleMarkAsRead}
+                                onDelete={handleDeleteNotification}
+                                onOpenReportReply={handleOpenReportReply}
+                                onViewDetails={handleViewDetails}
+                                onOpenMarketDetails={handleOpenMarketDetails}
+                                onViewCreditDetails={handleViewCreditDetails}
+                            />
+                        ))
                     ) : (
                         <li className="px-4 py-6 text-gray-500 text-center">No notifications here. 😴</li>
                     )}

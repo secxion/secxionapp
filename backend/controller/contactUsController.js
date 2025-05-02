@@ -1,6 +1,6 @@
-const ContactUs = require("../models/contactUsModel");
+import ContactUs from "../models/contactUsModel.js";
 
-const createContactUsMessage = async (req, res) => {
+export const createContactUsMessage = async (req, res) => {
   try {
     const { name, email, phoneNumber, reason } = req.body;
 
@@ -28,7 +28,7 @@ const createContactUsMessage = async (req, res) => {
   }
 };
 
-const getAllContactUsMessages = async (req, res) => {
+export const getAllContactUsMessages = async (req, res) => {
   try {
     const messages = await ContactUs.find().sort({ timestamp: -1 });
     res.status(200).json({
@@ -46,7 +46,7 @@ const getAllContactUsMessages = async (req, res) => {
   }
 };
 
-const getContactUsMessageById = async (req, res) => {
+export const getContactUsMessageById = async (req, res) => {
   try {
     const message = await ContactUs.findById(req.params.id);
     if (!message) {
@@ -69,7 +69,7 @@ const getContactUsMessageById = async (req, res) => {
   }
 };
 
-const updateContactUsMessageStatus = async (req, res) => {
+export const updateContactUsMessageStatus = async (req, res) => {
   try {
     const { status } = req.body;
     const updatedMessage = await ContactUs.findByIdAndUpdate(
@@ -96,11 +96,4 @@ const updateContactUsMessageStatus = async (req, res) => {
       error: error.message,
     });
   }
-};
-
-module.exports = {
-  createContactUsMessage,
-  getAllContactUsMessages,
-  getContactUsMessageById,
-  updateContactUsMessageStatus,
 };

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const paymentRequestSchema = new mongoose.Schema(
     {
@@ -60,4 +60,4 @@ const paymentRequestSchema = new mongoose.Schema(
 
 const PaymentRequest = mongoose.model('PaymentRequest', paymentRequestSchema);
 
-module.exports = PaymentRequest;
+export default PaymentRequest;

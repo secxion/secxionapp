@@ -1,154 +1,152 @@
-const express = require('express')
-const router = express.Router()
+import express from 'express';
 
-const userSignUpController = require("../controller/user/userSignUp")
-const userSignInController = require('../controller/user/userSignin')
-const userDetailsController = require('../controller/user/userDetails')
-const authToken = require('../middleware/authToken')
-const userLogout = require('../controller/user/userLogout')
-const allUsers = require('../controller/user/allUsers')
-const updateUser = require('../controller/user/UpdateUser')
-const UploadProductController = require('../controller/product/uploadProduct')
-const getProductController = require('../controller/product/getProduct')
-const updateProductController = require('../controller/product/updateProduct')
-const getCategoryProduct = require('../controller/product/getCategoryProductOne')
-const getCategoryWiseProduct = require('../controller/product/getCategoryWiseProduct')
-const getProductDetails = require('../controller/product/getProductDetails')
-const SearchProduct = require('../controller/product/searchProduct')
-const filterProductController = require('../controller/product/filterProduct')
-const UserUploadMarketController = require('../controller/product/userUploadMarket')
-const getMarketController = require('../controller/product/getUserMarket')
-const marketRecordController = require('../controller/product/marketRecord')
-const { getAllUserMarkets, updateMarketStatus } = require('../controller/product/userMarketController')
-const { createBlogNote, getAllBlogNotes, updateBlogNote, deleteBlogNote } = require('../controller/blogNoteController')
-const submitReportController = require('../controller/user/submitReportController')
-const getUserReportsController = require('../controller/user/getUserReportsController')
-const { getAllReportsController, replyToReportController } = require('../controller/user/adminReports')
-const { getAllDataPads, createDataPad, updateDataPad, deleteDataPad } = require('../controller/dataPadController')
-const { createContactUsMessage, getAllContactUsMessages } = require('../controller/contactUsController')
-const { getAllUserDataPadsForAdmin } = require('../controller/user/adminDataPadController')
-const {getWalletBalance, getOtherUserWalletBalance } = require('../controller/wallet/walletController')
-const { createPaymentRequest, getAllPaymentRequests, getUserPaymentRequests, updatePaymentRequestStatus } = require('../controller/wallet/paymentRequestController')
-const { addBankAccount, getBankAccounts, deleteBankAccount } = require('../controller/wallet/bankAccounController')
-const { getUserTransactions } = require('../controller/wallet/transactionsController')
-const { getUserTransactionNotifications, markNotificationAsRead, deleteNotification, markAllNotificationsAsRead, deleteAllNotifications, getUserReportNotifications, fetchReportDetails, getUnreadNotificationCount, getNewNotifications, getMarketNotifications } = require('../controller/notifications/notificationsController')
-const getReportDetailsController = require('../controller/user/getReportDetailsController')
-const userReplyReportController = require('../controller/report/userReplyReportController')
-const getReportChatController = require('../controller/report/getReportChatController')
-const sendChatMessageController = require('../controller/report/sendChatMessageController')
-const userProfileController = require('../controller/userProfileController')
-const getMarketByIdController = require('../controller/product/getMarketByIDController')
-const { getApprovedPostsController, submitNewPostController, deletePostController, addCommentController } = require('../controller/user/communityController')
-const { getPendingPostsController, approvePostController, rejectPostController } = require('../controller/user/adminCommunityController')
-const getUserPostsController = require('../controller/user/getUserPostsController')
+import userSignUpController from '../controller/user/userSignUp.js';
+import userSignInController from '../controller/user/userSignin.js';
+import userDetailsController from '../controller/user/userDetails.js';
+import authToken from '../middleware/authToken.js';
+import userLogout from '../controller/user/userLogout.js';
+import allUsers from '../controller/user/allUsers.js';
+import updateUser from '../controller/user/UpdateUser.js';
+import UploadProductController from '../controller/product/uploadProduct.js';
+import getProductController from '../controller/product/getProduct.js';
+import updateProductController from '../controller/product/updateProduct.js';
+import getCategoryProduct from '../controller/product/getCategoryProductOne.js';
+import getCategoryWiseProduct from '../controller/product/getCategoryWiseProduct.js';
+import getProductDetails from '../controller/product/getProductDetails.js';
+import SearchProduct from '../controller/product/searchProduct.js';
+import filterProductController from '../controller/product/filterProduct.js';
+import UserUploadMarketController from '../controller/product/userUploadMarket.js';
+import getMarketController from '../controller/product/getUserMarket.js';
+import marketRecordController from '../controller/product/marketRecord.js';
+import { getAllUserMarkets, updateMarketStatus } from '../controller/product/userMarketController.js';
+import { createBlogNote, getAllBlogNotes, updateBlogNote, deleteBlogNote } from '../controller/blogNoteController.js';
+import submitReportController from '../controller/user/submitReportController.js';
+import getUserReportsController from '../controller/user/getUserReportsController.js';
+import { getAllReportsController, replyToReportController } from '../controller/user/adminReports.js';
+import { getAllDataPads, createDataPad, updateDataPad, deleteDataPad } from '../controller/dataPadController.js';
+import { createContactUsMessage, getAllContactUsMessages } from '../controller/contactUsController.js';
+import { getAllUserDataPadsForAdmin } from '../controller/user/adminDataPadController.js';
+import { getWalletBalance, getOtherUserWalletBalance } from '../controller/wallet/walletController.js';
+import { createPaymentRequest, getAllPaymentRequests, getUserPaymentRequests, updatePaymentRequestStatus } from '../controller/wallet/paymentRequestController.js';
+import { addBankAccount, getBankAccounts, deleteBankAccount } from '../controller/wallet/bankAccounController.js';
+import { getUserTransactions } from '../controller/wallet/transactionsController.js';
+import { getUserTransactionNotifications, markNotificationAsRead, deleteNotification, markAllNotificationsAsRead, deleteAllNotifications, getUserReportNotifications, fetchReportDetails, getUnreadNotificationCount, getNewNotifications, getMarketNotifications } from '../controller/notifications/notificationsController.js';
+import getReportDetailsController from '../controller/user/getReportDetailsController.js';
+import userReplyReportController from '../controller/report/userReplyReportController.js';
+import getReportChatController from '../controller/report/getReportChatController.js';
+import sendChatMessageController from '../controller/report/sendChatMessageController.js';
+import userProfileController from '../controller/userProfileController.js';
+import getMarketByIdController from '../controller/product/getMarketByIDController.js';
+import { getApprovedPostsController, submitNewPostController, deletePostController, addCommentController } from '../controller/user/communityController.js';
+import { getPendingPostsController, approvePostController, rejectPostController } from '../controller/user/adminCommunityController.js';
+import getUserPostsController from '../controller/user/getUserPostsController.js';
 
-router.post("/signup", userSignUpController)
-router.post("/signin", userSignInController)
-router.get("/user-details", authToken, userDetailsController)
-router.get("/userLogout", userLogout)
+const router = express.Router();
 
+router.post("/signup", userSignUpController);
+router.post("/signin", userSignInController);
+router.get("/user-details", authToken, userDetailsController);
+router.get("/userLogout", userLogout);
 
+// Admin panel
+router.get("/all-user", authToken, allUsers);
+router.post("/update-user", authToken, updateUser);
+router.get("/get-all-users-market", authToken, getAllUserMarkets);
+router.post("/update-market-status/:id", updateMarketStatus);
+router.get("/getAllDataForAdmin", authToken, getAllUserDataPadsForAdmin);
 
-//admin panel
-router.get("/all-user",authToken,allUsers)
-router.post("/update-user",authToken,updateUser)
-router.get("/get-all-users-market",authToken, getAllUserMarkets)
-router.post("/update-market-status/:id", updateMarketStatus)
-router.get("/getAllDataForAdmin",authToken, getAllUserDataPadsForAdmin)
+// Wallet balance
+router.get("/wallet/balane/:userId", authToken, getOtherUserWalletBalance);
 
-//walletbalance
-router.get("/wallet/balane/:userId",authToken, getOtherUserWalletBalance);
+// Product
+router.post("/upload-product", authToken, UploadProductController);
+router.get("/get-product", getProductController);
+router.post("/update-product", authToken, updateProductController);
+router.get("/get-categoryProduct", getCategoryProduct);
+router.post("/category-product", getCategoryWiseProduct);
+router.post("/product-details", getProductDetails);
+router.get("/search", SearchProduct);
+router.post("/filter-product", filterProductController);
 
-
-//product
-router.post("/upload-product",authToken,UploadProductController)
-router.get("/get-product",getProductController)
-router.post("/update-product",authToken,updateProductController)
-router.get("/get-categoryProduct",getCategoryProduct)
-router.post("/category-product",getCategoryWiseProduct)
-router.post("/product-details",getProductDetails)
-router.get("/search",SearchProduct)
-router.post("/filter-product", filterProductController)
-
-//user market
-router.post("/upload-market",authToken,UserUploadMarketController)
-router.get("/get-market",authToken, getMarketController)
+// User market
+router.post("/upload-market", authToken, UserUploadMarketController);
+router.get("/get-market", authToken, getMarketController);
 router.get("/get-market/:marketId", authToken, getMarketByIdController);
-router.get("/market-record",authToken,marketRecordController)
+router.get("/market-record", authToken, marketRecordController);
 
-//system blog
-router.post("/create-blog",createBlogNote)
-router.get("/get-blogs",getAllBlogNotes)
-router.put("/update-blog/:id",updateBlogNote)
-router.delete("/delete-blog/:id",deleteBlogNote)
+// System blog
+router.post("/create-blog", createBlogNote);
+router.get("/get-blogs", getAllBlogNotes);
+router.put("/update-blog/:id", updateBlogNote);
+router.delete("/delete-blog/:id", deleteBlogNote);
 
-//Report
+// Reports
 router.post("/submit-report", authToken, submitReportController);
 router.get("/get-reports", authToken, getUserReportsController);
-router.get("/all-reports",authToken, getAllReportsController);
-router.post("/reply-report/:id",authToken, replyToReportController);
-router.post("/reports/:id/reply",authToken, userReplyReportController);
-router.get("/reports/admin/:id/chat",authToken, getReportChatController);
-router.post("/reports/admin/:id/sendchat",authToken, sendChatMessageController);
+router.get("/all-reports", authToken, getAllReportsController);
+router.post("/reply-report/:id", authToken, replyToReportController);
+router.post("/reports/:id/reply", authToken, userReplyReportController);
+router.get("/reports/admin/:id/chat", authToken, getReportChatController);
+router.post("/reports/admin/:id/sendchat", authToken, sendChatMessageController);
 
-
-//DataPad
+// DataPad
 router.get("/alldata", authToken, getAllDataPads);
 router.post("/createdata", authToken, createDataPad);
 router.put("/updatedata/:id", authToken, updateDataPad);
 router.delete("/deletedata/:id", authToken, deleteDataPad);
 
-//createContactUsMessage
+// Contact us
 router.post("/contact-us-message", createContactUsMessage);
-router.get("/get-contact-us-messages",  getAllContactUsMessages);
+router.get("/get-contact-us-messages", getAllContactUsMessages);
 
-//wallet
-router.get("/wallet/balance",authToken, getWalletBalance);
+// Wallet
+router.get("/wallet/balance", authToken, getWalletBalance);
 
-//paymentRequest
-router.post("/pr/create",authToken, createPaymentRequest);
-router.get("/pr/getall",authToken, getAllPaymentRequests);
-router.get("/pr/getuser",authToken, getUserPaymentRequests);
-router.patch("/pr/update/:id",authToken,updatePaymentRequestStatus);
+// Payment request
+router.post("/pr/create", authToken, createPaymentRequest);
+router.get("/pr/getall", authToken, getAllPaymentRequests);
+router.get("/pr/getuser", authToken, getUserPaymentRequests);
+router.patch("/pr/update/:id", authToken, updatePaymentRequestStatus);
 
-//bankAccountLists
-router.post("/ba/add",authToken, addBankAccount);
-router.get("/ba/get",authToken, getBankAccounts);
-router.delete("/ba/delete/:accountId",authToken, deleteBankAccount);
+// Bank account
+router.post("/ba/add", authToken, addBankAccount);
+router.get("/ba/get", authToken, getBankAccounts);
+router.delete("/ba/delete/:accountId", authToken, deleteBankAccount);
 
-//getUserTransactions
-router.get("/transactions/get",authToken, getUserTransactions);
+// Transactions
+router.get("/transactions/get", authToken, getUserTransactions);
 
-//notifications
-router.get("/tr-notifications/get",authToken, getUserTransactionNotifications);
+// Notifications
+router.get("/tr-notifications/get", authToken, getUserTransactionNotifications);
 router.patch("/tr-notifications/read/:notificationId", authToken, markNotificationAsRead);
 router.delete("/tr-notifications/delete/:notificationId", authToken, deleteNotification);
 router.put("/tr-notifications/read-all", authToken, markAllNotificationsAsRead);
-router.delete("/tr-notifications/all", authToken, deleteAllNotifications)
-router.get('/report/notifications', authToken, getUserReportNotifications);
-router.get('/report-details/:reportId', authToken, fetchReportDetails);
-router.get('/user-report-details/:reportId', authToken, getReportDetailsController);
-router.get('/unread-notificationCount', authToken, getUnreadNotificationCount);
-router.get('/get-new-notifications', authToken, getNewNotifications);
-router.get('/get-market-notifications', authToken, getMarketNotifications);
+router.delete("/tr-notifications/all", authToken, deleteAllNotifications);
+router.get("/report/notifications", authToken, getUserReportNotifications);
+router.get("/report-details/:reportId", authToken, fetchReportDetails);
+router.get("/user-report-details/:reportId", authToken, getReportDetailsController);
+router.get("/unread-notificationCount", authToken, getUnreadNotificationCount);
+router.get("/get-new-notifications", authToken, getNewNotifications);
+router.get("/get-market-notifications", authToken, getMarketNotifications);
 
-//profile
-router.get('/profile', authToken, userProfileController);
-router.get('/profile/bank-accounts', authToken, userProfileController.getUserBankAccounts);
-router.get('/profile/wallet-balance', authToken, userProfileController.getUserWalletBalance);
-router.put('/profile/edit', authToken, userProfileController.editProfile);
+// Profile
 
-//community feed
-router.get('/posts/approved', getApprovedPostsController);
-router.post('/posts/submit', authToken, submitNewPostController);
-router.delete('/posts/:postId/delete', authToken, deletePostController);
-router.post('/posts/:postId/comment', authToken, addCommentController);
-
-//admin community ct
-router.get('/community/pending', authToken, getPendingPostsController); 
-router.put('/community/post/:postId/approve', authToken, approvePostController); 
-router.put('/community/post/:postId/reject', authToken, rejectPostController);
-router.get('/myposts', authToken, getUserPostsController);
+router.get("/profile", authToken, userProfileController.userProfileController);
+router.get("/profile/bank-accounts", authToken, userProfileController.getUserBankAccountsController);
+router.get("/profile/wallet-balance", authToken, userProfileController.getUserWalletBalanceController);
+router.put("/profile/edit", authToken, userProfileController.editProfileController);
 
 
-module.exports = router
+// Community
+router.get("/posts/approved", getApprovedPostsController);
+router.post("/posts/submit", authToken, submitNewPostController);
+router.delete("/posts/:postId/delete", authToken, deletePostController);
+router.post("/posts/:postId/comment", authToken, addCommentController);
+
+// Admin community
+router.get("/community/pending", authToken, getPendingPostsController);
+router.put("/community/post/:postId/approve", authToken, approvePostController);
+router.put("/community/post/:postId/reject", authToken, rejectPostController);
+router.get("/myposts", authToken, getUserPostsController);
+
+export default router;

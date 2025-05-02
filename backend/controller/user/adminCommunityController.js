@@ -1,6 +1,6 @@
-const CommunityPost = require('../../models/CommunityPost');
+import CommunityPost from '../../models/CommunityPost.js';
 
-async function getPendingPostsController(req, res) {
+export const getPendingPostsController = async (req, res) => {
     try {
         const pendingPosts = await CommunityPost.find({ status: 'pending' })
             .populate('userId', 'name profilePicture')
@@ -9,9 +9,9 @@ async function getPendingPostsController(req, res) {
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
 
-async function approvePostController(req, res) {
+export const approvePostController = async (req, res) => {
     const { postId } = req.params;
     try {
         const updatedPost = await CommunityPost.findByIdAndUpdate(
@@ -26,9 +26,9 @@ async function approvePostController(req, res) {
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
 
-async function rejectPostController(req, res) {
+export const rejectPostController = async (req, res) => {
     const { postId } = req.params;
     const { reason } = req.body;
 
@@ -49,10 +49,4 @@ async function rejectPostController(req, res) {
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
-
-module.exports = {
-    getPendingPostsController,
-    approvePostController,
-    rejectPostController
 };
