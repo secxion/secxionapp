@@ -20,7 +20,7 @@ const PaymentRequestForm = () => {
     const [loadingBalance, setLoadingBalance] = useState(true);
     const [errorBalance, setErrorBalance] = useState('');
     const [shouldRefreshAccounts, setShouldRefreshAccounts] = useState(false);
-    const [showBalance, setShowBalance] = useState(true);
+    const [showBalance, setShowBalance] = useState(false); // 👈 Set to false by default
 
     const MIN_REQUEST_AMOUNT = 1000;
 
@@ -312,8 +312,7 @@ const PaymentRequestForm = () => {
                         'Submit Request'
                     )}
                 </button>
-            </div>
-        </form>
+            </div>        </form>
     );
 };
 
