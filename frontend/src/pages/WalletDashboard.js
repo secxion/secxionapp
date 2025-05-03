@@ -72,7 +72,7 @@ const WalletDashboard = () => {
                 <div className="flex items-center justify-between p-4 max-w-7xl mx-auto">
                     <h2 className="text-sm font-semibold flex items-center">
                         <FaWallet className="mr-2 text-blue-500" />
-                        <span className="text-gray-800">Wallet Dashboard</span>
+                        <span className="text-gray-800">Wallet</span>
                     </h2>
                         <Link to={'/profile'} className="mr-4 text-gray-700 hover:text-blue-500 transition-colors">
                     Hi, {user.name}! 👋</Link>
