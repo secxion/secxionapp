@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight } from "lucide-react"; // Import the icon
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import "./Net.css";
+
 
 // ===============================
 // Custom Dialog Component
@@ -15,11 +16,9 @@ const CustomDialog = ({ open, onOpenChange, children, title, description }) => {
                 onOpenChange(false);
             }
         };
-
         if (open) {
             document.addEventListener("mousedown", handleClickOutside);
         }
-
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
@@ -31,11 +30,9 @@ const CustomDialog = ({ open, onOpenChange, children, title, description }) => {
                 onOpenChange(false);
             }
         };
-
         if (open) {
             window.addEventListener('keydown', handleKeyDown);
         }
-
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
@@ -44,7 +41,7 @@ const CustomDialog = ({ open, onOpenChange, children, title, description }) => {
     if (!open) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="net-container fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <motion.div
                 ref={dialogRef}
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -75,24 +72,21 @@ const Net = ({ blogs }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const timeoutRef = useRef(null);
     const [loading, setLoading] = useState(false);
-    const [transitionClass, setTransitionClass] = useState("blog-content");
+    const [transitionClass, setTransitionClass] = useState("translate-x-0");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedBlog, setSelectedBlog] = useState(null);
     const [isMobile, setIsMobile] = useState(false);
 
-    // Function to determine if it's a mobile screen
     const checkIsMobile = useCallback(() => {
         setIsMobile(window.innerWidth < 768);
     }, []);
 
-    // Check on initial load and resize
     useEffect(() => {
         checkIsMobile();
         window.addEventListener('resize', checkIsMobile);
         return () => window.removeEventListener('resize', checkIsMobile);
     }, [checkIsMobile]);
 
-    // Function to handle fetching and displaying the full blog content in a dialog
     const handleBlogClick = (blog) => {
         setSelectedBlog(blog);
         setIsDialogOpen(true);
@@ -107,10 +101,10 @@ const Net = ({ blogs }) => {
 
         const nextBlog = () => {
             resetTimeout();
-            setTransitionClass("blog-content slide-out");
+            setTransitionClass("translate-x-1/2 opacity-0");
             setTimeout(() => {
                 setCurrentIndex((prevIndex) => (prevIndex + 1) % blogs.length);
-                setTransitionClass("blog-content slide-in");
+                setTransitionClass("translate-x-0 opacity-100");
                 timeoutRef.current = setTimeout(nextBlog, 10000);
             }, 300);
         };
@@ -123,68 +117,55 @@ const Net = ({ blogs }) => {
             }, 500);
         }
 
-        return () => {
-            resetTimeout();
-        };
+        return () => resetTimeout();
     }, [blogs]);
 
     const currentBlog = blogs && blogs.length > 0 ? blogs[currentIndex] : null;
 
     return (
-        <div className="net-container">
-            <span className="net-label">BLOGs:</span>
-            <div className="blog-wrapper">
+        <div className="net-container fixed top-0 left-0 w-full bg-gradient-to-r from-purple-600 to-blue-500 shadow-md h-10 md:h-12 px-4 md:px-6 flex items-center font-mono text-white transition-all duration-300">
+            <span className="text-xs md:text-sm font-semibold bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full px-2 py-1 mr-2 tracking-wider">
+                BLOGs:
+            </span>
+
+            <div className="flex-grow relative h-6 overflow-hidden flex items-center">
                 {loading ? (
-                    <span className="loading-text">Loading...</span>
+                    <span className="text-sm font-semibold animate-pulse">Loading...</span>
                 ) : currentBlog ? (
-                    <React.Fragment>
-                        <span className={transitionClass}>
-                            <span
-                                className="blog-title cursor-pointer hover:underline"
-                                onClick={() => handleBlogClick(currentBlog)}
-                            >
-                                {currentBlog.title} <></>
-
-                                <span
-                                className={isMobile ? "blog-text mobile-blog-text" : "blog-text"}
-                                onClick={() => handleBlogClick(currentBlog)}
-                            >
-                                <ArrowRight className="inline-block w-4 h-4 mr-1 text-blue-400" />
-                                <></>
-                                {isMobile ? (
-                                    currentBlog.content.length > 20 ? (
-                                        <>
-                                            {currentBlog.content.substring(0, 40)}...
-                                        </>
-                                    ) : (
-                                        currentBlog.content
-                                    )
-                                ) : (
-                                    currentBlog.content
-                                )}
-                            </span>
-
-                            </span>
-                            
-
+                    <span className={`absolute transition-transform duration-300 ease-in-out whitespace-nowrap ${transitionClass}`}>
+                        <span
+                            className="font-bold cursor-pointer hover:underline mr-2"
+                            onClick={() => handleBlogClick(currentBlog)}
+                        >
+                            {currentBlog.title}
                         </span>
-                    </React.Fragment>
+
+                        <span
+                            className={`inline text-sm ${isMobile ? "truncate max-w-[70%]" : ""} cursor-pointer`}
+                            onClick={() => handleBlogClick(currentBlog)}
+                        >
+                            <ArrowRight className="inline w-4 h-4 text-blue-300 mr-1" />
+                            {isMobile
+                                ? currentBlog.content.length > 40
+                                    ? `${currentBlog.content.substring(0, 40)}...`
+                                    : currentBlog.content
+                                : currentBlog.content}
+                        </span>
+                    </span>
                 ) : (
-                    <span className="no-blogs-message">No news available.</span>
+                    <span className="italic text-sm">No news available.</span>
                 )}
             </div>
 
-            {/* Dialog for Full Blog Content */}
+            {/* Dialog */}
             <CustomDialog
                 open={isDialogOpen}
                 onOpenChange={setIsDialogOpen}
                 title={selectedBlog?.title}
                 description={selectedBlog?.content}
-            >
-            </CustomDialog>
+            />
         </div>
     );
 };
 
 export default Net;
-

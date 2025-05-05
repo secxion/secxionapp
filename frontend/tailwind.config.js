@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      boxShadow: {
+        neon: '0 0 10px rgba(255, 255, 255, 0.6)',
+      },
       screens: {
         'xxs': '320px',
         'xs': '480px',

@@ -3,7 +3,7 @@ import SummaryApi from '../common';
 import { formatDistanceToNow } from 'date-fns';
 import { FaCircle } from 'react-icons/fa';
 import { motion } from "framer-motion";
-import FullBlogDialog from './FullBlogDialog'; 
+import FullBlogDialog from './FullBlogDialog';
 
 const blogCardVariants = {
     initial: { opacity: 0, y: 20 },
@@ -26,9 +26,7 @@ const NetBlog = () => {
             setErrorBlogs(null);
             try {
                 const response = await fetch(SummaryApi.getBlogs.url);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
                 setBlogs(data);
             } catch (e) {
@@ -45,12 +43,8 @@ const NetBlog = () => {
         setLoadingFeed(true);
         setErrorFeed(null);
         try {
-            const response = await fetch(SummaryApi.getApprovedPosts.url, {
-                credentials: "include"
-            });
-            if (!response.ok) {
-                throw new Error('Failed to fetch community posts');
-            }
+            const response = await fetch(SummaryApi.getApprovedPosts.url, { credentials: "include" });
+            if (!response.ok) throw new Error('Failed to fetch community posts');
             const data = await response.json();
             setCommunityFeedData(data.data);
         } catch (err) {
@@ -65,23 +59,23 @@ const NetBlog = () => {
     };
 
     return (
-        <div className="container mt-4">
-            <div className="flex justify-end mb-4">
+        <div className="container mt-4 px-4">
+            <div className="flex justify-end mb-6">
                 <button
                     onMouseEnter={fetchCommunityFeedData}
                     onClick={handleCommunityFeedClick}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 shadow-sm transition-colors duration-300"
+                    className="px-5 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 neon-glow"
                 >
                     <span className="hidden sm:inline">Community</span> Feed
                 </button>
             </div>
 
-            {loadingFeed && <p className="text-sm text-gray-500 mt-1"></p>}
+            {loadingFeed && <p className="text-sm text-gray-500 mt-1">Fetching community...</p>}
             {errorFeed && <p className="text-sm text-red-500 mt-1">Error loading feed data.</p>}
 
             {loadingBlogs ? (
                 <div className="flex justify-center items-center py-8">
-                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-500"></div>
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
                 </div>
             ) : errorBlogs ? (
                 <p className="text-red-500 text-center py-8">{errorBlogs}</p>
@@ -95,26 +89,26 @@ const NetBlog = () => {
                                 initial="initial"
                                 animate="animate"
                                 transition={{ duration: 0.4, ease: "easeInOut" }}
-                                className="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                                className="backdrop-blur-xl bg-white/10 dark:bg-gray-800/30 border border-white/20 shadow-lg rounded-2xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-xl"
                             >
                                 <div className="p-6">
                                     <div className="flex items-center justify-between mb-3">
-                                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-200 line-clamp-2">{blog.title}</h3>
+                                        <h3 className="text-xl font-bold text-white neon-text line-clamp-2">{blog.title}</h3>
                                         {blog.isActive && (
-                                            <span className="inline-flex items-center text-green-500 text-sm">
-                                                <FaCircle className="mr-1" /> Active
+                                            <span className="inline-flex items-center text-green-400 text-sm">
+                                                <FaCircle className="mr-1 animate-pulse" /> Active
                                             </span>
                                         )}
                                     </div>
-                                    <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-3">{blog.content || 'No content available.'}</p>
+                                    <p className="text-gray-300 text-sm line-clamp-3">{blog.content || 'No content available.'}</p>
                                     {blog.createdAt && (
-                                        <p className="text-gray-500 dark:text-gray-500 text-xs mt-2">
+                                        <p className="text-gray-400 text-xs mt-2">
                                             Published {formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true })}
                                         </p>
                                     )}
                                     <button
-                                        onClick={() => setSelectedBlog(blog)} // Set the selected blog
-                                        className="text-indigo-600 hover:underline text-xs mt-2"
+                                        onClick={() => setSelectedBlog(blog)}
+                                        className="text-pink-400 hover:underline text-xs mt-2 font-semibold"
                                     >
                                         Read More
                                     </button>
@@ -123,11 +117,10 @@ const NetBlog = () => {
                         ))}
                     </div>
                 ) : (
-                    <p className="text-gray-600 dark:text-gray-400 text-center py-8">No blog posts available yet.</p>
+                    <p className="text-gray-400 text-center py-8">No blog posts available yet.</p>
                 )
             )}
 
-            {/* Full Blog Modal */}
             {selectedBlog && (
                 <FullBlogDialog blog={selectedBlog} onClose={() => setSelectedBlog(null)} />
             )}

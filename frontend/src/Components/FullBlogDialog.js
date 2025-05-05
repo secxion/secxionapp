@@ -5,14 +5,14 @@ import { motion } from 'framer-motion';
 const FullBlogDialog = ({ blog, onClose }) => {
     return (
         <motion.div
-            className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
         >
             <motion.div
-                className="bg-white dark:bg-gray-900 rounded-lg max-w-2xl w-full p-6 relative shadow-lg overflow-y-auto max-h-[90vh]"
+                className="bg-white/10 dark:bg-gray-900/30 backdrop-blur-lg rounded-2xl max-w-2xl w-full p-6 relative shadow-xl text-white overflow-y-auto max-h-[90vh] border border-white/20"
                 onClick={e => e.stopPropagation()}
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
@@ -20,13 +20,13 @@ const FullBlogDialog = ({ blog, onClose }) => {
             >
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white"
+                    className="absolute top-4 right-4 text-gray-300 hover:text-white"
                 >
                     <MdClose size={24} />
                 </button>
 
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{blog.title}</h2>
-                <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">{blog.content || 'No content available.'}</p>
+                <h2 className="text-3xl font-extrabold neon-text mb-4">{blog.title}</h2>
+                <p className="text-gray-200 leading-relaxed whitespace-pre-line">{blog.content || 'No content available.'}</p>
             </motion.div>
         </motion.div>
     );
