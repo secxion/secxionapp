@@ -52,8 +52,7 @@ app.use('/api', router, (req, res, next) => {
     next();
 });
 
-// ====== Serve Frontend in Production ======
-// For ES Modules, __dirname workaround:
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirnamePath = path.dirname(__filename);
 
@@ -62,7 +61,7 @@ if (process.env.NODE_ENV === 'production') {
     
     app.use(express.static(frontendPath));
     
-    app.get('*', (req, res) => {
+    app.get('*', "/", (req, res) => {
         res.sendFile(path.join(frontendPath, 'index.html'));
     });
 }
