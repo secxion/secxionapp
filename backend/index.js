@@ -15,21 +15,21 @@ const app = express();
 // ====== CORS Setup ======
 const allowedOrigins = [
     process.env.FRONTEND_URL,
-    'https://secxion.onrender.com', 
-    "https://secxionx.onrender.com",
+    'https://secxion.onrender.com',
+    'https://secxionx.onrender.com',
 ];
 
 const corsOptions = {
     origin: (origin, callback) => {
-        if (allowedOrigins.includes(origin) || !origin) { 
+        if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
         }
     },
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
     credentials: true,
-    allowedHeaders: 'Content-Type, Authorization',
+    allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 app.use(cors(corsOptions));
@@ -37,48 +37,54 @@ app.use(express.json());
 app.use(cookieParser());
 
 // ====== API Routes ======
-app.use('/api', router, (req, res, next) => {
-    console.log("index.js: Received request to /api");
+app.use('/api', router);
+
+// ====== Optional: Test Cookie Middleware (for debugging only) ======
+// Remove this in production if not required
+app.use('/api', (req, res, next) => {
     const token = "test_token";
-    const tokenOption = {
-        maxAge: 24 * 60 * 60 * 1000, 
+    const tokenOptions = {
+        maxAge: 24 * 60 * 60 * 1000, // 1 day
         httpOnly: true,
-        secure: true,  
-        sameSite: 'none', 
-        path: '/'
+        secure: true,
+        sameSite: 'none',
+        path: '/',
     };
-    res.cookie("token", token, tokenOption);
-    console.log("index.js: Cookie 'token' set with options:", tokenOption);
+    res.cookie('token', token, tokenOptions);
+    console.log("Cookie 'token' set with options:", tokenOptions);
     next();
 });
 
-
+// ====== Serve Frontend in Production ======
 const __filename = fileURLToPath(import.meta.url);
-const __dirnamePath = path.dirname(__filename);
+const __dirname = path.dirname(__filename);
 
 if (process.env.NODE_ENV === 'production') {
-    const frontendPath = path.join(__dirnamePath, '..', 'frontend', 'build');
-    
+    const frontendPath = path.join(__dirname, '..', 'frontend', 'build');
     app.use(express.static(frontendPath));
-    
-    app.get('*', (req, res) => {
+
+    // Only serve index.html for non-static routes
+    app.get('*', (req, res, next) => {
+        if (req.path.startsWith('/static/')) {
+            return next(); // Let express.static handle it
+        }
         res.sendFile(path.join(frontendPath, 'index.html'));
     });
 }
 
+// ====== Start Server ======
 const PORT = process.env.PORT || 5000;
 
 connectDB()
-    .then(async () => {
-        const db = mongoose.connection; 
-        console.log("index.js: Connected to MongoDB at:", db.host, db.port, db.name);
-
+    .then(() => {
+        const db = mongoose.connection;
+        console.log(`Connected to MongoDB at ${db.host}:${db.port}/${db.name}`);
         app.listen(PORT, () => {
-            console.log("index.js: Server is running on port", PORT);
-            console.log("index.js: Allowed CORS origins:", allowedOrigins);
+            console.log(`Server running on port ${PORT}`);
+            console.log("Allowed CORS origins:", allowedOrigins);
         });
     })
     .catch((error) => {
-        console.error("index.js: Error connecting to MongoDB:", error);
+        console.error('Error connecting to MongoDB:', error);
         process.exit(1);
     });
