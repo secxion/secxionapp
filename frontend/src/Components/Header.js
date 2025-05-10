@@ -1,6 +1,5 @@
 import React, { useContext, useState, useMemo, useCallback, useEffect } from "react";
 import { FcSearch } from "react-icons/fc";
-import { PiUserSquare } from "react-icons/pi";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -12,7 +11,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import SidePanel from "./SidePanel";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTimes, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import ROLE from "../common/role";
 import SummaryApi from "../common";
 import { BiSearch } from 'react-icons/bi';
@@ -97,7 +96,6 @@ const SearchPanelMobile = ({ open, setOpen, search, setSearch, handleSearch }) =
         </Transition.Root>
     );
 };
-// ... [same imports as before, unchanged] ...
 
 const Header = () => {
     const dispatch = useDispatch();
