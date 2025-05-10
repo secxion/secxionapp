@@ -10,16 +10,15 @@ dotenv.config();
 
 const app = express();
 
-// ====== CORS Setup ======
 const allowedOrigins = [
     process.env.FRONTEND_URL,
-    'https://secxion.onrender.com', 
+    'https://secxion.onrender.com',
     "https://secxionx.onrender.com",
 ];
 
 const corsOptions = {
     origin: (origin, callback) => {
-        if (allowedOrigins.includes(origin) || !origin) { 
+        if (allowedOrigins.includes(origin) || !origin) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -34,15 +33,14 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
-// ====== API Routes ======
 app.use('/api', router, (req, res, next) => {
     console.log("index.js: Received request to /api");
     const token = "test_token";
     const tokenOption = {
-        maxAge: 24 * 60 * 60 * 1000, 
+        maxAge: 24 * 60 * 60 * 1000,
         httpOnly: true,
-        secure: true,  
-        sameSite: 'none', 
+        secure: true,
+        sameSite: 'none',
         path: '/'
     };
     res.cookie("token", token, tokenOption);
@@ -54,7 +52,7 @@ const PORT = process.env.PORT || 5000;
 
 connectDB()
     .then(async () => {
-        const db = mongoose.connection; 
+        const db = mongoose.connection;
         console.log("index.js: Connected to MongoDB at:", db.host, db.port, db.name);
 
         app.listen(PORT, () => {
