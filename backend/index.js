@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import router from './routes/index.js';
 import mongoose from 'mongoose';
+import helmet from 'helmet';
+
 
 dotenv.config();
 
@@ -29,6 +31,7 @@ const corsOptions = {
     allowedHeaders: 'Content-Type, Authorization',
 };
 
+app.use(helmet());
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
