@@ -11,9 +11,9 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-    process.env.FRONTEND_URL,
-    'https://secxion.onrender.com',
-    "https://secxionx.onrender.com",
+  process.env.FRONTEND_URL || '',
+  'https://secxion.onrender.com',
+  "https://secxionx.onrender.com",
 ];
 
 const corsOptions = {
@@ -32,7 +32,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
-
 app.use('/api', router);
 
 
