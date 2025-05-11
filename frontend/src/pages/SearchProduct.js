@@ -33,9 +33,9 @@ const SearchProduct = () => {
     }, [query]);
 
     return (
-        <div className='container mx-auto p-4'>
+        <div className='container mx-auto p-4 mt-16'>
             {loading && (
-                <p className='text-lg text-center'>Loading...</p>
+                <p className='text-lg text-center mt-24'>Looking...</p>
             )}
 
             {error && (
@@ -44,7 +44,7 @@ const SearchProduct = () => {
                 </p>
             )}
 
-            <p className='text-lg font-semibold my-3'>Search Results: {data.length}</p>
+            <p className='text-lg font-semibold my-3 mt-24'>Search Results: {data.length}</p>
 
             {data.length === 0 && !loading && !error && (
                 <p className='bg-white text-lg text-center p-4 rounded shadow'>
