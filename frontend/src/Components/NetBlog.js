@@ -59,66 +59,64 @@ const NetBlog = () => {
     };
 
     return (
-        <div className="container mt-4 px-4">
-            <div className="flex justify-end mb-6">
+        <div className="container mx-auto mt-10 px-4 max-w-7xl">
+            <div className="flex justify-end mb-8">
                 <button
                     onMouseEnter={fetchCommunityFeedData}
                     onClick={handleCommunityFeedClick}
-                    className="px-5 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 neon-glow"
+                    className="px-5 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                     <span className="hidden sm:inline">Community</span> Feed
                 </button>
             </div>
 
-            {loadingFeed && <p className="text-sm text-gray-500 mt-1">Fetching community...</p>}
-            {errorFeed && <p className="text-sm text-red-500 mt-1">Error loading feed data.</p>}
+            {loadingFeed && <p className="text-sm text-gray-400 mt-1">Fetching community...</p>}
+            {errorFeed && <p className="text-sm text-red-400 mt-1">Error loading feed data.</p>}
 
             {loadingBlogs ? (
-                <div className="flex justify-center items-center py-8">
+                <div className="flex justify-center items-center py-12">
                     <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
                 </div>
             ) : errorBlogs ? (
-                <p className="text-red-500 text-center py-8">{errorBlogs}</p>
-            ) : (
-                blogs.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {blogs.map(blog => (
-                            <motion.div
-                                key={blog.id}
-                                variants={blogCardVariants}
-                                initial="initial"
-                                animate="animate"
-                                transition={{ duration: 0.4, ease: "easeInOut" }}
-                                className="backdrop-blur-xl bg-white/10 dark:bg-gray-800/30 border border-white/20 shadow-lg rounded-2xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-xl"
-                            >
-                                <div className="p-6">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <h3 className="text-xl font-bold text-white neon-text line-clamp-2">{blog.title}</h3>
-                                        {blog.isActive && (
-                                            <span className="inline-flex items-center text-green-400 text-sm">
-                                                <FaCircle className="mr-1 animate-pulse" /> Active
-                                            </span>
-                                        )}
-                                    </div>
-                                    <p className="text-gray-300 text-sm line-clamp-3">{blog.content || 'No content available.'}</p>
-                                    {blog.createdAt && (
-                                        <p className="text-gray-400 text-xs mt-2">
-                                            Published {formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true })}
-                                        </p>
+                <p className="text-red-400 text-center py-8">{errorBlogs}</p>
+            ) : blogs.length > 0 ? (
+                <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                    {blogs.map(blog => (
+                        <motion.div
+                            key={blog.id}
+                            variants={blogCardVariants}
+                            initial="initial"
+                            animate="animate"
+                            transition={{ duration: 0.5, ease: "easeInOut" }}
+                            className="rounded-3xl overflow-hidden shadow-xl bg-gradient-to-br from-white/10 via-gray-800/20 to-gray-900/30 backdrop-blur-md border border-white/20 text-white hover:scale-[1.015] transition-all duration-300"
+                        >
+                            <div className="p-6">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="text-xl font-bold line-clamp-2 neon-text">{blog.title}</h3>
+                                    {blog.isActive && (
+                                        <span className="flex items-center text-green-400 text-xs">
+                                            <FaCircle className="mr-1 animate-pulse" /> Active
+                                        </span>
                                     )}
-                                    <button
-                                        onClick={() => setSelectedBlog(blog)}
-                                        className="text-pink-400 hover:underline text-xs mt-2 font-semibold"
-                                    >
-                                        Read More
-                                    </button>
                                 </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                ) : (
-                    <p className="text-gray-400 text-center py-8">No blog posts available yet.</p>
-                )
+                                <p className="text-gray-600 text-sm line-clamp-3">
+                                    {blog.content || 'No content available.'}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-3">
+                                    Published {formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true })}
+                                </p>
+                                <button
+                                    onClick={() => setSelectedBlog(blog)}
+                                    className="mt-3 inline-block text-sm font-medium text-pink-400 hover:text-pink-300 transition-colors"
+                                >
+                                    Read More →
+                                </button>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            ) : (
+                <p className="text-gray-500 text-center py-12">No blog posts available yet.</p>
             )}
 
             {selectedBlog && (

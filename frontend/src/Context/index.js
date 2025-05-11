@@ -13,33 +13,21 @@ export const ContextProvider = ({ children }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log("Checking local storage for user and token...");
-
         const storedUser = localStorage.getItem("user");
         const storedToken = localStorage.getItem("token");
-
-        console.log("Raw stored user:", storedUser);
-        console.log("Raw stored token:", storedToken);
 
         if (storedUser) {
             try {
                 const parsedUser = JSON.parse(storedUser);
-                console.log("Parsed User:", parsedUser);
-
                 setUser(parsedUser);
                 if (storedToken) {
                     setToken(storedToken);
-                    console.log("Token set successfully:", storedToken);
-                } else {
-                    console.warn("⚠️ No token found, but user exists.");
                 }
             } catch (error) {
-                console.error("Error parsing stored user data:", error);
+                console.error("Error parsing user/token:", error);
                 localStorage.removeItem("user");
                 localStorage.removeItem("token");
             }
-        } else {
-            console.warn("No user found in local storage.");
         }
 
         setLoading(false);
@@ -58,8 +46,6 @@ export const ContextProvider = ({ children }) => {
     const fetchUserDetails = useCallback(async () => {
         if (!token) return;
 
-        console.log("Fetching user details...");
-
         try {
             const response = await fetch(SummaryApi.current_user.url, {
                 method: SummaryApi.current_user.method,
@@ -67,17 +53,16 @@ export const ContextProvider = ({ children }) => {
                 credentials: "include",
             });
 
-            if (!response.ok) {
-                console.error("Failed to fetch user details:", response.status);
+            const data = await response.json();
+
+            if (response.ok && data && data._id) {
+                setUser(data);
+                dispatch(setUserDetails(data));
+            } else {
+                console.warn("Failed to fetch user details");
                 setUser(null);
                 dispatch(setUserDetails(null));
-                return;
             }
-
-            const data = await response.json();
-            console.log("User details fetched successfully:", data);
-            setUser(data);
-            dispatch(setUserDetails(data));
 
         } catch (error) {
             console.error("Error fetching user details:", error);
@@ -87,20 +72,16 @@ export const ContextProvider = ({ children }) => {
     }, [getAuthHeaders, dispatch, token]);
 
     const fetchWalletBalance = useCallback(async () => {
-        if (!token && !user) {
-            console.warn("⚠️ No token or user available. Cannot fetch wallet balance.");
-            return;
-        }
+        if (!token && !user?._id) return;
 
-        console.log("Fetching wallet balance...");
         try {
             let url = SummaryApi.walletBalance.url;
             let headers = { "Content-Type": "application/json" };
 
             if (token) {
                 headers.Authorization = `Bearer ${token}`;
-            } else if (user?._id) {
-                url = `${SummaryApi.walletBalance.url}?userId=${user._id}`;
+            } else {
+                url = `${url}?userId=${user._id}`;
             }
 
             const response = await fetch(url, {
@@ -109,26 +90,19 @@ export const ContextProvider = ({ children }) => {
                 credentials: "include",
             });
 
-            if (!response.ok) {
-                console.error("Failed to fetch wallet balance:", response.status);
-                setWalletBalance(null);
-                return;
-            }
-
             const data = await response.json();
-            if (data.success) {
-                console.log("Wallet balance fetched successfully:", data.balance);
+            if (response.ok && data.success) {
                 setWalletBalance(data.balance);
             } else {
-                console.error("Failed to fetch wallet balance:", data.message);
                 setWalletBalance(null);
+                console.warn("Wallet fetch failed:", data.message);
             }
+
         } catch (error) {
-            console.error("Error fetching wallet balance:", error);
+            console.error("Error fetching wallet:", error);
             setWalletBalance(null);
         }
-    }, [token, user, setWalletBalance]);
-    ;
+    }, [token, user]);
 
     useEffect(() => {
         if (token || user) {
@@ -138,25 +112,22 @@ export const ContextProvider = ({ children }) => {
     }, [token, user, fetchWalletBalance]);
 
     const login = async (userData, userToken) => {
-        if (!userData) {
-            console.error("⚠️ Cannot log in without user!");
+        if (!userData || !userToken) {
+            console.error("Missing user or token in login()");
             return;
         }
 
-        console.log("User logging in...");
-        console.log("User Data:", userData);
-        console.log("User Token:", userToken);
-
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("token", userToken);
+
         setUser(userData);
         setToken(userToken);
 
+        dispatch(setUserDetails(userData));
         fetchWalletBalance();
     };
 
     const logout = () => {
-        console.log("Logging out...");
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         setUser(null);
@@ -169,17 +140,22 @@ export const ContextProvider = ({ children }) => {
 
     return (
         <Context.Provider value={{
-            user, token, login, logout, getAuthHeaders,
-            fetchUserDetails, isLoggedIn, loading,
-            walletBalance, fetchWalletBalance
+            user,
+            token,
+            login,
+            logout,
+            getAuthHeaders,
+            fetchUserDetails,
+            isLoggedIn,
+            loading,
+            walletBalance,
+            fetchWalletBalance
         }}>
             {children}
         </Context.Provider>
     );
 };
 
-export const useAuth = () => {
-    return useContext(Context);
-};
+export const useAuth = () => useContext(Context);
 
 export default Context;

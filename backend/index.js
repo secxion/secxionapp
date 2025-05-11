@@ -33,20 +33,8 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use('/api', router, (req, res, next) => {
-    console.log("index.js: Received request to /api");
-    const token = "test_token";
-    const tokenOption = {
-        maxAge: 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-        path: '/'
-    };
-    res.cookie("token", token, tokenOption);
-    console.log("index.js: Cookie 'token' set with options:", tokenOption);
-    next();
-});
+app.use('/api', router);
+
 
 const PORT = process.env.PORT || 5000;
 

@@ -11,22 +11,29 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         setUserDetails: (state, action) => {
-            console.log("Redux User Slice: Setting user details:", action.payload);
+            if (process.env.NODE_ENV === 'development') {
+                console.log("Redux User Slice: Setting user details:", action.payload);
+            }
             state.user = action.payload;
-            state.isLoggedIn = !!action.payload;
-            console.log("Redux User Slice: isLoggedIn state:", state.isLoggedIn);
+            state.isLoggedIn = action.payload !== null;
         },
         setLoading: (state, action) => {
-            console.log("Redux User Slice: Setting loading:", action.payload);
+            if (process.env.NODE_ENV === 'development') {
+                console.log("Redux User Slice: Setting loading:", action.payload);
+            }
             state.loading = action.payload;
         },
         logout: (state) => {
-            console.log("Redux User Slice: Logging out user");
+            if (process.env.NODE_ENV === 'development') {
+                console.log("Redux User Slice: Logging out user");
+            }
             state.user = null;
             state.isLoggedIn = false;
         },
         clearState: (state) => {
-            console.log("Redux User Slice: Clearing state");
+            if (process.env.NODE_ENV === 'development') {
+                console.log("Redux User Slice: Clearing state");
+            }
             state.user = null;
             state.isLoggedIn = false;
             state.loading = false;

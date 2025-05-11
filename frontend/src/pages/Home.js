@@ -7,7 +7,6 @@ import HomeFooter from '../Components/HomeFooter';
 import NetBlog from '../Components/NetBlog';
 import giftCardImages from '../helper/heroimages';
 import './Home.css';
-import { useSelector } from "react-redux";
 
 const menuItems = [
     { label: "Marketplace", path: "/section", color: "bg-gradient-to-r from-blue-500 to-purple-500", icon: <FaStore className="text-4xl md:text-5xl text-black" /> },
@@ -30,7 +29,6 @@ const Home = () => {
     const [isBlogVisible, setIsBlogVisible] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [showMenuButton, setShowMenuButton] = useState(false);
-    const { user } = useSelector((state) => state.user);
 
     const scrollToBlogSection = () => {
         blogSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -58,7 +56,7 @@ const Home = () => {
         <div className="container home-container space-y-4">
             {/* Hero Section */}
             <div
-    className="hero-section tv-screen mt-24 md:mt-32 px-4 text-center"
+    className="hero-section tv-screen mt-20 md:mt-28 px-4 text-center"
     style={{ backgroundImage: `url(${currentImage.url})` }}
 >
     <div className="hero-overlay" aria-hidden="true" />
@@ -71,15 +69,15 @@ const Home = () => {
             transition={{ duration: 0.4, ease: "easeInOut" }}
         >
             <div className="text-center">
-                <h1 className="hero-title text-4xl md:text-6xl font-bold text-white animate-neon">
+                <h1 className="hero-title text-4xl md:text-6xl font-bold text-white animate-neon1">
                     Welcome To Secxion
                 </h1>
-                <p className="hero-description">
+                <p className="hero-description text-2xl md:text-4xl font-italic text-white animate-neon2">
                     Your Trusted Platform To Redeem Your Giftcards for Cash
                 </p>
                 <Link
                     to="/section"
-                    className="hero-button"
+                    className="hero-button animate-pulseGlow"
                 >
                     Marketplace
                 </Link>
@@ -87,9 +85,8 @@ const Home = () => {
         </motion.div>
     </div>
 </div>
-
             {/* Menu Grid Section */}
-            <div ref={menuSectionRef} className={` menu-section inline-block text-white text-2xl border-b-4 pb-1 animate-glowLine border-cyan-400 ${showMenuButton ? 'menu-section-small' : ''}`} >
+            <div ref={menuSectionRef} className={` menu-section animate-pulseGlow inline-block text-white text-2xl border-b-4 pb-1 animate-glowLine border-cyan-400 ${showMenuButton ? 'menu-section-small' : ''}`} >
                 {menuItems.map((item, index) => (
                     <motion.div
                         key={index}
@@ -97,9 +94,9 @@ const Home = () => {
                         initial="initial"
                         animate="animate"
                         whileHover="whileHover"
-                        className={`menu-item ${item.color} ${showMenuButton ? 'menu-item-small' : ''}`}
+                        className={`menu-item  ${item.color} ${showMenuButton ? 'menu-item-small' : ''}`}
                     >
-                        <Link to={item.path} className="menu-link" aria-label={item.label}>
+                        <Link to={item.path} className="menu-link " aria-label={item.label}>
                             <div className="icon-container">
                                 {item.icon}
                             </div>

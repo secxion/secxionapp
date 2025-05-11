@@ -26,3 +26,27 @@
     display: flex;
     margin-top: 20px;
 }
+
+@keyframes glowBorder {
+    0%, 100% {
+      border-color: rgb(167, 124, 6);
+      box-shadow: 0 0 8px rgb(89, 109, 2);
+    }
+    25% {
+      border-color: rgb(226, 226, 226);
+      box-shadow: 0 0 8px rgb(9, 34, 116);
+    }
+    50% {
+      border-color: rgb(114, 8, 17);
+      box-shadow: 0 0 8px rgb(82, 1, 82);
+    }
+    75% {
+      border-color: #f00;
+      box-shadow: 0 0 8px #f00;
+    }
+  }
+  
+  .glow-border {
+    animation: glowBorder 4s infinite ease-in-out;
+  }
+  

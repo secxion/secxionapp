@@ -70,86 +70,74 @@ const Header = () => {
 
     return (
         <>
-            <header className="header-spa left-0 right-0 top-0 pt-6 mb-4 inset-0 bg-black/70 backdrop-blur-sm fixed w-full z-50 border border-white/20 shadow-md transition-all duration-300 flex items-center justify-between px-6 sm:px-6 lg:px-8">
-                <div className="w-full mx-auto flex items-center justify-between px-4 md:px-6 lg:px-8">
+            <header className="header-spa left-0 right-0 top-0 pt-8 mb-8 inset-0 bg-black/80 backdrop-blur-md fixed w-full z-50 border-b border-white/20 shadow-md transition-all duration-300 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+                <div className="w-full mx-auto flex items-center justify-between">
+                    {/* Menu Icon */}
                     <div className="flex items-center gap-2">
                         <button
                             onClick={toggleMobileMenu}
-                            className="text-gray-300 hover:text-white md:hidden"
+                            className="text-gray-500 hover:text-blue-600 md:hidden"
                             aria-expanded={mobileMenuOpen}
                         >
                             <FontAwesomeIcon icon={faBars} className="h-5 w-5" />
                         </button>
                     </div>
 
-                    {/* Search for Desktop */}
-                    <Link to="/" className="hidden md:flex items-center  rounded-md px-3 py-1 w-64 lg:w-72 font-bold text-xl text-primary-500 mr-4">
+                    {/* Logo */}
+                    <Link to="/" className="hidden md:flex items-center font-extrabold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 mr-4 tracking-wide">
                         Secxion
                     </Link>
-                    <div className="hidden md:flex items-center bg-gray-100 border border-blue-400 rounded-md px-4 py-1 mr-12 w-72 lg:w-72">
-                        <FcSearch className="text-gray-500 h-4 w-4 mr-2" />
+
+                    {/* Search Input - Desktop */}
+                    <div className="hidden md:flex items-center bg-black border-2 rounded-md px-4 py-1 mr-12 w-72 glow-border">
+                        <FcSearch className="text-white h-4 w-4 mr-2" />
                         <input
                             type="text"
                             placeholder="Search gift cards..."
-                            className="bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400 w-full"
+                            className="bg-transparent outline-none text-sm text-white placeholder-gray-400 w-full"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
                     </div>
 
-                    {/* Search for Mobile */}
+                    {/* Search - Mobile */}
                     <div className="md:hidden flex items-center w-full mx-4">
-                        <div className="flex items-center bg-gray-100 border border-blue-400 rounded-md px-2 py-1 w-full">
-                            <BiSearch className="text-gray-500 h-5 w-5 mr-2" />
+                        <div className="flex items-center bg-black border-2 rounded-md px-2 py-1 w-full glow-border">
+                            <BiSearch className="text-white h-5 w-5 mr-2" />
                             <input
                                 type="text"
                                 placeholder="Search gift cards..."
-                                className="bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400 w-full"
+                                className="bg-transparent outline-none text-sm text-white placeholder-gray-400 w-full"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
                         </div>
                     </div>
 
-                    <nav className="hidden md:flex items-center gap-3 text-sm font-medium">
-                        <Link
-                            to="/record"
-                            className="px-2 py-1 border border-cyan-500 text-cyan-300 hover:bg-cyan-800 hover:text-white rounded transition"
-                        >
+                    {/* Main Nav */}
+                    <nav className="hidden md:flex items-center gap-3 text-sm font-semibold">
+                        <Link to="/record" className="px-3 py-1 border border-cyan-500 text-cyan-300 hover:bg-cyan-600 hover:text-white rounded transition duration-200">
                             Trade Status
                         </Link>
-                        <Link
-                            to="/mywallet"
-                            className="px-2 py-1 border border-pink-500 text-pink-300 hover:bg-pink-700 hover:text-white rounded transition"
-                        >
+                        <Link to="/mywallet" className="px-3 py-1 border border-pink-500 text-pink-300 hover:bg-pink-600 hover:text-white rounded transition duration-200">
                             Wallet
                         </Link>
-                        <Link
-                            to="/datapad"
-                            className="px-2 py-1 border border-yellow-500 text-yellow-300 hover:bg-yellow-600 hover:text-black rounded transition"
-                        >
+                        <Link to="/datapad" className="px-3 py-1 border border-yellow-500 text-yellow-300 hover:bg-yellow-500 hover:text-black rounded transition duration-200">
                             DataPad
                         </Link>
                         {user?.role === ROLE.ADMIN && (
-                            <Link
-                                to="/admin-panel"
-                                className="px-2 py-1 border border-purple-600 text-purple-300 hover:bg-purple-700 hover:text-white rounded transition"
-                            >
+                            <Link to="/admin-panel" className="px-3 py-1 border border-purple-500 text-purple-300 hover:bg-purple-700 hover:text-white rounded transition duration-200">
                                 Admin
                             </Link>
                         )}
-                        <Link
-                            to="/notifications"
-                            className="px-2 py-1 border border-emerald-500 text-emerald-300 hover:bg-emerald-700 hover:text-white rounded relative"
-                            title="Notifications"
-                        >
+                        <Link to="/notifications" className="px-3 py-1 border border-emerald-500 text-emerald-300 hover:bg-emerald-600 hover:text-white rounded relative transition duration-200">
                             <NotificationBadge />
                         </Link>
                         {user?._id && (
                             <button
                                 onClick={handleLogout}
                                 disabled={loading}
-                                className="px-2 py-1 border border-red-500 text-red-300 hover:bg-red-600 hover:text-white rounded transition flex items-center"
+                                className="px-3 py-1 border border-red-500 text-red-300 hover:bg-red-600 hover:text-white rounded transition flex items-center"
                             >
                                 <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
                                 Logout
