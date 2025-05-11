@@ -40,6 +40,7 @@ import Privacy from "../Components/Privacy";
 import Profiler from "../Components/Profiler";
 import NotFound from "../pages/NotFound";
 
+
 const publicRoutes = [
   {
     path: "login",
@@ -69,6 +70,7 @@ const publicRoutes = [
     path:"privacy",
     element: <Privacy/>
   },
+
 ];
 
 const protectedRoutes = [
@@ -90,7 +92,9 @@ const protectedRoutes = [
   { path: "notifications", element: <NotificationsPage /> },
   { path: "chat/:reportId", element: <ReportCard /> },
   { path: "reset", element: <Reset /> },
-  { path: "community-feed", element: <Buzz /> }, // Community Feed path correctly set to Buzz component
+  { path: "community-feed", element: <Buzz /> },
+  
+
 ];
 
 const adminRoutes = [
@@ -102,7 +106,7 @@ const adminRoutes = [
   { path: "admin-report", element: <AdminReports /> },
   { path: "admin-rpr", element: <AdminRPR /> },
   { path: "anonymous-report", element: <AdminAnonymousReports /> },
-  { path: "community-feeds", element: <AdminCommunity /> }, // Admin specific community feeds route
+  { path: "community-feeds", element: <AdminCommunity /> },
 ];
 
 const router = createBrowserRouter([
