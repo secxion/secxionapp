@@ -8,7 +8,6 @@ import NetBlog from '../Components/NetBlog';
 import giftCardImages from '../helper/heroimages';
 import './Home.css';
 import { useSelector } from "react-redux";
-import { PiUserSquare } from "react-icons/pi";
 
 const menuItems = [
     { label: "Marketplace", path: "/section", color: "bg-gradient-to-r from-blue-500 to-purple-500", icon: <FaStore className="text-4xl md:text-5xl text-black" /> },
@@ -59,39 +58,38 @@ const Home = () => {
         <div className="container home-container space-y-4">
             {/* Hero Section */}
             <div
-                className="hero-section"
-                style={{ backgroundImage: `url(${currentImage.url})` }}
-            >
-                <div className="hero-overlay" aria-hidden="true" />
-                <div className="hero-content">
-                    <motion.div
-                        className="welcome-dialog"
-                        initial={{ opacity: 0, y: -30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 30 }}
-                        transition={{ duration: 0.4, ease: "easeInOut" }}
-                    >
-                            <div className="text-center">
-                                <h1 className="hero-title">
-                                Welcome To Secxion
-                                </h1>
-                                <p className="hero-description">
-                                    Your Trusted Platform To Redeem Your Giftcards for Cash
-                                </p>
-                                <Link
-                                    to="/section"
-                                    className="hero-button"
-                                >
-                                    Marketplace
-                                </Link>
-                            </div>
-                        
-                    </motion.div>
-                </div>
+    className="hero-section tv-screen mt-24 md:mt-32 px-4 text-center"
+    style={{ backgroundImage: `url(${currentImage.url})` }}
+>
+    <div className="hero-overlay" aria-hidden="true" />
+    <div className="hero-content">
+        <motion.div
+            className="welcome-dialog"
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 30 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+        >
+            <div className="text-center">
+                <h1 className="hero-title text-4xl md:text-6xl font-bold text-white animate-neon">
+                    Welcome To Secxion
+                </h1>
+                <p className="hero-description">
+                    Your Trusted Platform To Redeem Your Giftcards for Cash
+                </p>
+                <Link
+                    to="/section"
+                    className="hero-button"
+                >
+                    Marketplace
+                </Link>
             </div>
+        </motion.div>
+    </div>
+</div>
 
             {/* Menu Grid Section */}
-            <div ref={menuSectionRef} className={` menu-section ${showMenuButton ? 'menu-section-small' : ''}`}>
+            <div ref={menuSectionRef} className={` menu-section inline-block text-white text-2xl border-b-4 pb-1 animate-glowLine border-cyan-400 ${showMenuButton ? 'menu-section-small' : ''}`} >
                 {menuItems.map((item, index) => (
                     <motion.div
                         key={index}

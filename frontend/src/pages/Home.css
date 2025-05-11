@@ -446,4 +446,26 @@
 
   }
 
+  /* TV Screen Glowing Border Effect */
+.tv-screen {
+  border: 10px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  box-shadow:
+    0 0 10px rgba(0, 200, 255, 0.4),
+    0 0 20px rgba(0, 200, 255, 0.3),
+    0 0 40px rgba(0, 200, 255, 0.2),
+    inset 0 0 30px rgba(0, 200, 255, 0.15);
+  overflow: hidden;
+  transition: box-shadow 0.4s ease-in-out;
+}
+
+.tv-screen:hover {
+  box-shadow:
+    0 0 20px rgba(0, 200, 255, 0.6),
+    0 0 40px rgba(0, 200, 255, 0.4),
+    0 0 60px rgba(0, 200, 255, 0.3),
+    inset 0 0 40px rgba(0, 200, 255, 0.2);
+}
+
+
 }
