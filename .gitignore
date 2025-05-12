@@ -1,29 +1,20 @@
-# Node modules (both backend & frontend)
+# Node modules
 node_modules/
-**/node_modules/
-
-# Build outputs
-dist/
-build/
 
 # Logs
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
 pnpm-debug.log*
-
-# OS junk files
-.DS_Store
-Thumbs.db
 
 # Environment variables
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*.local
 
-# IDE settings
+# OS junk
+.DS_Store
+Thumbs.db
+
+# IDE configs
 .vscode/
 .idea/
 *.suo
@@ -31,19 +22,12 @@ Thumbs.db
 *.njsproj
 *.sln
 
-# Optional: coverage reports (from Jest, etc.)
+# Coverage reports
 coverage/
 
 # Misc
 *.log
 *.pid
-*.seed
 *.tgz
-
-# React specific
-.cache/
-.eslintcache
-public/static/
-
-# MongoDB dump files
+*.seed
 dump/

@@ -6,51 +6,82 @@ import connectDB from './config/db.js';
 import router from './routes/index.js';
 import mongoose from 'mongoose';
 import helmet from 'helmet';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+// ES Modules fix for __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// Load env vars
 dotenv.config();
 
+// Init app
 const app = express();
 
+// Allowable frontend origins
 const allowedOrigins = [
   process.env.FRONTEND_URL || '',
   'https://secxion.onrender.com',
-  "https://secxionx.onrender.com",
+  'https://secxionx.onrender.com',
 ];
 
+// CORS config
 const corsOptions = {
-    origin: (origin, callback) => {
-        if (allowedOrigins.includes(origin) || !origin) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-    allowedHeaders: 'Content-Type, Authorization',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  allowedHeaders: 'Content-Type, Authorization',
 };
 
+// Middleware
 app.use(helmet());
 app.use(cors(corsOptions));
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
+
+// API Routes
 app.use('/api', router);
 
+// ===========================
+// Serve React frontend build
+// ===========================
+const frontendBuildPath = path.join(__dirname, '../frontend/build');
 
+// Serve static files from React app
+app.use(express.static(frontendBuildPath));
+
+// For all GET requests that aren’t handled by /api, serve index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
+    if (err) {
+      res.status(500).send(err);
+    }
+  });
+});
+
+// ===========================
+// MongoDB & Server start
+// ===========================
 const PORT = process.env.PORT || 5000;
 
 connectDB()
-    .then(async () => {
-        const db = mongoose.connection;
-        console.log("index.js: Connected to MongoDB at:", db.host, db.port, db.name);
+  .then(() => {
+    const db = mongoose.connection;
+    console.log(`✅ Connected to MongoDB at: ${db.host}:${db.port}/${db.name}`);
 
-        app.listen(PORT, () => {
-            console.log("index.js: Server is running on port", PORT);
-            console.log("index.js: Allowed CORS origins:", allowedOrigins);
-        });
-    })
-    .catch((error) => {
-        console.error("index.js: Error connecting to MongoDB:", error);
-        process.exit(1);
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      console.log('🌐 Allowed CORS origins:', allowedOrigins);
     });
+  })
+  .catch((err) => {
+    console.error('❌ MongoDB connection error:', err.message);
+    process.exit(1);
+  });
