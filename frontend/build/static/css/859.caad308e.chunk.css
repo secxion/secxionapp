@@ -1,0 +1,2 @@
+.header-spa{align-items:center;background-color:#fff;box-sizing:border-box;display:flex;font-weight:300;height:76px;justify-content:space-between;margin:20px 0 0;min-width:0;overflow:hidden;padding-left:24px;padding-right:24px;width:100%}@keyframes glowBorder{0%,to{border-color:#a77c06;box-shadow:0 0 8px #596d02}25%{border-color:#e2e2e2;box-shadow:0 0 8px #092274}50%{border-color:#720811;box-shadow:0 0 8px #520152}75%{border-color:red;box-shadow:0 0 8px red}}.glow-border{animation:glowBorder 4s ease-in-out infinite}
+/*# sourceMappingURL=859.caad308e.chunk.css.map*/

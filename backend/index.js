@@ -49,15 +49,10 @@ app.use(cookieParser());
 // API Routes
 app.use('/api', router);
 
-// ===========================
-// Serve React frontend build
-// ===========================
 const frontendBuildPath = path.join(__dirname, '../frontend/build');
 
-// Serve static files from React app
 app.use(express.static(frontendBuildPath));
 
-// For all GET requests that aren’t handled by /api, serve index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
     if (err) {
@@ -66,9 +61,6 @@ app.get('*', (req, res) => {
   });
 });
 
-// ===========================
-// MongoDB & Server start
-// ===========================
 const PORT = process.env.PORT || 5000;
 
 connectDB()
