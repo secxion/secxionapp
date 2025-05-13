@@ -9,16 +9,20 @@ import helmet from 'helmet';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// Load environment variables
 dotenv.config();
 
+// Initialize app
 const app = express();
 
+// Allowed frontend origins
 const allowedOrigins = [
   process.env.FRONTEND_URL || '',
   'https://secxion.onrender.com',
   'https://secxionx.onrender.com',
 ];
 
+// CORS options
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -32,17 +36,20 @@ const corsOptions = {
   allowedHeaders: 'Content-Type, Authorization',
 };
 
+// Middleware
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 
+// API Routes
 app.use('/api', router);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const frontendBuildPath = path.join(__dirname, 'build');
+// Serve frontend
+const frontendBuildPath = path.join(__dirname, 'build'); // build is now inside backend
 app.use(express.static(frontendBuildPath));
 
 app.get('*', (req, res) => {
@@ -51,8 +58,10 @@ app.get('*', (req, res) => {
   });
 });
 
+// Server port
 const PORT = process.env.PORT || 5000;
 
+// Connect to database and start server
 connectDB()
   .then(() => {
     const db = mongoose.connection;
