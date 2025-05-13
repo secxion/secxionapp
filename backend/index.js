@@ -45,16 +45,18 @@ app.use(cookieParser());
 // API Routes
 app.use('/api', router);
 
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve frontend static files
-const frontendPath = path.join(__dirname, './frontend');
-app.use(express.static(frontendPath));
+// Serve frontend
+const frontendBuildPath = path.join(__dirname, 'build'); // build is now inside backend
+app.use(express.static(frontendBuildPath));
 
-// Fallback to index.html for React Router
 app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendPath, 'index.html'));
+  res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
+    if (err) res.status(500).send(err);
+  });
 });
 
 // Server port
