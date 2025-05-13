@@ -9,24 +9,20 @@ import helmet from 'helmet';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// ES Modules fix for __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Load env vars
+// Load environment variables
 dotenv.config();
 
-// Init app
+// Initialize app
 const app = express();
 
-// Allowable frontend origins
+// Allowed frontend origins
 const allowedOrigins = [
   process.env.FRONTEND_URL || '',
   'https://secxion.onrender.com',
   'https://secxionx.onrender.com',
 ];
 
-// CORS config
+// CORS options
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -49,20 +45,22 @@ app.use(cookieParser());
 // API Routes
 app.use('/api', router);
 
-const frontendBuildPath = path.join(__dirname, '../frontend/build');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-app.use(express.static(frontendBuildPath));
+// Serve frontend static files
+const frontendPath = path.join(__dirname, './frontend');
+app.use(express.static(frontendPath));
 
+// Fallback to index.html for React Router
 app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
-    if (err) {
-      res.status(500).send(err);
-    }
-  });
+  res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
+// Server port
 const PORT = process.env.PORT || 5000;
 
+// Connect to database and start server
 connectDB()
   .then(() => {
     const db = mongoose.connection;
