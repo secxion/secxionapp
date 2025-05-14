@@ -74,6 +74,9 @@ const WalletDashboard = () => {
                         <FaWallet className="mr-2 text-blue-500" />
                         <span className="text-gray-800">Wallet</span>
                     </h2>
+                    <Link to="/" className="hidden minecraft-font text-[14px] md:flex items-center font-extrabold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 mr-4 tracking-wide">
+                                            Secxion
+                                        </Link>
                         <Link to={'/profile'} className="mr-4 text-gray-700 hover:text-blue-500 transition-colors">
                     Hi, {user.name}! 👋</Link>
                         <button onClick={toggleSidePanel} className="md:hidden">
