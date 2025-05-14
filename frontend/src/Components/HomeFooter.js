@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaBlog, FaBars, FaUser } from 'react-icons/fa';
+import { FaBlog, FaBars, FaUser, FaWallet } from 'react-icons/fa';
 import Clock from 'react-live-clock';
 import timezones from '../helpers/timeZones';
 import { Link } from 'react-router-dom';
@@ -27,7 +27,7 @@ const HomeFooter = ({ onBlogClick, onMenuClick, isBlogVisible }) => {
             <div className="flex justify-around items-center px-4 py-2">
                 <button
                     onClick={isBlogVisible ? onMenuClick : onBlogClick}
-                    className="flex flex-col items-center text-sm text-gray-700 dark:text-gray-200 hover:text-blue-500 focus:outline-none"
+                    className="minecraft-font flex flex-col items-center text-sm text-gray-700 dark:text-gray-200 hover:text-blue-500 focus:outline-none"
                     aria-label={isBlogVisible ? 'Navigate to Menu' : 'View Blogs'}
                 >
                     {isBlogVisible ? (
@@ -40,24 +40,33 @@ const HomeFooter = ({ onBlogClick, onMenuClick, isBlogVisible }) => {
 
                 <Link
                     to="/profile"
-                    className="flex flex-col items-center text-sm text-gray-700 dark:text-gray-200 hover:text-blue-500 focus:outline-none"
+                    className="minecraft-font flex flex-col items-center text-sm text-gray-700 dark:text-gray-200 hover:text-blue-500 focus:outline-none"
                     aria-label="View Profile"
                 >
                     <FaUser className="text-xl mb-1" />
                     Profile
                 </Link>
 
-                <div className="relative items-center text-sm text-gray-700 dark:text-gray-200">
+                <Link
+                    to="/mywallet"
+                    className="minecraft-font flex flex-col items-center text-sm text-gray-700 dark:text-gray-200 hover:text-blue-500 focus:outline-none"
+                    aria-label="View wallet"
+                >
+                    <FaWallet className="text-xl mb-1" />
+                    Wallet
+                </Link>
+
+                {/* <div className="relative items-center text-sm text-black dark:text-gray-200">
                     <div className="items-center space-x-2 cursor-pointer" onClick={toggleTimezones}>
                         <Clock format={'HH:mm:ss'} ticking={true} timezone={timezone} />
-                        <div className="text-xs mt-1">{getSelectedTimezoneLabel()}</div>
+                        <div className="text-bold text-xs mt-1">{getSelectedTimezoneLabel()}</div>
                         {showTimezones && (
-                            <div className="absolute bottom-full text-gray-700 left-0 border border-gray-300 dark:border-gray-600 rounded-md shadow-md z-10 overflow-y-auto max-h-40">
+                            <div className="absolute bottom-full text-black left-0 border border-gray-300 dark:border-gray-600 rounded-md shadow-md z-10 overflow-y-auto max-h-40">
                                 {timezones.map((tz) => (
                                     <div
                                         key={tz.value}
                                         onClick={() => handleTimezoneChange(tz.value)}
-                                        className="px-3 py-2 text-xs text-gray-700 cursor-pointer hover:bg-gray-500 dark:hover:bg-gray-600"
+                                        className="px-3 py-2 text-xs text-black cursor-pointer hover:bg-gray-500 dark:hover:bg-gray-600"
                                     >
                                         {tz.label}
                                     </div>
@@ -65,7 +74,7 @@ const HomeFooter = ({ onBlogClick, onMenuClick, isBlogVisible }) => {
                             </div>
                         )}
                     </div>
-                </div>
+                </div> */}
             </div>
         </footer>
     );

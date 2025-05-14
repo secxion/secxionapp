@@ -3,6 +3,7 @@ module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+  
   theme: {
     extend: {
       keyframes: {
@@ -72,10 +73,10 @@ module.exports = {
         neonYellow: '#ff0',
       },
       fontFamily: {
-        sans: ['Graphik', 'sans-serif'],
-        serif: ['Merriweather', 'serif'],
-        'body': ['Open Sans', 'sans-serif'],
-        'techno': ['Orbitron', 'sans-serif'],
+        sans: ['Press Start 2P'],
+        serif: ['Press Start 2P'],
+        'body': ['Press Start 2P'],
+        'techno': ['Press Start 2P'],
       },
     },
   },

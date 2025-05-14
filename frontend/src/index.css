@@ -4,16 +4,15 @@
 
 body {
   margin: 0;
-  font-family: -apple-system,sans-serif, BlinkMacSystemFont, "sans-serif", 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  @apply bg-slate-100
+  font-family: 'Press Start 2P', cursive;
+}
 
+.minecraft-font {
+  font-family: 'Press Start 2P', cursive;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: 'Press Start 2P', cursive;
 }
 .neon-text {
   text-shadow: 0 0 5px #fff, 0 0 10px #f0f, 0 0 15px #f0f, 0 0 20px #0ff;
@@ -22,3 +21,41 @@ code {
 .neon-glow {
   box-shadow: 0 0 5px #0ff, 0 0 15px #0ff, 0 0 25px #0ff;
 }
+
+@layer utilities {
+  .text-outline {
+    text-shadow:
+      1px 0 black,
+      -1px 0 black,
+      0 1px black,
+      0 -1px black;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 2px #0ff, 0 0 4px #0ff;
+  }
+
+  .text-bold-fake {
+    transform: scale(1.05);
+  }
+}
+
+.minecraft-font {
+  font-family: 'Press Start 2P', cursive;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.neon-minecraft {
+  text-shadow: 0 0 2px #0ff, 0 0 4px #0ff, 0 0 8px #0ff;
+}
+
+.minecraft-outline {
+  text-shadow:
+    1px 0 black,
+    -1px 0 black,
+    0 1px black,
+    0 -1px black;
+}
+

@@ -84,30 +84,30 @@ const Header = () => {
                     </div>
 
                     {/* Logo */}
-                    <Link to="/" className="hidden md:flex items-center font-extrabold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 mr-4 tracking-wide">
+                    <Link to="/" className="hidden minecraft-font text-[14px] md:flex items-center font-extrabold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 mr-4 tracking-wide">
                         Secxion
                     </Link>
 
                     {/* Search Input - Desktop */}
-                    <div className="hidden md:flex items-center bg-black border-2 rounded-md px-4 py-1 mr-12 w-72 glow-border">
-                        <FcSearch className="text-white h-4 w-4 mr-2" />
+                    <div className="hidden md:flex items-center bg-black border-2 rounded-md px-4 py-[6px] w-72 glow-border">
+                        <FcSearch className="text-white h-5 w-5 mr-2" />
                         <input
                             type="text"
                             placeholder="Search gift cards..."
-                            className="bg-transparent outline-none text-sm text-white placeholder-gray-400 w-full"
+                            className="bg-transparent minecraft-font text-white text-[12px] outline-none w-full placeholder:text-[8px] placeholder-gray-600"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
                     </div>
 
-                    {/* Search - Mobile */}
+                    {/* Mobile Search */}
                     <div className="md:hidden flex items-center w-full mx-4">
-                        <div className="flex items-center bg-black border-2 rounded-md px-2 py-1 w-full glow-border">
+                        <div className="flex items-center bg-black border-2 rounded-md px-2 py-[6px] w-full glow-border">
                             <BiSearch className="text-white h-5 w-5 mr-2" />
                             <input
                                 type="text"
                                 placeholder="Search gift cards..."
-                                className="bg-transparent outline-none text-sm text-white placeholder-gray-400 w-full"
+                                className="bg-transparent minecraft-font text-white text-[12px] outline-none w-full placeholder:text-[8px] placeholder-gray-600"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
@@ -115,29 +115,29 @@ const Header = () => {
                     </div>
 
                     {/* Main Nav */}
-                    <nav className="hidden md:flex items-center gap-3 text-sm font-semibold">
-                        <Link to="/record" className="px-3 py-1 border border-cyan-500 text-cyan-300 hover:bg-cyan-600 hover:text-white rounded transition duration-200">
+                    <nav className="hidden minecraft-font text-[9px] md:flex items-center gap-2">
+                        <Link to="/record" className="px-3 py-1 border border-cyan-500 text-gray-900 hover:bg-cyan-600 hover:text-white rounded transition duration-200">
                             Trade Status
                         </Link>
-                        <Link to="/mywallet" className="px-3 py-1 border border-pink-500 text-pink-300 hover:bg-pink-600 hover:text-white rounded transition duration-200">
+                        <Link to="/mywallet" className="px-3 py-1 border border-pink-500 text-gray-900 hover:bg-pink-600 hover:text-white rounded transition duration-200">
                             Wallet
                         </Link>
-                        <Link to="/datapad" className="px-3 py-1 border border-yellow-500 text-yellow-300 hover:bg-yellow-500 hover:text-black rounded transition duration-200">
+                        <Link to="/datapad" className="px-3 py-1 border border-yellow-500 text-gray-900 hover:bg-yellow-500 hover:text-black rounded transition duration-200">
                             DataPad
                         </Link>
                         {user?.role === ROLE.ADMIN && (
-                            <Link to="/admin-panel" className="px-3 py-1 border border-purple-500 text-purple-300 hover:bg-purple-700 hover:text-white rounded transition duration-200">
+                            <Link to="/admin-panel" className="px-3 py-1 border border-purple-500 text-gray-900 hover:bg-purple-700 hover:text-white rounded transition duration-200">
                                 Admin
                             </Link>
                         )}
-                        <Link to="/notifications" className="px-3 py-1 border border-emerald-500 text-emerald-300 hover:bg-emerald-600 hover:text-white rounded relative transition duration-200">
+                        <Link to="/notifications" className="px-3 py-1 border border-emerald-500 text-gray-900 hover:bg-emerald-600 hover:text-white rounded relative transition duration-200">
                             <NotificationBadge />
                         </Link>
                         {user?._id && (
                             <button
                                 onClick={handleLogout}
                                 disabled={loading}
-                                className="px-3 py-1 border border-red-500 text-red-300 hover:bg-red-600 hover:text-white rounded transition flex items-center"
+                                className="px-3 py-1 border border-red-500 text-gray-900 hover:bg-red-600 hover:text-white rounded transition flex items-center"
                             >
                                 <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
                                 Logout

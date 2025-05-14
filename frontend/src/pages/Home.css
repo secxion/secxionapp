@@ -1,471 +1,185 @@
-.home-container {
-
-  width: 100%;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  overflow: hidden;
-
-}
-
-
 
 .hero-section {
-
   position: relative;
-
+  height: 80vh;
   background-size: cover;
-
   background-position: center;
-
-  padding-top: 12rem;
-
-  padding-bottom: 12rem;
-
-  width: 100%;
-
+  border-radius: 1rem;
+  position: relative;
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
+  transition: background 0.5s ease-in-out;
 }
-
-
 
 .hero-overlay {
-
   position: absolute;
-
   inset: 0;
-
-  background-color: rgba(0, 0, 0, 0.6);
-
-  z-index: 1;
-
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 1rem;
 }
-
-
 
 .hero-content {
-
   position: relative;
-
-  z-index: 10;
-
+  z-index: 2;
   text-align: center;
-
-  padding: 0 1rem;
-
-  max-width: 80%;
-
-  margin: 0 auto;
-
+  padding: 1rem;
 }
-
-
 
 .hero-title {
-
-  font-size: 3rem;
-
-  font-weight: bold;
-
-  color: #ffffff;
-
-  margin-bottom: 1rem;
-
-  letter-spacing: -0.02em;
-
-  font-family: 'Poppins', sans-serif;
-
+  font-size: 2.5rem;
+  color: white;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 6px #00f7ff, 0 0 12px #00f7ff;
 }
-
-
 
 .hero-description {
-
-  font-size: 1.1rem;
-
-  color: #f0f0f0;
-
-  margin-bottom: 2rem;
-
-  line-height: 1.7;
-
-  font-family: 'Open Sans', sans-serif;
-
+  font-size: 1.5rem;
+  color: #eee;
+  text-shadow: 0 0 6px #0ff;
 }
-
-
 
 .hero-button-container {
-
-  display: flex;
-
-  justify-content: center;
-
+  margin-top: 1rem;
 }
-
-
 
 .hero-button {
-
-  display: inline-flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  padding: 0.8rem 2rem;
-
-  border-radius: 0.5rem;
-
-  background-color: #ff6b6b;
-
-  color: #ffffff;
-
-  font-weight: 600;
-
-  font-size: 1.1rem;
-
-  transition: background-color 0.3s ease;
-
-  text-decoration: none;
-
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
+  font-family: 'Press Start 2P', cursive;
+  background-color: #ffcc00;
+  color: #000;
+  border: 2px solid #000;
+  padding: 1rem 2rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  box-shadow: 4px 4px 0 #333;
 }
-
-
 
 .hero-button:hover {
-
-  background-color: #ff4757;
-
+  background-color: #ffaa00;
   transform: translateY(-2px);
-
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-
+  box-shadow: 6px 6px 0 #111;
 }
 
 
+.hero-button:focus,
+.menu-link:focus {
+  outline: 2px dashed #00f7ff;
+  outline-offset: 4px;
+}
 
-/* Menu Grid Styles */
 
+/* Menu Section */
 .menu-section {
-
   display: grid;
-
-  grid-template-columns: repeat(2, 1fr);
-
-  gap: 1.5rem;
-
-  margin-top: 2rem;
-
-  padding: 2rem;
-
-  max-width: 65rem;
-
-  width: 100%;
-
-  margin: 3rem auto;
-
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+  padding: 2rem 0;
+  transition: all 0.3s ease;
 }
-
-
 
 .menu-section-small {
-
-  display: grid;
-
-  grid-template-columns: repeat(2, 1fr);
-
-  gap: 1rem;
-
-  margin-top: 3rem;
-
-  padding: 0 1rem;
-
-  max-width: 65rem;
-
-  width: 100%;
-
-  margin: 3rem auto;
-
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
 }
-
-
-
-
 
 .menu-item {
-
-  border-radius: 0.75rem;
-
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  justify-content: center;
-
-  padding: 2rem;
-
+  border-radius: 1.25rem;
+  padding: 1rem;
   text-align: center;
-
-  background-color: #fff;
-
-  border: 1px solid #e0e0e0;
-
+  color: white;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
+.menu-item:hover {
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2), 0 0 12px #0ff;
+  transform: translateY(-4px);
+}
 
 
 .menu-item-small {
-
-  padding: 1rem;
-
+  padding: 0.5rem;
+  min-height: 120px;
 }
-
-
-
-
-
-.menu-item:hover {
-
-  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.15);
-
-}
-
-
 
 .menu-link {
-
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
-  justify-content: center;
-
-  color: #333;
-
   text-decoration: none;
-
-  width: 100%;
-
-  height: 100%;
-
+  color: inherit;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
-
-
-.icon-container {
-
-  padding: 1rem;
-
-  border-radius: 50%;
-
-  background-color: #f0f0f0;
-
-  margin-bottom: 1rem;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  width: 4rem;
-
-  height: 4rem;
-
+.menu-link:focus {
+  outline: 2px dashed #fff;
+  outline-offset: 4px;
 }
-
-
 
 .menu-label {
-
-  margin-top: 1rem;
-
-  font-size: 1.2rem;
-
-  font-weight: 600;
-
+  font-size: 0.9rem;
+  font-weight: bold;
   color: #222;
-
-  font-family: 'Open Sans', sans-serif;
-
+  font-family: 'Press Start 2P', cursive;
+  text-shadow: 1px 1px 0 #000;
+  text-transform: uppercase;
 }
-
-
-
-/* Blog Section Styles */
 
 .blog-section {
-
-  margin-top: 4rem;
-
-  padding: 0 1rem;
-
-  max-width: 65rem;
-
-  width: 100%;
-
+  margin-top: 2rem;
+  transition: opacity 0.5s ease;
 }
-
-
 
 .blog-section.visible {
-
   opacity: 1;
-
 }
-
-
 
 .blog-header {
-
   font-size: 2rem;
-
-  font-weight: bold;
-
-  color: #222;
-
-  margin-bottom: 1.5rem;
-
-  border-bottom: 2px solid #e0e0e0;
-
-  padding-bottom: 0.75rem;
-
-  font-family: 'Poppins', sans-serif;
-
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+  text-align: center;
 }
 
 
-
-/* Responsive Adjustments */
-
-@media (max-width: 768px) {
-
-  .menu-section {
-
-    grid-template-columns: 1fr;
-
-    gap: 1rem;
-
-  }
-
-
-
-  .menu-section-small {
-
-    grid-template-columns: 1fr;
-
-  }
-
-
-
+/* Responsive tweaks */
+@media screen and (max-width: 768px) {
   .hero-title {
-
-    font-size: 2.5rem;
-
+    font-size: 2rem;
   }
-
-
 
   .hero-description {
+    font-size: 1.25rem;
+  }
 
+  .hero-button {
+    padding: 0.5rem 1.5rem;
     font-size: 1rem;
-
   }
 
-
-
-  .hero-section {
-
-    padding-top: 8rem;
-
-    padding-bottom: 8rem;
-
+  .menu-label {
+    font-size: 0.9rem;
   }
-
+}
+.animate-neon1 {
+  animation: neon-glow 1.5s ease-in-out infinite alternate;
 }
 
-
-
-@media (min-width: 768px) {
-
-  .menu-section {
-
-    grid-template-columns: repeat(3, 1fr);
-
-  }
-
-
-
-  .menu-section-small {
-
-    grid-template-columns: repeat(2, 1fr);
-
-  }
-
-
-
-  .hero-title {
-
-    font-size: 4rem;
-
-  }
-
-
-
-  .hero-description {
-
-    font-size: 1.2rem;
-
-  }
-
-
-
-  .hero-section {
-
-    padding-top: 15rem;
-
-    padding-bottom: 15rem;
-
-  }
-
-  /* TV Screen Glowing Border Effect */
-.tv-screen {
-  border: 10px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  box-shadow:
-    0 0 10px rgba(0, 200, 255, 0.4),
-    0 0 20px rgba(226, 12, 12, 0.3),
-    0 0 40px rgba(46, 187, 3, 0.2),
-    inset 0 0 30px rgba(0, 200, 255, 0.15);
-  overflow: hidden;
-  transition: box-shadow 0.4s ease-in-out;
+.animate-neon2 {
+  animation: neon-glow 2s ease-in-out infinite alternate;
 }
 
-.tv-screen:hover {
-  box-shadow:
-    0 0 20px rgba(0, 200, 255, 0.6),
-    0 0 40px rgba(0, 200, 255, 0.4),
-    0 0 60px rgba(0, 200, 255, 0.3),
-    inset 0 0 40px rgba(0, 200, 255, 0.2);
-}
-
-
+@keyframes neon-glow {
+  from {
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+  }
+  to {
+    text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+  }
 }
