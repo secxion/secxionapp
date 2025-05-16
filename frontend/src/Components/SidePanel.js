@@ -50,13 +50,12 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
           leaveTo="-translate-x-full"
         >
           <Dialog.Panel className="relative flex w-screen max-w-md flex-col bg-white pt-6 pb-4 overflow-y-auto">
-            {/* Top Bar */}
-            <div className="absolute left-0 w-full flex justify-between items-center bg-white px-4 py-9 shadow-sm">
+            <div className="absolute left-0 w-full flex justify-between items-center bg-white px-4 py-8 shadow-sm">
               
               
               <button
                 type="button"
-                            className="text-gray-500 hover:text-blue-600 md:hidden"
+                            className="text-gray-500 hover:text-blue-600 md:hidden ml-2"
                 onClick={() => setOpen(false)}
               >
                 <FontAwesomeIcon icon={faBars} className="h-5 w-5" />
@@ -77,7 +76,6 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
             </div>
             </div>
 
-            {/* Logout at Top */}
             <div className="mt-14 px-4">
               <button
                 onClick={handleLogout}
@@ -88,10 +86,9 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
               </button>
             </div>
 
-            {/* Navigation */}
             <nav className="mt-4 space-y-2 px-3">
               {[
-                { path: '/', icon: <HomeIcon className="h-5 w-5" />, label: 'Home' },
+                { path: '/home', icon: <HomeIcon className="h-5 w-5" />, label: 'Home' },
                 { path: '/section', icon: <GlobeAltIcon className="h-5 w-5" />, label: 'Marketplace' },
                 { path: '/profile', icon: <UserIcon className="h-5 w-5" />, label: 'Profile' },
                 { path: '/record', icon: <InformationCircleIcon className="h-5 w-5" />, label: 'Trade Status' },
@@ -118,7 +115,6 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
               ))}
             </nav>
 
-            {/* Timezone Selector */}
             <div className="mt-6 px-4">
               <button
                 type="button"
@@ -159,7 +155,6 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
               )}
             </div>
 
-            {/* Clock */}
             <div className="mt-4 text-center">
               <Clock format={'HH:mm:ss'} ticking={true} timezone={timezone} className="text-lg font-semibold text-gray-700" />
               <Clock format={'dddd, MMMM Do YYYY'} ticking={true} timezone={timezone} className="text-sm text-gray-500" />

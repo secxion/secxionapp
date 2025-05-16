@@ -8,7 +8,7 @@ const DisplayImage = ({
     onClose 
 }) => {
   return (
-    <div className="container fixed bottom-0 top-0 right-0 left-0 flex justify-center items-center">
+    <div className="fixed bottom-0 top-0 right-0 left-0 flex justify-center items-center">
 
         <div className="bg-white shadow-lg rounded max-w-5xl mx-auto p-4">
                 <div className='w-fit ml-auto text-2xl hover:text-slate-400 cursor-pointer' onClick={onClose}>
@@ -17,8 +17,8 @@ const DisplayImage = ({
 
 
 
-                <div className="flex justify-center max-w-[60vh] max-h-[60vh]">               
-                <img src={imgUrl} alt={imgUrl} className="w-full h-full"/>
+                <div className="flex justify-center max-w-[40vh] max-h-[40vh]">               
+                <img src={imgUrl} alt={imgUrl} className=""/>
                 </div>        
         </div>
 

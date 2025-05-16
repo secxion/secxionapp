@@ -15,10 +15,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 
-    <!-- Fallback Route Handling Script -->
     <script>
       (function() {
-        // Check if the path is not "/" and there's no hash or query
         var isReactRoute = 
           !location.pathname.startsWith('/static') &&
           location.pathname !== '/' &&
@@ -31,7 +29,6 @@
           !location.hash;
 
         if (isReactRoute) {
-          // Replace current location with root and preserve full path in state
           sessionStorage.setItem('redirectPath', location.pathname);
           window.location.replace('/');
         }
@@ -42,14 +39,11 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-
-    <!-- Optional: Redirect back after JS app initializes -->
-    <script>
+   <script>
       (function () {
         const path = sessionStorage.getItem('redirectPath');
         if (path) {
           sessionStorage.removeItem('redirectPath');
-          // Use history API to restore intended route
           window.history.replaceState(null, '', path);
         }
       })();

@@ -6,6 +6,7 @@ const productSchema = mongoose.Schema(
     brandName: String,
     category: String,
     productImage: [String],
+    description: String,
     pricing: [
       {
         currency: String,
@@ -13,7 +14,7 @@ const productSchema = mongoose.Schema(
           {
             faceValue: String,
             sellingPrice: Number,
-            description: String,
+            requirement: String,
           },
         ],
       },

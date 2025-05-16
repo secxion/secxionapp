@@ -148,7 +148,6 @@
 }
 
 
-/* Responsive tweaks */
 @media screen and (max-width: 768px) {
   .hero-title {
     font-size: 2rem;

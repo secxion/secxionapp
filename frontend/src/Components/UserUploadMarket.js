@@ -44,7 +44,7 @@ const UserUploadMarket = ({
             productName: productDetails.productName || "",
             brandName: productDetails.brandName || "",
             category: productDetails.category || "",
-            description: productDetails.description || "",
+            requirement: productDetails.requirement || "",
             pricing: productDetails.currency && productDetails.faceValue && productDetails.rate
                 ? [{
                     currency: productDetails.currency,
@@ -185,20 +185,20 @@ const UserUploadMarket = ({
                                 <h3 className="font-semibold text-indigo-700 text-xl mb-1">{productDetails.productName}</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700 items-center">
                                     <p>
-                                        <span className="font-medium text-gray-800">Currency:</span>
-                                        {flagImageMap[productDetails.currency] && (
+                                        <span className="font-medium text-gray-800">Currency: </span> 
+                                         {flagImageMap[productDetails.currency] && (
                                             <img
                                                 src={flagImageMap[productDetails.currency]}
                                                 alt={`${productDetails.currency} Flag`}
                                                 className="w-5 h-5 mr-1 rounded-sm object-contain shadow-inner inline-block"
                                                 style={{ minWidth: '20px', minHeight: '20px' }}
                                             />
-                                        )}
-                                        {productDetails.currency}
+                                        )} 
+                                         {productDetails.currency}
                                     </p>
                                     <p><span className="font-medium text-gray-800">Face Value:</span> {productDetails.faceValue}</p>
                                     <p><span className="font-medium text-gray-800">Rate:</span> {productDetails.rate}</p>
-                                    <p><span className="font-medium text-gray-800">Requirement:</span> {productDetails.description}</p>
+                                    <p><span className="font-medium text-gray-800">Requirement:</span> {productDetails.requirement}</p>
                                 </div>
                             </div>
                         </div>

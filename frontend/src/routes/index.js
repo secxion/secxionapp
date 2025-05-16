@@ -39,6 +39,7 @@ import Aboutus from "../Components/Aboutus";
 import Privacy from "../Components/Privacy";
 import Profiler from "../Components/Profiler";
 import NotFound from "../pages/NotFound";
+import Landing from "../pages/Landing";
 
 
 const publicRoutes = [
@@ -70,11 +71,15 @@ const publicRoutes = [
     path:"privacy",
     element: <Privacy/>
   },
+  {
+    path:"/",
+    element: <Landing/>
+  },
 
 ];
 
 const protectedRoutes = [
-  { path: "/", element: <Home /> },
+  { path: "home", element: <Home /> },
   { path: "section", element: <Section /> },
   { path: "userMarketUpload", element: <UserUploadMarket /> },
   { path: "record", element: <UserMarket /> },

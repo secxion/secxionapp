@@ -59,7 +59,7 @@ const NetBlog = () => {
     };
 
     return (
-        <div className="container mx-auto mt-10 px-4 max-w-7xl">
+        <div className="container mx-auto px-4 max-w-7xl">
             <div className="flex justify-end mb-8">
                 <button
                     onMouseEnter={fetchCommunityFeedData}
@@ -80,7 +80,7 @@ const NetBlog = () => {
             ) : errorBlogs ? (
                 <p className="text-red-400 text-center py-8 text-[10px] minecraft-font">{errorBlogs}</p>
             ) : blogs.length > 0 ? (
-                <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid mb-10 gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                     {blogs.map(blog => (
                         <motion.div
                             key={blog.id}

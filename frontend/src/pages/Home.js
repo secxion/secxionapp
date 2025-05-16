@@ -136,8 +136,8 @@ const Home = () => {
       {/* Menu Grid Section */}
       <section
         ref={menuSectionRef}
-        className={`menu-section text-white text-2xl border-b-4 pb-1 border-cyan-400 ${
-          showMenuButton ? "menu-section-small" : ""
+        className={`menu-section text-white text-2xl border-b-4 border-cyan-400 ${
+          showMenuButton ? "" : ""
         }`}
       >
         {menuItems.map((item, index) => (

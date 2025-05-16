@@ -4,7 +4,7 @@ import NotificationItem from '../Components/NotificationItems';
 import NotificationDetails from '../Components/NotificationDetails';
 import SummaryApi from '../common';
 import { toast } from 'react-toastify';
-import { FaBell, FaEnvelopeOpen, FaCheckDouble, FaTimesCircle } from 'react-icons/fa';
+import { FaBell, FaEnvelopeOpen, FaCheckDouble } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './Notification.css';
 
@@ -169,7 +169,6 @@ const NotificationsPage = () => {
     };
 
     const handleViewCreditDetails = (notification) => {
-        // You can replace this with actual credit modal, drawer, or page routing logic
         setSelectedNotification(notification);
         setIsDetailsOpen(true);
     };
@@ -205,32 +204,11 @@ const NotificationsPage = () => {
     }
 
     return (
-        <div className="container bg-gray-100">
-            <div className="max-w-4xl mx-auto shadow-md rounded-md overflow-hidden bg-white">
-                <div className="bg-gray-50 border-b border-gray-200 py-6 px-4 sm:px-6 flex items-center justify-between">
-                    <h2 className="text-xl font-semibold text-gray-800 flex items-center">
-                        <FaBell className="mr-2 text-gray-600" /> Notifications
-                    </h2>
-                    <div>
-                        <button
-                            onClick={handleDeleteAll}
-                            className="inline-flex items-center bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm"
-                        >
-                            <FaTimesCircle className="mr-2" /> Delete All
-                        </button>
-                        {hasUnread && (
-                            <button
-                                onClick={handleMarkAllAsRead}
-                                className="inline-flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2 text-sm"
-                            >
-                                <FaCheckDouble className="mr-2" /> Mark All Read
-                            </button>
-                        )}
-                    </div>
-                </div>
-
-                <div className="border-b border-gray-200">
-                    <nav className="-mb-px flex space-x-4 px-4 sm:px-6" aria-label="Tabs">
+        <div className="mt-2 py-20 bg-gray-100">
+            <div className="mx-auto shadow-md rounded-md overflow-hidden bg-white">
+                <div className="fixed bg-white border-b border-gray-200 py-2 z-10">
+                       <div className="border-b border-gray-200 flex items-center fixed justify-between p-4 mx-auto w-full bg-white shadow-md z-10">
+                    <nav className=" flex space-x-3 w-full" aria-label="Tabs">
                         {['all', 'unread', 'read'].map(tab => (
                             <button
                                 key={tab}
@@ -246,9 +224,25 @@ const NotificationsPage = () => {
                                 {tab === 'read' && <><FaCheckDouble className="mr-1 inline-block" /> Read</>}
                             </button>
                         ))}
+                         <button
+                            onClick={handleDeleteAll}
+                            className="whitespace-nowrap py-4 px-1 mr-1 hover:bg-red-600 hover:text-gray-200 inline-block border border-gray-300 text-red-500 hover:text-gray-700 hover:border-gray-300 font-bold rounded text-sm"
+                        >
+                           Delete All
+                        </button>
+                        {hasUnread && (
+                            <button
+                                onClick={handleMarkAllAsRead}
+                                className="whitespace-nowrap py-4 px-1 hover:bg-gray-400 hover:text-blue-200 inline-block border border-gray-300 text-blue-500 hover:text-gray-700 hover:border-gray-300 font-bold rounded text-sm"
+                            >
+                                Mark All Read
+                            </button>
+                        )}
                     </nav>
                 </div>
+                </div>
 
+             <div className='py-24 pb-0 hover:bg-gray-50 transition duration-150 ease-in-out'>
                 <ul className="divide-y divide-gray-200">
                     {filteredNotifications().length > 0 ? (
                         filteredNotifications().map(notification => (
@@ -267,6 +261,9 @@ const NotificationsPage = () => {
                         <li className="px-4 py-6 text-gray-500 text-center">No notifications here. 😴</li>
                     )}
                 </ul>
+             </div>
+
+                
             </div>
 
             {isDetailsOpen && selectedNotification && (

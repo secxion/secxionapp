@@ -36,7 +36,7 @@ const Login = () => {
       if (result.success) {
         toast.success(result.message);
         fetchUserDetails();
-        navigate("/");
+        navigate("/home");
       } else {
         setErrorMessage(result.message || "Invalid credentials. Please try again.");
         toast.error(result.message);
@@ -51,8 +51,8 @@ const Login = () => {
   return (
     <section className="container w-screen h-screen flex items-center justify-center bg-gray-100 fixed top-0 left-0 overflow-hidden">
       <div className="bg-white p-8 w-full max-w-md rounded-xl shadow-lg">
-        <div className="w-20 h-20 rounded-full bg-blue-500 flex items-center justify-center text-3xl font-bold text-white mb-6">
-          S
+        <div className="hidden minecraft-font text-[14px] md:flex items-center font-extrabold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 mr-4 tracking-wide">
+              SXN
         </div>
 
         <form className="w-full mt-4 flex flex-col gap-4" onSubmit={handleSubmit}>

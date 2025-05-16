@@ -190,7 +190,7 @@ const PaymentRequestForm = () => {
                 </div>
             )}
 
-            <div className="fixed w-screen right-0 left-0 top-3 mt-20 bg-indigo-100 p-2 border-b border-gray-400 flex items-center justify-between z-40 px-4">
+            <div className="fixed w-screen right-0 left-0 top-5 md:top-6 sm:top-6 lg:top-6 mt-20 bg-indigo-100 p-2 border-b border-gray-400 flex items-center justify-between z-10 px-4">
                 <div className="flex items-center gap-3">
                     <p className='text-md font-semibold text-gray-800'>Balance:</p>
                     {isLoadingBalance ? (

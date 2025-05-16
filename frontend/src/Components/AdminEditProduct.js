@@ -72,7 +72,7 @@ const AdminEditProduct = ({ onClose, productData, fetchdata }) => {
         updatedPricing[currencyIndex].faceValues.push({
             faceValue: "",
             sellingPrice: "",
-            description: "",
+            requirement: "",
         });
         setData((prev) => ({ ...prev, pricing: updatedPricing }));
     };
@@ -114,9 +114,9 @@ const AdminEditProduct = ({ onClose, productData, fetchdata }) => {
                 ...currency,
                 faceValues: currency.faceValues.map((fv) => ({
                     ...fv,
-                    faceValue: parseFloat(fv.faceValue) || 0,
+                    faceValue: fv.faceValue || "",
                     sellingPrice: parseFloat(fv.sellingPrice) || 0,
-                    description: fv.description || "",
+                    requirement: fv.requirement || "",
                 })),
             })),
         };
@@ -148,7 +148,7 @@ const AdminEditProduct = ({ onClose, productData, fetchdata }) => {
 
     return (
         <div className="container fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-md shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="bg-white p-6 rounded-md mt-40 shadow-lg w-full max-w-2xl max-h-[80vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="font-semibold text-xl text-gray-800">Edit Product</h2>
                     <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
@@ -243,9 +243,9 @@ const AdminEditProduct = ({ onClose, productData, fetchdata }) => {
                                             />
                                             <input
                                                 type="text"
-                                                placeholder="Description"
-                                                value={faceValue.description}
-                                                onChange={(e) => handleUpdatePricing(currencyIndex, faceValueIndex, "description", e.target.value)}
+                                                placeholder="requirement"
+                                                value={faceValue.requirement}
+                                                onChange={(e) => handleUpdatePricing(currencyIndex, faceValueIndex, "requirement", e.target.value)}
                                                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                             />
                                             <button

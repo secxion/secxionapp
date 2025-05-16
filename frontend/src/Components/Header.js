@@ -9,6 +9,13 @@ import { useDebounce } from "../hooks/useDebounce";
 import NotificationBadge from "../helper/NotificationBadge";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  FaWallet,
+  FaUser,
+  FaStore,
+  FaBook,
+  FaClipboardList,
+} from "react-icons/fa";
 import ROLE from "../common/role";
 import SummaryApi from "../common";
 import { BiSearch } from 'react-icons/bi';
@@ -54,7 +61,7 @@ const Header = () => {
             if (data.success) {
                 toast.success(data.message);
                 dispatch(setUserDetails(null));
-                navigate("/login");
+                navigate("/");
             } else {
                 toast.error(data.message);
             }
@@ -84,8 +91,8 @@ const Header = () => {
                     </div>
 
                     {/* Logo */}
-                    <Link to="/" className="hidden minecraft-font text-[14px] md:flex items-center font-extrabold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 mr-4 tracking-wide">
-                        Secxion
+                    <Link to="/home" className="hidden minecraft-font text-[14px] md:flex items-center font-extrabold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 mr-4 tracking-wide">
+                        SXN
                     </Link>
 
                     {/* Search Input - Desktop */}
@@ -103,7 +110,7 @@ const Header = () => {
                     {/* Mobile Search */}
                     <div className="md:hidden flex items-center w-full mx-4">
                         <div className="flex items-center bg-black border-2 rounded-md px-2 py-[6px] w-full glow-border">
-                            <BiSearch className="text-white h-5 w-5 mr-2" />
+                            <BiSearch className="text-yellow-700 h-5 w-5 mr-2" />
                             <input
                                 type="text"
                                 placeholder="Search gift cards..."
@@ -119,9 +126,9 @@ const Header = () => {
                         <Link to="/record" className="px-3 py-1 border border-cyan-500 text-gray-900 hover:bg-cyan-600 hover:text-white rounded transition duration-200">
                             Trade Status
                         </Link>
-                        <Link to="/mywallet" className="px-3 py-1 border border-pink-500 text-gray-900 hover:bg-pink-600 hover:text-white rounded transition duration-200">
+                        {/* <Link to="/mywallet" className="px-3 py-1 border border-pink-500 text-gray-900 hover:bg-pink-600 hover:text-white rounded transition duration-200">
                             Wallet
-                        </Link>
+                        </Link> */}
                         <Link to="/datapad" className="px-3 py-1 border border-yellow-500 text-gray-900 hover:bg-yellow-500 hover:text-black rounded transition duration-200">
                             DataPad
                         </Link>

@@ -20,7 +20,7 @@ const UploadProduct = ({ onClose, fetchData }) => {
     const [newCurrency, setNewCurrency] = useState("");
     const [newFaceValue, setNewFaceValue] = useState("");
     const [newSellingPrice, setNewSellingPrice] = useState("");
-    const [newDescription, setNewDescription] = useState("");
+    const [newRequirement, setNewRequirement] = useState("");
     const [uploading, setUploading] = useState(false);
 
     const handleOnChange = (e) => {
@@ -29,7 +29,7 @@ const UploadProduct = ({ onClose, fetchData }) => {
     };
 
     const handleAddPricing = () => {
-        if (!newCurrency || !newFaceValue || !newSellingPrice || !newDescription) {
+        if (!newCurrency || !newFaceValue || !newSellingPrice || !newRequirement) {
             toast.error("Please fill in all pricing fields.");
             return;
         }
@@ -40,7 +40,7 @@ const UploadProduct = ({ onClose, fetchData }) => {
             updatedPricing[currencyIndex].faceValues.push({
                 faceValue: newFaceValue,
                 sellingPrice: parseFloat(newSellingPrice),
-                description: newDescription,
+                requirement: newRequirement,
             });
             setData((prev) => ({ ...prev, pricing: updatedPricing }));
         } else {
@@ -54,7 +54,7 @@ const UploadProduct = ({ onClose, fetchData }) => {
                             {
                                 faceValue: newFaceValue,
                                 sellingPrice: parseFloat(newSellingPrice),
-                                description: newDescription,
+                                requirement: newRequirement,
                             },
                         ],
                     },
@@ -65,7 +65,7 @@ const UploadProduct = ({ onClose, fetchData }) => {
         setNewCurrency("");
         setNewFaceValue("");
         setNewSellingPrice("");
-        setNewDescription("");
+        setNewRequirement("");
     };
 
     const handleDeleteCurrency = (currencyIndex) => {
@@ -136,8 +136,8 @@ const UploadProduct = ({ onClose, fetchData }) => {
     };
 
     return (
-        <div className="container fixed w-full mt-6 h-full bg-slate-200 bg-opacity-35 top-0 left-0 right-0 bottom-0 flex justify-center items-center"> 
-            <div className="bg-white p-4 rounded w-full max-w-2xl h-full max-h-[80%] overflow-y-auto mt-20"> 
+        <div className="fixed w-full h-full bg-slate-200 bg-opacity-35 left-0 right-0 flex justify-center items-center z-50"> 
+            <div className="bg-white p-4 rounded w-full max-w-2xl max-h-[80%] overflow-y-auto mb-4 mt-44"> 
                 <div className="flex justify-between items-center pb-3"> 
                     <h2 className="font-semibold text-xl text-gray-800">Upload Product</h2>
                     <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
@@ -195,6 +195,11 @@ const UploadProduct = ({ onClose, fetchData }) => {
                         {uploading && <p className="text-blue-500 text-sm">Uploading image...</p>}
                     </div>
 
+                     <div>
+                        <label htmlFor="brandName" className="block text-sm font-medium text-gray-700">Description:</label>
+                        <textarea className="w-full p-3 border-none outline-none bg-gray-50"  rows={4} autoFocus type="text" id="description" name="description" value={data.description} onChange={handleOnChange} required placeholder="Enter Description" />
+                    </div>
+
                     <div className="border-t border-gray-200 pt-4">
                         <h3 className="font-semibold text-gray-700 mb-2">Add Pricing</h3>
                         <div className="grid grid-cols-2 gap-4 mb-3">
@@ -222,8 +227,8 @@ const UploadProduct = ({ onClose, fetchData }) => {
                                 <input type="number" placeholder="Enter Rate" value={newSellingPrice} onChange={(e) => setNewSellingPrice(e.target.value)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                             </div>
                             <div>
-                                <label htmlFor="newDescription" className="block text-sm font-medium text-gray-700">Description:</label>
-                                <input type="text" placeholder="Enter description" value={newDescription} onChange={(e) => setNewDescription(e.target.value)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                                <label htmlFor="newRequirement" className="block text-sm font-medium text-gray-700">Requirement:</label>
+                                <input type="text" placeholder="Enter FV Requirement" value={newRequirement} onChange={(e) => setNewRequirement(e.target.value)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                             </div>
                         </div>
                         <button type="button" onClick={handleAddPricing} className="inline-flex items-center px-4 py-2 border border-green-500 rounded-md shadow-sm text-sm font-medium text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
@@ -237,7 +242,7 @@ const UploadProduct = ({ onClose, fetchData }) => {
                                         {pricing.faceValues.map((fv, index) => (
                                             <li key={index}>
                                                 {fv.faceValue} - {fv.sellingPrice} <br />
-                                                <span className='text-gray-500'>Description: {fv.description}</span>
+                                                <span className='text-gray-500'>requirement: {fv.requirement}</span>
                                             </li>
                                         ))}
                                     </ul>

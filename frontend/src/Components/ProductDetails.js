@@ -228,9 +228,9 @@ const ProductDetails = () => {
                                                 <span className="font-semibold text-gray-800 dark:text-gray-200">
                                                     rate: {fv.sellingPrice}
                                                 </span>
-                                                {fv.description && (
+                                                {fv.requirement && (
                                                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                        ({fv.description})
+                                                        ({fv.requirement})
                                                     </p>
                                                 )}
                                             </div>
@@ -283,7 +283,7 @@ const ProductDetails = () => {
                                             currency: activeCurrency.currency,
                                             rate: selectedFaceValue.sellingPrice,
                                             faceValue: selectedFaceValue.faceValue,
-                                            description: selectedFaceValue.description,
+                                            requirement: selectedFaceValue.requirement,
                                         }}
                                     />
                                 </div>

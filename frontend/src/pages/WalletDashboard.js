@@ -46,7 +46,7 @@ const WalletDashboard = () => {
                         <h3 className="font-semibold text-lg text-gray-800 py-1 px-6 border-b border-gray-200 flex items-center">
                             <FaUniversity className="mr-2 text-gray-600" /> Bank Accounts
                         </h3>
-                        <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}> {/* Adjusted maxHeight */}
+                        <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
                             <BankAccountList />
                         </div>
                     </div>
@@ -67,7 +67,7 @@ const WalletDashboard = () => {
         }
     };
     return (
-        <div className="flex flex-col bg-white mt-10 sm:mt-10 md:mt-10 "> {/* Added bg-gray-100 to the main container */}
+        <div className="flex flex-col bg-white mt-10 sm:mt-10 md:mt-10 ">
             <header className="fixed left-0 w-full bg-white shadow-md border-b border-gray-200 z-50">
                 <div className="flex items-center justify-between p-4 max-w-7xl mx-auto">
                     <h2 className="text-sm font-semibold flex items-center">
@@ -75,8 +75,8 @@ const WalletDashboard = () => {
                         <span className="text-gray-800">Wallet</span>
                     </h2>
                     <Link to="/" className="hidden minecraft-font text-[14px] md:flex items-center font-extrabold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 mr-4 tracking-wide">
-                                            Secxion
-                                        </Link>
+                        SXN
+                    </Link>
                         <Link to={'/profile'} className="mr-4 text-gray-700 hover:text-blue-500 transition-colors">
                     Hi, {user.name}! 👋</Link>
                         <button onClick={toggleSidePanel} className="md:hidden">
@@ -85,11 +85,9 @@ const WalletDashboard = () => {
                     </div>
             </header>
 
-           {/* Side Panel (for mobile) */}
             <SidePanel open={isSidePanelOpen} setOpen={setIsSidePanelOpen} />
 
-            {/* Main Content Area */}
-            <main className={`flex-grow pt-20 transition-all duration-300 ${isSidePanelOpen ? 'ml-80' : ''}`}> {/* Added pt-20 */}
+            <main className={`flex-grow pt-20 transition-all duration-300 ${isSidePanelOpen ? 'ml-80' : ''}`}>
                 <div className="max-w-7xl mx-auto px-4 py-6">
                     {renderContent()}
                 </div>
