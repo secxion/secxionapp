@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
-import Reset from "../pages/Reset";
+import Reset from "../Components/Reset";
 import SignUp from "../pages/SignUp";
 import AdminPanel from "../pages/AdminPanel";
 import AllUsers from "../pages/AllUsers";
@@ -38,6 +38,7 @@ import Terms from "../Components/Terms";
 import Aboutus from "../Components/Aboutus";
 import Privacy from "../Components/Privacy";
 import Profiler from "../Components/Profiler";
+import VerifyEmail from "../Components/VerifyEmail";
 import NotFound from "../pages/NotFound";
 import Landing from "../pages/Landing";
 
@@ -75,6 +76,13 @@ const publicRoutes = [
     path:"/",
     element: <Landing/>
   },
+  {
+    path:"/verify-email",
+    element: <VerifyEmail/>
+  },
+  { path: "reset",
+    element: <Reset /> 
+  },
 
 ];
 
@@ -96,7 +104,6 @@ const protectedRoutes = [
   { path: "mywallet", element: <WalletDashboard /> },
   { path: "notifications", element: <NotificationsPage /> },
   { path: "chat/:reportId", element: <ReportCard /> },
-  { path: "reset", element: <Reset /> },
   { path: "community-feed", element: <Buzz /> },
   
 

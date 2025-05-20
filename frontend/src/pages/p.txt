@@ -1,696 +1,407 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { FaBell, FaEnvelopeOpen, FaCheckDouble } from 'react-icons/fa';
 import NotificationItem from '../Components/NotificationItems';
 import NotificationDetails from '../Components/NotificationDetails';
 import SummaryApi from '../common';
-import { toast } from 'react-toastify';
-import { FaBell, FaEnvelopeOpen, FaCheckDouble, FaTimesCircle } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
 import './Notification.css';
+import notificationSound from '../Assets/notification.mp3'; 
 
 const NotificationsPage = () => {
-    const [notifications, setNotifications] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const { user } = useSelector((state) => state.user);
-    const [filter, setFilter] = useState('all');
-    const navigate = useNavigate();
-    const [selectedNotification, setSelectedNotification] = useState(null);
-    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [filter, setFilter] = useState('all');
+  const [selectedNotification, setSelectedNotification] = useState(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
-    const fetchNotifications = async () => {
-        setLoading(true);
-        setError('');
-        try {
-            const [transactionRes, reportRes, marketRes] = await Promise.all([
-                fetch(SummaryApi.getTransactionNotifications.url, {
-                    method: SummaryApi.getTransactionNotifications.method,
-                    credentials: 'include',
-                }),
-                fetch(SummaryApi.getReportNotifications.url, {
-                    method: SummaryApi.getReportNotifications.method,
-                    credentials: 'include',
-                }),
-                fetch(SummaryApi.getMarketNotifications.url, {
-                    method: 'GET',
-                    credentials: 'include',
-                }),
-            ]);
+  const { user } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const audioRef = useRef(null);
+  const previousCountRef = useRef(0);
 
-            const [transactionData, reportData, marketData] = await Promise.all([
-                transactionRes.json(),
-                reportRes.json(),
-                marketRes.json(),
-            ]);
+  const fetchNotifications = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const [transactionRes, reportRes, marketRes] = await Promise.all([
+        fetch(SummaryApi.getTransactionNotifications.url, {
+          method: SummaryApi.getTransactionNotifications.method,
+          credentials: 'include',
+        }),
+        fetch(SummaryApi.getReportNotifications.url, {
+          method: SummaryApi.getReportNotifications.method,
+          credentials: 'include',
+        }),
+        fetch(SummaryApi.getMarketNotifications.url, {
+          method: 'GET',
+          credentials: 'include',
+        }),
+      ]);
 
-            if (transactionData.success && reportData.success && marketData.success) {
-                const transactionNotifications = transactionData.data.filter(n =>
-                    ['transaction:debit', 'transaction:credit', 'transaction:payment_completed', 'transaction:withdrawal', 'transaction:rejected'].includes(n.type)
-                );
+      const [transactionData, reportData, marketData] = await Promise.all([
+        transactionRes.json(),
+        reportRes.json(),
+        marketRes.json(),
+      ]);
 
-                const allNotifications = [...transactionNotifications, ...reportData.data, ...marketData.data].sort(
-                    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-                );
-
-                setNotifications(allNotifications);
-            } else {
-                setError(
-                    `${transactionData.message || ''} ${reportData.message || ''} ${marketData.message || 'Failed to fetch notifications.'}`
-                );
-            }
-        } catch (err) {
-            console.error('[Fetch Notifications Error]', err);
-            setError('An unexpected error occurred while fetching notifications.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        if (user?._id) fetchNotifications();
-    }, [user]);
-
-    const handleMarkAsRead = async (notificationId) => {
-        try {
-            const response = await fetch(`${SummaryApi.markNotificationAsRead.url}/${notificationId}`, {
-                method: SummaryApi.markNotificationAsRead.method,
-                credentials: 'include',
-            });
-            const data = await response.json();
-            if (data.success) {
-                setNotifications(prev =>
-                    prev.map(n => n._id === notificationId ? { ...n, isRead: true, read: 'READ' } : n)
-                );
-                toast.success(data.message || 'Notification marked as read.');
-            } else {
-                toast.error(data.message || 'Failed to mark notification as read.');
-            }
-        } catch (error) {
-            console.error('[Mark As Read Error]', error);
-            toast.error('Failed to mark notification as read.');
-        }
-    };
-
-    const handleDeleteNotification = async (notificationId) => {
-        try {
-            const response = await fetch(`${SummaryApi.deleteNotification.url}/${notificationId}`, {
-                method: SummaryApi.deleteNotification.method,
-                credentials: 'include',
-            });
-            const data = await response.json();
-            if (data.success) {
-                setNotifications(prev => prev.filter(n => n._id !== notificationId));
-                toast.success(data.message || 'Notification deleted.');
-            } else {
-                toast.error(data.message || 'Failed to delete notification.');
-            }
-        } catch (error) {
-            console.error('[Delete Notification Error]', error);
-            toast.error('Failed to delete notification.');
-        }
-    };
-
-    const handleMarkAllAsRead = async () => {
-        try {
-            const response = await fetch(SummaryApi.markAllNotificationsAsRead.url, {
-                method: SummaryApi.markAllNotificationsAsRead.method,
-                credentials: 'include',
-            });
-            const data = await response.json();
-            if (data.success) {
-                setNotifications(prev => prev.map(n => ({ ...n, isRead: true, read: 'READ' })));
-                toast.success(data.message || 'All notifications marked as read.');
-            } else {
-                toast.error(data.message || 'Failed to mark all as read.');
-            }
-        } catch (error) {
-            console.error('[Mark All As Read Error]', error);
-            toast.error('Failed to mark all as read.');
-        }
-    };
-
-    const handleDeleteAll = async () => {
-        try {
-            const response = await fetch(SummaryApi.deleteAllNotifications.url, {
-                method: SummaryApi.deleteAllNotifications.method,
-                credentials: 'include',
-            });
-            const data = await response.json();
-            if (data.success) {
-                setNotifications([]);
-                toast.success(data.message || 'All notifications deleted.');
-            } else {
-                toast.error(data.message || 'Failed to delete all.');
-            }
-        } catch (error) {
-            console.error('[Delete All Notifications Error]', error);
-            toast.error('Failed to delete all notifications.');
-        }
-    };
-
-    const handleOpenReportReply = (notification) => {
-        navigate(`/chat/${notification.relatedObjectId}`);
-        if (!notification.isRead) handleMarkAsRead(notification._id);
-    };
-
-    const handleViewDetails = (notification) => {
-        setSelectedNotification(notification);
-        setIsDetailsOpen(true);
-    };
-
-    const handleOpenMarketDetails = (marketId) => {
-        const marketNotification = notifications.find(n =>
-            n.relatedObjectId === marketId && n.onModel === 'userproduct'
+      if (transactionData.success && reportData.success && marketData.success) {
+        const filteredTxns = transactionData.data.filter((n) =>
+          [
+            'transaction:debit',
+            'transaction:credit',
+            'transaction:payment_completed',
+            'transaction:withdrawal',
+            'transaction:rejected',
+          ].includes(n.type)
         );
-        if (marketNotification) {
-            setSelectedNotification(marketNotification);
-            setIsDetailsOpen(true);
-        }
-    };
 
-    const handleViewCreditDetails = (notification) => {
-        // You can replace this with actual credit modal, drawer, or page routing logic
-        setSelectedNotification(notification);
-        setIsDetailsOpen(true);
-    };
-
-    const handleCloseDetails = () => {
-        setIsDetailsOpen(false);
-        setSelectedNotification(null);
-    };
-
-    const filteredNotifications = () => {
-        if (filter === 'unread') return notifications.filter(n => !n.isRead);
-        if (filter === 'read') return notifications.filter(n => n.isRead);
-        return notifications;
-    };
-
-    const hasUnread = notifications.some(n => !n.isRead);
-
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center h-60">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-            </div>
+        const all = [...filteredTxns, ...reportData.data, ...marketData.data].sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
+
+        if (previousCountRef.current && all.length > previousCountRef.current) {
+          playNotificationFeedback();
+        }
+
+        previousCountRef.current = all.length;
+        setNotifications(all);
+      } else {
+        setError(
+          `${transactionData.message || ''} ${reportData.message || ''} ${marketData.message || 'Failed to fetch notifications.'}`
+        );
+      }
+    } catch (err) {
+      console.error('[Fetch Notifications Error]', err);
+      setError('An unexpected error occurred while fetching notifications.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const playNotificationFeedback = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch((err) => {
+        console.warn('Notification sound playback failed:', err);
+      });
     }
 
-    if (error) {
-        return (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                <strong className="font-bold">Error!</strong>
-                <span className="block sm:inline">{error}</span>
-            </div>
-        );
+    if (navigator.vibrate) {
+      navigator.vibrate([200, 100, 200]);
     }
+  };
 
-    return (
-        <div className="mt-6 bg-gray-100">
-            <div className="mx-auto shadow-md rounded-md overflow-hidden bg-white">
-                <div className="bg-gray-50 border-b border-gray-200 py-28 flex items-center justify-between">
-                       <div className="border-b border-gray-200 flex items-center fixed justify-between p-4 mx-auto w-full bg-white shadow-md z-10">
-                    <nav className=" flex space-x-3 w-full px-4 sm:px-6" aria-label="Tabs">
-                        {['all', 'unread', 'read'].map(tab => (
-                            <button
-                                key={tab}
-                                onClick={() => setFilter(tab)}
-                                className={`${
-                                    filter === tab
-                                        ? 'border-indigo-500 text-indigo-600'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-                            >
-                                {tab === 'all' && <><FaBell className="mr-1 inline-block" /> All</>}
-                                {tab === 'unread' && <><FaEnvelopeOpen className="mr-1 inline-block" /> Unread</>}
-                                {tab === 'read' && <><FaCheckDouble className="mr-1 inline-block" /> Read</>}
-                            </button>
-                        ))}
-                         <button
-                            onClick={handleDeleteAll}
-                            className="inline-flex items-center bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm"
-                        >
-                           Delete All
-                        </button>
-                        {hasUnread && (
-                            <button
-                                onClick={handleMarkAllAsRead}
-                                className="inline-flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
-                            >
-                                Mark All Read
-                            </button>
-                        )}
-                    </nav>
-                </div>
-                </div>
+  useEffect(() => {
+    if (user?._id) {
+      fetchNotifications();
+      const interval = setInterval(fetchNotifications, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [user]);
 
-             <div>
-                <ul className="divide-y divide-gray-200">
-                    {filteredNotifications().length > 0 ? (
-                        filteredNotifications().map(notification => (
-                            <NotificationItem
-                                key={notification._id}
-                                notification={notification}
-                                onMarkAsRead={handleMarkAsRead}
-                                onDelete={handleDeleteNotification}
-                                onOpenReportReply={handleOpenReportReply}
-                                onViewDetails={handleViewDetails}
-                                onOpenMarketDetails={handleOpenMarketDetails}
-                                onViewCreditDetails={handleViewCreditDetails}
-                            />
-                        ))
-                    ) : (
-                        <li className="px-4 py-6 text-gray-500 text-center">No notifications here. 😴</li>
-                    )}
-                </ul>
-             </div>
+  const handleMarkAsRead = async (id) => {
+    try {
+      const res = await fetch(`${SummaryApi.markNotificationAsRead.url}/${id}`, {
+        method: SummaryApi.markNotificationAsRead.method,
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNotifications((prev) =>
+          prev.map((n) => (n._id === id ? { ...n, isRead: true, read: 'READ' } : n))
+        );
+        toast.success(data.message || 'Marked as read');
+      } else toast.error(data.message || 'Failed to mark');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to mark notification as read.');
+    }
+  };
 
-                
-            </div>
+  const handleDeleteNotification = async (id) => {
+    try {
+      const res = await fetch(`${SummaryApi.deleteNotification.url}/${id}`, {
+        method: SummaryApi.deleteNotification.method,
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNotifications((prev) => prev.filter((n) => n._id !== id));
+        toast.success(data.message || 'Notification deleted.');
+      } else toast.error(data.message || 'Failed to delete.');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to delete notification.');
+    }
+  };
 
-            {isDetailsOpen && selectedNotification && (
-                <NotificationDetails
-                    notification={selectedNotification}
-                    onClose={handleCloseDetails}
-                />
-            )}
+  const handleMarkAllAsRead = async () => {
+    try {
+      const res = await fetch(SummaryApi.markAllNotificationsAsRead.url, {
+        method: SummaryApi.markAllNotificationsAsRead.method,
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNotifications((prev) =>
+          prev.map((n) => ({ ...n, isRead: true, read: 'READ' }))
+        );
+        toast.success(data.message || 'All marked as read.');
+      } else toast.error(data.message || 'Failed to mark all.');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to mark all as read.');
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    try {
+      const res = await fetch(SummaryApi.deleteAllNotifications.url, {
+        method: SummaryApi.deleteAllNotifications.method,
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNotifications([]);
+        toast.success(data.message || 'All notifications deleted.');
+      } else toast.error(data.message || 'Failed to delete all.');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to delete all notifications.');
+    }
+  };
+
+  const handleOpenReportReply = (notification) => {
+    navigate(`/chat/${notification.relatedObjectId}`);
+    if (!notification.isRead) handleMarkAsRead(notification._id);
+  };
+
+  const handleViewDetails = (notification) => {
+    setSelectedNotification(notification);
+    setIsDetailsOpen(true);
+  };
+
+  const handleOpenMarketDetails = (marketId) => {
+    const item = notifications.find((n) => n.relatedObjectId === marketId && n.onModel === 'userproduct');
+    if (item) {
+      setSelectedNotification(item);
+      setIsDetailsOpen(true);
+    }
+  };
+
+  const handleViewCreditDetails = (notification) => {
+    setSelectedNotification(notification);
+    setIsDetailsOpen(true);
+  };
+
+  const handleCloseDetails = () => {
+    setSelectedNotification(null);
+    setIsDetailsOpen(false);
+  };
+
+  const filteredNotifications = () => {
+    if (filter === 'unread') return notifications.filter((n) => !n.isRead);
+    if (filter === 'read') return notifications.filter((n) => n.isRead);
+    return notifications;
+  };
+
+  const hasUnread = notifications.some((n) => !n.isRead);
+
+  return (
+    <div className="mt-2 py-20 bg-gray-100">
+      <audio ref={audioRef} src={notificationSound} preload="auto" />
+      <div className="mx-auto shadow-md rounded-md overflow-hidden bg-white">
+        <div className="fixed bg-white border-b border-gray-200 py-2 z-10">
+          <div className="flex items-center fixed justify-between p-4 mx-auto w-full bg-white shadow-md z-10">
+            <nav className="flex space-x-3 w-full" aria-label="Tabs">
+              {['all', 'unread', 'read'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setFilter(tab)}
+                  className={`${
+                    filter === tab
+                      ? 'border-indigo-500 text-indigo-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                >
+                  {tab === 'all' && <><FaBell className="mr-1 inline-block" /> All</>}
+                  {tab === 'unread' && <><FaEnvelopeOpen className="mr-1 inline-block" /> Unread</>}
+                  {tab === 'read' && <><FaCheckDouble className="mr-1 inline-block" /> Read</>}
+                </button>
+              ))}
+              <button
+                onClick={handleDeleteAll}
+                className="py-2 px-3 text-red-600 border rounded border-gray-300 hover:bg-red-600 hover:text-white text-sm"
+              >
+                Delete All
+              </button>
+              {hasUnread && (
+                <button
+                  onClick={handleMarkAllAsRead}
+                  className="py-2 px-3 text-blue-600 border rounded border-gray-300 hover:bg-blue-600 hover:text-white text-sm"
+                >
+                  Mark All Read
+                </button>
+              )}
+            </nav>
+          </div>
         </div>
-    );
+
+        <div className="py-24 pb-0 hover:bg-gray-50 transition duration-150 ease-in-out">
+          <ul className="divide-y divide-gray-200">
+            {filteredNotifications().length > 0 ? (
+              filteredNotifications().map((notification) => (
+                <NotificationItem
+                  key={notification._id}
+                  notification={notification}
+                  onMarkAsRead={handleMarkAsRead}
+                  onDelete={handleDeleteNotification}
+                  onOpenReportReply={handleOpenReportReply}
+                  onViewDetails={handleViewDetails}
+                  onOpenMarketDetails={handleOpenMarketDetails}
+                  onViewCreditDetails={handleViewCreditDetails}
+                />
+              ))
+            ) : (
+              <li className="px-4 py-6 text-gray-500 text-center">No notifications here. 😴</li>
+            )}
+          </ul>
+        </div>
+      </div>
+
+      {isDetailsOpen && selectedNotification && (
+        <NotificationDetails
+          notification={selectedNotification}
+          onClose={handleCloseDetails}
+        />
+      )}
+    </div>
+  );
 };
 
 export default NotificationsPage;
 
-.....................................................
-//////////////////////////////////////////////////////\
+
+///////////////////..........................................................................................................................................
 
 
+import React, { lazy, Suspense, useEffect } from "react";
+import { Outlet } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserDetails, setLoading } from "./store/userSlice";
+import Context from "./Context";
+import { useQuery } from "@tanstack/react-query";
+import {
+    fetchUserDetailsAPI,
+    fetchMarketDataAPI,
+    fetchBlogsAPI,
+    fetchWalletBalanceAPI,
+    signinUserAPI,
+} from "./services/apiService";
+import "./styles/Loader.css";
 
+function setViewportHeight() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
 
+const Header = lazy(() => import("./Components/Header"));
+const Net = lazy(() => import("./Components/Net"));
 
-// NotificationsPage.js
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import NotificationItem from '../Components/NotificationItems';
-import NotificationDetails from '../Components/NotificationDetails';
-import SummaryApi from '../common';
-import { toast } from 'react-toastify';
-import { FaBell, FaEnvelopeOpen, FaCheckDouble, FaTimesCircle, FaTrash, FaCheck } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
-import './Notification.css';
+function Loader() {
+    return (
+        <div className="loader-container">
+            <div className="loader"></div>
+            <p className="loading-text"></p>
+        </div>
+    );
+}
 
-const NotificationsPage = () => {
-    const [notifications, setNotifications] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const { user } = useSelector((state) => state.user);
-    const [filter, setFilter] = useState('all');
-    const navigate = useNavigate();
-    const [selectedNotification, setSelectedNotification] = useState(null);
-    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-    const [selectedNotifications, setSelectedNotifications] = useState([]);
-    const [selectAll, setSelectAll] = useState(false);
-
-    const fetchNotifications = async () => {
-        setLoading(true);
-        setError('');
-        try {
-            const [transactionRes, reportRes, marketRes] = await Promise.all([
-                fetch(SummaryApi.getTransactionNotifications.url, {
-                    method: SummaryApi.getTransactionNotifications.method,
-                    credentials: 'include',
-                }),
-                fetch(SummaryApi.getReportNotifications.url, {
-                    method: SummaryApi.getReportNotifications.method,
-                    credentials: 'include',
-                }),
-                fetch(SummaryApi.getMarketNotifications.url, {
-                    method: 'GET',
-                    credentials: 'include',
-                }),
-            ]);
-            const [transactionData, reportData, marketData] = await Promise.all([
-                transactionRes.json(),
-                reportRes.json(),
-                marketRes.json(),
-            ]);
-            if (transactionData.success && reportData.success && marketData.success) {
-                const transactionNotifications = transactionData.data.filter(n =>
-                    ['transaction:debit', 'transaction:credit', 'transaction:payment_completed', 'transaction:withdrawal', 'transaction:rejected'].includes(n.type)
-                );
-                const allNotifications = [...transactionNotifications, ...reportData.data, ...marketData.data].sort(
-                    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-                );
-                setNotifications(allNotifications);
-            } else {
-                setError(
-                    `${transactionData.message || ''} ${reportData.message || ''} ${marketData.message || 'Failed to fetch notifications.'}`
-                );
-            }
-        } catch (err) {
-            console.error('[Fetch Notifications Error]', err);
-            setError('An unexpected error occurred while fetching notifications.');
-        } finally {
-            setLoading(false);
-        }
-    };
+function App() {
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.user.user);
 
     useEffect(() => {
-        if (user?._id) fetchNotifications();
-    }, [user]);
+        setViewportHeight();
+        window.addEventListener('resize', setViewportHeight);
 
-    const handleMarkAsRead = async (notificationId) => {
-        try {
-            const response = await fetch(`${SummaryApi.markNotificationAsRead.url}/${notificationId}`, {
-                method: SummaryApi.markNotificationAsRead.method,
-                credentials: 'include',
-            });
-            const data = await response.json();
-            if (data.success) {
-                setNotifications(prev =>
-                    prev.map(n => n._id === notificationId ? { ...n, isRead: true, read: 'READ' } : n)
-                );
-                setSelectedNotifications(prev => prev.filter(id => id !== notificationId));
-                toast.success(data.message || 'Notification marked as read.');
+        return () => {
+            window.removeEventListener('resize', setViewportHeight);
+        };
+    }, []);
+
+    const { refetch: fetchUserDetails, isLoading: isUserLoading } = useQuery({
+        queryKey: ["user"],
+        queryFn: async () => {
+            dispatch(setLoading(true));
+            const res = await fetchUserDetailsAPI();
+            dispatch(setLoading(false));
+
+            if (res.success) {
+                dispatch(setUserDetails(res.data));
+                return res.data;
             } else {
-                toast.error(data.message || 'Failed to mark notification as read.');
+                dispatch(setUserDetails(null));
+                return null;
             }
-        } catch (error) {
-            console.error('[Mark As Read Error]', error);
-            toast.error('Failed to mark notification as read.');
-        }
-    };
+        },
+        staleTime: 5 * 60 * 1000,
+    });
 
-    const handleDeleteNotification = async (notificationId) => {
-        try {
-            const response = await fetch(`${SummaryApi.deleteNotification.url}/${notificationId}`, {
-                method: SummaryApi.deleteNotification.method,
-                credentials: 'include',
-            });
-            const data = await response.json();
-            if (data.success) {
-                setNotifications(prev => prev.filter(n => n._id !== notificationId));
-                setSelectedNotifications(prev => prev.filter(id => id !== notificationId));
-                toast.success(data.message || 'Notification deleted.');
-            } else {
-                toast.error(data.message || 'Failed to delete notification.');
-            }
-        } catch (error) {
-            console.error('[Delete Notification Error]', error);
-            toast.error('Failed to delete notification.');
-        }
-    };
+    const { data: marketData, refetch: fetchMarketData, isLoading: isMarketLoading } = useQuery({
+        queryKey: ["marketData"],
+        queryFn: fetchMarketDataAPI,
+        staleTime: 5 * 60 * 1000,
+    });
 
-    const handleMarkAllAsRead = async () => {
-        if (selectedNotifications.length === 0) {
-            toast.info('No notifications selected to mark as read.');
-            return;
-        }
-        try {
-            const response = await fetch(SummaryApi.markAllNotificationsAsRead.url, {
-                method: SummaryApi.markAllNotificationsAsRead.method,
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ notificationIds: selectedNotifications }),
-            });
-            const data = await response.json();
-            if (data.success) {
-                setNotifications(prev =>
-                    prev.map(n =>
-                        selectedNotifications.includes(n._id) ? { ...n, isRead: true, read: 'READ' } : n
-                    )
-                );
-                setSelectedNotifications([]);
-                setSelectAll(false);
-                toast.success(data.message || 'Selected notifications marked as read.');
-            } else {
-                toast.error(data.message || 'Failed to mark selected as read.');
-            }
-        } catch (error) {
-            console.error('[Mark All As Read Error]', error);
-            toast.error('Failed to mark selected notifications as read.');
-        }
-    };
+    const { data: walletBalance, refetch: fetchWalletBalance, isLoading: isWalletLoading } = useQuery({
+        queryKey: ["walletBalance"],
+        queryFn: fetchWalletBalanceAPI,
+        staleTime: 5 * 60 * 1000,
+    });
 
-    const handleDeleteSelected = async () => {
-        if (selectedNotifications.length === 0) {
-            toast.info('No notifications selected to delete.');
-            return;
-        }
-        try {
-            const response = await fetch(SummaryApi.deleteAllNotifications.url, {
-                method: SummaryApi.deleteAllNotifications.method,
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ notificationIds: selectedNotifications }),
-            });
-            const data = await response.json();
-            if (data.success) {
-                setNotifications(prev => prev.filter(n => !selectedNotifications.includes(n._id)));
-                setSelectedNotifications([]);
-                setSelectAll(false);
-                toast.success(data.message || 'Selected notifications deleted.');
-            } else {
-                toast.error(data.message || 'Failed to delete selected notifications.');
-            }
-        } catch (error) {
-            console.error('[Delete Selected Notifications Error]', error);
-            toast.error('Failed to delete selected notifications.');
-        }
-    };
+    const { data: blogs, refetch: fetchBlogs, isLoading: isBlogsLoading } = useQuery({
+        queryKey: ["blogs"],
+        queryFn: fetchBlogsAPI,
+        staleTime: 5 * 60 * 1000,
+    });
 
-    const handleMarkAllAsReadVisible = async () => {
-        try {
-            const response = await fetch(SummaryApi.markAllNotificationsAsRead.url, {
-                method: SummaryApi.markAllNotificationsAsRead.method,
-                credentials: 'include',
-            });
-            const data = await response.json();
-            if (data.success) {
-                setNotifications(prev => prev.map(n => ({ ...n, isRead: true, read: 'READ' })));
-                toast.success(data.message || 'All notifications marked as read.');
-            } else {
-                toast.error(data.message || 'Failed to mark all as read.');
-            }
-        } catch (error) {
-            console.error('[Mark All As Read Error]', error);
-            toast.error('Failed to mark all as read.');
-        }
-    };
-
-    const handleDeleteAllVisible = async () => {
-        try {
-            const response = await fetch(SummaryApi.deleteAllNotifications.url, {
-                method: SummaryApi.deleteAllNotifications.method,
-                credentials: 'include',
-            });
-            const data = await response.json();
-            if (data.success) {
-                setNotifications([]);
-                toast.success(data.message || 'All notifications deleted.');
-            } else {
-                toast.error(data.message || 'Failed to delete all.');
-            }
-        } catch (error) {
-            console.error('[Delete All Notifications Error]', error);
-            toast.error('Failed to delete all notifications.');
-        }
-    };
-
-    const handleOpenReportReply = (notification) => {
-        navigate(`/chat/${notification.relatedObjectId}`);
-        if (!notification.isRead) handleMarkAsRead(notification._id);
-    };
-
-    const handleViewDetails = (notification) => {
-        setSelectedNotification(notification);
-        setIsDetailsOpen(true);
-    };
-
-    const handleOpenMarketDetails = (marketId) => {
-        const marketNotification = notifications.find(n =>
-            n.relatedObjectId === marketId && n.onModel === 'userproduct'
-        );
-        if (marketNotification) {
-            setSelectedNotification(marketNotification);
-            setIsDetailsOpen(true);
-        }
-    };
-
-    const handleViewCreditDetails = (notification) => {
-        setSelectedNotification(notification);
-        setIsDetailsOpen(true);
-    };
-
-    const handleCloseDetails = () => {
-        setIsDetailsOpen(false);
-        setSelectedNotification(null);
-    };
-
-    const filteredNotifications = () => {
-        if (filter === 'unread') return notifications.filter(n => !n.isRead);
-        if (filter === 'read') return notifications.filter(n => n.isRead);
-        return notifications;
-    };
-
-    const hasUnread = notifications.some(n => !n.isRead);
-    const hasSelected = selectedNotifications.length > 0;
-
-    const handleCheckboxChange = (notificationId) => {
-        setSelectedNotifications(prev => {
-            if (prev.includes(notificationId)) {
-                return prev.filter(id => id !== notificationId);
-            } else {
-                return [...prev, notificationId];
-            }
-        });
-    };
-
-    useEffect(() => {
-        setSelectAll(filteredNotifications().length > 0 && selectedNotifications.length === filteredNotifications().length);
-    }, [selectedNotifications, filteredNotifications]);
-
-    const handleSelectAllChange = () => {
-        if (selectAll) {
-            setSelectedNotifications([]);
-        } else {
-            setSelectedNotifications(filteredNotifications().map(n => n._id));
-        }
-        setSelectAll(!selectAll);
-    };
-
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center h-60">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                <strong className="font-bold">Error!</strong>
-                <span className="block sm:inline">{error}</span>
-            </div>
-        );
+       if (isUserLoading || isMarketLoading || isBlogsLoading || isWalletLoading) {
+        return <Loader />;
     }
 
     return (
-        <div className="mt-2 py-20 bg-gray-100">
-            <div className="mx-auto shadow-md rounded-md overflow-hidden bg-white">
-                <div className="sticky top-0 bg-white border-b border-gray-200 py-2 md:py-4 z-10">
-                    <div className="px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-                        <div className="relative w-full md:w-auto">
-                            <label htmlFor="tabs" className="sr-only">Filter notifications</label>
-                            <select
-                                id="tabs"
-                                className="block w-full md:hidden py-2 pl-3 pr-10 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                                value={filter}
-                                onChange={(e) => setFilter(e.target.value)}
-                            >
-                                <option value="all">All</option>
-                                <option value="unread">Unread</option>
-                                <option value="read">Read</option>
-                            </select>
-                            <nav className="hidden md:flex space-x-4" aria-label="Tabs">
-                                {['all', 'unread', 'read'].map(tab => (
-                                    <button
-                                        key={tab}
-                                        onClick={() => setFilter(tab)}
-                                        className={`${
-                                            filter === tab
-                                                ? 'bg-indigo-50 text-indigo-700 border-indigo-500'
-                                                : 'text-gray-500 hover:text-gray-700 border-transparent hover:border-gray-300'
-                                        } whitespace-nowrap py-2 px-3 border-b-2 font-medium text-sm`}
-                                    >
-                                        {tab === 'all' && <><FaBell className="mr-1 inline-block" /> All</>}
-                                        {tab === 'unread' && <><FaEnvelopeOpen className="mr-1 inline-block" /> Unread</>}
-                                        {tab === 'read' && <><FaCheckDouble className="mr-1 inline-block" /> Read</>}
-                                    </button>
-                                ))}
-                            </nav>
+        <Context.Provider value={{ fetchUserDetails, fetchMarketData, marketData, user, fetchBlogs, blogs, walletBalance, fetchWalletBalance, signinUserAPI }}>
+            <div className="global-container">
+                <Suspense fallback={<Loader />}>
+                    {user && <Net blogs={blogs} fetchBlogs={fetchBlogs} />}
+                    <main className="main-content">
+                        {user && <Header />}
+                        <div>
+                            <Outlet />
                         </div>
-                    </div>
-                </div>
-
-                {hasSelected && (
-                    <div className="bg-gray-50 border-b border-gray-200 py-3 px-4 sm:px-6 flex justify-end space-x-2">
-                        <button
-                            onClick={handleDeleteSelected}
-                            className="inline-flex items-center bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500"
-                        >
-                            <FaTrash className="mr-2" /> Delete Selected
-                        </button>
-                        <button
-                            onClick={handleMarkAllAsRead}
-                            className="inline-flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            <FaCheck className="mr-2" /> Mark Selected Read
-                        </button>
-                    </div>
-                )}
-
-                <ul className="divide-y divide-gray-200">
-                    {filteredNotifications().length > 0 ? (
-                        filteredNotifications().map(notification => (
-                            <li key={notification._id} className="relative px-4 py-6 hover:bg-gray-50 transition duration-150 ease-in-out">
-                                <div className="flex items-start justify-between">
-                                    <div className="flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                                            checked={selectedNotifications.includes(notification._id)}
-                                            onChange={() => handleCheckboxChange(notification._id)}
-                                        />
-                                        <div className="ml-3 flex-grow">
-                                            <NotificationItem
-                                                notification={notification}
-                                                onMarkAsRead={handleMarkAsRead}
-                                                onDelete={handleDeleteNotification}
-                                                onOpenReportReply={handleOpenReportReply}
-                                                onViewDetails={handleViewDetails}
-                                                onOpenMarketDetails={handleOpenMarketDetails}
-                                                onViewCreditDetails={handleViewCreditDetails}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        ))
-                    ) : (
-                        <li className="px-4 py-6 text-gray-500 text-center">No notifications here. 😴</li>
-                    )}
-                </ul>
-
-                {filteredNotifications().length > 0 && (
-                    <div className="md:hidden bg-gray-50 border-t border-gray-200 py-3 px-4 sm:px-6 flex justify-between items-center">
-                        <button
-                            onClick={handleDeleteAllVisible}
-                            className="inline-flex items-center bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500"
-                        >
-                            <FaTrash className="mr-2" /> Delete All
-                        </button>
-                        {hasUnread && (
-                            <button
-                                onClick={handleMarkAllAsReadVisible}
-                                className="inline-flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                <FaCheck className="mr-2" /> Mark All Read
-                            </button>
-                        )}
-                    </div>
-                )}
-            </div>
-            {isDetailsOpen && selectedNotification && (
-                <NotificationDetails
-                    notification={selectedNotification}
-                    onClose={handleCloseDetails}
+                    </main>
+                </Suspense>
+                <ToastContainer
+                    position="top-center"
+                    autoClose={1000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="colored"
                 />
-            )}
-        </div>
+            </div>
+        </Context.Provider>
     );
-};
-export default NotificationsPage;
+}
+
+export default App;

@@ -1,4 +1,4 @@
-const userModel = require("../../models/userModel");
+import userModel from "../../models/userModel.js"
 
 async function deleteUser(req, res) {
     try {
@@ -36,4 +36,4 @@ async function deleteUser(req, res) {
     }
 }
 
-module.exports = deleteUser;
+export default deleteUser

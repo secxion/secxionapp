@@ -9,14 +9,21 @@ async function userSignInController(req, res) {
         if (!email) return res.status(400).json({ message: "Please provide email", error: true, success: false });
         if (!password) return res.status(400).json({ message: "Please provide password", error: true, success: false });
 
-        const user = await userModel.findOne({ email }).select('+password'); // ensure password is selected
+        const user = await userModel.findOne({ email }).select('+password');
 
         if (!user) return res.status(404).json({ message: "User not found", error: true, success: false });
 
         const checkPassword = await bcrypt.compare(password, user.password);
-
         if (!checkPassword) {
             return res.status(401).json({ message: "Incorrect password", error: true, success: false });
+        }
+
+        if (!user.isVerified) {
+            return res.status(403).json({
+                message: "Please verify your email before logging in.",
+                error: true,
+                success: false
+            });
         }
 
         const tokenData = {

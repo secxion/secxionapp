@@ -49,7 +49,7 @@ const walletSchema = new mongoose.Schema(
                 },
                 onModel: {
                     type: String,
-                    enum: ['userproduct', 'WithdrawalRequest', 'PaymentRequest'],
+                    enum: ['userproduct', 'WithdrawalRequest', 'PaymentRequest', "User"],
                 },
                 createdAt: {
                     type: Date,

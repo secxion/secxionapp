@@ -182,6 +182,7 @@ const Profile = () => {
                                                 className="w-full h-full object-cover rounded-full border-2 border-gray-300 shadow-sm"
                                                 alt="Profile"
                                             />
+                                            
                                         ) : (
                                             <PiUserSquare size={48} className="text-blue-700" />
                                         )}

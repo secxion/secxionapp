@@ -1,4 +1,5 @@
 import express from 'express';
+import passport from 'passport';
 
 import userSignUpController from '../controller/user/userSignUp.js';
 import userSignInController from '../controller/user/userSignin.js';
@@ -40,13 +41,31 @@ import getMarketByIdController from '../controller/product/getMarketByIDControll
 import { getApprovedPostsController, submitNewPostController, deletePostController, addCommentController } from '../controller/user/communityController.js';
 import { getPendingPostsController, approvePostController, rejectPostController } from '../controller/user/adminCommunityController.js';
 import getUserPostsController from '../controller/user/getUserPostsController.js';
+import { verifyEmailController } from '../controller/user/verifyEmailController.js';
+import deleteUser from '../controller/user/deleteUser.js';
+import checkVerified from '../middleware/checkVerified.js';
+import { sendResetCode, verifyReset } from '../controller/user/resetController.js';
+
 
 const router = express.Router();
 
 router.post("/signup", userSignUpController);
+router.get('/verify-email', verifyEmailController);
 router.post("/signin", userSignInController);
 router.get("/user-details", authToken, userDetailsController);
 router.get("/userLogout", userLogout);
+router.post("/request-reset", sendResetCode); // Send code to email
+router.post("/confirm-reset", verifyReset);   // Submit code + new value
+
+// Google OAuth
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google/callback',
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    (req, res) => {
+        // You can redirect to frontend with token or session
+        res.redirect(`${process.env.FRONTEND_URL}/home`);
+    }
+);
 
 // Admin panel
 router.get("/all-user", authToken, allUsers);
@@ -54,6 +73,8 @@ router.post("/update-user", authToken, updateUser);
 router.get("/get-all-users-market", authToken, getAllUserMarkets);
 router.post("/update-market-status/:id", updateMarketStatus);
 router.get("/getAllDataForAdmin", authToken, getAllUserDataPadsForAdmin);
+router.delete("/delete-user", deleteUser);
+
 
 // Wallet balance
 router.get("/wallet/balane/:userId", authToken, getOtherUserWalletBalance);

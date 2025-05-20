@@ -53,7 +53,7 @@ const HistoryDetailView = ({
 
   return (
     <div className=" fixed inset-0 flex items-start justify-center bg-gray-800 bg-opacity-50 p-4 z-50">
-  <div className="bg-white p-6 rounded-2xl w-full max-w-2xl shadow-lg mt-20"
+  <div className="bg-white p-6 rounded-2xl w-full max-w-2xl shadow-lg mt-10"
        style={{ maxHeight: '85vh', overflowY: 'auto' }}>
 
         <div className="flex justify-between items-center mb-6">

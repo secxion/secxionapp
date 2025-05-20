@@ -5,6 +5,19 @@ const SummaryApi = {
         url : `${backendDomain}/api/signup`,
         method : "post"
     },
+    verifyEmail : {
+        url : `${backendDomain}/api/verify-email`,
+        method : "get"
+    },
+    requestReset: {
+  url: `${backendDomain}/api/request-reset`,
+  method: "POST",
+},
+confirmReset: {
+  url: `${backendDomain}/api/confirm-reset`,
+  method: "POST",
+},
+
     fetchLatestCryptoNews : {
         url : `${backendDomain}/api/fetch-latest-cryptonews`,
         method : "get"
@@ -40,7 +53,7 @@ const SummaryApi = {
     },
     deleteUser : {
         url : `${backendDomain}/api/delete-user`,
-        method : "post"
+        method : "delete"
     },    
     uploadProduct : {
         url : `${backendDomain}/api/upload-product`,

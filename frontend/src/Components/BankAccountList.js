@@ -137,7 +137,7 @@ const BankAccountList = ({ onBankAccountsUpdated, onBankAccountsUpdating }) => {
                                 </div>
                             ))
                         ) : (
-                            <p className="text-gray-500 italic">No bank accounts added yet.</p>
+                            <p className="text-gray-500 -mt-4 ml-10 italic">No bank accounts added yet.</p>
                         )}
                         {deleteError && <p className="text-red-500 mt-2">{deleteError}</p>}
                         <button

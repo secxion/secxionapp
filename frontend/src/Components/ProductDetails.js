@@ -153,7 +153,7 @@ const ProductDetails = () => {
     }
 
     return (
-        <div className="container">
+        <div className="w-screen min-w-screen">
             <header className="fixed w-screen left-0 dark:bg-gray-800  py-20 px-4 sm:px-6 lg:px-8 top-0">
                 {data?.pricing && data?.pricing.length > 0 && (
                     <div className="mt-4">

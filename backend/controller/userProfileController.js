@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs'; // For password hashing
+import bcrypt from 'bcryptjs'; 
 import userModel from "../models/userModel.js";
 import Wallet from "../models/walletModel.js";
 
@@ -55,8 +55,6 @@ const userProfileController = async (req, res) => {
 
 // Controller function to edit user profile
 const editProfileController = async (req, res) => {
-    console.log("editProfileController - Request received:", req.body); // Log the entire request body
-
     try {
         if (!req.userId) {
             return res.status(401).json({
@@ -69,23 +67,11 @@ const editProfileController = async (req, res) => {
         const { name, tag, telegramNumber, profilePic, password, newPassword } = req.body;
         const updateFields = {};
 
-        if (name) {
-            updateFields.name = name;
-        }
-        if (tag) {
-            updateFields.tag = tag;
-        }
-        if (telegramNumber) {
-            updateFields.telegramNumber = telegramNumber;
-        }
-        if (profilePic) {
-            updateFields.profilePic = profilePic;
-            console.log("editProfileController - Received profilePic:", profilePic); // Log if profilePic is present
-        } else {
-            console.log("editProfileController - No profilePic received in this update."); // Log if profilePic is missing
-        }
+        if (name) updateFields.name = name.trim();
+        if (tag) updateFields.tag = tag.trim();
+        if (telegramNumber) updateFields.telegramNumber = telegramNumber.trim();
+        if (profilePic) updateFields.profilePic = profilePic;
 
-        // Handle password update separately
         if (password && newPassword) {
             const user = await userModel.findById(req.userId).select("+password");
             if (!user) {
@@ -99,29 +85,32 @@ const editProfileController = async (req, res) => {
 
             const hashedPassword = await bcrypt.hash(newPassword, 10);
             updateFields.password = hashedPassword;
+        } else if (password || newPassword) {
+            // If one password field is filled but not both, reject
+            return res.status(400).json({ message: "Both current and new password are required to change password", error: true, success: false });
         }
 
         const updatedUser = await userModel.findByIdAndUpdate(req.userId, updateFields, { new: true }).select("-password");
-
         if (!updatedUser) {
             return res.status(404).json({ message: "User not found", error: true, success: false });
         }
 
-        res.status(200).json({
-            success: true,
+        return res.status(200).json({
             message: "Profile updated successfully",
+            error: false,
+            success: true,
             data: updatedUser,
         });
-
     } catch (error) {
-        console.error("Error updating profile:", error);
-        res.status(500).json({
-            message: error.message || "Failed to update profile",
+        console.error("Error in editProfileController:", error);
+        return res.status(500).json({
+            message: "Something went wrong",
             error: true,
             success: false,
         });
     }
 };
+
 
 // Controller function to get a specific user's bank accounts
 const getUserBankAccountsController = async (req, res) => {
@@ -285,7 +274,6 @@ const deleteBankAccountController = async (req, res) => {
     }
 };
 
-// Default export of all controllers
 export default {
     userProfileController,
     editProfileController,

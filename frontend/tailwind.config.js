@@ -7,6 +7,7 @@ module.exports = {
   theme: {
     extend: {
       keyframes: {
+        
         glowLine: {
           '0%, 100%': { borderColor: '#0ff' },
           '25%': { borderColor: '#0f0' },
