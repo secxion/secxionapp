@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/secxion/secxionx#readme",
   "dependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "pip": "^0.0.1"
   }
 }

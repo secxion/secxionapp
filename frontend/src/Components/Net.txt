@@ -1,118 +1,200 @@
-import userModel from "../../models/userModel.js";
-import bcrypt from "bcryptjs";
-import { v4 as uuidv4 } from "uuid";
-import { sendVerificationEmail } from "../../utils/mailer.js";
+import React, { useEffect, useState } from "react";
+import SummaryApi from "../common";
 
-async function userSignUpController(req, res) {
-  try {
-    const { email, password, name } = req.body;
+const AddBankAccountForm = () => {
+  const [banks, setBanks] = useState([]);
+  const [loadingBanks, setLoadingBanks] = useState(false);
+  const [form, setForm] = useState({
+    accountNumber: "",
+    bankCode: "",
+  });
+  const [resolvedAccountName, setResolvedAccountName] = useState("");
+  const [loadingResolve, setLoadingResolve] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
-    if (!email || !password || !name) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields (name, email, password) are required.",
-      });
+  useEffect(() => {
+    const fetchBanks = async () => {
+      setLoadingBanks(true);
+      setError("");
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(SummaryApi.bankList.url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.message || "Failed to load banks");
+        setBanks(data.data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoadingBanks(false);
+      }
+    };
+
+    fetchBanks();
+  }, []);
+
+  const handleChange = (e) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    if (e.target.name === "accountNumber" || e.target.name === "bankCode") {
+      setResolvedAccountName("");
+    }
+    setError("");
+    setSuccessMsg("");
+  };
+
+  const handleResolve = async () => {
+    if (!form.accountNumber || !form.bankCode) {
+      setError("Account number and bank are required to resolve");
+      return;
     }
 
-    const userExists = await userModel.findOne({ email });
-    if (userExists) {
-      return res.status(409).json({
-        success: false,
-        message: "A user with this email already exists.",
-      });
-    }
-
-    const hashPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-    const emailToken = uuidv4();
-
-    const newUser = new userModel({
-      name,
-      email,
-      password: hashPassword,
-      role: "GENERAL",
-      isVerified: false,
-      emailToken,
-    });
-
-    await newUser.save();
-    await sendVerificationEmail(email, emailToken);
-
-    return res.status(201).json({
-      success: true,
-      message: "Account created! Please check your email to verify your account.",
-    });
-  } catch (err) {
-    console.error("Signup error:", err);
-    return res.status(500).json({
-      success: false,
-      message: err.message || "Signup failed due to a server error.",
-    });
-  }
-}
-
-export default userSignUpController;
-
-//////////////////////
-
-
-import bcrypt from 'bcryptjs';
-import userModel from '../../models/userModel.js';
-import jwt from 'jsonwebtoken';
-
-async function userSignInController(req, res) {
+    setLoadingResolve(true);
+    setError("");
+    setResolvedAccountName("");
     try {
-        const { email, password } = req.body;
+      const res = await fetch(SummaryApi.resolveBankAccount.url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          account_number: form.accountNumber,
+          bank_code: form.bankCode,
+        }),
+      });
 
-        if (!email) return res.status(400).json({ message: "Please provide email", error: true, success: false });
-        if (!password) return res.status(400).json({ message: "Please provide password", error: true, success: false });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message || "Failed to resolve account");
 
-        const user = await userModel.findOne({ email }).select('+password'); // ensure password is selected
-
-        if (!user) return res.status(404).json({ message: "User not found", error: true, success: false });
-
-        const checkPassword = await bcrypt.compare(password, user.password);
-
-        if (!checkPassword) {
-            return res.status(401).json({ message: "Incorrect password", error: true, success: false });
-        }
-
-        const tokenData = {
-            _id: user._id,
-            email: user.email,
-        };
-
-        const token = jwt.sign(tokenData, process.env.TOKEN_SECRET_KEY, { expiresIn: 60 * 60 * 8 });
-
-        const tokenOptions = {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'None',
-            path: '/'
-        };
-
-        res.cookie("token", token, tokenOptions).status(200).json({
-            message: "Login successful",
-            data: {
-                token,
-                user: {
-                    _id: user._id,
-                    email: user.email,
-                    name: user.name,
-                    role: user.role,
-                }
-            },
-            success: true,
-            error: false
-        });
-
+      setResolvedAccountName(data.data.account_name);
     } catch (err) {
-        res.status(500).json({
-            message: err.message || "Internal server error",
-            error: true,
-            success: false
-        });
+      setError(err.message);
+    } finally {
+      setLoadingResolve(false);
     }
-}
+  };
 
-export default userSignInController;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccessMsg("");
 
+    if (!form.accountNumber || !form.bankCode) {
+      setError("All fields are required");
+      return;
+    }
+    if (!resolvedAccountName) {
+      setError("Please resolve account before submitting");
+      return;
+    }
+
+    const selectedBank = banks.find((b) => b.code === form.bankCode);
+    if (!selectedBank) {
+      setError("Invalid bank selected.");
+      return;
+    }
+
+    setSubmitLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(SummaryApi.addBankAccount.url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          accountNumber: form.accountNumber,
+          bankName: selectedBank.name,      // ✅ full bank name
+          bankCode: form.bankCode,          // ✅ bank code
+          accountHolderName: resolvedAccountName, // ✅ resolved name
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message || "Failed to add bank account");
+
+      setSuccessMsg("Bank account added successfully");
+      setForm({ accountNumber: "", bankCode: "" });
+      setResolvedAccountName("");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 border rounded">
+      <h2 className="text-xl font-semibold mb-4">Add Bank Account</h2>
+
+      {error && <p className="text-red-600 mb-2">{error}</p>}
+      {successMsg && <p className="text-green-600 mb-2">{successMsg}</p>}
+
+      <label className="block mb-2">
+        Select Bank:
+        {loadingBanks ? (
+          <p>Loading banks...</p>
+        ) : (
+          <select
+            name="bankCode"
+            value={form.bankCode}
+            onChange={handleChange}
+            className="w-full border px-2 py-1"
+            required
+          >
+            <option value="">-- Select Bank --</option>
+            {banks.map((bank) => (
+              <option key={bank.code} value={bank.code}>
+                {bank.name}
+              </option>
+            ))}
+          </select>
+        )}
+      </label>
+
+      <label className="block mb-2">
+        Account Number:
+        <input
+          type="text"
+          name="accountNumber"
+          value={form.accountNumber}
+          onChange={handleChange}
+          className="w-full border px-2 py-1"
+          required
+          maxLength={10}
+        />
+      </label>
+
+      <button
+        type="button"
+        onClick={handleResolve}
+        disabled={loadingResolve || !form.accountNumber || !form.bankCode}
+        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded disabled:bg-blue-300"
+      >
+        {loadingResolve ? "Resolving..." : "Resolve Account"}
+      </button>
+
+      {resolvedAccountName && (
+        <p className="mb-4 text-green-700">Account Name: {resolvedAccountName}</p>
+      )}
+
+      <button
+        type="submit"
+        disabled={submitLoading}
+        className="w-full py-2 bg-green-600 text-white rounded disabled:bg-green-300"
+      >
+        {submitLoading ? "Adding..." : "Add Bank Account"}
+      </button>
+    </form>
+  );
+};
+
+export default AddBankAccountForm;

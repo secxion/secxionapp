@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SummaryApi from '../common';
 import { toast } from 'react-toastify';
@@ -54,7 +54,6 @@ const Settings = () => {
             if (telegramNumber !== state?.telegramNumber) payload.telegramNumber = telegramNumber.trim();
             if (profilePic !== state?.profilePic) payload.profilePic = profilePic;
 
-            // Only send password fields if both filled
             if (password && newPassword) {
                 payload.password = password;
                 payload.newPassword = newPassword;
@@ -91,7 +90,6 @@ const Settings = () => {
             toast.error(err.message);
         } finally {
             setLoading(false);
-            // Clear passwords after attempt
             setPassword('');
             setNewPassword('');
         }
@@ -102,7 +100,6 @@ const Settings = () => {
             <h2 className="text-2xl font-semibold text-gray-900 text-center">Edit Profile</h2>
             {error && <p className="text-red-600 text-center font-medium">{error}</p>}
 
-            {/* Profile Picture */}
             <div className="text-center">
                 <label className="block text-gray-700 mb-2 font-medium">Profile Picture</label>
                 <div className="w-28 h-28 mx-auto rounded-full overflow-hidden bg-gray-100 border border-gray-300 flex items-center justify-center mb-3">
@@ -125,7 +122,6 @@ const Settings = () => {
                 {uploadingImage && <p className="text-xs text-gray-500 mt-1">Uploading...</p>}
             </div>
 
-            {/* Form Fields */}
             <div className="space-y-4">
                 <div>
                     <label className="block mb-1 font-medium text-gray-700">Name</label>
@@ -212,6 +208,7 @@ const Settings = () => {
                     {loading ? 'Saving...' : 'Save Changes'}
                 </button>
             </div>
+
 
             {/* Email Modal */}
             {showEmailModal && (

@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserDetails, setLoading } from "./store/userSlice";
-import Context from "./Context";
+import Context, { ContextProvider } from "./Context";
 import { useQuery } from "@tanstack/react-query";
 import {
     fetchUserDetailsAPI,
@@ -86,6 +86,7 @@ function App() {
     }
 
     return (
+        <ContextProvider>
         <Context.Provider value={{ fetchUserDetails, fetchMarketData, marketData, user, fetchBlogs, blogs, walletBalance, fetchWalletBalance, signinUserAPI }}>
             <div className="global-container">
                 <Suspense fallback={<Loader />}>
@@ -111,6 +112,7 @@ function App() {
                 />
             </div>
         </Context.Provider>
+        </ContextProvider>
     );
 }
 

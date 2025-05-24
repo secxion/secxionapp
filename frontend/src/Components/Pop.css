@@ -1,0 +1,43 @@
+/* Pop.css */
+@keyframes slide-in {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.pop-alert {
+    position: fixed; 
+    width: 100%; 
+    background-color: #f0f7ff;
+    color: #2c3e50;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    border-radius: 0 0 8px 8px; 
+    animation: slide-in 0.4s ease-out;
+    z-index: 1000; 
+    border-top: 1px solid #a8dadc; /* Light teal top border */
+}
+
+.pop-alert p {
+    font-weight: 500; /* Semi-bold text */
+    margin: 0; /* Reset paragraph margin */
+}
+
+.pop-alert a {
+    display: block; /* Make the link take full width for easier clicking */
+    color: #3498db; /* Blue color for the link */
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+.pop-alert a:hover {
+    text-decoration: underline;
+}
+
+.animate-ping-slow {
+    animation: ping 1s infinite;
+}

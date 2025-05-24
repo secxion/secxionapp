@@ -42,9 +42,9 @@ const WalletDashboard = () => {
                 );
             case 'accounts':
                 return (
-                    <div className="w-full">
-                        <h3 className="font-semibold text-lg text-gray-800 py-1 px-6 border-b border-gray-200 flex items-center">
-                            <FaUniversity className="mr-2 text-gray-600" /> Bank Accounts
+                    <div className="w-full -mt-10">
+                        <h3 className="font-semibold text-lg text-gray-800 py-1 px-6 border-b border-gray-200 flex items-center justify-center">
+                            <FaUniversity className="flex mr-2 text-gray-600" /> Bank Accounts
                         </h3>
                         <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
                             <BankAccountList />

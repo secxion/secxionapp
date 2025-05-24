@@ -16,7 +16,7 @@ import "./Home.css";
 
 const menuItems = [
   {
-    label: "Marketplace",
+    label: "Market",
     path: "/section",
     color: "bg-gradient-to-r from-blue-500 to-purple-500",
     icon: <FaStore className="text-4xl md:text-5xl text-black" />,
@@ -126,7 +126,7 @@ const Home = () => {
                 className="hero-button animate-pulseGlow"
                 aria-label="Go to Marketplace"
               >
-                Marketplace
+                Market
               </Link>
             </div>
           </motion.div>

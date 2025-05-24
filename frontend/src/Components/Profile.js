@@ -191,7 +191,7 @@ const Profile = () => {
                             )}
                         </div>
                         <div className="flex-grow">
-                            <h2 className="text-xl font-semibold text-gray-800 mb-1">{profileData.name || 'No Name'}</h2>
+                            <h2 className="text-xl font-semibold text-gray-800 mb-1 -mt-3">{profileData.name || 'No Name'}</h2>
                             {profileData.email && <p className="text-gray-600 text-sm mb-1">Email: {profileData.email}</p>}
                             {profileData.tag && <p className="text-gray-600 text-sm mb-1">Tag: {profileData.tag}</p>}
                             {profileData.telegramNumber && <p className="text-gray-600 text-sm mb-1">Telegram: {profileData.telegramNumber}</p>}
@@ -213,7 +213,7 @@ const Profile = () => {
 
                 {/* Bank Accounts Section */}
                 <div>
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center justify-center mb-2 -mt-6">
                         <h3 className="text-lg font-semibold text-gray-700 flex items-center">
                             <FaUniversity className="mr-2 text-gray-500" /> Bank Accounts
                         </h3>
@@ -221,11 +221,14 @@ const Profile = () => {
                             <span className="text-gray-500 text-sm italic">Updating accounts...</span>
                         )}
                     </div>
-                    <BankAccountList
+                    <div className="-mt-4"> 
+                        <BankAccountList
                         bankAccounts={bankAccounts}
                         onBankAccountsUpdated={handleBankAccountsUpdated}
                         onBankAccountsUpdating={handleBankAccountsUpdating}
                     />
+                    </div>
+                   
                     {errorBankAccounts && <p className="text-red-500 mt-2">{errorBankAccounts}</p>}
                 </div>
             </div>

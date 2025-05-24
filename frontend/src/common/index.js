@@ -9,6 +9,19 @@ const SummaryApi = {
         url : `${backendDomain}/api/verify-email`,
         method : "get"
     },
+    resendVEmail : {
+        url : `${backendDomain}/api/resend-verification`,
+        method : "post"
+    },
+    sendBankCode: {
+  url: `${backendDomain}/api/send-bank-code`,
+  method: "POST",
+},
+verifyAddBank: {
+  url: `${backendDomain}/api/verify-add-bank`,
+  method: "POST",
+},
+    
     requestReset: {
   url: `${backendDomain}/api/request-reset`,
   method: "POST",
@@ -209,6 +222,14 @@ confirmReset: {
         url: `${backendDomain}/api/pr/update`,
         method: 'PATCH',
       },
+       resolveBankAccount: {
+        url: `${backendDomain}/api/verify-account`,
+        method: 'POST',
+        },
+        bankList: {
+            url: `${backendDomain}/api/banks`,
+            method: 'GET',
+        },
       addBankAccount: {
         url: `${backendDomain}/api/ba/add`,
         method: 'POST',

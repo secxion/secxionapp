@@ -6,6 +6,12 @@ body {
   margin: 0;
   font-family: 'Press Start 2P', cursive;
   background-color: white;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark {
+  background-color: #000;
+  color: #fff;
 }
 
 .minecraft-font {

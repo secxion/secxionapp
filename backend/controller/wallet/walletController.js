@@ -11,7 +11,6 @@ export const ensureWalletExists = async (userId) => {
   return wallet;
 };
 
-// Fetch the current wallet balance of the logged-in user
 export const getWalletBalance = async (req, res) => {
   try {
     const userId = req.userId;
@@ -31,7 +30,6 @@ export const getWalletBalance = async (req, res) => {
   }
 };
 
-// Fetch the wallet balance of another user by userId (for admin or authorized user)
 export const getOtherUserWalletBalance = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -52,13 +50,11 @@ export const getOtherUserWalletBalance = async (req, res) => {
   }
 };
 
-// Update the wallet balance with validation (no negative balance, min withdrawal 1000)
 
 export const updateWalletBalance = async (userId, amount, type, description, referenceId, onModel) => {
   try {
     const wallet = await ensureWalletExists(userId);
 
-    // Withdrawal rules
     if (amount < 0) {
       if (Math.abs(amount) < 1000) {
         return {
@@ -74,10 +70,8 @@ export const updateWalletBalance = async (userId, amount, type, description, ref
       }
     }
 
-    // Update balance
     wallet.balance += amount;
 
-    // Record transaction
     wallet.transactions.push({
       type,
       amount,
@@ -88,7 +82,6 @@ export const updateWalletBalance = async (userId, amount, type, description, ref
 
     await wallet.save();
 
-    // ✅ Send Notification
     const formattedAmount = `₦${Math.abs(amount).toLocaleString()}`;
     const message =
       type === 'credit'

@@ -45,16 +45,13 @@ export const ContextProvider = ({ children }) => {
 
     const fetchUserDetails = useCallback(async () => {
         if (!token) return;
-
         try {
             const response = await fetch(SummaryApi.current_user.url, {
                 method: SummaryApi.current_user.method,
                 headers: getAuthHeaders(),
                 credentials: "include",
             });
-
             const data = await response.json();
-
             if (response.ok && data && data._id) {
                 setUser(data);
                 dispatch(setUserDetails(data));
@@ -63,7 +60,6 @@ export const ContextProvider = ({ children }) => {
                 setUser(null);
                 dispatch(setUserDetails(null));
             }
-
         } catch (error) {
             console.error("Error fetching user details:", error);
             setUser(null);
@@ -73,23 +69,19 @@ export const ContextProvider = ({ children }) => {
 
     const fetchWalletBalance = useCallback(async () => {
         if (!token && !user?._id) return;
-
         try {
             let url = SummaryApi.walletBalance.url;
             let headers = { "Content-Type": "application/json" };
-
             if (token) {
                 headers.Authorization = `Bearer ${token}`;
             } else {
                 url = `${url}?userId=${user._id}`;
             }
-
             const response = await fetch(url, {
                 method: SummaryApi.walletBalance.method,
                 headers,
                 credentials: "include",
             });
-
             const data = await response.json();
             if (response.ok && data.success) {
                 setWalletBalance(data.balance);
@@ -97,7 +89,6 @@ export const ContextProvider = ({ children }) => {
                 setWalletBalance(null);
                 console.warn("Wallet fetch failed:", data.message);
             }
-
         } catch (error) {
             console.error("Error fetching wallet:", error);
             setWalletBalance(null);
@@ -116,13 +107,10 @@ export const ContextProvider = ({ children }) => {
             console.error("Missing user or token in login()");
             return;
         }
-
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("token", userToken);
-
         setUser(userData);
         setToken(userToken);
-
         dispatch(setUserDetails(userData));
         fetchWalletBalance();
     };
@@ -149,7 +137,7 @@ export const ContextProvider = ({ children }) => {
             isLoggedIn,
             loading,
             walletBalance,
-            fetchWalletBalance
+            fetchWalletBalance,
         }}>
             {children}
         </Context.Provider>

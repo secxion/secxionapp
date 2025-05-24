@@ -7,6 +7,7 @@ import Context from "../Context";
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formSubmitting, setFormSubmitting] = useState(false);
+  const [resending, setResending] = useState(false);
   const [data, setData] = useState({ email: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
@@ -26,8 +27,7 @@ const Login = () => {
       const response = await fetch(SummaryApi.signIn.url, {
         method: SummaryApi.signIn.method,
         credentials: "include",
-        headers: { "Content-Type": "application/json",
-         },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
 
@@ -48,11 +48,34 @@ const Login = () => {
     }
   };
 
+  const handleResendVerificationEmail = async () => {
+    setResending(true);
+    try {
+      const response = await fetch(SummaryApi.resendVEmail.url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: data.email }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success("Verification email sent.");
+      } else {
+        toast.error(result.message || "Failed to resend verification email.");
+      }
+    } catch (error) {
+      toast.error("Error resending verification email.");
+    } finally {
+      setResending(false);
+    }
+  };
+
   return (
     <section className="container w-screen h-screen flex items-center justify-center bg-gray-100 fixed top-0 left-0 overflow-hidden">
       <div className="bg-white p-8 w-full max-w-md rounded-xl shadow-lg">
         <div className="hidden minecraft-font text-[14px] md:flex items-center font-extrabold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 mr-4 tracking-wide">
-              SXN
+          SXN
         </div>
 
         <form className="w-full mt-4 flex flex-col gap-4" onSubmit={handleSubmit}>
@@ -104,7 +127,20 @@ const Login = () => {
         </form>
 
         {errorMessage && (
-          <div className="mt-4 text-center text-red-600">{errorMessage}</div>
+          <div className="mt-4 text-center text-red-600">
+            {errorMessage}
+            {errorMessage.toLowerCase().includes("verify") && (
+              <div className="mt-2">
+                <button
+                  onClick={handleResendVerificationEmail}
+                  className="text-blue-500 text-sm hover:underline"
+                  disabled={resending}
+                >
+                  {resending ? "Resending..." : "Resend Verification Email"}
+                </button>
+              </div>
+            )}
+          </div>
         )}
 
         <p className="mt-6 text-center text-gray-600">
@@ -112,12 +148,10 @@ const Login = () => {
           <Link to="/sign-up" className="text-blue-500 hover:underline">Sign up</Link>
         </p>
 
-        {/* Contact Us Button */}
         <Link to="/contact-us" className="mt-4 block text-center text-gray-600 hover:text-gray-800">
-                    Contact Us
-                </Link>
+          Contact Us
+        </Link>
 
-        {/* Bottom Links */}
         <div className="mt-8 flex justify-center space-x-4">
           <Link to="/about-us" className="text-gray-600 hover:text-gray-800 text-sm">
             About Us
@@ -130,7 +164,6 @@ const Login = () => {
           </Link>
         </div>
 
-        {/* Copyright Notice */}
         <p className="mt-4 text-center text-gray-500 text-xs">
           <span className="align-baseline">©</span> 2025 secxion.com
         </p>

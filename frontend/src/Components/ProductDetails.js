@@ -153,11 +153,11 @@ const ProductDetails = () => {
     }
 
     return (
-        <div className="w-screen min-w-screen">
-            <header className="fixed w-screen left-0 dark:bg-gray-800  py-20 px-4 sm:px-6 lg:px-8 top-0">
+        <div className="w-screen overflow-x-hidden">
+  <header className="fixed top-0 left-0 w-screen dark:bg-gray-800 py-20 px-2 sm:px-4 lg:px-6">
                 {data?.pricing && data?.pricing.length > 0 && (
                     <div className="mt-4">
-                        <div className="bg-gray-100 dark:bg-gray-700 rounded-lg shadow-inner overflow-x-auto py-2 px-4">
+                        <div className="bg-gray-100 dark:bg-gray-700 rounded-lg shadow-inner overflow-x-auto py-2">
                             <div className="flex items-center -py-10 space-x-3">
                                 {data.pricing.map((currency) => {
                                     const fullCurrencyName =
@@ -199,13 +199,13 @@ const ProductDetails = () => {
             <main className="min-h-screen py-24 px-4 sm:px-6 lg:px-8">
                 <div className='border rounded-lg p-4 bg-gray-50 shadow-inner mb-2'>
                     <div className='flex items-center gap-2'>
-                        <div className="p-6 mt-4">
+                        <div className="mt-10 p-2">
                             <p className="text-gray-700 dark:text-gray-300">{data?.description}</p>
                         </div>
                     </div>
 
-                    <div className=" w-full left-0 rounded-lg shadow-md overflow-y-auto">
-                        <div className=" p-6 ">
+                    <div className=" w-full min-w-screen left-0 rounded-lg shadow-md overflow-y-auto">
+                        <div className=" p-2 ">
                             {activeCurrency && activeCurrency?.faceValues && activeCurrency?.faceValues.length > 0 ? (
                                 <div className="space-y-3">
                                     {activeCurrency.faceValues.map((fv) => (
@@ -223,7 +223,7 @@ const ProductDetails = () => {
                                                     />
                                                 )}
                                                 <span className="font-semibold text-gray-800 dark:text-gray-200">
-                                                    facevalue: {fv.faceValue} {activeCurrency?.currency}
+                                                    facevalue: {fv.faceValue}
                                                 </span>
                                                 <span className="font-semibold text-gray-800 dark:text-gray-200">
                                                     rate: {fv.sellingPrice}

@@ -21,7 +21,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// For normal email verification
 export const sendVerificationEmail = async (email, token) => {
   const verificationLink = `${FRONTEND_URL}/verify-email?token=${token}`;
 
@@ -50,7 +49,6 @@ export const sendVerificationEmail = async (email, token) => {
   }
 };
 
-// For password/telegram number reset
 export const sendResetCodeEmail = async (email, code, type) => {
   const label = type === "password" ? "Reset Your Password" : "Reset Telegram Number";
 
@@ -77,3 +75,29 @@ export const sendResetCodeEmail = async (email, code, type) => {
     throw new Error("Failed to send reset code email. Please try again.");
   }
 };
+
+export const sendBankVerificationCode = async (email, code) => {
+  const mailOptions = {
+    from: `"Secxion 🏦" <${MAIL_USER}>`,
+    to: email,
+    subject: `🔐 Confirm Bank Account Addition - Secxion`,
+    html: `
+      <div style="font-family: Arial, sans-serif; color: #333;">
+        <h2>Bank Account Verification</h2>
+        <p>Use the verification code below to confirm your bank account addition:</p>
+        <div style="font-size: 24px; font-weight: bold; margin: 20px 0;">${code}</div>
+        <p>This code will expire in 10 minutes.</p>
+        <p>If you did not attempt to add a bank account, you can safely ignore this email.</p>
+        <p>– Team Secxion</p>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (err) {
+    console.error("Error sending bank verification email:", err);
+    throw new Error("Failed to send bank verification email.");
+  }
+};
+

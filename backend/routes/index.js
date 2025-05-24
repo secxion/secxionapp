@@ -29,7 +29,7 @@ import { createContactUsMessage, getAllContactUsMessages } from '../controller/c
 import { getAllUserDataPadsForAdmin } from '../controller/user/adminDataPadController.js';
 import { getWalletBalance, getOtherUserWalletBalance } from '../controller/wallet/walletController.js';
 import { createPaymentRequest, getAllPaymentRequests, getUserPaymentRequests, updatePaymentRequestStatus } from '../controller/wallet/paymentRequestController.js';
-import { addBankAccount, getBankAccounts, deleteBankAccount } from '../controller/wallet/bankAccounController.js';
+import { addBankAccount, getBankAccounts, deleteBankAccount, sendBankAddCode, verifyAndAddBankAccount } from '../controller/wallet/bankAccounController.js';
 import { getUserTransactions } from '../controller/wallet/transactionsController.js';
 import { getUserTransactionNotifications, markNotificationAsRead, deleteNotification, markAllNotificationsAsRead, deleteAllNotifications, getUserReportNotifications, fetchReportDetails, getUnreadNotificationCount, getNewNotifications, getMarketNotifications } from '../controller/notifications/notificationsController.js';
 import getReportDetailsController from '../controller/user/getReportDetailsController.js';
@@ -45,6 +45,8 @@ import { verifyEmailController } from '../controller/user/verifyEmailController.
 import deleteUser from '../controller/user/deleteUser.js';
 import checkVerified from '../middleware/checkVerified.js';
 import { sendResetCode, verifyReset } from '../controller/user/resetController.js';
+import { resendVerificationEmailController } from '../controller/user/resendVerificationEmailController.js';
+import { getPaystackBanks, resolveBankAccount, } from '../controller/wallet/paystackController.js';
 
 
 const router = express.Router();
@@ -54,8 +56,11 @@ router.get('/verify-email', verifyEmailController);
 router.post("/signin", userSignInController);
 router.get("/user-details", authToken, userDetailsController);
 router.get("/userLogout", userLogout);
-router.post("/request-reset", sendResetCode); // Send code to email
-router.post("/confirm-reset", verifyReset);   // Submit code + new value
+router.post("/request-reset", sendResetCode); 
+router.post("/confirm-reset", verifyReset); 
+router.post("/resend-verification", resendVerificationEmailController);
+router.post("/send-bank-code", authToken, sendBankAddCode);
+router.post("/verify-add-bank", authToken, verifyAndAddBankAccount);
 
 // Google OAuth
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -133,6 +138,8 @@ router.patch("/pr/update/:id", authToken, updatePaymentRequestStatus);
 router.post("/ba/add", authToken, addBankAccount);
 router.get("/ba/get", authToken, getBankAccounts);
 router.delete("/ba/delete/:accountId", authToken, deleteBankAccount);
+router.post('/verify-account', authToken, resolveBankAccount);
+router.get('/banks', authToken, getPaystackBanks);
 
 // Transactions
 router.get("/transactions/get", authToken, getUserTransactions);
