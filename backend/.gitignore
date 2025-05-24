@@ -1,28 +1,12 @@
 # Node modules
 node_modules/
-
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-pnpm-debug.log*
-
-# React cache
-.cache/
-.eslintcache
-
-# Public static artifacts cache
-
-# OS junk
-.DS_Store
-Thumbs.db
-
-# Environment
 .env
-.env.*.local
-
-# Misc
+.DS_Store
 *.log
-*.pid
-*.tgz
-*.seed
+
+# Build output
+dist/
+build/
+
+# OS files
+Thumbs.db
