@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
   FaWallet,
@@ -18,39 +18,39 @@ const menuItems = [
   {
     label: "Market",
     path: "/section",
-    color: "bg-gradient-to-r from-blue-500 to-purple-500",
-    icon: <FaStore className="text-4xl md:text-5xl text-black" />,
+    color: "bg-gradient-to-r from-blue-500 to-purple-500 dark:from-blue-700 dark:to-purple-800",
+    icon: <FaStore className="text-4xl md:text-5xl text-black dark:text-white" />,
   },
   {
     label: "Transaction Record",
     path: "/record",
-    color: "bg-gradient-to-r from-green-500 to-teal-500",
-    icon: <FaClipboardList className="text-4xl md:text-5xl text-black" />,
+    color: "bg-gradient-to-r from-green-500 to-teal-500 dark:from-green-700 dark:to-teal-800",
+    icon: <FaClipboardList className="text-4xl md:text-5xl text-black dark:text-white" />,
   },
   {
     label: "Wallet",
     path: "/mywallet",
-    color: "bg-gradient-to-r from-yellow-500 to-orange-500",
-    icon: <FaWallet className="text-4xl md:text-5xl text-black" />,
+    color: "bg-gradient-to-r from-yellow-500 to-orange-500 dark:from-yellow-600 dark:to-orange-600",
+    icon: <FaWallet className="text-4xl md:text-5xl text-black dark:text-white" />,
   },
   {
     label: "Profile",
     path: "/profile",
-    color: "bg-gradient-to-r from-red-500 to-pink-500",
-    icon: <FaUser className="text-4xl md:text-5xl text-black" />,
+    color: "bg-gradient-to-r from-red-500 to-pink-500 dark:from-red-600 dark:to-pink-700",
+    icon: <FaUser className="text-4xl md:text-5xl text-black dark:text-white" />,
   },
   {
     label: "Data Pad",
     path: "/datapad",
-    color: "bg-gradient-to-r from-gray-300 to-gray-400",
-    icon: <FaBook className="text-4xl md:text-5xl text-black" />,
+    color: "bg-gradient-to-r from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-800",
+    icon: <FaBook className="text-4xl md:text-5xl text-black dark:text-white" />,
   },
   {
     label: "Contact Support",
     path: "/report",
-    color: "bg-gradient-to-r from-indigo-500 to-indigo-600",
+    color: "bg-gradient-to-r from-indigo-500 to-indigo-600 dark:from-indigo-700 dark:to-indigo-900",
     icon: (
-      <IoChatbubbleEllipsesOutline className="text-4xl md:text-5xl text-black" />
+      <IoChatbubbleEllipsesOutline className="text-4xl md:text-5xl text-black dark:text-white" />
     ),
   },
 ];
@@ -70,113 +70,135 @@ const cardVariants = {
 };
 
 const Home = () => {
-  const blogSectionRef = useRef(null);
   const menuSectionRef = useRef(null);
-  const [isBlogVisible, setIsBlogVisible] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [showMenuButton, setShowMenuButton] = useState(false);
-
-  const scrollToBlogSection = () => {
-    blogSectionRef.current?.scrollIntoView({ behavior: "smooth" });
-    setIsBlogVisible(true);
-    setShowMenuButton(true);
-  };
-
-  const scrollToMenuSection = () => {
-    menuSectionRef.current?.scrollIntoView({ behavior: "smooth" });
-    setIsBlogVisible(false);
-    setShowMenuButton(false);
-  };
+  const [showBlog, setShowBlog] = useState(true);
 
   useEffect(() => {
-    const imageInterval = setInterval(() => {
-      setCurrentImageIndex(
-        (prevIndex) => (prevIndex + 1) % giftCardImages.length
-      );
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % giftCardImages.length);
     }, 6000);
-    return () => clearInterval(imageInterval);
+    return () => clearInterval(interval);
   }, []);
 
   const currentImage = giftCardImages[currentImageIndex];
 
+  const scrollToSection = (ref) => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <main className="container home-container space-y-6">
+    <main className="container home-container space-y-10 dark:text-white">
       {/* Hero Section */}
       <header
-        className="hero-section tv-screen mt-20 md:mt-28 px-4 text-center"
+        className="relative h-[80vh] md:h-[70vh] min-h-[400px] mt-24 bg-cover bg-center rounded-xl flex items-center justify-center transition-all duration-500 ease-in-out"
         style={{ backgroundImage: `url(${currentImage.url})` }}
       >
-        <div className="hero-overlay" aria-hidden="true" />
-        <div className="hero-content">
-          <motion.div
-            className="welcome-dialog"
+        <div className="absolute inset-0 bg-black/60 rounded-xl" />
+        <div className="relative z-10 text-center px-4">
+          <motion.h1
+            className="minecraft-font text-4xl md:text-6xl font-bold text-white dark:text-cyan-400 drop-shadow-lg animate-neon1"
             initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="minecraft-font hero-title text-4xl md:text-6xl font-bold text-white animate-neon1">
-              Welcome To Secxion
-            </h1>
-            <p className="hero-description text-2xl md:text-4xl italic text-white animate-neon2">
-              Your Trusted Platform To Redeem Giftcards for Cash
-            </p>
-            <div className="hero-button-container mt-4">
-              <Link
-                to="/section"
-                className="hero-button animate-pulseGlow"
-                aria-label="Go to Marketplace"
-              >
-                Market
-              </Link>
-            </div>
-          </motion.div>
+            Welcome To Secxion
+          </motion.h1>
+          <motion.p
+            className="text-2xl md:text-4xl italic text-white dark:text-cyan-200 mt-4 animate-neon2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            Your Trusted Platform To Redeem Giftcards for Cash
+          </motion.p>
+          <div className="mt-6">
+            <Link
+              to="/section"
+              className="inline-block font-press-start bg-yellow-400 text-black border-2 border-black px-6 py-2 text-sm uppercase shadow-[4px_4px_0_#333] hover:bg-yellow-500 hover:shadow-[6px_6px_0_#111] transition-all duration-200 animate-pulseGlow"
+            >
+              Market
+            </Link>
+          </div>
         </div>
       </header>
 
-      {/* Menu Grid Section */}
-      <section
-        ref={menuSectionRef}
-        className={`menu-section text-white text-2xl border-b-4 border-cyan-400 ${
-          showMenuButton ? "" : ""
-        }`}
-      >
-        {menuItems.map((item, index) => (
-          <motion.div
-            key={index}
-            variants={cardVariants}
-            initial="initial"
-            animate="animate"
-            whileHover="whileHover"
-            className={`menu-item ${item.color} ${
-              showMenuButton ? "menu-item-small" : ""
-            }`}
-          >
-            <Link
-              to={item.path}
-              className="menu-link"
-              aria-label={`Go to ${item.label}`}
-            >
-              <div className="icon-container">{item.icon}</div>
-              <span className="menu-label">{item.label}</span>
-            </Link>
-          </motion.div>
-        ))}
-      </section>
+      {/* Toggle Button */}
+      <div className="flex justify-center mt-10">
+        <button
+          onClick={() => setShowBlog(!showBlog)}
+          className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg font-semibold transition duration-300"
+        >
+          {showBlog ? "Show Menu" : "Show Blog"}
+        </button>
+      </div>
 
       {/* Blog Section */}
-      <section
-        ref={blogSectionRef}
-        className={`blog-section ${isBlogVisible ? "visible" : ""}`}
-      >
-        <h2 className="blog-header minecraft-font">Latest Insights</h2>
-        <NetBlog />
-      </section>
+      <AnimatePresence mode="wait">
+        {showBlog && (
+          <motion.section
+            key="blog"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            transition={{ duration: 0.5 }}
+            className="px-2 md:px-6 pb-14 "
+          >
+            <h2 className="minecraft-font text-3xl md:text-4xl font-bold text-center mb-4 dark:text-white">
+              Latest Insights
+            </h2>
+            <NetBlog limit={4} />
+          </motion.section>
+        )}
+      </AnimatePresence>
+
+      {/* Menu Section */}
+      <AnimatePresence mode="wait">
+        {!showBlog && (
+          <motion.section
+            key="menu"
+            ref={menuSectionRef}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            transition={{ duration: 0.5 }}
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 pb-20 gap-4 py-6 px-2 md:px-6"
+          >
+            {menuItems.map((item, index) => (
+              <motion.div
+                key={index}
+                variants={cardVariants}
+                initial="initial"
+                animate="animate"
+                whileHover="whileHover"
+                className={`rounded-xl p-4 text-center shadow-md cursor-pointer ${item.color} transition-transform duration-200`}
+              >
+                <Link
+                  to={item.path}
+                  className="flex flex-col items-center justify-center gap-2 text-white dark:text-white"
+                >
+                  {item.icon}
+                  <span className="text-base md:text-lg font-semibold">
+                    {item.label}
+                  </span>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.section>
+        )}
+      </AnimatePresence>
 
       {/* Footer */}
       <HomeFooter
-        onBlogClick={scrollToBlogSection}
-        onMenuClick={scrollToMenuSection}
-        isBlogVisible={isBlogVisible}
+        onBlogClick={() => {
+          setShowBlog(true);
+          scrollToSection(menuSectionRef);
+        }}
+        onMenuClick={() => {
+          setShowBlog(false);
+          scrollToSection(menuSectionRef);
+        }}
+        isBlogVisible={showBlog}
       />
     </main>
   );

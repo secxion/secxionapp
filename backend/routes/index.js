@@ -1,5 +1,6 @@
 import express from 'express';
 import passport from 'passport';
+import axios from 'axios';
 
 import userSignUpController from '../controller/user/userSignUp.js';
 import userSignInController from '../controller/user/userSignin.js';
@@ -47,9 +48,163 @@ import checkVerified from '../middleware/checkVerified.js';
 import { sendResetCode, verifyReset } from '../controller/user/resetController.js';
 import { resendVerificationEmailController } from '../controller/user/resendVerificationEmailController.js';
 import { getPaystackBanks, resolveBankAccount, } from '../controller/wallet/paystackController.js';
-
+import { getUserEthWallet, saveEthWalletAddress, withdrawEth } from '../controller/wallet/ethWalletController.js';
+import { createEthWithdrawalRequest, getAllEthWithdrawalRequests, updateEthWithdrawalStatus } from '../controller/ethWithdrawalController.js';
 
 const router = express.Router();
+
+// Cache structure: { [key: string]: { data: any, expiry: number } }
+const cache = {};
+
+// Cache TTL in milliseconds (20 minutes)
+const CACHE_TTL = 5 * 60 * 1000; // 20 minutes
+
+// Helper: sleep for ms
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+/**
+ * Retry axios GET with exponential backoff and logging
+ * @param {string} url - request URL
+ * @param {object} options - axios options
+ * @param {number} retries - max retry attempts
+ * @param {number} backoff - initial backoff delay in ms
+ */
+async function axiosGetWithRetry(url, options = {}, retries = 3, backoff = 500) {
+  try {
+    console.log(`[axiosGetWithRetry] Attempting GET: ${url} with params:`, options.params);
+    const response = await axios.get(url, options);
+    console.log(`[axiosGetWithRetry] Success GET: ${url}`);
+    return response;
+  } catch (error) {
+    const status = error.response?.status;
+    console.error(`[axiosGetWithRetry] Error GET: ${url} | Status: ${status} | Retries left: ${retries} | Error: ${error.message}`);
+
+    // Do NOT retry on 401 Unauthorized or 429 Too Many Requests
+    if (status === 401 || status === 429) {
+      console.warn(`[axiosGetWithRetry] Not retrying due to status ${status}`);
+      throw error;
+    }
+
+    if (retries === 0) throw error;
+    await sleep(backoff);
+    return axiosGetWithRetry(url, options, retries - 1, backoff * 2);
+  }
+}
+
+
+// Updated /eth-price route with cache pattern
+router.get('/eth-price', async (req, res) => {
+  const cacheKey = 'eth-price';
+  const now = Date.now();
+
+  const sendCachedResponse = () => {
+    console.log(`[eth-price] Serving cached data immediately`);
+    res.json(cache[cacheKey].data);
+  };
+
+  const fetchAndUpdateCache = async () => {
+    try {
+      const { data } = await axiosGetWithRetry('https://api.coingecko.com/api/v3/simple/price', {
+        params: { ids: 'ethereum', vs_currencies: 'ngn' },
+      });
+      cache[cacheKey] = { data, expiry: Date.now() + CACHE_TTL };
+      console.log(`[eth-price] Cache updated in background`);
+    } catch (error) {
+      console.error(`[eth-price] Background fetch failed:`, error.message);
+    }
+  };
+
+  if (cache[cacheKey] && cache[cacheKey].expiry > now) {
+    // Cache valid: respond immediately with cache, then update cache in background
+    sendCachedResponse();
+    fetchAndUpdateCache();
+    return;
+  }
+
+  // Cache expired or missing: try fetch fresh data
+  try {
+    const { data } = await axiosGetWithRetry('https://api.coingecko.com/api/v3/simple/price', {
+      params: { ids: 'ethereum', vs_currencies: 'ngn' },
+    });
+    cache[cacheKey] = { data, expiry: Date.now() + CACHE_TTL };
+    console.log(`[eth-price] Fresh data fetched and cached`);
+    res.json(data);
+  } catch (error) {
+    console.error(`[eth-price] Fetch failed:`, error.message);
+    if (cache[cacheKey]) {
+      // stale cache exists, respond with stale cache
+      console.log(`[eth-price] Returning stale cached data due to fetch failure`);
+      sendCachedResponse();
+    } else {
+      // no cache at all
+      res.status(500).json({ message: 'Error fetching ETH price', error: error.message });
+    }
+  }
+});
+
+// Updated /eth-trend route with cache pattern
+router.get('/eth-trend', async (req, res) => {
+  const cacheKey = 'eth-trend';
+  const now = Date.now();
+
+  const sendCachedResponse = () => {
+    console.log(`[eth-trend] Serving cached data immediately`);
+    res.json(cache[cacheKey].data);
+  };
+
+const fetchAndUpdateCache = async () => {
+  try {
+    const { data } = await axiosGetWithRetry('https://api.coingecko.com/api/v3/coins/ethereum/market_chart', {
+      params: { vs_currency: 'ngn', days: '1', interval: 'hourly' },
+    });
+
+    if (!data || !data.prices) {
+      throw new Error('Unexpected data format from CoinGecko market_chart endpoint');
+    }
+
+    cache[cacheKey] = { data, expiry: Date.now() + CACHE_TTL };
+    console.log(`[eth-trend] Cache updated in background`);
+  } catch (error) {
+    console.error(`[eth-trend] Background fetch failed (ignored):`, error.message);
+    // Swallow the error so server keeps running
+  }
+};
+
+  if (cache[cacheKey] && cache[cacheKey].expiry > now) {
+    // Cache valid: respond immediately with cache, then update cache in background
+    sendCachedResponse();
+    fetchAndUpdateCache();
+    return;
+  }
+
+  // Cache expired or missing: try fetch fresh data
+  try {
+    const { data } = await axiosGetWithRetry('https://api.coingecko.com/api/v3/coins/ethereum/market_chart', {
+      params: { vs_currency: 'ngn', days: '1', interval: 'hourly' },
+    });
+
+    if (!data || !data.prices) {
+      throw new Error('Unexpected data format from CoinGecko market_chart endpoint');
+    }
+
+    cache[cacheKey] = { data, expiry: Date.now() + CACHE_TTL };
+    console.log(`[eth-trend] Fresh data fetched and cached`);
+    res.json(data);
+  } catch (error) {
+    console.error(`[eth-trend] Fetch failed:`, error.message);
+    if (cache[cacheKey]) {
+      // stale cache exists, respond with stale cache
+      console.log(`[eth-trend] Returning stale cached data due to fetch failure`);
+      sendCachedResponse();
+    } else {
+      // no cache at all
+      res.status(500).json({ message: 'Error fetching ETH trend', error: error.message });
+    }
+  }
+});
+
+// -----------------
+// The rest of your routes unchanged below...
 
 router.post("/signup", userSignUpController);
 router.get('/verify-email', verifyEmailController);
@@ -62,16 +217,6 @@ router.post("/resend-verification", resendVerificationEmailController);
 router.post("/send-bank-code", authToken, sendBankAddCode);
 router.post("/verify-add-bank", authToken, verifyAndAddBankAccount);
 
-// Google OAuth
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-router.get('/google/callback',
-    passport.authenticate('google', { failureRedirect: '/login' }),
-    (req, res) => {
-        // You can redirect to frontend with token or session
-        res.redirect(`${process.env.FRONTEND_URL}/home`);
-    }
-);
-
 // Admin panel
 router.get("/all-user", authToken, allUsers);
 router.post("/update-user", authToken, updateUser);
@@ -83,6 +228,15 @@ router.delete("/delete-user", deleteUser);
 
 // Wallet balance
 router.get("/wallet/balane/:userId", authToken, getOtherUserWalletBalance);
+
+// ETH
+router.post("/save-eth-address", authToken, saveEthWalletAddress);
+router.get("/eth-wallet", authToken, getUserEthWallet);
+router.post("/eth/withdrawal-request", authToken, createEthWithdrawalRequest);
+
+// Admin routes
+router.get("/all", authToken, getAllEthWithdrawalRequests);
+router.put("/update/:requestId", authToken, updateEthWithdrawalStatus);
 
 // Product
 router.post("/upload-product", authToken, UploadProductController);

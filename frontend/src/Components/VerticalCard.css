@@ -45,13 +45,6 @@ body {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-.line-clamp-2 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-}
-
 h3 {
     font-weight: 600;
 }
@@ -62,4 +55,19 @@ h3 {
 
 .text-blue-600 {
     color: #3B82F6;
+}
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+.scrollbar-thumb-blue-500 {
+  scrollbar-color: #3b82f6 transparent;
+}
+.scrollbar-track-gray-800 {
+  scrollbar-color: transparent #1f2937;
 }

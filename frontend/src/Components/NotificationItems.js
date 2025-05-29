@@ -52,7 +52,7 @@ const NotificationItem = ({
 
   return (
     <li className={clsx(
-      'px-4 py-6 hover:bg-gray-50 transition duration-150 ease-in-out',
+      'px-4 py-10 hover:bg-gray-50 transition duration-150 ease-in-out',
       notification.isRead ? 'bg-gray-100' : ''
     )}>
       <div className="flex items-start justify-between">

@@ -11,8 +11,8 @@ import currencyData from '../helpers/currencyData';
 import flagImageMap from '../helpers/flagImageMap';
 
 const UserUploadMarket = ({
-    onClose = () => { },
-    fetchData = () => { },
+    onClose = () => {},
+    fetchData = () => {},
     productDetails = {},
 }) => {
     const navigate = useNavigate();
@@ -36,10 +36,8 @@ const UserUploadMarket = ({
     const [fullScreenImage, setFullScreenImage] = useState("");
 
     useEffect(() => {
-        console.log("📦 Received product details:", productDetails);
-
-        setData((prevData) => ({
-            ...prevData,
+        setData((prev) => ({
+            ...prev,
             productImage: productDetails.productImage || "",
             productName: productDetails.productName || "",
             brandName: productDetails.brandName || "",
@@ -65,59 +63,48 @@ const UserUploadMarket = ({
         }
     }, [productDetails]);
 
-
     const handleOnChange = (e) => {
         const { name, value } = e.target;
 
         setData((prev) => {
-            const updatedData = {
-                ...prev,
-                [name]: value,
-            };
+            const updated = { ...prev, [name]: value };
 
             if (name === "totalAmount") {
                 const total = calculateTotalAmount(value);
-                updatedData.calculatedTotalAmount = total.toFixed(2);
+                updated.calculatedTotalAmount = total.toFixed(2);
             }
 
-            return updatedData;
+            return updated;
         });
     };
 
-
-    const calculateTotalAmount = (enteredAmount) => {
-        const amount = parseFloat(enteredAmount) || 0;
-        const total = amount * selectedRate;
-        return total;
+    const calculateTotalAmount = (value) => {
+        const amount = parseFloat(value) || 0;
+        return amount * selectedRate;
     };
 
     const handleUploadImage = async (e) => {
         const file = e.target.files[0];
-        if (file) {
-            setUploading(true);
-            try {
-                const uploadImageCloudinary = await uploadImage(file);
-                setData((prev) => ({
-                    ...prev,
-                    Image: [...prev.Image, uploadImageCloudinary.url],
-                }));
-            } catch (error) {
-                toast.error("⚠️ Error uploading image. Please try again.");
-                console.error("Image upload error:", error);
-            } finally {
-                setUploading(false);
-            }
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const result = await uploadImage(file);
+            setData((prev) => ({
+                ...prev,
+                Image: [...prev.Image, result.url],
+            }));
+        } catch (err) {
+            toast.error("⚠️ Error uploading image. Try again.");
+        } finally {
+            setUploading(false);
         }
     };
 
     const handleDeleteImage = (index) => {
         const newImages = [...data.Image];
         newImages.splice(index, 1);
-
-        setData((prev) => ({
-            ...prev,
-            Image: newImages,
-        }));
+        setData((prev) => ({ ...prev, Image: newImages }));
         toast.info("🗑️ Image removed.");
     };
 
@@ -129,195 +116,130 @@ const UserUploadMarket = ({
             return;
         }
 
-        console.log("🚀 Submitting data:", JSON.stringify(data, null, 2));
-
         try {
-            const response = await fetch(SummaryApi.userMarket.url, {
+            const res = await fetch(SummaryApi.userMarket.url, {
                 method: SummaryApi.userMarket.method,
                 credentials: 'include',
-                headers: {
-                    "content-type": "application/json",
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
             });
 
-            const responseData = await response.json();
-            console.log("✅ Server response:", responseData);
-
-            if (responseData.success) {
-                toast.success(`🎉 ${responseData.message}`);
+            const result = await res.json();
+            if (result.success) {
+                toast.success(`🎉 ${result.message}`);
                 onClose();
                 fetchData();
                 navigate('/record');
             } else {
-                toast.error(`🚨 ${responseData.message}`);
+                toast.error(`🚨 ${result.message}`);
             }
-        } catch (error) {
-            toast.error("⚠️ An unexpected error occurred. Please try again later.");
-            console.error("Submission error:", error);
+        } catch (err) {
+            toast.error("❌ Submission failed. Try again.");
         }
     };
 
     return (
-        <div className=' fixed w-full h-full bg-gray-800 bg-opacity-50 top-0 left-0 flex justify-center items-center pt-16'>
-            <div className='bg-white p-6 rounded-2xl w-full max-w-2xl shadow-lg transition-transform transform scale-95 hover:scale-100 duration-300' style={{ maxHeight: '90vh', overflowY: 'auto' }}>
-                <div className='flex justify-between items-center mb-6'>
-                    <h2 className='font-extrabold text-2xl text-gray-800'>📦 Upload Product Details</h2>
-                    <div
-                        className='text-2xl text-gray-500 hover:text-red-600 cursor-pointer'
-                        onClick={onClose}
-                    >
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-start z-50 overflow-y-auto pt-12 -mb-1 px-4">
+            <div className="w-full max-w-3xl bg-white p-6 rounded-2xl shadow-xl relative animate-fadeIn">
+                {/* Header */}
+                <div className="flex justify-between items-center border-b pb-4 mb-4">
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-800">📦 Upload Product Details</h2>
+                    <button onClick={onClose} className="text-gray-500 hover:text-red-500 text-2xl">
                         <CgClose />
-                    </div>
+                    </button>
                 </div>
 
-                {productDetails && (
-                    <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 mb-6">
-                        <div className="flex items-center p-6">
-                            <div className="relative w-24 h-24 mr-6 rounded-lg overflow-hidden shadow-sm">
-                                <img
-                                    src={productDetails.productImage || ''}
-                                    alt="Product Preview"
-                                    className="object-cover w-full h-full"
-                                />
-                            </div>
-                            <div>
-                                <h3 className="font-semibold text-indigo-700 text-xl mb-1">{productDetails.productName}</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700 items-center">
-                                    <p>
-                                        <span className="font-medium text-gray-800">Currency: </span> 
-                                         {flagImageMap[productDetails.currency] && (
-                                            <img
-                                                src={flagImageMap[productDetails.currency]}
-                                                alt={`${productDetails.currency} Flag`}
-                                                className="w-5 h-5 mr-1 rounded-sm object-contain shadow-inner inline-block"
-                                                style={{ minWidth: '20px', minHeight: '20px' }}
-                                            />
-                                        )} 
-                                         {productDetails.currency}
-                                    </p>
-                                    <p><span className="font-medium text-gray-800">Face Value:</span> {productDetails.faceValue}</p>
-                                    <p><span className="font-medium text-gray-800">Rate:</span> {productDetails.rate}</p>
-                                    <p><span className="font-medium text-gray-800">Requirement:</span> {productDetails.requirement}</p>
-                                </div>
-                            </div>
+                {/* Product Overview */}
+                {productDetails.productImage && (
+                    <div className="flex gap-4 items-center border rounded-lg p-4 bg-gray-50 mb-6 shadow-sm">
+                        <img src={productDetails.productImage} alt="Preview" className="w-24 h-24 object-cover rounded-lg shadow-inner" />
+                        <div className="flex flex-col gap-1 text-sm text-gray-700">
+                            <p><span className="font-semibold">Name:</span> {productDetails.productName}</p>
+                            <p><span className="font-semibold">Currency:</span> 
+                                {flagImageMap[productDetails.currency] && (
+                                    <img src={flagImageMap[productDetails.currency]} className="w-5 h-5 inline-block ml-1" />
+                                )} {productDetails.currency}
+                            </p>
+                            <p><span className="font-semibold">Face Value:</span> {productDetails.faceValue}</p>
+                            <p><span className="font-semibold">Rate:</span> {productDetails.rate}</p>
                         </div>
                     </div>
                 )}
 
-                <form className='space-y-6' onSubmit={handleSubmit}>
+                {/* Form */}
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                    {/* Image Upload */}
                     <div>
-                        <label htmlFor='Image' className='block font-medium text-gray-700 mb-2'>
-                            📸 Product Images:
+                        <label className="block font-semibold text-gray-700 mb-2">📸 Upload Additional Images</label>
+                        <label htmlFor="uploadInput" className={`flex flex-col items-center justify-center border-2 border-dashed border-blue-400 rounded-lg p-5 bg-blue-50 hover:bg-blue-100 cursor-pointer transition ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
+                            <FaCloudUploadAlt className="text-4xl text-blue-500 mb-1" />
+                            <p>{uploading ? 'Uploading...' : 'Click or drag to upload'}</p>
                         </label>
-                        <label htmlFor='uploadImageInput'>
-                            <div className={`p-4 border rounded-lg bg-gray-50 flex justify-center items-center cursor-pointer hover:bg-gray-100 shadow-md ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                                <div className='text-gray-500 flex flex-col items-center'>
-                                    <FaCloudUploadAlt className='text-5xl text-blue-500' />
-                                    <p className='text-sm'>
-                                        {uploading ? 'Uploading...' : 'Click to Upload'}
-                                    </p>
+                        <input type="file" id="uploadInput" className="hidden" onChange={handleUploadImage} disabled={uploading} />
+                        <div className="flex gap-3 mt-4 flex-wrap">
+                            {data.Image.map((img, idx) => (
+                                <div key={idx} className="relative group">
+                                    <img src={img} onClick={() => {
+                                        setFullScreenImage(img);
+                                        setOpenFullScreenImage(true);
+                                    }} className="w-20 h-20 rounded-md border object-cover cursor-pointer hover:scale-105 transition" />
+                                    <button type="button" onClick={() => handleDeleteImage(idx)} className="absolute top-1 right-1 text-white bg-red-500 rounded-full p-1 hidden group-hover:block">
+                                        <MdDelete size={16} />
+                                    </button>
                                 </div>
-                            </div>
-                            <input
-                                type='file'
-                                id='uploadImageInput'
-                                className='hidden'
-                                onChange={handleUploadImage}
-                                disabled={uploading}
-                            />
-                        </label>
-                        <div className='flex gap-2 mt-4 flex-wrap'>
-                            {data?.Image.length > 0 ? (
-                                data.Image.map((el, index) => (
-                                    <div className='relative group' key={index}>
-                                        <img
-                                            src={el}
-                                            alt={`product-${index}`}
-                                            className='w-20 h-20 object-cover rounded-lg border cursor-pointer hover:scale-105 transition-transform duration-200'
-                                            onClick={() => {
-                                                setOpenFullScreenImage(true);
-                                                setFullScreenImage(el);
-                                            }}
-                                        />
-                                        <div
-                                            className='absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full hidden group-hover:block cursor-pointer'
-                                            onClick={() => handleDeleteImage(index)}
-                                        >
-                                            <MdDelete />
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <p className='text-red-600 text-sm'></p>
-                            )}
-                        </div>
-                    </div>
-                    <div>
-                        <label htmlFor='totalAmount' className='block font-medium text-gray-700 mb-2'>
-                            💰 Total Face Value ({currencySymbol}
-                            {flagImageMap[productDetails.currency] && (
-                                <img
-                                    src={flagImageMap[productDetails.currency]}
-                                    alt={`${productDetails.currency} Flag`}
-                                    className="w-5 h-5 ml-1 rounded-sm object-contain shadow-inner inline-block"
-                                    style={{ minWidth: '20px', minHeight: '20px' }}
-                                />
-                            )}
-                            ):
-                        </label>
-                        <div className='relative'>
-                            <input
-                                type='number'
-                                id='totalAmount'
-                                name='totalAmount'
-                                value={data.totalAmount}
-                                onChange={handleOnChange}
-                                className='w-full p-3 pl-10 border rounded-lg bg-gray-50 focus:outline-none focus:ring focus:ring-blue-300 shadow-sm'
-                                required
-                                placeholder="Enter total face value"
-                            />
+                            ))}
                         </div>
                     </div>
 
-                    <div className='mt-4'>
-                        <label className='block font-medium text-gray-700 mb-2'>
-                            = Calculated Total Amount:
-                        </label>
-                        <div className='p-3 border rounded-lg bg-gray-50 text-gray-800 font-semibold'>
+                    {/* Total Face Value Input */}
+                    <div>
+                        <label className="block font-semibold text-gray-700 mb-2">💰 Total Face Value ({currencySymbol})</label>
+                        <input
+                            type="number"
+                            name="totalAmount"
+                            value={data.totalAmount}
+                            onChange={handleOnChange}
+                            placeholder="Enter total face value"
+                            className="w-full border p-3 rounded-lg shadow-sm focus:ring focus:ring-blue-300 bg-white"
+                            required
+                        />
+                    </div>
+
+                    {/* Calculated Amount Display */}
+                    <div>
+                        <label className="block font-semibold text-gray-700 mb-2">= Calculated Total Amount:</label>
+                        <div className="p-3 bg-gray-100 rounded-lg border text-gray-800 font-bold tracking-wide">
                             ₦{parseFloat(data.calculatedTotalAmount || 0).toLocaleString("en-NG", { minimumFractionDigits: 2 })}
                         </div>
                     </div>
 
-
+                    {/* Remarks */}
                     <div>
-                        <label htmlFor='userRemark' className='block font-medium text-gray-700 mb-2'>
-                            📝 Additional Remarks:
-                        </label>
+                        <label className="block font-semibold text-gray-700 mb-2">📝 Additional Remarks</label>
                         <textarea
-                            id='userRemark'
-                            name='userRemark'
+                            name="userRemark"
+                            rows={4}
+                            placeholder="Code, notes, details..."
                             value={data.userRemark}
                             onChange={handleOnChange}
-                            rows={4}
-                            className='w-full p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring focus:ring-blue-300 shadow-sm'
-                            placeholder="Code, specific notes or details?"
-                        ></textarea>
+                            className="w-full border p-3 rounded-lg shadow-sm focus:ring focus:ring-blue-300 bg-white resize-none"
+                        />
                     </div>
+
+                    {/* Submit */}
                     <button
                         type="submit"
-                        className="mt-5 w-full bg-emerald-600 text-white p-3 rounded-lg font-semibold hover:bg-emerald-700 shadow-lg hover:shadow-xl transition duration-300"
+                        className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-md hover:shadow-lg transition"
                         disabled={uploading}
                     >
                         {uploading ? '⏳ Submitting...' : '✅ Submit Product'}
                     </button>
                 </form>
             </div>
+
+            {/* Fullscreen Image Preview */}
             {openFullScreenImage && (
-                <DisplayImage
-                    onClose={() => setOpenFullScreenImage(false)}
-                    imgUrl={fullScreenImage}
-                />
+                <DisplayImage imgUrl={fullScreenImage} onClose={() => setOpenFullScreenImage(false)} />
             )}
         </div>
     );

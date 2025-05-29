@@ -54,8 +54,8 @@ const WalletDashboard = () => {
             case 'history':
                 return (
                     <nav className="fixed w-screen right-0 left-0 bg-white shadow border border-gray-200">
-                    <h3 className="font-semibold px-4 w-screen text-xl text-gray-800 py-2 border-b border-gray-200 flex items-center">
-                        <FaHistory className="mr-2 right-0 left-0 text-gray-600" /> Transaction History
+                    <h3 className="font-semibold px-4 w-screen text-xl text-gray-800 py-4 mt-6 border-b border-gray-200 flex items-center">
+                        <FaHistory className="mr-2 right-0 left-0 text-gray-600 " /> Transaction History
                     </h3>
                     <div className="overflow-auto w-screen p-2 px-6 right-0 left-0" style={{ maxHeight: 'calc(100vh - 300px)' }}>
                         <TransactionHistory />

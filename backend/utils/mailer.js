@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import nodemailer from "nodemailer";
+import nodemailer from 'nodemailer';
 
 const { MAIL_USER, MAIL_PASS, FRONTEND_URL } = process.env;
 
@@ -14,12 +14,28 @@ console.log("MAIL_PASS:", MAIL_PASS ? "✓ set" : "❌ not set");
 console.log("FRONTEND_URL:", FRONTEND_URL);
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true, 
   auth: {
     user: MAIL_USER,
     pass: MAIL_PASS,
   },
+  connectionTimeout: 10000, 
+  greetingTimeout: 5000,
+  tls: {
+    rejectUnauthorized: false, 
+  }
 });
+
+const sendEmail = async (options, context) => {
+  try {
+    await transporter.sendMail(options);
+  } catch (err) {
+    console.error(`❌ Nodemailer error in [${context}]:`, err);
+    throw new Error("Failed to send email. Please try again.");
+  }
+};
 
 export const sendVerificationEmail = async (email, token) => {
   const verificationLink = `${FRONTEND_URL}/verify-email?token=${token}`;
@@ -41,12 +57,7 @@ export const sendVerificationEmail = async (email, token) => {
     `,
   };
 
-  try {
-    await transporter.sendMail(mailOptions);
-  } catch (err) {
-    console.error("Error sending verification email:", err);
-    throw new Error("Failed to send verification email. Please try again.");
-  }
+  await sendEmail(mailOptions, "Verification Email");
 };
 
 export const sendResetCodeEmail = async (email, code, type) => {
@@ -68,12 +79,7 @@ export const sendResetCodeEmail = async (email, code, type) => {
     `,
   };
 
-  try {
-    await transporter.sendMail(mailOptions);
-  } catch (err) {
-    console.error("Error sending reset code email:", err);
-    throw new Error("Failed to send reset code email. Please try again.");
-  }
+  await sendEmail(mailOptions, "Reset Code Email");
 };
 
 export const sendBankVerificationCode = async (email, code) => {
@@ -93,11 +99,5 @@ export const sendBankVerificationCode = async (email, code) => {
     `,
   };
 
-  try {
-    await transporter.sendMail(mailOptions);
-  } catch (err) {
-    console.error("Error sending bank verification email:", err);
-    throw new Error("Failed to send bank verification email.");
-  }
+  await sendEmail(mailOptions, "Bank Verification Email");
 };
-

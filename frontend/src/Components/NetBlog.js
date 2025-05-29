@@ -2,128 +2,165 @@ import React, { useState, useEffect } from 'react';
 import SummaryApi from '../common';
 import { formatDistanceToNow } from 'date-fns';
 import { FaCircle } from 'react-icons/fa';
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 import FullBlogDialog from './FullBlogDialog';
+import { useNavigate } from 'react-router-dom';
 
 const blogCardVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.5, ease: "easeInOut" },
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0 },
 };
 
 const NetBlog = () => {
-    const [blogs, setBlogs] = useState([]);
-    const [loadingBlogs, setLoadingBlogs] = useState(true);
-    const [errorBlogs, setErrorBlogs] = useState(null);
-    const [communityFeedData, setCommunityFeedData] = useState(null);
-    const [loadingFeed, setLoadingFeed] = useState(false);
-    const [errorFeed, setErrorFeed] = useState(null);
-    const [selectedBlog, setSelectedBlog] = useState(null);
+  const [blogs, setBlogs] = useState([]);
+  const [visibleBlogs, setVisibleBlogs] = useState(6);
+  const [showBlogs, setShowBlogs] = useState(true);
+  const [loadingBlogs, setLoadingBlogs] = useState(true);
+  const [errorBlogs, setErrorBlogs] = useState(null);
+  const [communityFeedData, setCommunityFeedData] = useState(null);
+  const [loadingFeed, setLoadingFeed] = useState(false);
+  const [errorFeed, setErrorFeed] = useState(null);
+  const [selectedBlog, setSelectedBlog] = useState(null);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchBlogs = async () => {
-            setLoadingBlogs(true);
-            setErrorBlogs(null);
-            try {
-                const response = await fetch(SummaryApi.getBlogs.url);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const data = await response.json();
-                setBlogs(data);
-            } catch (e) {
-                setErrorBlogs(e.message);
-            } finally {
-                setLoadingBlogs(false);
-            }
-        };
-
-        fetchBlogs();
-    }, []);
-
-    const fetchCommunityFeedData = async () => {
-        setLoadingFeed(true);
-        setErrorFeed(null);
-        try {
-            const response = await fetch(SummaryApi.getApprovedPosts.url, { credentials: "include" });
-            if (!response.ok) throw new Error('Failed to fetch community posts');
-            const data = await response.json();
-            setCommunityFeedData(data.data);
-        } catch (err) {
-            setErrorFeed(err.message);
-        } finally {
-            setLoadingFeed(false);
-        }
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      setLoadingBlogs(true);
+      setErrorBlogs(null);
+      try {
+        const response = await fetch(SummaryApi.getBlogs.url);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        setBlogs(data);
+      } catch (e) {
+        setErrorBlogs(e.message);
+      } finally {
+        setLoadingBlogs(false);
+      }
     };
+    fetchBlogs();
+  }, []);
 
-    const handleCommunityFeedClick = () => {
-        window.open('/community-feed');
-    };
+  const fetchCommunityFeedData = async () => {
+    setLoadingFeed(true);
+    setErrorFeed(null);
+    try {
+      const response = await fetch(SummaryApi.getApprovedPosts.url, {
+        credentials: 'include',
+      });
+      if (!response.ok) throw new Error('Failed to fetch community posts');
+      const data = await response.json();
+      setCommunityFeedData(data.data);
+    } catch (err) {
+      setErrorFeed(err.message);
+    } finally {
+      setLoadingFeed(false);
+    }
+  };
 
-    return (
-        <div className="container mx-auto px-4 max-w-7xl">
-            <div className="flex justify-end mb-8">
-                <button
-                    onMouseEnter={fetchCommunityFeedData}
-                    onClick={handleCommunityFeedClick}
-                    className="px-5 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 text-[10px] minecraft-font"
-                >
-                    <span className="hidden sm:inline">Community</span> Feed
-                </button>
-            </div>
+  const handleCommunityFeedClick = () => {
+    navigate('/community-feed');
+  };
 
-            {loadingFeed && <p className="text-[10px] text-gray-400 mt-1 minecraft-font">Fetching community...</p>}
-            {errorFeed && <p className="text-[10px] text-red-400 mt-1 minecraft-font">Error loading feed data.</p>}
+  const toggleBlogVisibility = () => setShowBlogs((prev) => !prev);
+  const toggleMoreBlogs = () => setVisibleBlogs((prev) => (prev === 6 ? blogs.length : 6));
 
-            {loadingBlogs ? (
-                <div className="flex justify-center items-center py-12">
-                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
-                </div>
-            ) : errorBlogs ? (
-                <p className="text-red-400 text-center py-8 text-[10px] minecraft-font">{errorBlogs}</p>
-            ) : blogs.length > 0 ? (
-                <div className="grid mb-10 gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                    {blogs.map(blog => (
-                        <motion.div
-                            key={blog.id}
-                            variants={blogCardVariants}
-                            initial="initial"
-                            animate="animate"
-                            transition={{ duration: 0.5, ease: "easeInOut" }}
-                            className="rounded-3xl overflow-hidden shadow-xl bg-gradient-to-br from-white/10 via-gray-800/20 to-gray-900/30 backdrop-blur-md border border-white/20 text-white hover:scale-[1.015] transition-all duration-300"
-                        >
-                            <div className="p-6 minecraft-font text-[10px]">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-[12px] font-bold line-clamp-2 text-yellow-700 ">{blog.title}</h3>
-                                    {blog.isActive && (
-                                        <span className="flex items-center text-green-400 text-[10px]">
-                                            <FaCircle className="mr-1 animate-pulse" /> Active
-                                        </span>
-                                    )}
-                                </div>
-                                <p className="text-gray-600 text-[10px] line-clamp-3">
-                                    {blog.content || 'No content available.'}
-                                </p>
-                                <p className="text-[8px] text-gray-700 mt-3">
-                                    Published {formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true })}
-                                </p>
-                                <button
-                                    onClick={() => setSelectedBlog(blog)}
-                                    className="mt-3 inline-block text-[10px] font-medium text-pink-400 hover:text-pink-300 transition-colors"
-                                >
-                                    Read More →
-                                </button>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-            ) : (
-                <p className="text-gray-500 text-center py-12 text-[8px] minecraft-font">No blog posts available yet.</p>
-            )}
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="container mx-auto mt-32 px-4 max-w-7xl"
+    >
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
+        <button
+          onMouseEnter={fetchCommunityFeedData}
+          onClick={handleCommunityFeedClick}
+          className="px-5 py-2 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 text-xs minecraft-font bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:brightness-110"
+        >
+          <span className="hidden sm:inline">Community</span> Feed
+        </button>
 
-            {selectedBlog && (
-                <FullBlogDialog blog={selectedBlog} onClose={() => setSelectedBlog(null)} />
-            )}
+        <div className="flex gap-2">
+          <button
+            onClick={toggleBlogVisibility}
+            className="text-sm font-semibold text-gray-700 dark:text-gray-300 border border-gray-300 px-4 py-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+          >
+            {showBlogs ? 'Hide Blogs' : 'Show Blogs'}
+          </button>
         </div>
-    );
+      </div>
+
+      {loadingBlogs ? (
+        <div className="flex justify-center items-center py-12">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
+        </div>
+      ) : errorBlogs ? (
+        <p className="text-red-500 text-center py-8 text-sm minecraft-font">{errorBlogs}</p>
+      ) : blogs.length > 0 && showBlogs ? (
+        <>
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            transition={{ staggerChildren: 0.1 }}
+            className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {blogs.slice(0, visibleBlogs).map((blog) => (
+              <motion.div
+                key={blog._id}
+                variants={blogCardVariants}
+                className="rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:scale-[1.015]"
+              >
+                <div className="p-6 minecraft-font text-xs">
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className="text-sm font-semibold line-clamp-2 text-gray-800 dark:text-yellow-400">
+                      {blog.title}
+                    </h3>
+                    {blog.isActive && (
+                      <span className="flex items-center text-green-500 text-xs">
+                        <FaCircle className="mr-1 animate-pulse" /> Active
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-gray-600 dark:text-gray-300 text-xs line-clamp-3">
+                    {blog.content || 'No content available.'}
+                  </p>
+                  <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-3">
+                    Published {formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true })}
+                  </p>
+                  <button
+                    onClick={() => setSelectedBlog(blog)}
+                    className="mt-3 text-xs font-medium text-pink-500 hover:text-pink-400 transition-colors focus:outline-none"
+                  >
+                    Read More →
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {blogs.length > 6 && (
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={toggleMoreBlogs}
+                className="px-4 py-2 text-xs font-semibold bg-pink-500 text-white rounded-full hover:bg-pink-600 transition"
+              >
+                {visibleBlogs === 6 ? 'Show More' : 'Show Less'}
+              </button>
+            </div>
+          )}
+        </>
+      ) : (
+        <p className="text-gray-500 dark:text-gray-400 text-center py-12 text-sm minecraft-font">
+          No blog posts available yet.
+        </p>
+      )}
+
+      {selectedBlog && (
+        <FullBlogDialog blog={selectedBlog} onClose={() => setSelectedBlog(null)} />
+      )}
+    </motion.div>
+  );
 };
 
 export default NetBlog;

@@ -41,6 +41,7 @@ import Profiler from "../Components/Profiler";
 import VerifyEmail from "../Components/VerifyEmail";
 import NotFound from "../pages/NotFound";
 import Landing from "../pages/Landing";
+import EthWallet from "../pages/EthWallet";
 
 
 const publicRoutes = [
@@ -105,7 +106,8 @@ const protectedRoutes = [
   { path: "notifications", element: <NotificationsPage /> },
   { path: "chat/:reportId", element: <ReportCard /> },
   { path: "community-feed", element: <Buzz /> },
-  
+    { path: "eth", element: <EthWallet /> },
+
 
 ];
 

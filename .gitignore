@@ -1,2 +1,31 @@
-node_modules
-backend/.env
+# Node.js dependencies
+node_modules/
+
+# Environment files
+.env
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# React cache & lint
+.cache/
+.eslintcache
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Misc logs
+*.log
+*.pid
+*.tgz
+*.seed
+
+frontend/node_modules/
+
+# frontend/build/
+
+backend/node_modules/

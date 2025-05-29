@@ -13,7 +13,9 @@ import {
     fetchWalletBalanceAPI,
     signinUserAPI,
 } from "./services/apiService";
+// import "./app.css";
 import "./styles/Loader.css";
+import DarkModeToggle from "./Components/DarkModeToggle";
 
 function setViewportHeight() {
     const vh = window.innerHeight * 0.01;
@@ -86,13 +88,16 @@ function App() {
     }
 
     return (
+
         <ContextProvider>
+            
         <Context.Provider value={{ fetchUserDetails, fetchMarketData, marketData, user, fetchBlogs, blogs, walletBalance, fetchWalletBalance, signinUserAPI }}>
             <div className="global-container">
                 <Suspense fallback={<Loader />}>
                     {user && <Net blogs={blogs} fetchBlogs={fetchBlogs} />}
                     <main className="main-content">
                         {user && <Header />}
+                        {/* <DarkModeToggle /> */}
                         <div>
                             <Outlet />
                         </div>

@@ -69,7 +69,7 @@ const SignUp = () => {
 
       const responseData = await response.json();
       if (response.ok) {
-        toast.success("🎉 Account created! Check your email to verify.");
+        toast.success("🎉 Thank You For Signing Up! ₦900 signup bonus awarded. Please verify your email..");
         setTimeout(() => navigate("/login"), 2500);
       } else {
         toast.error(responseData.message);

@@ -137,11 +137,11 @@ const BankAccountList = ({ onBankAccountsUpdated, onBankAccountsUpdating }) => {
                                 </div>
                             ))
                         ) : (
-                            <p className="text-gray-500 -mt-4 ml-20 italic">No bank accounts added yet.</p>
+                            <p className="text-gray-500 -mt-4 ml-20 italic"></p>
                         )}
                         {deleteError && <p className="text-red-500 mt-2">{deleteError}</p>}
                         <button
-                            className="inline-flex items-center px-4 py-2 border border-dashed border-indigo-300 rounded-md shadow-sm text-sm font-medium text-indigo-700 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mt-3"
+                            className="inline-flex items-center px-4 py-2 mt-6 border border-dashed border-indigo-300 rounded-md shadow-sm text-sm font-medium text-indigo-700 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mt-3"
                             onClick={handleAddAccountClick}
                             disabled={showAddAccountForm || bankAccounts.length >= 2}
                         >

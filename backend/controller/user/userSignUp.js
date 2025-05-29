@@ -42,12 +42,11 @@ async function userSignUpController(req, res) {
       role: "GENERAL",
       isVerified: false,
       emailToken,
-      signupIP, // Save IP for logging/tracking (optional)
+      signupIP, 
     });
 
     await newUser.save();
 
-    // ✅ Award ₦900 bonus to all users upon signup
     await updateWalletBalance(
       newUser._id,
       900,
@@ -57,12 +56,11 @@ async function userSignUpController(req, res) {
       "User"
     );
 
-    // ✅ Send verification email
     await sendVerificationEmail(email, emailToken);
 
     return res.status(201).json({
       success: true,
-      message: "Account created! ₦900 signup bonus awarded. Please verify your email.",
+      message: "Thank You For Signing Up! ₦900 signup bonus awarded. Please verify your email.",
     });
   } catch (err) {
     console.error("Signup error:", err);

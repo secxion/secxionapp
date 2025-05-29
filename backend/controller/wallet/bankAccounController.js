@@ -1,14 +1,23 @@
 import Wallet from "../../models/walletModel.js";
 import { sendBankVerificationCode } from "../../utils/mailer.js";
 
+const handleServerError = (res, error, contextMessage) => {
+  console.error(`${contextMessage}:`, error);
+  return res.status(500).json({
+    success: false,
+    message: contextMessage,
+    error: error?.message || "Internal server error",
+  });
+};
+
 export const addBankAccount = async (req, res) => {
   try {
     const userId = req.userId;
     const {
       accountNumber,
       bankName,
-      bankCode, // ✅ new
-      accountHolderName, // from resolved data
+      bankCode,
+      accountHolderName,
     } = req.body;
 
     if (!accountNumber || !bankName || !bankCode || !accountHolderName) {
@@ -20,17 +29,11 @@ export const addBankAccount = async (req, res) => {
 
     const wallet = await Wallet.findOne({ userId });
     if (!wallet) {
-      return res.status(404).json({
-        success: false,
-        message: "Wallet not found for this user.",
-      });
+      return res.status(404).json({ success: false, message: "Wallet not found for this user." });
     }
 
     if (wallet.bankAccounts.length >= 2) {
-      return res.status(400).json({
-        success: false,
-        message: "You cannot add more than 2 bank accounts.",
-      });
+      return res.status(400).json({ success: false, message: "You cannot add more than 2 bank accounts." });
     }
 
     const alreadyExists = wallet.bankAccounts.some(
@@ -41,20 +44,10 @@ export const addBankAccount = async (req, res) => {
     );
 
     if (alreadyExists) {
-      return res.status(409).json({
-        success: false,
-        message: "This bank account is already added.",
-      });
+      return res.status(409).json({ success: false, message: "This bank account is already added." });
     }
 
-    const newBankAccount = {
-      accountNumber,
-      bankName,
-      bankCode, // ✅ include
-      accountHolderName,
-    };
-
-    wallet.bankAccounts.push(newBankAccount);
+    wallet.bankAccounts.push({ accountNumber, bankName, bankCode, accountHolderName });
     await wallet.save();
 
     return res.status(201).json({
@@ -63,25 +56,15 @@ export const addBankAccount = async (req, res) => {
       data: wallet.bankAccounts,
     });
   } catch (error) {
-    console.error("Error adding bank account:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to add bank account.",
-      error: error.message,
-    });
+    return handleServerError(res, error, "Error adding bank account");
   }
 };
 
 export const getBankAccounts = async (req, res) => {
   try {
-    const userId = req.userId;
-
-    const wallet = await Wallet.findOne({ userId });
+    const wallet = await Wallet.findOne({ userId: req.userId });
     if (!wallet) {
-      return res.status(404).json({
-        success: false,
-        message: 'Wallet not found for this user.',
-      });
+      return res.status(404).json({ success: false, message: "Wallet not found for this user." });
     }
 
     res.status(200).json({
@@ -89,26 +72,18 @@ export const getBankAccounts = async (req, res) => {
       data: wallet.bankAccounts,
     });
   } catch (error) {
-    console.error('Error fetching bank accounts:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch bank accounts.',
-      error: error.message,
-    });
+    return handleServerError(res, error, "Error fetching bank accounts");
   }
 };
 
 export const deleteBankAccount = async (req, res) => {
   try {
-    const userId = req.userId;
+    const { userId } = req;
     const { accountId } = req.params;
 
     const wallet = await Wallet.findOne({ userId });
     if (!wallet) {
-      return res.status(404).json({
-        success: false,
-        message: 'Wallet not found for this user.',
-      });
+      return res.status(404).json({ success: false, message: "Wallet not found for this user." });
     }
 
     const initialLength = wallet.bankAccounts.length;
@@ -117,30 +92,21 @@ export const deleteBankAccount = async (req, res) => {
     );
 
     if (wallet.bankAccounts.length === initialLength) {
-      return res.status(404).json({
-        success: false,
-        message: 'Bank account not found.',
-      });
+      return res.status(404).json({ success: false, message: "Bank account not found." });
     }
 
     await wallet.save();
-
     res.status(200).json({
       success: true,
-      message: 'Bank account deleted successfully.',
+      message: "Bank account deleted successfully.",
       data: wallet.bankAccounts,
     });
   } catch (error) {
-    console.error('Error deleting bank account:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to delete bank account.',
-      error: error.message,
-    });
+    return handleServerError(res, error, "Error deleting bank account");
   }
 };
 
-const verificationCodes = new Map(); // Temp storage for codes
+const verificationCodes = new Map();
 
 export const sendBankAddCode = async (req, res) => {
   try {
@@ -158,17 +124,19 @@ export const sendBankAddCode = async (req, res) => {
     await sendBankVerificationCode(email, code);
     res.status(200).json({ success: true, message: "Verification code sent to your email." });
   } catch (error) {
-    console.error("Error sending code:", error);
-    res.status(500).json({ success: false, message: error.message });
+    return handleServerError(res, error, "Error sending bank verification code");
   }
 };
-
 
 export const verifyAndAddBankAccount = async (req, res) => {
   try {
     const { code, accountNumber, bankName, bankCode, accountHolderName } = req.body;
     const userId = req.userId;
-    const email = req.user.email;
+    const email = req.user?.email;
+
+    if (!code || !email || !accountNumber || !bankName || !bankCode || !accountHolderName) {
+      return res.status(400).json({ success: false, message: "All fields and verification code are required." });
+    }
 
     const stored = verificationCodes.get(email);
     if (!stored || stored.code !== code || stored.expires < Date.now()) {
@@ -193,15 +161,14 @@ export const verifyAndAddBankAccount = async (req, res) => {
 
     wallet.bankAccounts.push({ accountNumber, bankName, bankCode, accountHolderName });
     await wallet.save();
+    verificationCodes.delete(email);
 
-    verificationCodes.delete(email); // cleanup
     res.status(201).json({
       success: true,
       message: "Bank account added successfully.",
       data: wallet.bankAccounts,
     });
   } catch (error) {
-    console.error("Add bank error:", error);
-    res.status(500).json({ success: false, message: "Server error.", error: error.message });
+    return handleServerError(res, error, "Error verifying and adding bank account");
   }
 };

@@ -1,200 +1,134 @@
-import React, { useEffect, useState } from "react";
-import SummaryApi from "../common";
+Hello chat gpt, thank you for assisting me in my current MERNstack e-commerce fintech project so far, in this session i actually wanted to implement ethereum payment method into my naira wallet before but now i think i have to do ethereum wallet separately
+//
+note: at eth balance update in naira to eth conversion we will use a public live exchange eth update to convert naira to eth .. any area we need conversion
+using this below component please share complete ethereum wallet integrations including the controllers to fetch user wallet balance and convert it to ethereuem in ethereum balance, user withdrawal address input and so on that is necessary and relevant for a standard professional ethereum wallet integration and model too. plus frontend UI 
+// i will upload the current helper and a controller from my project to help you indentify some crucial values used and structure of the project
+and note : not building a blockchain node or wallet infrastructure — just connecting to a wallet/address.
+fetch user naira balance from walletcontroller and convert to eth in eth wallet balance, i will paste walletcontrooler to know how to fetch user balance and convert and values that follows
+.. note: Create or save ETH wallet address.
 
-const AddBankAccountForm = () => {
-  const [banks, setBanks] = useState([]);
-  const [loadingBanks, setLoadingBanks] = useState(false);
-  const [form, setForm] = useState({
-    accountNumber: "",
-    bankCode: "",
-  });
-  const [resolvedAccountName, setResolvedAccountName] = useState("");
-  const [loadingResolve, setLoadingResolve] = useState(false);
-  const [submitLoading, setSubmitLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
+Fetch user wallet and ETH balance.
 
-  useEffect(() => {
-    const fetchBanks = async () => {
-      setLoadingBanks(true);
-      setError("");
-      try {
-        const token = localStorage.getItem("token");
-        const res = await fetch(SummaryApi.bankList.url, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await res.json();
-        if (!res.ok || !data.success) throw new Error(data.message || "Failed to load banks");
-        setBanks(data.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoadingBanks(false);
-      }
-    };
+Withdraw ETH to another wallet address.
+You'll use a custodial approach (users provide their wallet addresses; app doesn't manage private keys).
 
-    fetchBanks();
-  }, []);
+//
+import Wallet from "../../models/walletModel.js";
+import { createTransactionNotification } from "../notifications/notificationsController.js";
 
-  const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    if (e.target.name === "accountNumber" || e.target.name === "bankCode") {
-      setResolvedAccountName("");
-    }
-    setError("");
-    setSuccessMsg("");
-  };
 
-  const handleResolve = async () => {
-    if (!form.accountNumber || !form.bankCode) {
-      setError("Account number and bank are required to resolve");
-      return;
-    }
-
-    setLoadingResolve(true);
-    setError("");
-    setResolvedAccountName("");
-    try {
-      const res = await fetch(SummaryApi.resolveBankAccount.url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          account_number: form.accountNumber,
-          bank_code: form.bankCode,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.message || "Failed to resolve account");
-
-      setResolvedAccountName(data.data.account_name);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoadingResolve(false);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccessMsg("");
-
-    if (!form.accountNumber || !form.bankCode) {
-      setError("All fields are required");
-      return;
-    }
-    if (!resolvedAccountName) {
-      setError("Please resolve account before submitting");
-      return;
-    }
-
-    const selectedBank = banks.find((b) => b.code === form.bankCode);
-    if (!selectedBank) {
-      setError("Invalid bank selected.");
-      return;
-    }
-
-    setSubmitLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(SummaryApi.addBankAccount.url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          accountNumber: form.accountNumber,
-          bankName: selectedBank.name,      // ✅ full bank name
-          bankCode: form.bankCode,          // ✅ bank code
-          accountHolderName: resolvedAccountName, // ✅ resolved name
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.message || "Failed to add bank account");
-
-      setSuccessMsg("Bank account added successfully");
-      setForm({ accountNumber: "", bankCode: "" });
-      setResolvedAccountName("");
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setSubmitLoading(false);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 border rounded">
-      <h2 className="text-xl font-semibold mb-4">Add Bank Account</h2>
-
-      {error && <p className="text-red-600 mb-2">{error}</p>}
-      {successMsg && <p className="text-green-600 mb-2">{successMsg}</p>}
-
-      <label className="block mb-2">
-        Select Bank:
-        {loadingBanks ? (
-          <p>Loading banks...</p>
-        ) : (
-          <select
-            name="bankCode"
-            value={form.bankCode}
-            onChange={handleChange}
-            className="w-full border px-2 py-1"
-            required
-          >
-            <option value="">-- Select Bank --</option>
-            {banks.map((bank) => (
-              <option key={bank.code} value={bank.code}>
-                {bank.name}
-              </option>
-            ))}
-          </select>
-        )}
-      </label>
-
-      <label className="block mb-2">
-        Account Number:
-        <input
-          type="text"
-          name="accountNumber"
-          value={form.accountNumber}
-          onChange={handleChange}
-          className="w-full border px-2 py-1"
-          required
-          maxLength={10}
-        />
-      </label>
-
-      <button
-        type="button"
-        onClick={handleResolve}
-        disabled={loadingResolve || !form.accountNumber || !form.bankCode}
-        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded disabled:bg-blue-300"
-      >
-        {loadingResolve ? "Resolving..." : "Resolve Account"}
-      </button>
-
-      {resolvedAccountName && (
-        <p className="mb-4 text-green-700">Account Name: {resolvedAccountName}</p>
-      )}
-
-      <button
-        type="submit"
-        disabled={submitLoading}
-        className="w-full py-2 bg-green-600 text-white rounded disabled:bg-green-300"
-      >
-        {submitLoading ? "Adding..." : "Add Bank Account"}
-      </button>
-    </form>
-  );
+export const ensureWalletExists = async (userId) => {
+  let wallet = await Wallet.findOne({ userId });
+  if (!wallet) {
+    wallet = new Wallet({ userId });
+    await wallet.save();
+  }
+  return wallet;
 };
 
-export default AddBankAccountForm;
+export const getWalletBalance = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const wallet = await ensureWalletExists(userId);
+
+    res.status(200).json({
+      success: true,
+      balance: wallet.balance,
+    });
+  } catch (error) {
+    console.error('Error fetching wallet balance:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch wallet balance',
+      error: error.message,
+    });
+  }
+};
+
+export const getOtherUserWalletBalance = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const wallet = await Wallet.findOne({ userId });
+
+    if (!wallet) {
+      return res.status(404).json({ success: false, message: 'Wallet not found for this user.' });
+    }
+
+    res.status(200).json({ success: true, balance: wallet.balance });
+  } catch (error) {
+    console.error('Error fetching user wallet balance:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch user wallet balance',
+      error: error.message,
+    });
+  }
+};
+
+
+export const updateWalletBalance = async (userId, amount, type, description, referenceId, onModel) => {
+  try {
+    const wallet = await ensureWalletExists(userId);
+
+    if (amount < 0) {
+      if (Math.abs(amount) < 1000) {
+        return {
+          success: false,
+          message: "Minimum withdrawal amount is ₦1000.",
+        };
+      }
+      if (wallet.balance + amount < 0) {
+        return {
+          success: false,
+          message: "Insufficient balance. Cannot go below ₦0.",
+        };
+      }
+    }
+
+    wallet.balance += amount;
+
+    wallet.transactions.push({
+      type,
+      amount,
+      description,
+      referenceId,
+      onModel,
+    });
+
+    await wallet.save();
+
+    const formattedAmount = `₦${Math.abs(amount).toLocaleString()}`;
+    const message =
+      type === 'credit'
+        ? `Your wallet has been credited with ${formattedAmount}`
+        : type === 'debit'
+        ? `Your wallet has been debited by ${formattedAmount}`
+        : `A wallet transaction of ${formattedAmount} occurred`;
+
+    await createTransactionNotification(
+      userId,
+      Math.abs(amount),
+      type,
+      message,
+      '/wallet',
+      referenceId
+    );
+
+    return {
+      success: true,
+      message: "Wallet updated successfully.",
+      newBalance: wallet.balance,
+    };
+  } catch (error) {
+    console.error('Error updating wallet balance:', error);
+    return {
+      success: false,
+      message: "Failed to update wallet balance.",
+      error: error.message,
+    };
+  }
+};
+
+
+//
+ok now let us create the backend and frontend tools for a standard prefoessional eth wallet integration

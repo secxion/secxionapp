@@ -6,6 +6,7 @@ import HistoryCard from "../Components/HistoryCard";
 import HistoryDetailView from "../Components/HistoryDetailView";
 import UserContext from "../Context";
 import Shimmer from "../Components/Shimmer";
+import Loader from "../Components/Loader";
 
 const UserMarket = () => {
   const [openUploadProduct, setOpenUploadProduct] = useState(false);
@@ -94,22 +95,9 @@ const UserMarket = () => {
           />
         ))}
         {allProduct.length === 0 && !marketId && (
-          <p className="text-gray-500 top-0 text-center w-full text-lg">
-            <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-6 flex flex-col justify-center sm:py-12">
-                            <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-                                <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
-                                <div className="relative px-4 py-10 bg-white dark:bg-gray-800 shadow-lg sm:rounded-3xl sm:p-20">
-                                    <Shimmer type="heading" />
-                                    <div className="mt-6 grid grid-cols-1 gap-6">
-                                        <Shimmer type="paragraph" />
-                                        <Shimmer type="paragraph" />
-                                        <Shimmer type="paragraph" />
-                                        <Shimmer type="button" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-          </p>
+          <div className="text-gray-500 top-0 text-center w-full text-lg">
+                                <Loader/>
+          </div>
         )}
         {allProduct.length === 0 && marketId && (
           <p className="text-gray-500 text-center w-full">Market record not found.</p>

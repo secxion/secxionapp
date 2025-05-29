@@ -44,6 +44,15 @@ confirmReset: {
         method : "get"
     },
 
+     fetchEthPrice : {
+        url : `${backendDomain}/api/eth-price`,
+        method : "GET"
+    },
+     fetchEthTrend : {
+        url : `${backendDomain}/api/eth-trend`,
+        method : "GET"
+    },
+
     signIn : {
         url : `${backendDomain}/api/signin`,
         method : "post"
@@ -210,6 +219,10 @@ confirmReset: {
         url: `${backendDomain}/api/pr/create`,
         method: 'POST',
       },
+       ethWithdrawal : {
+        url : `${backendDomain}/api/eth/withdrawal-request`,
+        method : "POST"
+    },
       getAllPayment: {
         url: `${backendDomain}/api/pr/getall`,
         method: 'GET',

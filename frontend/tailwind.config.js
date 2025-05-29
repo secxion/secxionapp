@@ -41,6 +41,13 @@ module.exports = {
         },
       },
       animation: {
+         pulseNeon: 'pulseNeon 2s infinite',
+                },
+      keyframes: {
+        pulseNeon: {
+          '0%, 100%': { boxShadow: '0 0 15px #0ff' },
+          '50%': { boxShadow: '0 0 25px #0ff' },
+        },
         glowLine: 'glowLine 3s infinite ease-in-out',
         neon1: 'neon1 4s infinite ease-in-out',
         neon2: 'neon2 4s infinite ease-in-out',
@@ -65,7 +72,7 @@ module.exports = {
         '2xl': '1536px',
       },
       colors: {
-        primary: 'white',
+        primary: 'black',
         'primary-dark': '#fff',
         secondary: 'black',
         'secondary-dark': '#000',
