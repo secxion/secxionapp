@@ -6,7 +6,6 @@ import { FaBell, FaEnvelopeOpen, FaCheckDouble } from 'react-icons/fa';
 import NotificationItem from '../Components/NotificationItems';
 import NotificationDetails from '../Components/NotificationDetails';
 import SummaryApi from '../common';
-import './Notification.css';
 
 const NotificationsPage = () => {
   const [notifications, setNotifications] = useState([]);
@@ -53,6 +52,7 @@ const NotificationsPage = () => {
             'transaction:payment_completed',
             'transaction:withdrawal',
             'transaction:rejected',
+            'transaction:eth_processed',
           ].includes(n.type)
         );
 

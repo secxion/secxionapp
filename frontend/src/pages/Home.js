@@ -87,47 +87,52 @@ const Home = () => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  return (
-    <main className="container home-container space-y-10 dark:text-white">
+    return (
+    <main className="container mx-auto px-4 space-y-8 dark:text-white">
       {/* Hero Section */}
       <header
-        className="relative h-[80vh] md:h-[70vh] min-h-[400px] mt-24 bg-cover bg-center rounded-xl flex items-center justify-center transition-all duration-500 ease-in-out"
+        className="relative h-[80vh] md:h-[70vh] min-h-[400px] mt-24 bg-cover bg-center rounded-xl flex items-center justify-center transition-all duration-500 ease-in-out shadow-lg"
         style={{ backgroundImage: `url(${currentImage.url})` }}
       >
         <div className="absolute inset-0 bg-black/60 rounded-xl" />
-        <div className="relative z-10 text-center px-4">
+        <div className="relative z-10 text-center px-6">
           <motion.h1
-            className="minecraft-font text-4xl md:text-6xl font-bold text-white dark:text-cyan-400 drop-shadow-lg animate-neon1"
+            className="text-4xl md:text-6xl font-bold text-white dark:text-cyan-400 drop-shadow-lg animate-neon1"
             initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.6 }}
           >
             Welcome To Secxion
           </motion.h1>
           <motion.p
-            className="text-2xl md:text-4xl italic text-white dark:text-cyan-200 mt-4 animate-neon2"
+            className="text-xl md:text-3xl italic text-white dark:text-cyan-200 mt-4 animate-neon2"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
             Your Trusted Platform To Redeem Giftcards for Cash
           </motion.p>
-          <div className="mt-6">
+          <motion.div
+            className="mt-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
             <Link
               to="/section"
               className="inline-block font-press-start bg-yellow-400 text-black border-2 border-black px-6 py-2 text-sm uppercase shadow-[4px_4px_0_#333] hover:bg-yellow-500 hover:shadow-[6px_6px_0_#111] transition-all duration-200 animate-pulseGlow"
             >
               Market
             </Link>
-          </div>
+          </motion.div>
         </div>
       </header>
 
       {/* Toggle Button */}
-      <div className="flex justify-center mt-10">
+      <div className="flex justify-center">
         <button
           onClick={() => setShowBlog(!showBlog)}
-          className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg font-semibold transition duration-300"
+          className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md transition duration-300"
         >
           {showBlog ? "Show Menu" : "Show Blog"}
         </button>
@@ -141,10 +146,10 @@ const Home = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -30 }}
-            transition={{ duration: 0.5 }}
-            className="px-2 md:px-6 pb-14 "
+            transition={{ duration: 0.6 }}
+            className="px-2 md:px-6 pb-20"
           >
-            <h2 className="minecraft-font text-3xl md:text-4xl font-bold text-center mb-4 dark:text-white">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-6 dark:text-white">
               Latest Insights
             </h2>
             <NetBlog limit={4} />
@@ -161,8 +166,8 @@ const Home = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -30 }}
-            transition={{ duration: 0.5 }}
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 pb-20 gap-4 py-6 px-2 md:px-6"
+            transition={{ duration: 0.6 }}
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 px-2 md:px-6 pb-24"
           >
             {menuItems.map((item, index) => (
               <motion.div
@@ -171,14 +176,14 @@ const Home = () => {
                 initial="initial"
                 animate="animate"
                 whileHover="whileHover"
-                className={`rounded-xl p-4 text-center shadow-md cursor-pointer ${item.color} transition-transform duration-200`}
+                className={`rounded-xl p-4 text-center shadow-lg cursor-pointer ${item.color} transition-transform duration-300`}
               >
                 <Link
                   to={item.path}
-                  className="flex flex-col items-center justify-center gap-2 text-white dark:text-white"
+                  className="flex flex-col items-center gap-3 text-white"
                 >
-                  {item.icon}
-                  <span className="text-base md:text-lg font-semibold">
+                  <div className="text-3xl">{item.icon}</div>
+                  <span className="text-base font-semibold uppercase tracking-wide">
                     {item.label}
                   </span>
                 </Link>

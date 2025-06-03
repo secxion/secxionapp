@@ -14,6 +14,7 @@ import {
   FaTimesCircle,
   FaFileInvoice,
   FaNewspaper,
+  FaEthereum,
 } from 'react-icons/fa';
 
 const getNotificationIcon = (type) => {
@@ -28,6 +29,7 @@ const getNotificationIcon = (type) => {
     case 'market_upload:DONE': return <FaCheckCircle className="h-3 w-3 mr-1 text-green-600" />;
     case 'market_upload:CANCEL': return <FaTimesCircle className="h-3 w-3 mr-1 text-red-600" />;
     case 'market_upload:PROCESSING': return <FaClock className="h-3 w-3 mr-1 text-yellow-600" />;
+    case 'transaction:eth_processed': return <FaEthereum className="h-3 w-3 mr-1 text-purple-600" />;
     default: return <FaInfoCircle className="h-3 w-3 mr-1 text-gray-400" />;
   }
 };
@@ -39,24 +41,26 @@ const NotificationItem = ({
   onOpenReportReply,
   onViewCreditDetails,
   onOpenMarketDetails,
+  onViewDetails,
 }) => {
   const timeAgo = formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true });
-  const truncateLength = 60;
-  const truncatedMessage = notification.message.length > truncateLength
-    ? `${notification.message.substring(0, truncateLength)}......`
-    : notification.message;
 
-  const isRejectionCredit = notification.type === 'transaction:credit' && notification.message.includes('rejected');
-  const isMarketNotification = notification.onModel === 'userproduct' && notification.relatedObjectId;
+  const truncateLength = 60;
+  const truncatedMessage =
+    notification.message.length > truncateLength
+      ? `${notification.message.substring(0, truncateLength)}...`
+      : notification.message;
+
   const notificationIcon = getNotificationIcon(notification.type);
 
   return (
-    <li className={clsx(
-      'px-4 py-10 hover:bg-gray-50 transition duration-150 ease-in-out',
-      notification.isRead ? 'bg-gray-100' : ''
-    )}>
-      <div className="flex items-start justify-between">
-        {/* Message + time + type tags */}
+    <li
+      className={clsx(
+        'px-4 py-6 hover:bg-gray-50 transition duration-150 ease-in-out rounded-md shadow-sm',
+        notification.isRead ? 'bg-gray-100' : 'bg-white'
+      )}
+    >
+      <div className="flex justify-between items-start gap-4">
         <div className="flex-grow">
           <p className="text-sm font-medium text-black flex items-center">
             {notificationIcon}
@@ -65,13 +69,12 @@ const NotificationItem = ({
           <p className="text-xs text-gray-500 mt-1">{timeAgo}</p>
 
           {notification.isRead && (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 ml-2">
+            <span className="inline-flex items-center px-2.5 py-0.5 mt-1 rounded-full text-xs font-medium bg-green-100 text-green-800 ml-1">
               Read
             </span>
           )}
 
-          {/* Notification Type Tags */}
-          <div className="mt-2 space-x-2">
+          <div className="mt-2 space-x-2 flex flex-wrap">
             {notification.type === 'report_reply' && (
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
                 <FaCommentDots className="h-3 w-3 mr-1" /> Reply
@@ -85,88 +88,78 @@ const NotificationItem = ({
             )}
 
             {notification.type.startsWith('transaction:') && (
-              <span className={clsx(
-                'inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold',
-                {
-                  'bg-red-100 text-red-800': notification.type === 'transaction:debit',
-                  'bg-green-100 text-green-800': notification.type === 'transaction:credit',
-                  'bg-yellow-100 text-yellow-800': notification.type === 'transaction:withdrawal',
-                  'bg-indigo-100 text-indigo-800': notification.type === 'transaction:payment_completed',
-                  'bg-orange-100 text-orange-800': notification.type === 'transaction:rejected',
-                }
-              )}>
+              <span
+                className={clsx(
+                  'inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold',
+                  {
+                    'bg-red-100 text-red-800': notification.type === 'transaction:debit',
+                    'bg-green-100 text-green-800': notification.type === 'transaction:credit',
+                    'bg-yellow-100 text-yellow-800': notification.type === 'transaction:withdrawal',
+                    'bg-indigo-100 text-indigo-800':
+                      notification.type === 'transaction:payment_completed',
+                    'bg-orange-100 text-orange-800':
+                      notification.type === 'transaction:rejected',
+                    'bg-purple-100 text-purple-800':
+                      notification.type === 'transaction:eth_processed',
+                  }
+                )}
+              >
                 {notification.type === 'transaction:debit' && '⬇️ Debit'}
                 {notification.type === 'transaction:credit' && '⬆️ Credit'}
-                {notification.type === 'transaction:withdrawal' && (<><FaShoppingCart className="h-3 w-3 mr-1" /> Withdrawal</>)}
-                {notification.type === 'transaction:payment_completed' && (<><FaCheckCircle className="h-3 w-3 mr-1" /> Completed</>)}
-                {notification.type === 'transaction:rejected' && (<><FaExclamationTriangle className="h-3 w-3 mr-1" /> Rejected</>)}
-              </span>
-            )}
-
-            {notification.type.startsWith('market_upload:') && (
-              <span className={clsx(
-                'inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold',
-                {
-                  'bg-green-100 text-green-800': notification.type === 'market_upload:DONE',
-                  'bg-red-100 text-red-800': notification.type === 'market_upload:CANCEL',
-                  'bg-yellow-100 text-yellow-800': notification.type === 'market_upload:PROCESSING',
-                }
-              )}>
-                {notification.type === 'market_upload:DONE' && (<><FaCheckCircle className="h-3 w-3 mr-1" /> Done</>)}
-                {notification.type === 'market_upload:CANCEL' && (<><FaTimesCircle className="h-3 w-3 mr-1" /> Cancelled</>)}
-                {notification.type === 'market_upload:PROCESSING' && (<><FaClock className="h-3 w-3 mr-1" /> Processing</>)}
+                {notification.type === 'transaction:withdrawal' && (
+                  <>
+                    <FaShoppingCart className="h-3 w-3 mr-1" /> Withdrawal
+                  </>
+                )}
+                {notification.type === 'transaction:payment_completed' && (
+                  <>
+                    <FaCheckCircle className="h-3 w-3 mr-1" /> Completed
+                  </>
+                )}
+                {notification.type === 'transaction:rejected' && (
+                  <>
+                    <FaExclamationTriangle className="h-3 w-3 mr-1" /> Rejected
+                  </>
+                )}
+                {notification.type === 'transaction:eth_processed' && (
+                  <>
+                    <FaEthereum className="h-3 w-3 mr-1" /> ETH Processed
+                  </>
+                )}
               </span>
             )}
           </div>
+
+          {/* View More or Details */}
+          {notification.message.length > truncateLength && (
+            <button
+              onClick={() => onViewDetails(notification)}
+              className="mt-2 inline-flex items-center px-2.5 py-1.5 border border-gray-300 text-gray-700 text-xs rounded hover:bg-gray-100 transition"
+            >
+              <FaExternalLinkAlt className="mr-1 h-3 w-3" />
+              View More
+            </button>
+          )}
         </div>
 
-        {/* Right-side Actions */}
-        <div className="ml-4 flex-shrink-0 flex flex-col items-end space-y-2">
-          {isMarketNotification && (
+        {/* Action Buttons */}
+        <div className="flex flex-col items-center gap-2 mt-1">
+          {!notification.isRead && (
             <button
-              onClick={() => onOpenMarketDetails(notification.relatedObjectId)}
-              className="inline-flex items-center px-2 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              aria-label="View Invoice"
+              onClick={() => onMarkAsRead(notification._id)}
+              className="text-green-600 hover:text-green-800 p-2 rounded-full border border-green-200 hover:bg-green-100 transition"
+              title="Mark as Read"
             >
-              <FaFileInvoice className="h-4 w-4 mr-1" /> Invoice
+              <FaCheck size={12} />
             </button>
           )}
-          {notification.type === 'report_reply' && (
-            <button
-              onClick={() => onOpenReportReply(notification)}
-              className="inline-flex items-center px-2 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              aria-label="Open Report Reply"
-            >
-              <FaExternalLinkAlt className="h-4 w-4 mr-1" /> Open
-            </button>
-          )}
-          {isRejectionCredit && (
-            <button
-              onClick={() => onViewCreditDetails(notification)}
-              className="inline-flex items-center px-2 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              aria-label="View Credit Details"
-            >
-              <FaInfoCircle className="h-4 w-4 mr-1" /> Details
-            </button>
-          )}
-          <div className="inline-flex rounded-md shadow-sm">
-            {!notification.isRead && (
-              <button
-                onClick={() => onMarkAsRead(notification._id)}
-                className="inline-flex items-center px-2 py-2 border border-gray-300 rounded-l-md shadow-sm text-sm font-medium text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                aria-label="Mark as Read"
-              >
-                <FaCheck className="h-4 w-4" />
-              </button>
-            )}
-            <button
-              onClick={() => onDelete(notification._id)}
-              className="inline-flex items-center px-2 py-2 border border-gray-300 rounded-r-md shadow-sm text-sm font-medium text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              aria-label="Delete Notification"
-            >
-              <FaTrash className="h-4 w-4" />
-            </button>
-          </div>
+          <button
+            onClick={() => onDelete(notification._id)}
+            className="text-red-600 hover:text-red-800 p-2 rounded-full border border-red-200 hover:bg-red-100 transition"
+            title="Delete"
+          >
+            <FaTrash size={12} />
+          </button>
         </div>
       </div>
     </li>

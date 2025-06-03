@@ -71,3 +71,56 @@ h3 {
 .scrollbar-track-gray-800 {
   scrollbar-color: transparent #1f2937;
 }
+/* VerticalCard.css */
+
+.vertical-card__image-container {
+  @apply overflow-hidden rounded bg-gray-900 flex items-center justify-center border-b border-gray-700;
+}
+
+.vertical-card__image {
+  @apply object-contain w-full h-full transition-opacity duration-300 ease-in-out opacity-90 hover:opacity-100;
+}
+
+.vertical-card__content {
+  @apply p-1;
+}
+
+.vertical-card__title {
+  @apply text-xs font-medium text-gray-200 line-clamp-2;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .vertical-card__image-container {
+    /* Reduce height relative to width on mobile if needed */
+    aspect-ratio: 1 / 0.8; /* Example: wider than tall */
+  }
+
+  .vertical-card__content {
+    @apply p-0.5; /* Even less padding on mobile */
+  }
+
+  .vertical-card__title {
+    font-size: 0.75rem; /* Smaller font size on mobile */
+  }
+}
+
+
+.border-neon-pink {
+  border-color: #ff6ec7; /* Example neon pink */
+}
+
+.bg-neon-pink {
+  background-color: #ff6ec7; /* Example neon pink */
+}
+
+/* You might want a more subtle neon effect, like a glow: */
+.border-neon-pink {
+  border-color:rgb(34, 2, 146);
+  box-shadow: 0 0 5px #ff6ec7, 0 0 10px rgba(132, 110, 255, 0.8);
+}
+
+.bg-neon-pink-gradient {
+  background: linear-gradient(to right,rgb(11, 0, 105),rgb(3, 0, 163)); /* Example gradient */
+  color: white; /* Ensure text is readable */
+}

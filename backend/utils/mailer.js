@@ -14,17 +14,10 @@ console.log("MAIL_PASS:", MAIL_PASS ? "✓ set" : "❌ not set");
 console.log("FRONTEND_URL:", FRONTEND_URL);
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true, 
+  service: 'gmail',
   auth: {
     user: MAIL_USER,
     pass: MAIL_PASS,
-  },
-  connectionTimeout: 10000, 
-  greetingTimeout: 5000,
-  tls: {
-    rejectUnauthorized: false, 
   }
 });
 
@@ -33,7 +26,7 @@ const sendEmail = async (options, context) => {
     await transporter.sendMail(options);
   } catch (err) {
     console.error(`❌ Nodemailer error in [${context}]:`, err);
-    throw new Error("Failed to send email. Please try again.");
+    throw new Error("Email system unavailable. Please try again shortly.");
   }
 };
 

@@ -1,35 +1,46 @@
-when EthWithdrawal.js is mounted, status should be constant in local storage and if status is not processed hence user cannot make new request until a pending status is processedor reject
-we will modify both backend controller and frontend UI to implement this function
-//
-Modify files and share full updated code files 
-//
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { useSelector } from "react-redux";
-import SummaryApi from "../common";
 import QrScanner from "react-qr-scanner";
-import { calculateGasFee } from "../helper/calculateGasFee";
+import { EthContext } from "../Context/EthContext";
+import SummaryApi from "../common";
+
+const COUNTDOWN_DURATION = 300;
+const LOCAL_STORAGE_KEY = "ethWithdrawalCountdownEnd";
+const LOCAL_STORAGE_STATUS_KEY = "ethWithdrawalStatus";
+const LOCAL_STORAGE_MESSAGE_KEY = "ethWithdrawalSuccessMessage";
 
 const EthWallet = () => {
   const { user } = useSelector((state) => state.user);
+  const {
+    ethRate,
+    setEthRate,
+    gasFee,
+    setGasFee,
+    nairaBalance,
+    setNairaBalance,
+    ethBalance,
+    setEthBalance,
+    fetchEthRate,
+    fetchGasFee,
+    fetchWalletBalance,
+  } = useContext(EthContext);
+
   const [ethAddress, setEthAddress] = useState("");
   const [addressHistory, setAddressHistory] = useState([]);
-  const [nairaBalance, setNairaBalance] = useState(0);
-  const [ethBalance, setEthBalance] = useState("0.000000");
   const [nairaWithdrawAmount, setNairaWithdrawAmount] = useState("");
   const [ethEquivalent, setEthEquivalent] = useState("0.000000");
-  const [ethRate, setEthRate] = useState(0);
+  const [ethToSend, setEthToSend] = useState("0.000000");
   const [lastUpdated, setLastUpdated] = useState(null);
   const [loading, setLoading] = useState(true);
   const [scannerVisible, setScannerVisible] = useState(false);
   const [withdrawLoading, setWithdrawLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [gasFee, setGasFee] = useState("0.000000");
-  const [ethToSend, setEthToSend] = useState("0.000000");
   const [countdown, setCountdown] = useState(0);
   const [withdrawalStatus, setWithdrawalStatus] = useState(null);
   const countdownRef = useRef(null);
-
+  const statusIntervalRef = useRef(null);
+  
   const formatTime = (date) =>
     date.toLocaleTimeString([], {
       hour12: false,
@@ -39,60 +50,188 @@ const EthWallet = () => {
       timeZoneName: "short",
     });
 
-  const fetchWalletData = async () => {
+  const refreshWalletData = async () => {
+    setLoading(true);
+    setErrorMessage("");
     try {
-      setLoading(true);
-      setErrorMessage("");
-
-      const balanceRes = await fetch(`${SummaryApi.getWalletBalance.url}/${user._id || user.id}`, {
-        method: "GET",
-        credentials: "include",
-      });
-      if (!balanceRes.ok) throw new Error("Failed to fetch wallet balance");
-      const balanceData = await balanceRes.json();
-      const naira = balanceData.balance || 0;
-      setNairaBalance(naira);
-
-      const rateRes = await fetch(SummaryApi.fetchEthPrice.url);
-      if (!rateRes.ok) throw new Error("Failed to fetch ETH rate");
-      const rateData = await rateRes.json();
-      const rate = rateData?.ethereum?.ngn || 0;
-      setEthRate(rate);
-
-      if (rate > 0) {
-        const ethValue = naira / rate;
-        setEthBalance(ethValue.toFixed(6));
-      } else {
-        setEthBalance("0.000000");
-      }
-
+      await fetchEthRate();
+      await fetchWalletBalance(user._id || user.id);
       setLastUpdated(formatTime(new Date()));
-    } catch (err) {
-      console.error("Error fetching wallet data:", err);
+    } catch (error) {
+      console.error("refreshWalletData error:", error);
       setErrorMessage("Unable to load wallet data. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchGasFee = async () => {
+  const refreshGasFee = async () => {
     try {
-      const gasData = await calculateGasFee("medium");
-      const baseFee = parseFloat(gasData.feeEth);
-      const bufferedFee = baseFee * 1.1;
-      setGasFee(bufferedFee.toFixed(6));
+      await fetchGasFee();
+    } catch (error) {
+      console.error("refreshGasFee error:", error);
+    }
+  };
+
+  const resetLocalStorageIfNoRequests = async () => {
+    try {
+      const res = await fetch(`${SummaryApi.withdrawalStatus.url}`, {
+        method: "GET",
+        credentials: "include",
+      });
+      const data = await res.json();
+
+      if (res.ok && (!data.status || data.status === "")) {
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        localStorage.removeItem(LOCAL_STORAGE_STATUS_KEY);
+        localStorage.removeItem(LOCAL_STORAGE_MESSAGE_KEY);
+        setCountdown(0);
+        setWithdrawalStatus(null);
+        setSuccessMessage("");
+      }
     } catch (err) {
-      console.error("Failed to calculate gas fee:", err);
-      setGasFee("0.000000");
+      console.error("Error checking withdrawal reset status:", err);
     }
   };
 
   useEffect(() => {
-    fetchWalletData();
-    fetchGasFee();
-    const interval = setInterval(fetchWalletData, 60000);
+    const storedEndTimestamp = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const storedStatus = localStorage.getItem(LOCAL_STORAGE_STATUS_KEY);
+    const storedMessage = localStorage.getItem(LOCAL_STORAGE_MESSAGE_KEY);
+
+    if (storedEndTimestamp) {
+      const endTime = parseInt(storedEndTimestamp, 10);
+      const now = Date.now();
+      if (endTime > now) {
+        const remainingSeconds = Math.floor((endTime - now) / 1000);
+        setCountdown(remainingSeconds);
+      } else {
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+      }
+    }
+
+    if (storedStatus) {
+      setWithdrawalStatus(storedStatus);
+    }
+
+    if (storedMessage) {
+      setSuccessMessage(storedMessage);
+    }
+
+    refreshWalletData();
+    refreshGasFee();
+    resetLocalStorageIfNoRequests();
+
+    // Always check latest withdrawal status on mount
+const checkInitialWithdrawalStatus = async () => {
+  try {
+    const res = await fetch(`${SummaryApi.withdrawalStatus.url}`, {
+      method: "GET",
+      credentials: "include",
+    });
+    const data = await res.json();
+
+    if (res.ok && data.status) {
+      const normalizedStatus = data.status.toLowerCase();
+
+      if (["paid", "processed"].includes(normalizedStatus)) {
+        setWithdrawalStatus("paid");
+        setSuccessMessage(`Transaction Successful! Your last withdrawal is ${normalizedStatus}.`);
+        localStorage.setItem(LOCAL_STORAGE_STATUS_KEY, "paid");
+        localStorage.setItem(
+          LOCAL_STORAGE_MESSAGE_KEY,
+          `Transaction Successful! Your last withdrawal is ${normalizedStatus}.`
+        );
+        setCountdown(0);
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+      } else if (normalizedStatus === "pending") {
+        setWithdrawalStatus("pending");
+        localStorage.setItem(LOCAL_STORAGE_STATUS_KEY, "pending");
+      } else if (normalizedStatus === "rejected") {
+        setWithdrawalStatus("rejected");
+        localStorage.setItem(LOCAL_STORAGE_STATUS_KEY, "rejected");
+        localStorage.removeItem(LOCAL_STORAGE_MESSAGE_KEY);
+        setSuccessMessage("");
+      } else {
+        setWithdrawalStatus(normalizedStatus);
+      }
+    }
+  } catch (err) {
+    console.error("Error checking initial withdrawal status:", err);
+  }
+};
+
+checkInitialWithdrawalStatus();
+
+
+    const interval = setInterval(refreshWalletData, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (countdown > 0) {
+      countdownRef.current = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(countdownRef.current);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      statusIntervalRef.current = setInterval(async () => {
+        try {
+          const res = await fetch(`${SummaryApi.withdrawalStatus.url}`, {
+            method: "GET",
+            credentials: "include",
+          });
+          const data = await res.json();
+          if (res.ok && data.status) {
+            const normalizedStatus = data.status.toLowerCase();
+            if (["paid", "processed"].includes(normalizedStatus)) {
+              setWithdrawalStatus("paid");
+              setSuccessMessage(
+                `Transaction Successful! Your withdrawal is ${normalizedStatus}.`
+              );
+              localStorage.setItem(LOCAL_STORAGE_STATUS_KEY, "paid");
+              localStorage.setItem(
+                LOCAL_STORAGE_MESSAGE_KEY,
+                `Transaction Successful! Your withdrawal is ${normalizedStatus}.`
+              );
+              setCountdown(0);
+              localStorage.removeItem(LOCAL_STORAGE_KEY);
+              clearInterval(countdownRef.current);
+              clearInterval(statusIntervalRef.current);
+            } else if (normalizedStatus === "pending") {
+              setWithdrawalStatus("pending");
+              localStorage.setItem(LOCAL_STORAGE_STATUS_KEY, "pending");
+            } else if (normalizedStatus === "rejected") {
+              setWithdrawalStatus("rejected");
+              setSuccessMessage("");
+              localStorage.setItem(LOCAL_STORAGE_STATUS_KEY, "rejected");
+              localStorage.removeItem(LOCAL_STORAGE_MESSAGE_KEY);
+            } else {
+              setWithdrawalStatus(normalizedStatus);
+            }
+          }
+        } catch (err) {
+          console.error("Failed to fetch withdrawal status");
+        }
+      }, 3000);
+
+      return () => {
+        clearInterval(countdownRef.current);
+        clearInterval(statusIntervalRef.current);
+      };
+    }
+  }, [countdown]);
+
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("eth_addresses") || "[]");
+    const userSpecific = stored.filter((addr) => addr.userId === user._id || addr.userId === user.id);
+    setAddressHistory(userSpecific.map(a => a.address));
+  }, [user]);
 
   useEffect(() => {
     const naira = parseFloat(nairaWithdrawAmount);
@@ -110,59 +249,14 @@ const EthWallet = () => {
     }
   }, [nairaWithdrawAmount, ethRate, gasFee]);
 
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("eth_addresses") || "[]");
-    setAddressHistory(stored);
-  }, []);
-
-  useEffect(() => {
-    if (successMessage) {
-      const timer = setTimeout(() => setSuccessMessage(""), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [successMessage]);
-
-  useEffect(() => {
-    if (countdown > 0) {
-      countdownRef.current = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            clearInterval(countdownRef.current);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      const statusInterval = setInterval(async () => {
-        try {
-          const res = await fetch(`${SummaryApi.withdrawalStatus.url}`, {
-            method: "GET",
-            credentials: "include",
-          });
-          const data = await res.json();
-          if (res.ok && data.status) {
-            setWithdrawalStatus(data.status);
-            if (data.status.toLowerCase() === "processed") {
-              clearInterval(countdownRef.current);
-              setCountdown(0);
-            }
-          }
-        } catch (err) {
-          console.error("Failed to fetch withdrawal status");
-        }
-      }, 3000);
-
-      return () => {
-        clearInterval(countdownRef.current);
-        clearInterval(statusInterval);
-      };
-    }
-  }, [countdown]);
-
   const handleWithdrawRequest = async () => {
     setErrorMessage("");
     setSuccessMessage("");
+
+    if (withdrawalStatus === "pending") {
+      setErrorMessage("A previous withdrawal is still pending. Please wait.");
+      return;
+    }
 
     if (
       !ethAddress.trim() ||
@@ -170,17 +264,16 @@ const EthWallet = () => {
       isNaN(nairaWithdrawAmount) ||
       parseFloat(nairaWithdrawAmount) <= 0
     ) {
-      setErrorMessage("Please enter a valid ETH address and withdrawal amount.");
+      setErrorMessage("Please enter a valid ETH address and amount.");
       return;
     }
 
     setWithdrawLoading(true);
     try {
       const payload = {
-        ethAddress,
-        nairaAmount: parseFloat(nairaWithdrawAmount),
-        ethToSend: parseFloat(ethToSend),
-        gasFee: parseFloat(gasFee),
+        ethRecipientAddress: ethAddress,
+        nairaRequestedAmount: parseFloat(nairaWithdrawAmount),
+        ethNetAmountToSend: parseFloat(ethToSend),
       };
 
       const res = await fetch(SummaryApi.ethWithdrawal.url, {
@@ -193,263 +286,227 @@ const EthWallet = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Withdrawal failed.");
 
-      setSuccessMessage(data.message || "Withdrawal request sent successfully.");
-      setCountdown(300);
+      setSuccessMessage("Withdrawal submitted and processing.");
       setWithdrawalStatus("pending");
-      setNairaWithdrawAmount("");
-      saveAddressToHistory(ethAddress);
-    } catch (err) {
-      console.error("Withdrawal error:", err);
-      setErrorMessage(`Error: ${err.message}`);
+
+      const countdownEnd = Date.now() + COUNTDOWN_DURATION * 1000;
+      localStorage.setItem(LOCAL_STORAGE_KEY, countdownEnd.toString());
+      localStorage.setItem(LOCAL_STORAGE_STATUS_KEY, "pending");
+      localStorage.setItem(
+        LOCAL_STORAGE_MESSAGE_KEY,
+        "Withdrawal submitted and processing."
+      );
+      setCountdown(COUNTDOWN_DURATION);
+
+      const updatedHistory = [
+        { userId: user._id || user.id, address: ethAddress },
+        ...addressHistory
+          .filter((addr) => addr !== ethAddress)
+          .map((a) => ({ userId: user._id || user.id, address: a }))
+      ].slice(0, 5);
+
+      setAddressHistory(updatedHistory.map(a => a.address));
+      localStorage.setItem("eth_addresses", JSON.stringify(updatedHistory));
+    } catch (error) {
+      console.error("Withdrawal error:", error);
+      setErrorMessage(error.message || "Error submitting withdrawal.");
     } finally {
       setWithdrawLoading(false);
     }
   };
 
-  const saveAddressToHistory = (address) => {
-    const stored = JSON.parse(localStorage.getItem("eth_addresses") || "[]");
-    if (!stored.includes(address)) {
-      stored.unshift(address);
-      if (stored.length > 5) stored.pop();
-      localStorage.setItem("eth_addresses", JSON.stringify(stored));
-      setAddressHistory(stored);
-    }
-  };
-
   const handleScan = (data) => {
-    if (data?.text) {
+    if (data) {
       setEthAddress(data.text);
-      saveAddressToHistory(data.text);
       setScannerVisible(false);
     }
   };
 
   const handleError = (err) => {
-    console.error("QR Scan error:", err);
-    setScannerVisible(false);
+    console.error(err);
+  };
+
+  const renderCountdown = () => {
+    if (countdown <= 0) return null;
+    const mins = Math.floor(countdown / 60);
+    const secs = countdown % 60;
+    return (
+      <div className="mt-3 text-yellow-600 font-semibold">
+        Processing: {mins}m {secs}s
+      </div>
+    );
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 mt-20 bg-white rounded-2xl shadow-2xl">
-      <h2 className="text-2xl font-bold mb-2 flex items-center justify-between text-blue-700">
-        ETH Withdrawal
-        <span className="flex items-center gap-2 text-sm text-green-600">
-          <span className="h-2 w-2 bg-green-500 rounded-full animate-ping"></span> Live
+    <div className="max-w-xl mx-auto p-6 mt-20 bg-white rounded-lg shadow-md border border-gray-200">
+      <h2 className="text-2xl font-bold mb-4">ETH Wallet</h2>
+ <div className="mb-8 text-sm text-gray-700 space-y-3 bg-white p-5 rounded-lg shadow-sm border border-gray-200">
+  {loading ? (
+    <p className="italic text-gray-500">Loading balances...</p>
+  ) : (
+    <>
+      <div className="flex items-center justify-between">
+        <span className="font-medium">Naira Balance:</span>
+        <span className="text-green-600 font-semibold">₦{nairaBalance?.toLocaleString() || "0.00"}</span>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <span className="font-medium">ETH Balance:</span>
+        <span className="text-green-600 font-semibold">
+          {ethBalance != null && !isNaN(ethBalance) ? Number(ethBalance).toFixed(6) : "..."}
         </span>
-      </h2>
-
-      <p className="text-xs text-gray-500 mb-2">
-        Current ETH Rate: <strong>₦{ethRate.toLocaleString()}</strong> / 1 ETH
-      </p>
-      <p className="text-xs text-gray-500 mb-4">Last updated: {lastUpdated || "--"}</p>
-
-      {errorMessage && <div className="bg-red-100 text-red-700 p-2 mb-4 rounded">{errorMessage}</div>}
-      {successMessage && <div className="bg-green-100 text-green-700 p-2 mb-4 rounded">{successMessage}</div>}
-
-      {countdown > 0 && (
-        <div className="text-xs text-blue-500 mb-2">
-          You can make a new request in:{" "}
-          <strong> 
-            {Math.floor(countdown / 60)}:{(countdown % 60).toString().padStart(2, "0")}
-          </strong>
-        </div>
-      )}
-      {withdrawalStatus && (
-        <div className="text-xs text-purple-600 mb-2 capitalize">
-          Withdrawal Status: <strong>{withdrawalStatus}</strong>
-        </div>
-      )}
-
-      {/* ETH Address + QR + History */}
-      <div className="mb-3">
-        <label className="block text-sm font-medium">ETH Address</label>
-        <input
-          className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={ethAddress}
-          onChange={(e) => setEthAddress(e.target.value)}
-          placeholder="Enter your ETH address"
-        />
-        <div className="mt-2 flex justify-between items-center">
-          <button onClick={() => setScannerVisible((prev) => !prev)} className="text-blue-600 text-sm hover:underline">
-            {scannerVisible ? "Hide QR Scanner" : "Scan QR Code"}
-          </button>
-          {addressHistory.length > 0 && (
-            <select className="text-sm border rounded p-1 bg-gray-50" onChange={(e) => setEthAddress(e.target.value)} defaultValue="">
-              <option value="" disabled>Recent Addresses</option>
-              {addressHistory.map((addr, i) => (
-                <option key={i} value={addr}>{addr}</option>
-              ))}
-            </select>
-          )}
-        </div>
-        {scannerVisible && (
-          <div className="mt-4 rounded overflow-hidden shadow">
-            <QrScanner delay={300} style={{ width: "100%" }} onError={handleError} onScan={handleScan} />
-          </div>
-        )}
       </div>
 
-      <div className="mb-4 text-sm text-gray-700">
-        <p>Naira Wallet: <strong>₦{parseFloat(nairaBalance).toLocaleString()}</strong></p>
-        <p>ETH Balance: <strong>{ethBalance} ETH</strong></p>
+      <div className="flex items-center justify-between">
+        <span className="font-medium">ETH Rate:</span>
+        <span className="text-gray-900">₦{ethRate?.toLocaleString() || "..."}</span>
       </div>
+
+      <div className="flex items-center justify-between">
+        <span className="font-medium">Gas Fee:</span>
+        <span className="text-gray-900">{gasFee ?? "..."} ETH</span>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <span className="font-medium">Last Updated:</span>
+        <span className="text-gray-500">{lastUpdated || "..."}</span>
+      </div>
+    </>
+  )}
+</div>
+
+
+            <div className="mb-4">
+  <label htmlFor="ethAddress" className="block font-medium text-gray-700 mb-2">
+    ETH Address:
+  </label>
+
+  {/* Input + Select */}
+  <div className="flex flex-col md:flex-row md:items-center gap-3">
+    <input
+      type="text"
+      id="ethAddress"
+      value={ethAddress}
+      onChange={(e) => setEthAddress(e.target.value)}
+      placeholder="Enter your ETH address"
+      className="flex-1 px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+    />
+    
+    {addressHistory.length > 0 && (
+      <select
+        onChange={(e) => setEthAddress(e.target.value)}
+        defaultValue=""
+        className="w-full md:w-60 px-3 py-2 border text-sm rounded-md bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        <option value="" disabled>
+          Recent Addresses
+        </option>
+        {addressHistory.map((addr, i) => (
+          <option key={i} value={addr}>
+            {addr}
+          </option>
+        ))}
+      </select>
+    )}
+  </div>
+
+  {/* QR Button */}
+  <button
+    type="button"
+    onClick={() => setScannerVisible(!scannerVisible)}
+    className="mt-3 inline-block px-5 py-2.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition duration-200 shadow"
+  >
+    {scannerVisible ? "Close Scanner" : "Scan QR"}
+  </button>
+
+  {/* QR Scanner */}
+  {scannerVisible && (
+    <div className="mt-4 border rounded-md overflow-hidden shadow-sm">
+      <QrScanner
+        delay={500}
+        onError={handleError}
+        onScan={handleScan}
+        style={{ width: "100%" }}
+      />
+    </div>
+  )}
+</div>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium">Withdraw Amount (₦)</label>
+        <label className="block font-semibold mb-1" htmlFor="nairaAmount">
+          Amount to Withdraw (₦)
+        </label>
         <input
-          className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           type="number"
+          id="nairaAmount"
           value={nairaWithdrawAmount}
           onChange={(e) => setNairaWithdrawAmount(e.target.value)}
           placeholder="Enter amount in Naira"
-          min="0"
+          className="w-full border rounded px-3 py-2"
+          disabled={withdrawalStatus === "pending"}
+          min="1"
+          step="any"
         />
-        <p className="mt-1 text-xs text-gray-500">
-          Equivalent in ETH: <strong>{ethEquivalent} ETH</strong>
+      </div>
+
+      <div className="mb-4 text-gray-700">
+        <p>
+          ETH Equivalent: <span className="font-semibold">{ethEquivalent}</span>
         </p>
-        <p className="mt-1 text-xs text-yellow-600">
-          Estimated Gas Fee: <strong>{gasFee} ETH</strong>
+        <p>
+          Gas Fee: <span className="font-semibold">{gasFee}</span> ETH
         </p>
-        <p className="mt-1 text-xs text-red-600">
-          ETH to Receive: <strong>{ethToSend} ETH</strong>
+        <p>
+          ETH to Recieve: <span className="font-semibold">{ethToSend}</span>
         </p>
       </div>
 
+      {withdrawalStatus === "rejected" && (
+  <div className="mb-6 p-4 border border-red-300 bg-red-50 rounded-md text-red-700 text-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <span>
+      Your last pending transaction has been <strong>rejected</strong>. Please try again or contact support.
+    </span>
+    <a
+      href="/report"
+      className="px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-700 transition text-sm whitespace-nowrap"
+    >
+      Contact Support
+    </a>
+  </div>
+)}
+{errorMessage && (
+        <div className="mb-4 text-red-600 font-semibold">{errorMessage}</div>
+      )}
+
+      {successMessage && (
+        <div className="mb-4 text-green-600 font-semibold">{successMessage}</div>
+      )}
+
+      {withdrawalStatus === "pending" && (
+        <div className="mb-4 text-yellow-700 font-semibold">
+          Your withdrawal request is pending. You cannot make another withdrawal until it is processed.
+        </div>
+      )}
+
+      {renderCountdown()}
+
       <button
         onClick={handleWithdrawRequest}
-        className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 w-full shadow-md flex justify-center items-center gap-2 disabled:opacity-50"
-        disabled={withdrawLoading || countdown > 0}
+        disabled={withdrawLoading || withdrawalStatus === "pending"}
+        className={`w-full py-3 text-white font-bold rounded ${
+          withdrawalStatus === "pending" || withdrawLoading
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-blue-600 hover:bg-blue-700"
+        }`}
       >
-        {withdrawLoading ? (
-          <>
-            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-            </svg>
-            Processing...
-          </>
-        ) : (
-          "Submit Withdrawal Request"
-        )}
+        {withdrawLoading ? "Processing..." : "Withdraw"}
       </button>
+
+      <div className="mt-4 text-sm text-gray-500">
+        Last updated: {lastUpdated || "Loading..."}
+      </div>
     </div>
   );
 };
 
 export default EthWallet;
-
-//
-import EthWithdrawalRequest from "../models/ethWithdrawalRequestModel.js";
-import axios from "axios";
-
-/**
- * Submit a new Ethereum withdrawal request
- */
-export const createEthWithdrawalRequest = async (req, res) => {
-  try {
-    const { ethAddress, nairaAmount } = req.body;
-    const userId = req.userId;
-
-    console.log("Received withdrawal request:", { ethAddress, nairaAmount, userId });
-
-    if (!userId) {
-      return res.status(401).json({ success: false, message: "Unauthorized: user ID missing" });
-    }
-
-    if (!ethAddress || !nairaAmount) {
-      return res.status(400).json({ success: false, message: "ETH address and Naira amount are required." });
-    }
-
-    // Fetch ETH to NGN rate from CoinGecko
-    let ethRate;
-    try {
-      const rateResponse = await axios.get("https://api.coingecko.com/api/v3/simple/price", {
-        params: {
-          ids: "ethereum",
-          vs_currencies: "ngn"
-        }
-      });
-      ethRate = rateResponse.data?.ethereum?.ngn;
-
-      if (!ethRate) {
-        console.error("ETH rate missing in API response:", rateResponse.data);
-        return res.status(500).json({ success: false, message: "Unable to fetch ETH rate." });
-      }
-
-      console.log("Fetched ETH to NGN rate:", ethRate);
-    } catch (apiError) {
-      console.error("Failed to fetch ETH rate:", apiError);
-      return res.status(502).json({ success: false, message: "External API error while fetching ETH rate." });
-    }
-
-    const ethEquivalent = parseFloat(nairaAmount) / ethRate;
-
-    const newWithdrawal = new EthWithdrawalRequest({
-      userId,
-      ethAddress,
-      nairaAmount,
-      ethEquivalent,
-      status: "Pending"
-    });
-
-    await newWithdrawal.save();
-
-    console.log("Withdrawal request saved:", newWithdrawal);
-
-    return res.status(201).json({
-      success: true,
-      message: "Withdrawal request submitted successfully.",
-      data: newWithdrawal
-    });
-  } catch (error) {
-    console.error("Unexpected error during withdrawal:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Server error while processing withdrawal request.",
-      error: error.message
-    });
-  }
-};
-
-/**
- * Admin: Get all ETH withdrawal requests (optional filtering later)
- */
-export const getAllEthWithdrawalRequests = async (req, res) => {
-  try {
-    const requests = await EthWithdrawalRequest.find().populate("userId", "name email").sort({ createdAt: -1 });
-
-    return res.status(200).json({ success: true, data: requests });
-  } catch (error) {
-    console.error("Failed to fetch withdrawal requests:", error);
-    return res.status(500).json({ success: false, message: "Error fetching withdrawal requests", error: error.message });
-  }
-};
-
-/**
- * Admin: Update the status of a withdrawal request
- */
-export const updateEthWithdrawalStatus = async (req, res) => {
-  try {
-    const { requestId } = req.params;
-    const { status } = req.body;
-
-    if (!["Pending", "Processed", "Rejected"].includes(status)) {
-      return res.status(400).json({ success: false, message: "Invalid status value." });
-    }
-
-    const request = await EthWithdrawalRequest.findByIdAndUpdate(
-      requestId,
-      { status },
-      { new: true }
-    );
-
-    if (!request) {
-      return res.status(404).json({ success: false, message: "Withdrawal request not found." });
-    }
-
-    return res.status(200).json({ success: true, message: "Status updated successfully", data: request });
-  } catch (error) {
-    console.error("Failed to update withdrawal request status:", error);
-    return res.status(500).json({ success: false, message: "Error updating status", error: error.message });
-  }
-};

@@ -23,16 +23,10 @@ async function userSignUpController(req, res) {
       });
     }
 
-    // Get IP address (support proxies)
-    const signupIP =
-      req.headers["x-forwarded-for"]?.split(",").shift() ||
-      req.socket?.remoteAddress ||
-      null;
-
     const hashPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
     const emailToken = uuidv4();
 
-    const newUser = new userModel({
+    const tempUser = {
       name,
       email,
       password: hashPassword,
@@ -42,9 +36,20 @@ async function userSignUpController(req, res) {
       role: "GENERAL",
       isVerified: false,
       emailToken,
-      signupIP, 
-    });
+    };
 
+    // ✉️ Try sending email before saving user
+    try {
+      await sendVerificationEmail(email, emailToken);
+    } catch (emailError) {
+      return res.status(503).json({
+        success: false,
+        message: "Sign-up temporarily unavailable due to system maintenance. Please try again shortly.",
+      });
+    }
+
+    // ✅ Save user only if email worked
+    const newUser = new userModel(tempUser);
     await newUser.save();
 
     await updateWalletBalance(
@@ -56,17 +61,16 @@ async function userSignUpController(req, res) {
       "User"
     );
 
-    await sendVerificationEmail(email, emailToken);
-
     return res.status(201).json({
       success: true,
-      message: "Thank You For Signing Up! ₦900 signup bonus awarded. Please verify your email.",
+      message: "Thank you for signing up! ₦900 signup bonus awarded. Please verify your email to continue.",
     });
+
   } catch (err) {
     console.error("Signup error:", err);
     return res.status(500).json({
       success: false,
-      message: err.message || "Signup failed due to a server error.",
+      message: "Signup failed due to an unexpected server error.",
     });
   }
 }

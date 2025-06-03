@@ -1,285 +1,166 @@
+import React, { useState } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  HomeIcon,
+  UserIcon,
+  GlobeAltIcon,
+  InformationCircleIcon,
+  PhoneIcon,
+  Cog6ToothIcon,
+} from '@heroicons/react/24/outline';
+import { FaWallet, FaBlog } from 'react-icons/fa';
+import Clock from 'react-live-clock';
+import ROLE from '../common/role';
+import NotificationBadge from "../helper/NotificationBadge";
 
-/* Hero Section */
-.hero-section {
-    position: relative;
-    height: 60vh; 
-    min-height: 300px;
-    background-size: cover;
-    background-position: center;
-    border-radius: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.5s ease-in-out;
-    overflow: hidden; /* To contain the overlay within the border-radius */
-}
+const SidePanel = ({ open, setOpen, user, timezone, setTimezone, timezones, handleLogout, loading }) => {
+  const [showTimezones, setShowTimezones] = useState(false);
 
-.hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: inherit; /* Inherit border-radius from parent */
-}
+  const handleLinkClick = () => setOpen(false);
+  const toggleTimezones = () => setShowTimezones(!showTimezones);
+  const handleTimezoneChange = (tz) => {
+    setTimezone(tz);
+    setShowTimezones(false);
+  };
+ const getSelectedTimezoneLabel = () =>
+  Array.isArray(timezones) ? timezones.find((tz) => tz.value === timezone)?.label : null;
 
-.hero-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 1rem;
-}
 
-.hero-title {
-    font-size: 2rem;
-    color: white;
-    margin-bottom: 0.5rem;
-    text-shadow: 0 0 6px #00f7ff, 0 0 12px #00f7ff;
-}
+  return (
+    <Transition.Root show={open} as={React.Fragment}>
+      <Dialog as="div" className="fixed inset-0 z-50 md:hidden" onClose={() => setOpen(false)}>
+        <Transition.Child
+          as={React.Fragment}
+          enter="transform transition ease-in-out duration-300"
+          enterFrom="-translate-x-full"
+          enterTo="translate-x-0"
+          leave="transform transition ease-in-out duration-300"
+          leaveFrom="translate-x-0"
+          leaveTo="-translate-x-full"
+        >
+          <Dialog.Panel className="relative flex flex-col w-full max-w-sm h-full panel-glass shadow-xl rounded-r-lg overflow-y-auto pb-6">
 
-.hero-description {
-    font-size: 1.25rem;
-    color: #eee;
-    text-shadow: 0 0 6px #0ff;
-}
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-4 mt-10 border-b border-gray-200 shadow-sm card-soft">
+              <button
+                type="button"
+                className="text-gray-500 hover:text-blue-600 transition"
+                onClick={() => setOpen(false)}
+              >
+                <FontAwesomeIcon icon={faBars} className="h-5 w-5" />
+              </button>
 
-.hero-button-container {
-    margin-top: 1rem;
-}
+              <Link to="/notifications" title="Notifications" aria-label="Notifications" onClick={handleLinkClick}>
+                <NotificationBadge />
+              </Link>
 
-.hero-button {
-    font-family: 'Press Start 2P', cursive;
-    background-color: #ffcc00;
-    color: #000;
-    border: 2px solid #000;
-    padding: 0.75rem 1.5rem;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    box-shadow: 2px 2px 0 #333;
-}
+              <button
+                onClick={handleLogout}
+                disabled={loading}
+                className="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold py-2 px-4 rounded-md shadow-md transition-all hover-scale"
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" /> Logout
+              </button>
+            </div>
 
-.hero-button:hover {
-    background-color: #ffaa00;
-    transform: translateY(-1px);
-    box-shadow: 4px 4px 0 #111;
-}
+            {/* Navigation */}
+            <nav className="mt-4 px-4 space-y-3">
+              {[
+                { path: '/home', icon: <HomeIcon className="h-5 w-5" />, label: 'Home' },
+                { path: '/section', icon: <GlobeAltIcon className="h-5 w-5" />, label: 'Marketplace' },
+                { path: '/profile', icon: <UserIcon className="h-5 w-5" />, label: 'Profile' },
+                { path: '/record', icon: <InformationCircleIcon className="h-5 w-5" />, label: 'Trade Status' },
+                { path: '/mywallet', icon: <FaWallet className="h-5 w-5" />, label: 'Wallet' },
+                { path: '/datapad', icon: <FaBlog className="h-5 w-5" />, label: 'DataPad' },
+                { path: '/report', icon: <PhoneIcon className="h-5 w-5" />, label: 'Connect with us' },
+                ...(user?.role === ROLE.ADMIN
+                  ? [{
+                      path: '/admin-panel',
+                      icon: <Cog6ToothIcon className="h-5 w-5" />,
+                      label: 'Admin Panel',
+                    }]
+                  : []),
+              ].map(({ path, icon, label }) => (
+                <Link
+                  key={label}
+                  to={path}
+                  onClick={handleLinkClick}
+                  className="flex items-center px-4 py-2 rounded-md border border-gray-200 bg-white text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition-all text-sm font-medium shadow-sm hover-glow hover-scale"
+                >
+                  <span className="mr-3 text-gray-400 group-hover:text-blue-500">{icon}</span>
+                  {label}
+                </Link>
+              ))}
+            </nav>
 
-.hero-button:focus,
-.menu-link:focus {
-    outline: 2px dashed #00f7ff;
-    outline-offset: 4px;
-}
+            {/* Timezone Selector */}
+            <div className="mt-6 px-4">
+              <button
+                type="button"
+                onClick={toggleTimezones}
+                className="w-full flex items-center justify-between px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-sm text-gray-700 font-medium transition hover-scale"
+              >
+                <div className="flex items-center">
+                  <GlobeAltIcon className="mr-2 h-5 w-5 text-gray-500" />
+                  {getSelectedTimezoneLabel() || 'Select Timezone'}
+                </div>
+                <svg
+                  className={`h-5 w-5 text-gray-400 transform transition-transform ${showTimezones ? 'rotate-180' : ''}`}
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                </svg>
+              </button>
 
-@media (min-width: 768px) {
-    .hero-section {
-        height: 80vh;
-        min-height: 400px;
-    }
-    .hero-title {
-        font-size: 4rem;
-    }
-    .hero-description {
-        font-size: 2rem;
-    }
-    .hero-button {
-        padding: 1rem 2rem;
-        font-size: 0.85rem;
-        box-shadow: 4px 4px 0 #333;
-    }
-    .hero-button:hover {
-        box-shadow: 6px 6px 0 #111;
-    }
-}
+              {showTimezones && (
+                <div className="mt-2 bg-white border border-gray-200 rounded-md shadow-inner max-h-48 overflow-y-auto card-soft">
+                  <ul className="py-1 text-sm">
+              {Array.isArray(timezones) && timezones.map((tz) => (
+                      <li key={tz.value}>
+                        <button
+                          onClick={() => handleTimezoneChange(tz.value)}
+                          className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${
+                            timezone === tz.value ? 'text-blue-600 font-semibold' : 'text-gray-800'
+                          }`}
+                        >
+                          {tz.label}
+                          {timezone === tz.value && (
+                            <svg className="ml-2 h-4 w-4 inline text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                        </button>
+                      </li>
+                      ))}
+                  </ul>
+                </div>
+              )}
+            </div>
 
-/* Audio Toggle */
-.audio-toggle-container {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 3;
-}
+            {/* Time Display */}
+            <div className="mt-6 px-4 text-center">
+              <Clock
+                format={'HH:mm:ss'}
+                ticking={true}
+                timezone={timezone}
+                className="text-xl font-semibold text-gray-700"
+              />
+              <Clock
+                format={'dddd, MMMM Do YYYY'}
+                ticking={true}
+                timezone={timezone}
+                className="text-sm text-gray-500"
+              />
+            </div>
+          </Dialog.Panel>
+        </Transition.Child>
+      </Dialog>
+    </Transition.Root>
+  );
+};
 
-.audio-toggle-button {
-    background: transparent;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 0.5rem;
-}
-
-.audio-icon-border {
-    border: 2px solid #fff;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    transition: border-color 0.3s ease;
-}
-
-.audio-toggle-button.audio-on .audio-icon-border {
-    border-color: limegreen;
-    color: limegreen;
-    box-shadow: 0 0 5px limegreen;
-}
-
-.audio-toggle-button.audio-off .audio-icon-border {
-    border-color: red;
-    color: red;
-    box-shadow: 0 0 5px red;
-}
-
-.audio-icon {
-    font-size: 1.5rem;
-}
-
-@media (min-width: 768px) {
-    .audio-toggle-container {
-        top: 30px;
-        right: 30px;
-    }
-    .audio-icon-border {
-        width: 50px;
-        height: 50px;
-    }
-    .audio-icon {
-        font-size: 2rem;
-    }
-}
-
-/* Menu Section */
-.menu-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Adjusted minmax for smaller screens */
-    gap: 0.75rem;
-    padding: 1.5rem 0;
-    border-bottom: 4px solid #00ffff; /* Cyan border */
-    margin-bottom: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.menu-section-small {
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-}
-
-.menu-item {
-    border: 2px solid #00ffff; /* Cyan border */
-    border-radius: 1rem;
-    padding: 0.75rem;
-    text-align: center;
-    color: white;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-    min-height: 140px; /* Adjusted min-height for smaller screens */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.menu-item:hover {
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2), 0 0 8px #0ff;
-    transform: translateY(-2px);
-    border-color: #0ff;
-}
-
-.menu-item-small {
-    padding: 0.5rem;
-    min-height: 100px;
-}
-
-.menu-link {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
-    font-weight: bold;
-    font-size: 1rem;
-}
-
-.menu-link:focus {
-    outline: 2px dashed #fff;
-    outline-offset: 4px;
-}
-
-.icon-container {
-    margin-bottom: 0.5rem;
-}
-
-.menu-label {
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #222;
-    font-family: 'Press Start 2P', cursive;
-    text-shadow: 1px 1px 0 #000;
-    text-transform: uppercase;
-    overflow: hidden;
-}
-
-@media (min-width: 768px) {
-    .menu-section {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 1rem;
-        padding: 2rem 0;
-        margin-bottom: 2rem;
-    }
-    .menu-item {
-        padding: 1rem;
-        min-height: 160px;
-    }
-    .menu-link {
-        font-size: 1.2rem;
-    }
-    .menu-label {
-        font-size: 0.8rem;
-    }
-    .icon-container {
-        margin-bottom: 0.75rem;
-    }
-}
-
-/* Blog Section */
-.blog-section {
-    margin-top: 1.5rem;
-    transition: opacity 0.5s ease;
-}
-
-.blog-section.visible {
-    opacity: 1;
-}
-
-.blog-header {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #1a1a1a;
-    text-align: center;
-}
-
-@media (min-width: 768px) {
-    .blog-section {
-        margin-top: 2rem;
-    }
-    .blog-header {
-        font-size: 2rem;
-    }
-}
-
-/* Animations */
-.animate-neon1 {
-    animation: neon-glow 1.5s ease-in-out infinite alternate;
-}
-
-.animate-neon2 {
-    animation: neon-glow 2s ease-in-out infinite alternate;
-}
-
-@keyframes neon-glow {
-    from {
-        text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
-    }
-    to {
-        text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
-    }
-}
+export default SidePanel;

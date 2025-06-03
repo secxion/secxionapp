@@ -1,38 +1,59 @@
-import { FaUser, FaWallet } from 'react-icons/fa';
-
+import { FaUserCircle } from 'react-icons/fa';
+import { FaWallet } from 'react-icons/fa';
+import { FaEthereum } from 'react-icons/fa';
+import { FaCog } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 const HomeFooter = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-    return (
-        <footer className="fixed bottom-0 left-0 right-0 shadow-md z-40 bg-white dark:bg-gray-900 border-t-2 border-gray-200 dark:border-gray-700">
-            <div className="flex justify-around items-center px-4 py-2">
-                <button
-                    className="minecraft-font flex flex-col items-center text-sm text-gray-800 dark:text-gray-200 hover:text-blue-500 focus:outline-none"
-                >
-                  
-                </button>
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
 
-                <Link
-                    to="/profile"
-                    className="minecraft-font flex flex-col items-center text-sm text-gray-800 dark:text-gray-200 hover:text-blue-500 focus:outline-none"
-                    aria-label="View Profile"
-                >
-                    <FaUser className="text-xl mb-1" />
-                    Profile
-                </Link>
+    window.addEventListener('resize', handleResize);
 
-                <Link
-                    to="/mywallet"
-                    className="minecraft-font flex flex-col items-center text-sm text-gray-800 dark:text-gray-200 hover:text-blue-500 focus:outline-none"
-                    aria-label="View Wallet"
-                >
-                    <FaWallet className="text-xl mb-1" />
-                    Wallet
-                </Link>
-            </div>
-        </footer>
-    );
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return (
+    <footer
+      className={`fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-md w-full py-2`}
+    >
+      <div
+        className={`flex justify-around items-center text-gray-700 dark:text-gray-300 text-xl`}
+      >
+        <Link
+          to="/profile"
+          className="flex flex-col items-center hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out"
+          aria-label="Profile"
+        >
+          <FaUserCircle className="mb-0.5" />
+        </Link>
+
+        <Link
+          to="/mywallet"
+          className="flex flex-col items-center hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out"
+          aria-label="Naira Wallet"
+        >
+          <span className="text-lg mb-0.5">₦</span>
+        </Link>
+
+        <Link
+          to="/eth"
+          className="flex flex-col items-center hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out"
+          aria-label="Ethereum"
+        >
+          <FaEthereum className="mb-0.5" />
+        </Link>
+
+      </div>
+    </footer>
+  );
 };
 
 export default HomeFooter;

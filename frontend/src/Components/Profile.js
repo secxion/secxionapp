@@ -129,13 +129,14 @@ const Profile = () => {
                             )}
                         </div>
                     </div>
-                    <button
-                        onClick={handleEditProfile}
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition"
+                <button
+                    onClick={handleEditProfile}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition"
                     >
-                        <FaEdit />
-                        Edit Profile
-                    </button>
+                    <FaEdit />
+                    <span className="hidden sm:inline">Edit Profile</span>
+                </button>
+
                 </div>
             </div>
         );

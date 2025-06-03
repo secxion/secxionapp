@@ -213,7 +213,7 @@ const ProductDetails = () => {
                                             key={fv.faceValue}
                                             className="bg-gray-100 dark:bg-gray-700 rounded-md p-4 flex items-center justify-between"
                                         >
-                                            <div className='grid grid-col-3 items-center'>
+                                            <div className='grid grid-col-3 items-center px-2'>
                                                 {flagImageMap[activeCurrency?.currency] && (
                                                     <img
                                                         src={flagImageMap[activeCurrency?.currency]}
@@ -235,7 +235,7 @@ const ProductDetails = () => {
                                                 )}
                                             </div>
                                             <button
-                                                className="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-md shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1"
+                                                className="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-6 rounded-md shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1"
                                                 onClick={() => handleSell(fv)}
                                             >
                                                 Sell Now

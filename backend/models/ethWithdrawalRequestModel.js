@@ -1,33 +1,39 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const ethWithdrawalRequestSchema = new mongoose.Schema(
-  {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true
-    },
-    ethAddress: {
-      type: String,
-      required: true
-    },
-    nairaAmount: {
-      type: Number,
-      required: true
-    },
-    ethEquivalent: {
-      type: Number,
-      required: true
-    },
-    status: {
-      type: String,
-      enum: ["Pending", "Processed", "Rejected"],
-      default: "Pending"
-    }
+const ethWithdrawalRequestSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
   },
-  {
-    timestamps: true
-  }
-);
+  ethRecipientAddress: {
+    type: String,
+    required: true,
+  },
+  nairaRequestedAmount: {
+    type: Number,
+    required: true,
+  },
+  ethCalculatedAmount: {
+    type: Number,
+    required: true,
+  },
+  ethNetAmountToSend: {
+    type: Number,
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ['Pending', 'Processed', 'Rejected'],
+    default: 'Pending',
+  },
+  processedAt: {
+  type: Date,
+},
 
-export default mongoose.model("EthWithdrawalRequest", ethWithdrawalRequestSchema);
+}, {
+  timestamps: true,
+});
+
+const EthWithdrawalRequest = mongoose.model('EthWithdrawalRequest', ethWithdrawalRequestSchema);
+export default EthWithdrawalRequest;

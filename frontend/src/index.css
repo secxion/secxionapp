@@ -2,9 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+html, body, #root {
   margin: 0;
-  font-family: 'Press Start 2P', cursive;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
   background-color: white;
   transition: background-color 0.3s, color 0.3s;
 }
@@ -16,11 +18,15 @@ body.dark {
 
 .minecraft-font {
   font-family: 'Press Start 2P', cursive;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 code {
   font-family: 'Press Start 2P', cursive;
 }
+
 .neon-text {
   text-shadow: 0 0 5px #fff, 0 0 10px #f0f, 0 0 15px #f0f, 0 0 20px #0ff;
 }
@@ -47,13 +53,6 @@ code {
   }
 }
 
-.minecraft-font {
-  font-family: 'Press Start 2P', cursive;
-  image-rendering: pixelated;
-  -webkit-font-smoothing: none;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 .neon-minecraft {
   text-shadow: 0 0 2px #0ff, 0 0 4px #0ff, 0 0 8px #0ff;
 }
@@ -65,6 +64,7 @@ code {
     0 1px black,
     0 -1px black;
 }
+
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -80,3 +80,9 @@ code {
   animation: fade-in 0.3s ease-out;
 }
 
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}

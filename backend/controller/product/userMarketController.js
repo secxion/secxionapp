@@ -1,10 +1,8 @@
 import userProduct from "../../models/userProduct.js";
 import userModel from "../../models/userModel.js";
 import { updateWalletBalance } from "../wallet/walletController.js";
-import Wallet from "../../models/walletModel.js";
 import { createMarketUploadNotification } from "../notifications/notificationsController.js";
 
-// Fetch user details
 const fetchUserDetails = async (userId) => {
     try {
         const user = await userModel
@@ -17,7 +15,6 @@ const fetchUserDetails = async (userId) => {
     }
 };
 
-// Get all user markets
 export const getAllUserMarkets = async (req, res) => {
     try {
         const userMarkets = await userProduct.find().sort({ createdAt: -1 });
@@ -48,7 +45,6 @@ export const getAllUserMarkets = async (req, res) => {
     }
 };
 
-// Update market status
 export const updateMarketStatus = async (req, res) => {
     try {
         const { status, cancelReason, crImage } = req.body;

@@ -188,9 +188,10 @@ const Header = () => {
                         </button>
                     </div>
                     {/* Logo */}
-                    <Link to="/home" className="hidden minecraft-font text-[14px] md:flex items-center font-extrabold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 mr-4 tracking-wide">
+                    <Link to="/home" className="hidden minecraft-font text-1xl md:flex items-center font-extrabold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 mr-4 tracking-wide">
                         SXN
                     </Link>
+                    
                     {/* Search Input - Desktop */}
                     <div className="hidden md:flex items-center bg-black border-2 rounded-md px-4 py-[6px] w-72 glow-border">
                         <FcSearch className="text-white h-5 w-5 mr-2" />

@@ -49,17 +49,15 @@ import { sendResetCode, verifyReset } from '../controller/user/resetController.j
 import { resendVerificationEmailController } from '../controller/user/resendVerificationEmailController.js';
 import { getPaystackBanks, resolveBankAccount, } from '../controller/wallet/paystackController.js';
 import { getUserEthWallet, saveEthWalletAddress, withdrawEth } from '../controller/wallet/ethWalletController.js';
-import { createEthWithdrawalRequest, getAllEthWithdrawalRequests, updateEthWithdrawalStatus } from '../controller/ethWithdrawalController.js';
+import { createEthWithdrawalRequest, getAllEthWithdrawalRequests, getEthWithdrawalStatus, getSingleEthWithdrawalRequest, updateEthWithdrawalStatus } from '../controller/ethWithdrawalController.js';
 
 const router = express.Router();
 
 // Cache structure: { [key: string]: { data: any, expiry: number } }
 const cache = {};
 
-// Cache TTL in milliseconds (20 minutes)
-const CACHE_TTL = 5 * 60 * 1000; // 20 minutes
+const CACHE_TTL = 5 * 60 * 1000; 
 
-// Helper: sleep for ms
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
@@ -79,7 +77,6 @@ async function axiosGetWithRetry(url, options = {}, retries = 3, backoff = 500) 
     const status = error.response?.status;
     console.error(`[axiosGetWithRetry] Error GET: ${url} | Status: ${status} | Retries left: ${retries} | Error: ${error.message}`);
 
-    // Do NOT retry on 401 Unauthorized or 429 Too Many Requests
     if (status === 401 || status === 429) {
       console.warn(`[axiosGetWithRetry] Not retrying due to status ${status}`);
       throw error;
@@ -91,8 +88,6 @@ async function axiosGetWithRetry(url, options = {}, retries = 3, backoff = 500) 
   }
 }
 
-
-// Updated /eth-price route with cache pattern
 router.get('/eth-price', async (req, res) => {
   const cacheKey = 'eth-price';
   const now = Date.now();
@@ -115,13 +110,11 @@ router.get('/eth-price', async (req, res) => {
   };
 
   if (cache[cacheKey] && cache[cacheKey].expiry > now) {
-    // Cache valid: respond immediately with cache, then update cache in background
     sendCachedResponse();
     fetchAndUpdateCache();
     return;
   }
 
-  // Cache expired or missing: try fetch fresh data
   try {
     const { data } = await axiosGetWithRetry('https://api.coingecko.com/api/v3/simple/price', {
       params: { ids: 'ethereum', vs_currencies: 'ngn' },
@@ -132,79 +125,13 @@ router.get('/eth-price', async (req, res) => {
   } catch (error) {
     console.error(`[eth-price] Fetch failed:`, error.message);
     if (cache[cacheKey]) {
-      // stale cache exists, respond with stale cache
       console.log(`[eth-price] Returning stale cached data due to fetch failure`);
       sendCachedResponse();
     } else {
-      // no cache at all
       res.status(500).json({ message: 'Error fetching ETH price', error: error.message });
     }
   }
 });
-
-// Updated /eth-trend route with cache pattern
-router.get('/eth-trend', async (req, res) => {
-  const cacheKey = 'eth-trend';
-  const now = Date.now();
-
-  const sendCachedResponse = () => {
-    console.log(`[eth-trend] Serving cached data immediately`);
-    res.json(cache[cacheKey].data);
-  };
-
-const fetchAndUpdateCache = async () => {
-  try {
-    const { data } = await axiosGetWithRetry('https://api.coingecko.com/api/v3/coins/ethereum/market_chart', {
-      params: { vs_currency: 'ngn', days: '1', interval: 'hourly' },
-    });
-
-    if (!data || !data.prices) {
-      throw new Error('Unexpected data format from CoinGecko market_chart endpoint');
-    }
-
-    cache[cacheKey] = { data, expiry: Date.now() + CACHE_TTL };
-    console.log(`[eth-trend] Cache updated in background`);
-  } catch (error) {
-    console.error(`[eth-trend] Background fetch failed (ignored):`, error.message);
-    // Swallow the error so server keeps running
-  }
-};
-
-  if (cache[cacheKey] && cache[cacheKey].expiry > now) {
-    // Cache valid: respond immediately with cache, then update cache in background
-    sendCachedResponse();
-    fetchAndUpdateCache();
-    return;
-  }
-
-  // Cache expired or missing: try fetch fresh data
-  try {
-    const { data } = await axiosGetWithRetry('https://api.coingecko.com/api/v3/coins/ethereum/market_chart', {
-      params: { vs_currency: 'ngn', days: '1', interval: 'hourly' },
-    });
-
-    if (!data || !data.prices) {
-      throw new Error('Unexpected data format from CoinGecko market_chart endpoint');
-    }
-
-    cache[cacheKey] = { data, expiry: Date.now() + CACHE_TTL };
-    console.log(`[eth-trend] Fresh data fetched and cached`);
-    res.json(data);
-  } catch (error) {
-    console.error(`[eth-trend] Fetch failed:`, error.message);
-    if (cache[cacheKey]) {
-      // stale cache exists, respond with stale cache
-      console.log(`[eth-trend] Returning stale cached data due to fetch failure`);
-      sendCachedResponse();
-    } else {
-      // no cache at all
-      res.status(500).json({ message: 'Error fetching ETH trend', error: error.message });
-    }
-  }
-});
-
-// -----------------
-// The rest of your routes unchanged below...
 
 router.post("/signup", userSignUpController);
 router.get('/verify-email', verifyEmailController);
@@ -225,7 +152,6 @@ router.post("/update-market-status/:id", updateMarketStatus);
 router.get("/getAllDataForAdmin", authToken, getAllUserDataPadsForAdmin);
 router.delete("/delete-user", deleteUser);
 
-
 // Wallet balance
 router.get("/wallet/balane/:userId", authToken, getOtherUserWalletBalance);
 
@@ -233,10 +159,12 @@ router.get("/wallet/balane/:userId", authToken, getOtherUserWalletBalance);
 router.post("/save-eth-address", authToken, saveEthWalletAddress);
 router.get("/eth-wallet", authToken, getUserEthWallet);
 router.post("/eth/withdrawal-request", authToken, createEthWithdrawalRequest);
+router.get("/eth/get-withdrawal-status", authToken, getEthWithdrawalStatus);
 
 // Admin routes
-router.get("/all", authToken, getAllEthWithdrawalRequests);
-router.put("/update/:requestId", authToken, updateEthWithdrawalStatus);
+router.get("/eth-withdrawals", authToken, getAllEthWithdrawalRequests);
+router.get("/eth-withdrawal/:requestId", authToken, getSingleEthWithdrawalRequest);
+router.put("/eth-withdrawal-status/:requestId", authToken, updateEthWithdrawalStatus);
 
 // Product
 router.post("/upload-product", authToken, UploadProductController);

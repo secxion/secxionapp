@@ -22,11 +22,12 @@ const notificationSchema = new Schema({
       'market_upload:DONE',
       'market_upload:CANCEL',
       'market_upload:PROCESSING',
+      'transaction:eth_processed',
     ],
   },
   category: {
     type: String,
-    enum: ['transaction', 'report', 'market_upload', 'general'],
+    enum: ['transaction', 'report', 'market_upload', 'general', 'eth_processed'],
     default: 'general',
   },
   message: {
@@ -42,7 +43,7 @@ const notificationSchema = new Schema({
   },
   onModel: {
     type: String,
-    enum: ['PaymentRequest', 'Wallet', 'Report', 'BlogNote', 'userproduct'],
+    enum: ['PaymentRequest', 'Wallet', 'Report', 'BlogNote', 'userproduct', 'EthWithdrawalRequest'],
     default: 'PaymentRequest',
   },
   isRead: {
@@ -55,15 +56,9 @@ const notificationSchema = new Schema({
   cancelReason: {
     type: String,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+}, { timestamps: true }); 
+
+notificationSchema.index({ userId: 1, isRead: 1 });
 
 const Notification = model('Notification', notificationSchema);
 

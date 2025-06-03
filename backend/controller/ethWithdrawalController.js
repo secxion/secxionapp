@@ -1,104 +1,224 @@
 import EthWithdrawalRequest from "../models/ethWithdrawalRequestModel.js";
 import axios from "axios";
+import { updateWalletBalance } from "./wallet/walletController.js";
+import { createTransactionNotification } from "./notifications/notificationsController.js";
+import Wallet from "../models/walletModel.js";
 
 export const createEthWithdrawalRequest = async (req, res) => {
   try {
-    const { ethAddress, nairaAmount } = req.body;
+    const { ethRecipientAddress, nairaRequestedAmount, ethNetAmountToSend } = req.body;
     const userId = req.userId;
 
-    console.log("Received withdrawal request:", { ethAddress, nairaAmount, userId });
-
-    if (!userId) {
-      return res.status(401).json({ success: false, message: "Unauthorized: user ID missing" });
+    if (!ethRecipientAddress || !nairaRequestedAmount || !ethNetAmountToSend) {
+      return res.status(400).json({ success: false, message: "All fields are required." });
     }
 
-    if (!ethAddress || !nairaAmount) {
-      return res.status(400).json({ success: false, message: "ETH address and Naira amount are required." });
+    const wallet = await Wallet.findOne({ userId });
+    if (!wallet) {
+      return res.status(404).json({ success: false, message: "Wallet not found." });
     }
 
-    let ethRate;
-    try {
-      const rateResponse = await axios.get("https://api.coingecko.com/api/v3/simple/price", {
-        params: {
-          ids: "ethereum",
-          vs_currencies: "ngn"
-        }
+    if (nairaRequestedAmount > wallet.balance) {
+      return res.status(400).json({
+        success: false,
+        message: "Withdrawal amount exceeds wallet balance.",
       });
-      ethRate = rateResponse.data?.ethereum?.ngn;
-
-      if (!ethRate) {
-        console.error("ETH rate missing in API response:", rateResponse.data);
-        return res.status(500).json({ success: false, message: "Unable to fetch ETH rate." });
-      }
-
-      console.log("Fetched ETH to NGN rate:", ethRate);
-    } catch (apiError) {
-      console.error("Failed to fetch ETH rate:", apiError);
-      return res.status(502).json({ success: false, message: "External API error while fetching ETH rate." });
     }
 
-    const ethEquivalent = parseFloat(nairaAmount) / ethRate;
+    const ethRateRes = await axios.get("https://api.coingecko.com/api/v3/simple/price", {
+      params: { ids: "ethereum", vs_currencies: "ngn" },
+    });
+    const ethRate = ethRateRes.data?.ethereum?.ngn;
+    if (!ethRate) {
+      return res.status(500).json({ success: false, message: "Unable to fetch ETH rate." });
+    }
 
-    const newWithdrawal = new EthWithdrawalRequest({
+    const ethCalculatedAmount = parseFloat(nairaRequestedAmount) / ethRate;
+
+    const newRequest = new EthWithdrawalRequest({
       userId,
-      ethAddress,
-      nairaAmount,
-      ethEquivalent,
-      status: "Pending"
+      ethRecipientAddress,
+      nairaRequestedAmount,
+      ethCalculatedAmount,
+      ethNetAmountToSend,
+      status: "Pending",
     });
 
-    await newWithdrawal.save();
+    await newRequest.save();
 
-    console.log("Withdrawal request saved:", newWithdrawal);
+    const walletUpdate = await updateWalletBalance(
+      userId,
+      -nairaRequestedAmount,
+      "debit",
+      "ETH withdrawal initiated",
+      newRequest._id,
+      "EthWithdrawalRequest"
+    );
+
+    if (!walletUpdate.success) {
+      console.error("Wallet update failed:", walletUpdate.error);
+    } else {
+      await createTransactionNotification(
+        userId,
+        nairaRequestedAmount,
+        "debit",
+        `${ethNetAmountToSend} ETH to ${ethRecipientAddress} initiated.`,
+        `/eth-withdrawals`,
+        newRequest._id
+      );
+    }
 
     return res.status(201).json({
       success: true,
-      message: "Withdrawal request submitted successfully.",
-      data: newWithdrawal
+      message: "ETH withdrawal request submitted successfully.",
+      data: newRequest,
     });
   } catch (error) {
-    console.error("Unexpected error during withdrawal:", error);
+    console.error("ETH withdrawal error:", error);
     return res.status(500).json({
       success: false,
-      message: "Server error while processing withdrawal request.",
-      error: error.message
+      message: "Error processing ETH withdrawal.",
+      error: error.message,
     });
   }
 };
 
 export const getAllEthWithdrawalRequests = async (req, res) => {
   try {
-    const requests = await EthWithdrawalRequest.find().populate("userId", "name email").sort({ createdAt: -1 });
+    const requests = await EthWithdrawalRequest.find()
+      .populate("userId", "name email")
+      .sort({ createdAt: -1 });
 
     return res.status(200).json({ success: true, data: requests });
   } catch (error) {
-    console.error("Failed to fetch withdrawal requests:", error);
-    return res.status(500).json({ success: false, message: "Error fetching withdrawal requests", error: error.message });
+    console.error("Error fetching withdrawal requests:", error);
+    return res.status(500).json({ success: false, message: "Error fetching requests", error: error.message });
   }
 };
+
 
 export const updateEthWithdrawalStatus = async (req, res) => {
   try {
     const { requestId } = req.params;
-    const { status } = req.body;
+    const { status, rejectionReason } = req.body;
 
-    if (!["Pending", "Processed", "Rejected"].includes(status)) {
-      return res.status(400).json({ success: false, message: "Invalid status value." });
+    const validStatuses = ["Pending", "Processed", "Rejected"];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, message: "Invalid status." });
     }
 
-    const request = await EthWithdrawalRequest.findByIdAndUpdate(
-      requestId,
-      { status },
-      { new: true }
-    );
-
+    const request = await EthWithdrawalRequest.findById(requestId);
     if (!request) {
-      return res.status(404).json({ success: false, message: "Withdrawal request not found." });
+      return res.status(404).json({ success: false, message: "Request not found." });
     }
 
-    return res.status(200).json({ success: true, message: "Status updated successfully", data: request });
+    const userId = request.userId;
+    const nairaAmount = request.nairaRequestedAmount;
+
+    if (status === "Rejected") {
+      request.status = "Rejected";
+      request.rejectionReason = rejectionReason || "Rejected by admin";
+
+      const refundResult = await updateWalletBalance(
+        userId,
+        nairaAmount,
+        "credit",
+        "ETH withdrawal rejected - refund",
+        request._id,
+        "EthWithdrawalRequest"
+      );
+
+      if (!refundResult.success) {
+        console.error("Refund failed for ETH withdrawal:", refundResult.error);
+      } else {
+        await createTransactionNotification(
+          userId,
+          nairaAmount,
+          "credit",
+          `ETH withdrawal of ₦${nairaAmount} was rejected. Refund issued.`,
+          `/eth-withdrawals`,
+          request._id
+        );
+      }
+    } else if (status === "Processed") {
+      request.status = "Processed";
+      request.processedAt = new Date();
+
+      const detailsMessage = `ETH withdrawal processed:\n` +
+  `• Recipient: ${request.ethRecipientAddress}\n` +
+  `• Amount (₦): ₦${nairaAmount}\n` +
+  `• ETH Sent: ${request.ethNetAmountToSend} ETH\n` +
+  `• Time: ${new Date().toLocaleString()}`;
+
+      await createTransactionNotification(
+        userId,
+        request.ethNetAmountToSend,
+        "eth_processed",
+        detailsMessage,
+        `/eth-withdrawals`,
+        request._id
+      );
+    } else {
+      request.status = status;
+      if (request.rejectionReason) request.rejectionReason = undefined;
+    }
+
+    await request.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "ETH withdrawal status updated successfully.",
+      data: request,
+    });
   } catch (error) {
-    console.error("Failed to update withdrawal request status:", error);
-    return res.status(500).json({ success: false, message: "Error updating status", error: error.message });
+    console.error("Status update error (ETH withdrawal):", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error updating ETH withdrawal status.",
+      error: error.message,
+    });
+  }
+};
+
+
+export const getSingleEthWithdrawalRequest = async (req, res) => {
+  try {
+    const { requestId } = req.params;
+    const request = await EthWithdrawalRequest.findById(requestId).populate("userId", "name email");
+
+    if (!request) return res.status(404).json({ success: false, message: "Request not found." });
+
+    return res.status(200).json({ success: true, data: request });
+  } catch (error) {
+    console.error("Error fetching request:", error);
+    return res.status(500).json({ success: false, message: "Error fetching request", error: error.message });
+  }
+};
+
+export const getEthWithdrawalStatus = async (req, res) => {
+  try {
+    const userId = req.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const latestRequest = await EthWithdrawalRequest.findOne({ userId })
+      .sort({ createdAt: -1 });
+
+    if (!latestRequest) {
+      return res.status(200).json({ success: true, status: "" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      status: latestRequest.status,
+    });
+  } catch (error) {
+    console.error("Error checking withdrawal status:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error checking withdrawal status.",
+      error: error.message,
+    });
   }
 };

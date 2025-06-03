@@ -223,6 +223,15 @@ confirmReset: {
         url : `${backendDomain}/api/eth/withdrawal-request`,
         method : "POST"
     },
+    ethWithdrawals: {
+        getAll: `${backendDomain}/api/eth-withdrawals`,
+        updateStatus: (id) => `${backendDomain}/api/eth-withdrawal-status/${id}`,
+        },
+
+    withdrawalStatus : {
+        url : `${backendDomain}/api/eth/get-withdrawal-status`,
+        method : "GET"
+    },
       getAllPayment: {
         url: `${backendDomain}/api/pr/getall`,
         method: 'GET',

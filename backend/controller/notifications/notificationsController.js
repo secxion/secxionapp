@@ -86,6 +86,7 @@ export const createMarketUploadNotification = async (userId, userProductId, stat
 export const getUserTransactionNotifications = async (req, res) => {
   try {
     const userId = req.userId;
+
     const transactionNotifications = await Notification.find({
       userId,
       type: {
@@ -95,6 +96,7 @@ export const getUserTransactionNotifications = async (req, res) => {
           'transaction:payment_completed',
           'transaction:withdrawal',
           'transaction:rejected',
+          'transaction:eth_processed',
         ],
       },
     }).sort({ createdAt: -1 });
@@ -109,6 +111,7 @@ export const getUserTransactionNotifications = async (req, res) => {
     });
   }
 };
+
 
 export const getUserReportNotifications = async (req, res) => {
   try {
@@ -309,6 +312,7 @@ export const getNewNotifications = async (req, res) => {
           'market_upload:DONE',
           'market_upload:CANCEL',
           'market_upload:PROCESSING',
+          'transaction:eth_processed',
         ],
       },
     })

@@ -13,7 +13,6 @@ import {
     fetchWalletBalanceAPI,
     signinUserAPI,
 } from "./services/apiService";
-// import "./app.css";
 import "./styles/Loader.css";
 import DarkModeToggle from "./Components/DarkModeToggle";
 

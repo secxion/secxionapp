@@ -42,6 +42,7 @@ import VerifyEmail from "../Components/VerifyEmail";
 import NotFound from "../pages/NotFound";
 import Landing from "../pages/Landing";
 import EthWallet from "../pages/EthWallet";
+import AdminEthWithdrawals from "../pages/AdminEthWithdrawals";
 
 
 const publicRoutes = [
@@ -121,6 +122,8 @@ const adminRoutes = [
   { path: "admin-rpr", element: <AdminRPR /> },
   { path: "anonymous-report", element: <AdminAnonymousReports /> },
   { path: "community-feeds", element: <AdminCommunity /> },
+  { path: "eth-requests", element: <AdminEthWithdrawals /> },
+
 ];
 
 const router = createBrowserRouter([
