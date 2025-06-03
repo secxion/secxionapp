@@ -32,9 +32,6 @@ const WalletDashboard = () => {
             case 'wallet':
                 return (
                     <div className="fixed w-screen top-0 bottom-0 right-0 left-0 bg-white shadow border border-gray-200">
-                            <h3 className="font-semibold text-lg text-gray-800 py-6 mt-20 px-6 border-b border-gray-200 flex items-center">
-                                <FaMoneyBill className="mr-2 text-gray-600" />
-                            </h3>
                             <div className="p-6">
                                 <PaymentRequestForm />
                             </div>

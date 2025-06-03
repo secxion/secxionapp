@@ -2,40 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base layout and transitions */
 html, body, #root {
   margin: 0;
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  background-color: white;
-  transition: background-color 0.3s, color 0.3s;
+  font-family: 'Inter', sans-serif;
+  color: #111;
+  background: linear-gradient(to bottom right, #f8f9fa, #e3e8ee);
+  transition: background-color 0.4s ease, color 0.4s ease;
+  overflow-x: hidden;
+   border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
+/* Dark mode */
 body.dark {
-  background-color: #000;
-  color: #fff;
+  background: linear-gradient(to bottom right, #0f0f0f, #1a1a1a);
+  color: #f1f1f1;
 }
 
-.minecraft-font {
-  font-family: 'Press Start 2P', cursive;
-  image-rendering: pixelated;
-  -webkit-font-smoothing: none;
-  -moz-osx-font-smoothing: grayscale;
+/* Reusable Glass Effect */
+.glass {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
 }
 
-code {
-  font-family: 'Press Start 2P', cursive;
+body.dark .glass {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.05);
 }
 
-.neon-text {
-  text-shadow: 0 0 5px #fff, 0 0 10px #f0f, 0 0 15px #f0f, 0 0 20px #0ff;
+/* Fade animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.neon-glow {
-  box-shadow: 0 0 5px #0ff, 0 0 15px #0ff, 0 0 25px #0ff;
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
 }
 
+/* Hover Spin */
 @layer utilities {
+  .animate-spin-on-hover:hover {
+    animation: spin 1s linear infinite;
+  }
+
   .text-outline {
     text-shadow:
       1px 0 black,
@@ -53,8 +80,21 @@ code {
   }
 }
 
-.neon-minecraft {
-  text-shadow: 0 0 2px #0ff, 0 0 4px #0ff, 0 0 8px #0ff;
+/* Neon/Retro Styles */
+.neon-text {
+  text-shadow: 0 0 5px #fff, 0 0 10px #f0f, 0 0 15px #f0f, 0 0 20px #0ff;
+}
+
+.neon-glow {
+  box-shadow: 0 0 5px #0ff, 0 0 15px #0ff, 0 0 25px #0ff;
+}
+
+/* Retro Game Font */
+.minecraft-font {
+  font-family: 'Press Start 2P', cursive;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .minecraft-outline {
@@ -65,24 +105,10 @@ code {
     0 -1px black;
 }
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(-5%);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.neon-minecraft {
+  text-shadow: 0 0 2px #0ff, 0 0 4px #0ff, 0 0 8px #0ff;
 }
 
-.animate-fade-in {
-  animation: fade-in 0.3s ease-out;
-}
-
-.glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+code {
+  font-family: 'Press Start 2P', cursive;
 }

@@ -194,7 +194,7 @@ const NotificationsPage = () => {
   const hasUnread = notifications.some((n) => !n.isRead);
 
   return (
-    <div className="mt-2 py-20 bg-gray-100">
+    <div className=" py-20 bg-gray-100">
       <div className="mx-auto shadow-md rounded-md overflow-hidden bg-white">
         <div className="fixed bg-white border-b border-gray-200 py-2 z-10">
           <div className="flex items-center fixed justify-between p-4 mx-auto w-full bg-white shadow-md z-10">

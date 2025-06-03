@@ -52,7 +52,7 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
         <Dialog.Panel className="relative flex flex-col w-full max-w-sm h-full panel-glass bg-gradient-to-b from-white via-gray-50 to-white shadow-xl rounded-r-lg overflow-y-auto pb-6">
 
           {/* Header */}
-          <div className="card-soft flex items-center justify-between px-4 py-4 mt-10 border-b border-gray-200 shadow-sm">
+          <div className="card-soft flex items-center justify-between px-6 py-4 mt-12 border-b border-gray-200 shadow-sm">
             <button
               type="button"
               className="text-gray-500 hover:text-blue-600 transition"

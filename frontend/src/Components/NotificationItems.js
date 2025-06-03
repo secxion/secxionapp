@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import { formatDistanceToNow } from 'date-fns';
 import {
@@ -12,25 +12,36 @@ import {
   FaClock,
   FaCheckCircle,
   FaTimesCircle,
-  FaFileInvoice,
   FaNewspaper,
   FaEthereum,
 } from 'react-icons/fa';
 
 const getNotificationIcon = (type) => {
   switch (type) {
-    case 'report_reply': return <FaCommentDots className="h-3 w-3 mr-1" />;
-    case 'transaction:debit': return <span className="mr-1">⬇️</span>;
-    case 'transaction:credit': return <span className="mr-1">⬆️</span>;
-    case 'new_blog': return <FaNewspaper className="h-3 w-3 mr-1 text-blue-500" />;
-    case 'transaction:withdrawal': return <FaShoppingCart className="h-3 w-3 mr-1" />;
-    case 'transaction:payment_completed': return <FaCheckCircle className="h-3 w-3 mr-1" />;
-    case 'transaction:rejected': return <FaExclamationTriangle className="h-3 w-3 mr-1 text-red-600" />;
-    case 'market_upload:DONE': return <FaCheckCircle className="h-3 w-3 mr-1 text-green-600" />;
-    case 'market_upload:CANCEL': return <FaTimesCircle className="h-3 w-3 mr-1 text-red-600" />;
-    case 'market_upload:PROCESSING': return <FaClock className="h-3 w-3 mr-1 text-yellow-600" />;
-    case 'transaction:eth_processed': return <FaEthereum className="h-3 w-3 mr-1 text-purple-600" />;
-    default: return <FaInfoCircle className="h-3 w-3 mr-1 text-gray-400" />;
+    case 'report_reply':
+      return <FaCommentDots className="h-3 w-3 mr-1" />;
+    case 'transaction:debit':
+      return <span className="mr-1">⬇️</span>;
+    case 'transaction:credit':
+      return <span className="mr-1">⬆️</span>;
+    case 'new_blog':
+      return <FaNewspaper className="h-3 w-3 mr-1 text-blue-500" />;
+    case 'transaction:withdrawal':
+      return <FaShoppingCart className="h-3 w-3 mr-1" />;
+    case 'transaction:payment_completed':
+      return <FaCheckCircle className="h-3 w-3 mr-1" />;
+    case 'transaction:rejected':
+      return <FaExclamationTriangle className="h-3 w-3 mr-1 text-red-600" />;
+    case 'market_upload:DONE':
+      return <FaCheckCircle className="h-3 w-3 mr-1 text-green-600" />;
+    case 'market_upload:CANCEL':
+      return <FaTimesCircle className="h-3 w-3 mr-1 text-red-600" />;
+    case 'market_upload:PROCESSING':
+      return <FaClock className="h-3 w-3 mr-1 text-yellow-600" />;
+    case 'transaction:eth_processed':
+      return <FaEthereum className="h-3 w-3 mr-1 text-purple-600" />;
+    default:
+      return <FaInfoCircle className="h-3 w-3 mr-1 text-gray-400" />;
   }
 };
 
@@ -38,13 +49,9 @@ const NotificationItem = ({
   notification,
   onMarkAsRead,
   onDelete,
-  onOpenReportReply,
-  onViewCreditDetails,
-  onOpenMarketDetails,
-  onViewDetails,
+  onViewDetails
 }) => {
   const timeAgo = formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true });
-
   const truncateLength = 60;
   const truncatedMessage =
     notification.message.length > truncateLength
@@ -56,11 +63,11 @@ const NotificationItem = ({
   return (
     <li
       className={clsx(
-        'px-4 py-6 hover:bg-gray-50 transition duration-150 ease-in-out rounded-md shadow-sm',
+        'px-4 py-8 hover:bg-gray-50 transition duration-150 ease-in-out rounded-md shadow-sm border',
         notification.isRead ? 'bg-gray-100' : 'bg-white'
       )}
     >
-      <div className="flex justify-between items-start gap-4">
+      <div className="flex justify-between items-start gap-6">
         <div className="flex-grow">
           <p className="text-sm font-medium text-black flex items-center">
             {notificationIcon}
@@ -74,63 +81,6 @@ const NotificationItem = ({
             </span>
           )}
 
-          <div className="mt-2 space-x-2 flex flex-wrap">
-            {notification.type === 'report_reply' && (
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
-                <FaCommentDots className="h-3 w-3 mr-1" /> Reply
-              </span>
-            )}
-
-            {notification.type === 'new_blog' && (
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
-                <FaNewspaper className="h-3 w-3 mr-1" /> Blog
-              </span>
-            )}
-
-            {notification.type.startsWith('transaction:') && (
-              <span
-                className={clsx(
-                  'inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold',
-                  {
-                    'bg-red-100 text-red-800': notification.type === 'transaction:debit',
-                    'bg-green-100 text-green-800': notification.type === 'transaction:credit',
-                    'bg-yellow-100 text-yellow-800': notification.type === 'transaction:withdrawal',
-                    'bg-indigo-100 text-indigo-800':
-                      notification.type === 'transaction:payment_completed',
-                    'bg-orange-100 text-orange-800':
-                      notification.type === 'transaction:rejected',
-                    'bg-purple-100 text-purple-800':
-                      notification.type === 'transaction:eth_processed',
-                  }
-                )}
-              >
-                {notification.type === 'transaction:debit' && '⬇️ Debit'}
-                {notification.type === 'transaction:credit' && '⬆️ Credit'}
-                {notification.type === 'transaction:withdrawal' && (
-                  <>
-                    <FaShoppingCart className="h-3 w-3 mr-1" /> Withdrawal
-                  </>
-                )}
-                {notification.type === 'transaction:payment_completed' && (
-                  <>
-                    <FaCheckCircle className="h-3 w-3 mr-1" /> Completed
-                  </>
-                )}
-                {notification.type === 'transaction:rejected' && (
-                  <>
-                    <FaExclamationTriangle className="h-3 w-3 mr-1" /> Rejected
-                  </>
-                )}
-                {notification.type === 'transaction:eth_processed' && (
-                  <>
-                    <FaEthereum className="h-3 w-3 mr-1" /> ETH Processed
-                  </>
-                )}
-              </span>
-            )}
-          </div>
-
-          {/* View More or Details */}
           {notification.message.length > truncateLength && (
             <button
               onClick={() => onViewDetails(notification)}
@@ -142,8 +92,7 @@ const NotificationItem = ({
           )}
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col items-center gap-2 mt-1">
+        <div className="flex flex-col items-center gap-4 mt-1">
           {!notification.isRead && (
             <button
               onClick={() => onMarkAsRead(notification._id)}
@@ -165,5 +114,6 @@ const NotificationItem = ({
     </li>
   );
 };
+
 
 export default NotificationItem;
