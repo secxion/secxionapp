@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base layout and transitions */
+/* Base reset and layout */
 html, body, #root {
   margin: 0;
   padding: 0;
@@ -13,9 +13,8 @@ html, body, #root {
   background: linear-gradient(to bottom right, #f8f9fa, #e3e8ee);
   transition: background-color 0.4s ease, color 0.4s ease;
   overflow-x: hidden;
-   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Dark mode */
@@ -57,7 +56,7 @@ body.dark .glass {
   animation: fade-in 0.3s ease-out;
 }
 
-/* Hover Spin */
+/* Additional utilities */
 @layer utilities {
   .animate-spin-on-hover:hover {
     animation: spin 1s linear infinite;
@@ -78,35 +77,33 @@ body.dark .glass {
   .text-bold-fake {
     transform: scale(1.05);
   }
-}
 
-/* Neon/Retro Styles */
-.neon-text {
-  text-shadow: 0 0 5px #fff, 0 0 10px #f0f, 0 0 15px #f0f, 0 0 20px #0ff;
-}
+  .neon-text {
+    text-shadow: 0 0 5px #fff, 0 0 10px #f0f, 0 0 15px #f0f, 0 0 20px #0ff;
+  }
 
-.neon-glow {
-  box-shadow: 0 0 5px #0ff, 0 0 15px #0ff, 0 0 25px #0ff;
-}
+  .neon-glow {
+    box-shadow: 0 0 5px #0ff, 0 0 15px #0ff, 0 0 25px #0ff;
+  }
 
-/* Retro Game Font */
-.minecraft-font {
-  font-family: 'Press Start 2P', cursive;
-  image-rendering: pixelated;
-  -webkit-font-smoothing: none;
-  -moz-osx-font-smoothing: grayscale;
-}
+  .minecraft-font {
+    font-family: 'Press Start 2P', cursive;
+    image-rendering: pixelated;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-.minecraft-outline {
-  text-shadow:
-    1px 0 black,
-    -1px 0 black,
-    0 1px black,
-    0 -1px black;
-}
+  .minecraft-outline {
+    text-shadow:
+      1px 0 black,
+      -1px 0 black,
+      0 1px black,
+      0 -1px black;
+  }
 
-.neon-minecraft {
-  text-shadow: 0 0 2px #0ff, 0 0 4px #0ff, 0 0 8px #0ff;
+  .neon-minecraft {
+    text-shadow: 0 0 2px #0ff, 0 0 4px #0ff, 0 0 8px #0ff;
+  }
 }
 
 code {

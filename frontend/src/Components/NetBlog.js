@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SummaryApi from '../common';
 import { formatDistanceToNow } from 'date-fns';
-import { FaCircle } from 'react-icons/fa';
+import { FaCircle, FaExternalLinkAlt } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import FullBlogDialog from './FullBlogDialog';
 import { useNavigate } from 'react-router-dom';
@@ -59,27 +59,50 @@ const NetBlog = () => {
   };
 
   const handleCommunityFeedClick = () => {
-    navigate('/community-feed');
+    const isMobile = window.innerWidth <= 768;
+
+    // 🔍 Track clicks (you can replace this with a real analytics call)
+    console.log('Community Feed Clicked:', {
+      time: new Date().toISOString(),
+      platform: isMobile ? 'Mobile' : 'Web',
+    });
+
+    // 🎯 Smooth animation effect
+    const delay = 100;
+    setTimeout(() => {
+      if (isMobile) {
+        navigate('/community-feed');
+      } else {
+        window.open('/community-feed', '_blank', 'noopener,noreferrer');
+      }
+    }, delay);
   };
 
   const toggleBlogVisibility = () => setShowBlogs((prev) => !prev);
   const toggleMoreBlogs = () => setVisibleBlogs((prev) => (prev === 6 ? blogs.length : 6));
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="container mx-auto mt-32 px-4 max-w-7xl"
-    >
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
-        <button
-          onMouseEnter={fetchCommunityFeedData}
-          onClick={handleCommunityFeedClick}
-          className="px-5 py-2 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 text-xs minecraft-font bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:brightness-110"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="container mx-auto mt-32 px-4 max-w-7xl"
         >
-          <span className="hidden sm:inline">Community</span> Feed
-        </button>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
+          <motion.button
+      whileTap={{ scale: 0.95 }}
+      onMouseEnter={fetchCommunityFeedData}
+      onClick={handleCommunityFeedClick}
+      className="relative group px-5 py-2 text-white font-semibold items-center justify-center rounded-full shadow-lg hover:shadow-xl transition-all duration-300 text-xs bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:brightness-110 flex items-center gap-2"
+    >
+      <span className="hidden sm:inline">Community</span> Feed
+
+      <FaExternalLinkAlt className="text-white text-[10px] hidden sm:inline" />
+
+      <span className="absolute bottom-full mb-1 hidden sm:group-hover:flex px-2 py-1 text-[10px] bg-black text-white rounded">
+        Opens in new tab
+      </span>
+    </motion.button>
 
         <div className="flex gap-2">
           <button

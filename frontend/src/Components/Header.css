@@ -25,6 +25,7 @@
     display: -ms-flexbox;
     display: flex;
     margin-top: 20px;
+
 }
 
 @keyframes glowBorder {

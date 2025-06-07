@@ -1,24 +1,52 @@
 import bcrypt from 'bcryptjs';
 import userModel from '../../models/userModel.js';
 import jwt from 'jsonwebtoken';
+import { verifySliderValue } from '../../utils/sliderVerification.js';
 
 async function userSignInController(req, res) {
     try {
-        const { email, password } = req.body;
+        const { email, password, sliderValue, targetValue, slider } = req.body;
 
-        if (!email) return res.status(400).json({ message: "Please provide email", error: true, success: false });
-        if (!password) return res.status(400).json({ message: "Please provide password", error: true, success: false });
+
+        if (!email || !password) {
+            console.log("❌ Missing email or password");
+            return res.status(400).json({ message: "Please provide email and password", error: true, success: false });
+        }
+
+        if (
+            typeof sliderValue !== "number" ||
+            typeof targetValue !== "number" ||
+            Math.abs(sliderValue - targetValue) > 3
+        ) {
+            console.log("❌verification failed. Please try again.");
+            return res.status(403).json({
+                message: "verification failed. Please try again.",
+                error: true,
+                success: false
+            });
+        }
+
+        if (!slider || !verifySliderValue(slider.value, slider.signature)) {
+            console.log("❌ verification failed. Please try again.");
+            return res.status(403).json({ message: "❌ verification failed. Please try again.", error: true, success: false });
+        }
+
 
         const user = await userModel.findOne({ email }).select('+password');
+        if (!user) {
+            console.log("❌ User not found");
+            return res.status(404).json({ message: "User not found", error: true, success: false });
+        }
 
-        if (!user) return res.status(404).json({ message: "User not found", error: true, success: false });
-
+        // Step 5: Check password
         const checkPassword = await bcrypt.compare(password, user.password);
         if (!checkPassword) {
+            console.log("❌ Incorrect password");
             return res.status(401).json({ message: "Incorrect password", error: true, success: false });
         }
 
         if (!user.isVerified) {
+            console.log("❌ Email not verified");
             return res.status(403).json({
                 message: "Please verify your email before logging in.",
                 error: true,
@@ -56,6 +84,7 @@ async function userSignInController(req, res) {
         });
 
     } catch (err) {
+        console.error("🔥 Sign-in Error:", err);
         res.status(500).json({
             message: err.message || "Internal server error",
             error: true,

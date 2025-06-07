@@ -84,10 +84,10 @@ const CategoryProduct = () => {
   };
 
   return (
-    <div className="container fixed top-[90px] left-0 right-0 bottom-0 flex flex-col md:flex-row bg-gradient-to-br from-gray-700 via-gray-900 to-black text-white">
+    <div className="p-2 fixed top-[90px] left-0 right-0 bottom-0 rounded-md flex flex-col md:flex-row bg-white text-white">
 
       {/* Mobile Top Bar Filter */}
-      <div className="md:hidden w-full bg-gray-800 px-2 py-2 flex overflow-x-auto gap-3 scrollbar-thin scrollbar-thumb-gray-400">
+      <div className="md:hidden w-full bg-white px-2 py-2 flex overflow-x-auto gap-3 scrollbar-thin scrollbar-thumb-gray-400">
         {productCategory.map((category) => (
           <label key={category.id} className="flex items-center gap-1 bg-gray-900 px-2 py-1 rounded text-white whitespace-nowrap text-xs">
             {iconMap[category.value]}
@@ -104,7 +104,7 @@ const CategoryProduct = () => {
       </div>
 
       {/* Desktop Sidebar Filter */}
-      <aside className="hidden md:block md:w-[250px] bg-black p-4 shadow-lg overflow-y-auto border-r border-gray-800">
+      <aside className="hidden md:block md:w-[250px] bg-gray-900 p-4 shadow-lg overflow-y-auto border-r border-gray-800">
         <h4 className="text-lg font-semibold mb-3 flex items-center">
           <FaFilter className="mr-2" /> Filter
         </h4>

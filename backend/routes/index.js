@@ -50,6 +50,7 @@ import { resendVerificationEmailController } from '../controller/user/resendVeri
 import { getPaystackBanks, resolveBankAccount, } from '../controller/wallet/paystackController.js';
 import { getUserEthWallet, saveEthWalletAddress, withdrawEth } from '../controller/wallet/ethWalletController.js';
 import { createEthWithdrawalRequest, getAllEthWithdrawalRequests, getEthWithdrawalStatus, getSingleEthWithdrawalRequest, updateEthWithdrawalStatus } from '../controller/ethWithdrawalController.js';
+import { generateSliderVerification } from "../utils/sliderVerification.js";
 
 const router = express.Router();
 
@@ -131,6 +132,11 @@ router.get('/eth-price', async (req, res) => {
       res.status(500).json({ message: 'Error fetching ETH price', error: error.message });
     }
   }
+});
+
+router.get("/slider-verification", (req, res) => {
+  const { target, signature } = generateSliderVerification();
+  res.json({ target, signature });
 });
 
 router.post("/signup", userSignUpController);

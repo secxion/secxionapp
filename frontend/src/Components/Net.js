@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { FaCaretDown } from "react-icons/fa";
+import ROLE from "../common/role";
 import "./Net.css";
 
-
-// ===============================
-// Custom Dialog Component
-// ===============================
 const CustomDialog = ({ open, onOpenChange, children, title, description }) => {
     const dialogRef = useRef(null);
 
@@ -77,6 +77,30 @@ const Net = ({ blogs }) => {
     const [selectedBlog, setSelectedBlog] = useState(null);
     const [isMobile, setIsMobile] = useState(false);
 
+    const { user } = useSelector((state) => state.user);
+    const { profilePic, name, role } = user || {};
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null); 
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
+                !event.target.closest('.user-profile-section')
+            ) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     const checkIsMobile = useCallback(() => {
         setIsMobile(window.innerWidth < 768);
     }, []);
@@ -123,10 +147,51 @@ const Net = ({ blogs }) => {
     const currentBlog = blogs && blogs.length > 0 ? blogs[currentIndex] : null;
 
     return (
-        <div className="net-container fixed top-0 left-0 w-full bg-gradient-to-r from-purple-600 to-blue-500 shadow-md h-10 md:h-12 px-4 md:px-6 flex items-center font-mono text-white transition-all duration-300">
-            <span className="text-xs md:text-sm font-semibold bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full px-2 py-1 mr-2 tracking-wider">
-                BLOGs:
-            </span>
+        <div className="net-container fixed top-0 left-0 w-full bg-gradient-to-r from-purple-600 to-blue-500 shadow-md h-10 md:h-12 px-1 md:px-2 flex items-center font-mono text-white transition-all duration-300">
+            {(profilePic && name) && (
+                <div className="user-profile-section relative flex items-center mr-4">
+                    <img
+                        src={profilePic}
+                        alt="Profile"
+                        className="w-12 h-12 md:w-12 md:h-12 rounded-full object-cover cursor-pointer"
+                        onClick={toggleDropdown}
+                    />
+                    <span className="text-md md:text-base ml-2 mr-1">Hi, {name}</span>
+                    <FaCaretDown
+                        className="w-4 h-4 cursor-pointer text-white hover:text-gray-200 transition-colors duration-200"
+                        onClick={toggleDropdown}
+                    />
+
+                    {isDropdownOpen && (
+                        <div ref={dropdownRef} className="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                            <Link
+                                to="/home"
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                onClick={() => setIsDropdownOpen(false)} // Close dropdown on click
+                            >
+                                Home
+                            </Link>
+
+                            {user?.role === ROLE.ADMIN && (
+                                <Link
+                                    to="/admin-panel"
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    onClick={() => setIsDropdownOpen(false)} // Close dropdown on click
+                                >
+                                    Admin Panel
+                                </Link>
+                            )}
+                            <Link
+                                to="/profile"
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                onClick={() => setIsDropdownOpen(false)} // Close dropdown on click
+                            >
+                                Profile Update
+                            </Link>
+                        </div>
+                    )}
+                </div>
+            )}
 
             <div className="flex-grow relative h-6 overflow-hidden flex items-center">
                 {loading ? (

@@ -1,9 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     container: {
       center: true,
@@ -34,8 +32,8 @@ module.exports = {
         },
         neon1: {
           '0%, 100%': { textShadow: '0 0 10px #00f, 0 0 20px #0ff' },
-          '50%': { textShadow: '0 0 15px #0ff, 0 0 30px #00f' },
           '25%': { textShadow: '0 0 10px #0f0, 0 0 20px #0ff' },
+          '50%': { textShadow: '0 0 15px #0ff, 0 0 30px #00f' },
           '75%': { textShadow: '0 0 10px #f00, 0 0 20px #0ff' },
         },
         neon2: {
@@ -82,13 +80,8 @@ module.exports = {
         soft: 'inset 0 0 0 1px rgba(0, 0, 0, 0.05), 0 6px 12px rgba(0, 0, 0, 0.05)',
       },
       screens: {
-        'xxs': '320px',
-        'xs': '480px',
-        'sm': '640px',
-        'md': '768px',
-        'lg': '1024px',
-        'xl': '1280px',
-        '2xl': '1536px',
+        xxs: '320px',
+        xs: '480px',
       },
       colors: {
         primary: 'black',
@@ -101,10 +94,9 @@ module.exports = {
         neonYellow: '#ff0',
       },
       fontFamily: {
-        sans: ['Press Start 2P'],
-        serif: ['Press Start 2P'],
-        'body': ['Press Start 2P'],
-        'techno': ['Press Start 2P'],
+        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+        techno: ['Press Start 2P', 'cursive'],
+        body: ['Inter', 'sans-serif'],
       },
     },
   },

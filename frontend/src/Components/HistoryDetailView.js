@@ -64,14 +64,13 @@ const HistoryDetailView = ({
         </div>
 
         {productDetails && (
-          <div className="border overflow-x-hidden rounded-lg p-4 bg-gray-50 shadow-inner mb-6">
-            <div className="flex items-center gap-4">
+           <><h1 className='text-blue-600 p-4 font-semibold -mt-6 gap-3 space-y-4'>{productDetails._id}</h1>
+           <div className="border overflow-x-hidden rounded-lg p-4 bg-gray-50 shadow-inner mb-6">            <div className="flex items-center gap-4">
               {productDetails?.productImage?.[0] && (
                 <img
                   src={productDetails.productImage[0]}
                   alt="Product"
-                  className="w-24 h-24 object-cover rounded-lg border"
-                />
+                  className="w-24 h-24 object-cover rounded-lg border" />
               )}
               <div>
                 <h3 className="font-bold text-gray-800 text-lg">{productDetails.productName}</h3>
@@ -83,7 +82,7 @@ const HistoryDetailView = ({
             {productDetails.description && (
               <p className="text-gray-600 mt-4">{productDetails.description}</p>
             )}
-          </div>
+          </div></>
         )}
 
         <form className="space-y-6" onSubmit={handleSubmit}>

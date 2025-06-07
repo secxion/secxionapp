@@ -1,5 +1,3 @@
-// frontend/pages/SignUp.js
-
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -81,121 +79,141 @@ const SignUp = () => {
     }
   };
 
-
   return (
-    <section className="container min-h-screen bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center p-4">
-      <div className="bg-white p-6 w-full max-w-md rounded-2xl shadow-lg flex flex-col">
-        <div className="relative w-24 h-24 mx-auto overflow-hidden rounded-full bg-gray-200 border-4 border-white -mt-16">
-          <img src={data.profilePic || loginicons} alt="Profile Icon" className="w-full h-full object-cover" />
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-slate-800 to-gray-700 p-4">
+      <div className="bg-white w-full max-w-md p-8 shadow-xl rounded-2xl border border-gray-200">
+        <div className="w-24 h-24 mx-auto overflow-hidden bg-gray-100 border border-gray-300 rounded-full">
+          <img
+            src={data.profilePic || loginicons}
+            alt="Profile Icon"
+            className="w-full h-full object-cover"
+          />
         </div>
 
-        <div className="overflow-y-auto max-h-[400px] mt-4 px-2">
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            <div>
-              <label className="block text-gray-700 font-semibold">Profile Picture: 📷</label>
-              <input type="file" accept="image/*" onChange={handleUploadPic} className="w-full p-2 border rounded-lg" />
-            </div>
+        <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Profile Picture</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleUploadPic}
+              className="w-full p-2 border border-gray-300 bg-gray-50 text-sm rounded"
+            />
+          </div>
 
-            <div>
-              <label className="block text-gray-700 font-semibold">Name: 🌟</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter your name"
+              value={data.name}
+              onChange={handleOnChange}
+              required
+              className="w-full p-2 bg-gray-50 border border-gray-300 text-sm rounded"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tag</label>
+            <input
+              type="text"
+              name="tag"
+              placeholder="e.g. #Director, #CryptoTrader"
+              value={data.tag}
+              onChange={handleOnChange}
+              className="w-full p-2 bg-gray-50 border border-gray-300 text-sm rounded"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Telegram Number</label>
+            <input
+              type="text"
+              name="telegramNumber"
+              placeholder="Enter your Telegram number"
+              value={data.telegramNumber}
+              onChange={handleOnChange}
+              className="w-full p-2 bg-gray-50 border border-gray-300 text-sm rounded"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              value={data.email}
+              onChange={handleOnChange}
+              required
+              className="w-full p-2 bg-gray-50 border border-gray-300 text-sm rounded"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <div className="flex items-center p-2 bg-gray-50 border border-gray-300 rounded">
               <input
-                type="text"
-                placeholder="Enter your name"
-                name="name"
-                value={data.name}
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter password"
+                value={data.password}
                 onChange={handleOnChange}
                 required
-                className="w-full p-2 bg-gray-100 rounded-lg outline-none"
+                className="flex-1 bg-transparent outline-none text-sm"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="text-gray-600 ml-2"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
+          </div>
 
-            <div>
-              <label className="block text-gray-700 font-semibold">Tag:</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+            <div className="flex items-center p-2 bg-gray-50 border border-gray-300 rounded">
               <input
-                type="text"
-                placeholder="Enter your tag"
-                name="tag"
-                value={data.tag}
-                onChange={handleOnChange}
-                className="w-full p-2 bg-gray-100 rounded-lg outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-semibold">Telegram Number:</label>
-              <input
-                type="text"
-                placeholder="Enter your Telegram number"
-                name="telegramNumber"
-                value={data.telegramNumber}
-                onChange={handleOnChange}
-                className="w-full p-2 bg-gray-100 rounded-lg outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-semibold">Email: 📧</label>
-              <input
-                type="email"
-                placeholder="Enter email"
-                name="email"
-                value={data.email}
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                placeholder="Confirm password"
+                value={data.confirmPassword}
                 onChange={handleOnChange}
                 required
-                className="w-full p-2 bg-gray-100 rounded-lg outline-none"
+                className="flex-1 bg-transparent outline-none text-sm"
               />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                className="text-gray-600 ml-2"
+              >
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
+          </div>
 
-            <div>
-              <label className="block text-gray-700 font-semibold">Password: 🔑</label>
-              <div className="flex items-center bg-gray-100 p-2 rounded-lg">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter password"
-                  name="password"
-                  value={data.password}
-                  onChange={handleOnChange}
-                  required
-                  className="w-full bg-transparent outline-none"
-                />
-                <button type="button" onClick={() => setShowPassword((prev) => !prev)} className="text-xl">
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
-                </button>
-              </div>
-            </div>
+          <button
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded transition disabled:opacity-50"
+          >
+            {loading ? "Signing Up... ⏳" : "Sign Up 🚀"}
+          </button>
+        </form>
 
-            <div>
-              <label className="block text-gray-700 font-semibold">Confirm Password: 🔒</label>
-              <div className="flex items-center bg-gray-100 p-2 rounded-lg">
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Confirm password"
-                  name="confirmPassword"
-                  value={data.confirmPassword}
-                  onChange={handleOnChange}
-                  required
-                  className="w-full bg-transparent outline-none"
-                />
-                <button type="button" onClick={() => setShowConfirmPassword((prev) => !prev)} className="text-xl">
-                  {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-                </button>
-              </div>
-            </div>
-
-            <button
-              disabled={loading}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-full transition transform hover:scale-105 disabled:opacity-50"
-            >
-              {loading ? "Signing Up... ⏳" : "Sign Up 🚀"}
-            </button>
-          </form>
+        <div className="mt-6 text-center text-sm text-gray-600">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-600 hover:underline font-medium">
+            Login
+          </Link>
         </div>
 
-        <p className="mt-4 text-center">
-          Already have an account? <Link to="/login" className="text-blue-500 hover:underline">Login</Link>
-        </p>
-
-        <Link to="/contact-us" className="mt-4 block text-center text-gray-600 hover:text-gray-800">
+        <Link
+          to="/contact-us"
+          className="mt-2 block text-center text-sm text-gray-500 hover:text-gray-800"
+        >
           Contact Us
         </Link>
       </div>

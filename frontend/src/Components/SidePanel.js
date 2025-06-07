@@ -49,10 +49,10 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
         leaveFrom="translate-x-0"
         leaveTo="-translate-x-full"
       >
-        <Dialog.Panel className="relative flex flex-col w-full max-w-sm h-full panel-glass bg-gradient-to-b from-white via-gray-50 to-white shadow-xl rounded-r-lg overflow-y-auto pb-6">
+        <Dialog.Panel className="relative flex flex-col w-full max-w-sm h-full bg-gradient-to-b from-white via-gray-50 to-white shadow-xl overflow-y-auto pb-6">
 
           {/* Header */}
-          <div className="card-soft flex items-center justify-between px-6 py-4 mt-12 border-b border-gray-200 shadow-sm">
+          <div className="flex items-center justify-between px-6 py-4 mt-10 border-b border-gray-200 shadow-sm">
             <button
               type="button"
               className="text-gray-500 hover:text-blue-600 transition"
@@ -84,13 +84,6 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
               { path: '/mywallet', icon: <FaWallet className="h-5 w-5" />, label: 'Wallet' },
               { path: '/datapad', icon: <FaBlog className="h-5 w-5" />, label: 'DataPad' },
               { path: '/report', icon: <PhoneIcon className="h-5 w-5" />, label: 'Connect with us' },
-              ...(user?.role === ROLE.ADMIN
-                ? [{
-                    path: '/admin-panel',
-                    icon: <Cog6ToothIcon className="h-5 w-5" />,
-                    label: 'Admin Panel',
-                  }]
-                : []),
             ].map(({ path, icon, label }) => (
               <Link
                 key={label}

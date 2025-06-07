@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import SummaryApi from '../common';
 import { toast } from 'react-toastify';
-import { FaSyncAlt, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const PaymentRequestForm = () => {
     const { user } = useSelector((state) => state.user);
@@ -14,21 +13,18 @@ const PaymentRequestForm = () => {
     const [selectedBankAccount, setSelectedBankAccount] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [SuccessMessage, setSuccessMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const [bankAccounts, setBankAccounts] = useState([]);
     const [isLoadingBankAccounts, setIsLoadingBankAccounts] = useState(false);
     const [errorBankAccounts, setErrorBankAccounts] = useState('');
     const [walletBalance, setWalletBalance] = useState(null);
     const [isLoadingBalance, setIsLoadingBalance] = useState(false);
-    const [loadingBalance, setLoadingBalance] = useState(true);
-    const [errorBalance, setErrorBalance] = useState('');
     const [shouldRefreshAccounts, setShouldRefreshAccounts] = useState(false);
-    const [showBalance, setShowBalance] = useState(false);
 
     const MIN_REQUEST_AMOUNT = 1000;
 
     const fetchBankAccounts = useCallback(async () => {
-        if (!user?.id && !user?._id) return;
+        if (!user?._id && !user?.id) return;
 
         setIsLoadingBankAccounts(true);
         setErrorBankAccounts('');
@@ -38,7 +34,9 @@ const PaymentRequestForm = () => {
                 credentials: 'include',
             });
             const data = await response.json();
-            data.success ? setBankAccounts(data.data) : setErrorBankAccounts(data.message || 'Failed to fetch bank accounts.');
+            data.success
+                ? setBankAccounts(data.data)
+                : setErrorBankAccounts(data.message || 'Failed to fetch bank accounts.');
         } catch {
             setErrorBankAccounts('An unexpected error occurred while fetching bank accounts.');
         } finally {
@@ -48,22 +46,23 @@ const PaymentRequestForm = () => {
     }, [user]);
 
     const fetchWalletBalance = useCallback(async () => {
-        if (!user?.id && !user?._id) return;
+        if (!user?._id && !user?.id) return;
 
         setIsLoadingBalance(true);
-        setErrorBalance('');
+        setError('');
         try {
             const response = await fetch(`${SummaryApi.getWalletBalance.url}/${user._id || user.id}`, {
                 method: 'GET',
                 credentials: 'include',
             });
             const data = await response.json();
-            data.success ? setWalletBalance(data.balance) : setErrorBalance(data.message || 'Failed to fetch wallet balance.');
+            data.success
+                ? setWalletBalance(data.balance)
+                : setError(data.message || 'Failed to fetch wallet balance.');
         } catch {
-            setErrorBalance('An unexpected error occurred while fetching wallet balance.');
+            setError('An unexpected error occurred while fetching wallet balance.');
         } finally {
             setIsLoadingBalance(false);
-            setLoadingBalance(false);
         }
     }, [user]);
 
@@ -82,20 +81,20 @@ const PaymentRequestForm = () => {
         const value = e.target.value.replace(/[^\d]/g, '');
         const formatted = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         setAmount(formatted);
+        setError('');
     };
 
     const handleWithdrawAll = () => {
         if (walletBalance !== null) {
             setAmount(walletBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+            setError('');
         }
     };
 
     const handlePaymentMethodChange = (e) => {
         const selected = e.target.value;
         setPaymentMethod(selected);
-        if (selected === 'Ethereum') {
-            navigate('/eth');
-        }
+        if (selected === 'Ethereum') navigate('/eth');
     };
 
     const handleSubmit = async (e) => {
@@ -105,19 +104,23 @@ const PaymentRequestForm = () => {
         setLoading(true);
 
         const parsedAmount = parseFloat(amount.replace(/,/g, ''));
+
         if (!parsedAmount || parsedAmount < MIN_REQUEST_AMOUNT) {
-            setError(`Minimum request amount is ₦${MIN_REQUEST_AMOUNT.toLocaleString()}`);
-            return setLoading(false);
+            setError(`❌ Minimum request amount is ₦${MIN_REQUEST_AMOUNT.toLocaleString()}`);
+            setLoading(false);
+            return;
         }
 
         if (parsedAmount > walletBalance) {
-            setError(`Amount exceeds your balance of ₦${walletBalance.toLocaleString()}`);
-            return setLoading(false);
+            setError(`❌ Amount exceeds your wallet balance of ₦${walletBalance.toLocaleString()}`);
+            setLoading(false);
+            return;
         }
 
         if (!selectedBankAccount) {
-            setError('Please select a bank account.');
-            return setLoading(false);
+            setError('❌ Please select a bank account.');
+            setLoading(false);
+            return;
         }
 
         const payload = {
@@ -136,17 +139,17 @@ const PaymentRequestForm = () => {
 
             const data = await response.json();
             if (data.success) {
-                toast.success(data.message || 'Payment request submitted!');
+                toast.success(data.message || '✅ Payment request submitted!');
                 setSuccessMessage(data.message);
                 setAmount('');
                 setSelectedBankAccount('');
                 fetchWalletBalance();
             } else {
-                toast.error(data.message || 'Request failed.');
-                setError(data.message);
+                setError(data.message || '❌ Payment request failed.');
+                toast.error(data.message);
             }
         } catch {
-            setError('An unexpected error occurred.');
+            setError('❌ An unexpected error occurred.');
             toast.error('Request failed.');
         } finally {
             setLoading(false);
@@ -154,46 +157,20 @@ const PaymentRequestForm = () => {
     };
 
     return (
-        <div className="max-w-2xl mx-auto px-4 mt-16">
+        <div className="mb-20 mx-auto px-4 mt-20 max-w-2xl">
             <div className="bg-white shadow-lg rounded-xl p-6 space-y-8">
-                <div className="sticky top-0 z-50 flex items-center bg-indigo-50 dark:bg-indigo-900 p-3 rounded-md shadow-sm w-full max-w-md mx-auto">
-                    <div className="flex-grow text-left">
-                        <p className="text-md text-indigo-600 dark:text-indigo-300 font-medium">Balance:</p>
-                        {isLoadingBalance ? (
-                            <svg className="w-5 h-5 animate-spin text-indigo-500" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 0116 0h-2a6 6 0 00-12 0H4z" />
-                            </svg>
-                        ) : errorBalance ? (
-                            <span className="text-red-500 text-sm">{errorBalance}</span>
-                        ) : (
-                            <span className="font-bold text-green-700">
-                                {showBalance ? `₦${walletBalance?.toLocaleString()}` : '••••••••'}
-                            </span>
-                        )}
+
+                {error && (
+                    <div className="bg-red-100 text-red-700 px-4 py-2 rounded-md border border-red-300">
+                        {error}
                     </div>
+                )}
 
-                    <div className="grid items-center gap-2 ml-4">
-                        <button
-                            onClick={() => setShowBalance(!showBalance)}
-                            title={showBalance ? 'Hide balance' : 'Show balance'}
-                            className="p-2 rounded-md bg-indigo-100 dark:bg-indigo-700 hover:bg-indigo-200 dark:hover:bg-indigo-600 text-indigo-600 dark:text-indigo-300 transition flex items-center justify-center"
-                        >
-                            {showBalance ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-                        </button>
-
-                        <button
-                            onClick={fetchWalletBalance}
-                            title="Refresh balance"
-                            className="p-2 rounded-md bg-indigo-100 dark:bg-indigo-700 hover:bg-indigo-200 dark:hover:bg-indigo-600 text-indigo-600 dark:text-indigo-300 transition flex items-center justify-center"
-                        >
-                            <FaSyncAlt size={18} />
-                        </button>
+                {successMessage && (
+                    <div className="bg-green-100 text-green-700 px-4 py-2 rounded-md border border-green-300">
+                        {successMessage}
                     </div>
-                </div>
-
-                {error && <div className="text-red-600 bg-red-100 p-3 rounded-md border border-red-300">{error}</div>}
-                {SuccessMessage && <div className="text-green-600 bg-green-100 p-3 rounded-md border border-green-300">{SuccessMessage}</div>}
+                )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
@@ -210,7 +187,11 @@ const PaymentRequestForm = () => {
                                 value={amount}
                                 onChange={handleAmountChange}
                             />
-                            <button type="button" onClick={handleWithdrawAll} className="absolute right-3 top-1/2 -translate-y-1/2 text-indigo-600 text-sm hover:underline">
+                            <button
+                                type="button"
+                                onClick={handleWithdrawAll}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-indigo-600 text-sm hover:underline"
+                            >
                                 All
                             </button>
                         </div>

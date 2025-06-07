@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useContext, useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { FcSearch } from "react-icons/fc";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +11,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faSignOutAlt, faVolumeUp, faVolumeMute } from '@fortawesome/free-solid-svg-icons';
 import { PiBell } from 'react-icons/pi';
 import notificationSound from '../Assets/notification.mp3';
-import ROLE from "../common/role";
 import SummaryApi from "../common";
 import { BiSearch } from 'react-icons/bi';
 import SidePanel from "./SidePanel";
@@ -39,7 +38,6 @@ const Header = () => {
     const [search, setSearch] = useState(searchQuery);
     const debouncedSearch = useDebounce(search, 300);
 
-    // Notification Sound
     const playNotificationSound = () => {
         if (soundEnabled && audioRef.current) {
             audioRef.current.currentTime = 0;
@@ -49,14 +47,12 @@ const Header = () => {
         }
     };
 
-    // Vibration
     const triggerVibration = () => {
         if (navigator.vibrate) {
             navigator.vibrate([100, 50, 100]);
         }
     };
 
-    // Function to truncate words
     const truncateWords = (text, limit) => {
         const words = text.split(/\s+/);
         if (words.length > limit) {
@@ -73,7 +69,6 @@ const Header = () => {
         };
     };
 
-    // Fetch Unread Count
     const fetchUnreadCount = useCallback(async () => {
         if (user?._id) {
             try {
@@ -91,7 +86,6 @@ const Header = () => {
         }
     }, [user?._id]);
 
-    // Fetch New Notifications
     const fetchNewNotifications = useCallback(async () => {
         if (user?._id) {
             try {
@@ -110,9 +104,7 @@ const Header = () => {
                         setAnimateNotification(true);
                         playNotificationSound();
                         triggerVibration();
-                        // Reset animation
                         setTimeout(() => setAnimateNotification(false), 2000);
-                        // Hide popup after 4 seconds
                         setTimeout(() => setShowPopup(false), 4000);
                     }
                 }
@@ -175,7 +167,7 @@ const Header = () => {
 
     return (
         <>
-            <header className="header-spa left-0 right-0 top-0 pt-8 mb-8 inset-0 bg-black/80 backdrop-blur-md fixed w-full z-50 border-b border-white/20 shadow-md transition-all duration-300 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+            <header className="header-spa left-0 right-0 top-0 pt-8 mb-8 inset-0 bg-black/80 backdrop-blur-md fixed w-full z-40 border-b border-white/20 shadow-md transition-all duration-300 flex items-center justify-between px-4 sm:px-6 lg:px-8">
                 <div className="w-full mx-auto flex items-center justify-between">
                     {/* Menu Icon */}
                     <div className="flex items-center gap-2">
@@ -188,8 +180,10 @@ const Header = () => {
                         </button>
                     </div>
                     {/* Logo */}
-                    <Link to="/home" className="hidden minecraft-font text-1xl md:flex items-center font-extrabold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 mr-4 tracking-wide">
-                        SXN
+                    <Link to="/home" className="hidden minecraft-font md:flex items-center font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 mr-4 tracking-wide">
+                        <h1 className=" font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">
+                            SXN
+                        </h1>
                     </Link>
                     
                     {/* Search Input - Desktop */}
@@ -216,7 +210,6 @@ const Header = () => {
                             />
                         </div>
                     </div>
-                    {/* Main Nav */}
                     <nav className="hidden minecraft-font text-[9px] md:flex items-center gap-2">
                         <Link to="/record" className="px-3 py-1 border border-cyan-500 text-gray-900 hover:bg-cyan-600 hover:text-white rounded transition duration-200">
                             Trade Status
@@ -225,11 +218,7 @@ const Header = () => {
                         <Link to="/datapad" className="px-3 py-1 border border-yellow-500 text-gray-900 hover:bg-yellow-500 hover:text-black rounded transition duration-200">
                             DataPad
                         </Link>
-                        {user?.role === ROLE.ADMIN && (
-                            <Link to="/admin-panel" className="px-3 py-1 border border-purple-500 text-gray-900 hover:bg-purple-700 hover:text-white rounded transition duration-200">
-                                Admin
-                            </Link>
-                        )}
+
                         <Link to="/notifications" className="relative px-3 py-1 border border-emerald-500 text-gray-900 hover:bg-emerald-600 hover:text-white rounded transition duration-200">
                             <PiBell className={animateNotification ? 'animate-ping-slow text-2xl' : 'text-2xl'} />
                             {unreadNotificationCount > 0 && (
@@ -248,7 +237,6 @@ const Header = () => {
                                 Logout
                             </button>
                         )}
-                        {/* Audio Toggle Switch - Desktop */}
                         <button
                             onClick={toggleSound}
                             className="px-3 py-1 border border-gray-500 text-gray-900 hover:bg-gray-600 hover:text-white rounded transition flex items-center"
@@ -271,9 +259,8 @@ const Header = () => {
                     </div>
                 </div>
 
-                {/* Integrated PopAlert */}
                 {showPopup && (
-                    <div className="pop-alert w-screen right-0 left-0 bg-white text-black px-4 py-8 -mt-4 shadow-lg rounded-lg animate-slide-in">
+                    <div className="pop-alert w-screen right-0 left-0 bg-white text-black items-center justify-center px-4 py-10 -mt-2 shadow-lg animate-slide-in z-50">
                         <p className="text-sm font-medium">{truncatedMessage.truncated}</p>
                         {truncatedMessage.isTruncated && (
                             <Link to="/notifications" className="block text-blue-500 hover:underline text-xs">
