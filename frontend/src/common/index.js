@@ -9,6 +9,10 @@ const SummaryApi = {
         url : `${backendDomain}/api/verify-email`,
         method : "get"
     },
+     sliderVerification : {
+        url : `${backendDomain}/api/slider-verification`,
+        method : "get"
+    },
     resendVEmail : {
         url : `${backendDomain}/api/resend-verification`,
         method : "post"

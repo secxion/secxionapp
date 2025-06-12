@@ -1,8 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import SummaryApi from "../common";
 import { toast } from "react-toastify";
+
+import SummaryApi from "../common";
 import Context from "../Context";
+import Logo from "../Assets/1.svg";
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
@@ -13,7 +15,6 @@ const Login = () => {
   const { fetchUserDetails } = useContext(Context);
   const navigate = useNavigate();
 
-  // Slider verification
   const [verificationVisible, setVerificationVisible] = useState(false);
   const [sliderValue, setSliderValue] = useState(0);
   const [targetValue, setTargetValue] = useState(0);
@@ -28,14 +29,20 @@ const Login = () => {
 
   const fetchSliderTarget = async () => {
     try {
-      const res = await fetch("/api/slider-verification");
+      const res = await fetch(SummaryApi.sliderVerification.url, {
+        method: SummaryApi.sliderVerification.method,
+        credentials: "include"
+      });
+
+      if (!res.ok) throw new Error();
+
       const { target, signature } = await res.json();
       setTargetValue(target);
       setSliderSignature(signature);
       setSliderValue(0);
       setIsVerified(false);
     } catch {
-      toast.error("Failed to load verification.");
+      toast.error("Failed to load verification challenge.");
     }
   };
 
@@ -46,41 +53,43 @@ const Login = () => {
   };
 
   const handleVerificationComplete = async () => {
-    if (!isVerified) return;
+  if (!isVerified) return;
+  setFormSubmitting(true);
+  setErrorMessage("");
 
-    setFormSubmitting(true);
-    setErrorMessage("");
+  try {
+    const response = await fetch(SummaryApi.signIn.url, {
+      method: SummaryApi.signIn.method,
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...data,
+        sliderValue,
+        targetValue,
+        slider: {
+          value: sliderValue,
+          signature: sliderSignature,
+        },
+      }),
+    });
 
-    try {
-      const response = await fetch(SummaryApi.signIn.url, {
-        method: SummaryApi.signIn.method,
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...data,
-          sliderValue,
-          targetValue,
-          slider: { value: sliderValue, signature: sliderSignature },
-        }),
-      });
+    const result = await response.json();
 
-      const result = await response.json();
-
-      if (result.success) {
-        toast.success(result.message);
-        fetchUserDetails();
-        navigate("/home");
-      } else {
-        setErrorMessage(result.message || "Invalid credentials. Please try again.");
-        toast.error(result.message);
-      }
-    } catch {
-      setErrorMessage("An unexpected error occurred. Please try again.");
-    } finally {
-      setFormSubmitting(false);
-      setVerificationVisible(false);
+    if (result.success) {
+      toast.success(result.message);
+      fetchUserDetails();
+      navigate("/home");
+    } else {
+      setErrorMessage(result.message || "Invalid credentials. Please try again.");
+      toast.error(result.message);
     }
-  };
+  } catch {
+    setErrorMessage("An unexpected error occurred. Please try again.");
+  } finally {
+    setFormSubmitting(false);
+    setVerificationVisible(false);
+  }
+};
 
   const handleResendVerificationEmail = async () => {
     setResending(true);
@@ -112,56 +121,49 @@ const Login = () => {
   };
 
   return (
-    <section className="w-screen h-screen flex items-center justify-center bg-black fixed top-0 left-0 z-50">
-      <div className="bg-gray-900 p-8 w-full max-w-md rounded-md shadow-lg text-white">
-        <div className="text-center">
-          <h1 className="minecraft-font justify-center md:flex items-center font-extrabold text-transparent text-2xl bg-clip-text tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">
-            SXN
-          </h1>
-          <p className="text-gray-300 text-sm mt-2">Login to your Account</p>
+    <section className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <div className="bg-white border border-gray-300 p-6 sm:p-8 w-full max-w-md rounded-2xl shadow-xl">
+        <div className="flex justify-center mb-5">
+          <Link to="/">
+            <img src={Logo} alt="Secxion Logo" className="w-24 h-auto" />
+          </Link>
         </div>
 
-        <form className="w-full mt-6 flex flex-col gap-4" onSubmit={onLoginClick}>
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-800">Welcome</h1>
+          <p className="text-sm text-gray-500 mt-1">Login to your account</p>
+        </div>
+
+        <form className="flex flex-col gap-4" onSubmit={onLoginClick}>
           <div>
-            <label htmlFor="email" className="block text-gray-300 font-semibold mb-1">Email</label>
+            <label htmlFor="email" className="block text-gray-600 font-medium mb-1">Email</label>
             <input
-              id="email"
-              name="email"
-              type="email"
-              value={data.email}
-              onChange={handleInputChange}
+              id="email" name="email" type="email" value={data.email} onChange={handleInputChange}
               placeholder="you@example.com"
-              className="w-full bg-gray-800 p-3 rounded-md text-white placeholder-gray-500 focus:ring-2 focus:ring-cyan-400"
-              required
-              autoComplete="email"
+              className="w-full bg-gray-100 p-3 rounded-lg border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required autoComplete="email"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-gray-300 font-semibold mb-1">Password</label>
+            <label htmlFor="password" className="block text-gray-600 font-medium mb-1">Password</label>
             <div className="relative">
               <input
-                id="password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                value={data.password}
-                onChange={handleInputChange}
-                placeholder="Enter your password"
-                className="w-full bg-gray-800 p-3 pr-10 rounded-md text-white placeholder-gray-500 focus:ring-2 focus:ring-cyan-400"
-                required
-                autoComplete="current-password"
+                id="password" name="password" type={showPassword ? "text" : "password"} value={data.password} onChange={handleInputChange}
+                placeholder="••••••••"
+                className="w-full bg-gray-100 p-3 pr-12 rounded-lg border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                required autoComplete="current-password"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute right-3 top-3 text-gray-400 hover:text-gray-200"
+                className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
                 tabIndex={-1}
-                aria-label="Toggle password visibility"
               >
                 {showPassword ? "🙈" : "👁️"}
               </button>
             </div>
-            <Link to="/reset" className="block text-right text-sm text-cyan-400 hover:underline mt-1">
+            <Link to="/reset" className="block text-right text-sm text-blue-600 hover:underline mt-1">
               Forgot password?
             </Link>
           </div>
@@ -169,8 +171,10 @@ const Login = () => {
           <button
             type="submit"
             disabled={formSubmitting}
-            className={`w-full py-3 rounded-md font-bold text-white transition duration-300 ${
-              formSubmitting ? "bg-cyan-600 cursor-not-allowed" : "bg-cyan-500 hover:bg-cyan-600"
+            className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 ${
+              formSubmitting
+                ? "bg-blue-300 text-white cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
             }`}
           >
             {formSubmitting ? "Logging in..." : "Login"}
@@ -184,7 +188,7 @@ const Login = () => {
               <button
                 onClick={handleResendVerificationEmail}
                 disabled={resending}
-                className="mt-2 text-cyan-400 hover:underline text-sm"
+                className="mt-2 text-blue-600 hover:underline font-medium"
               >
                 {resending ? "Resending..." : "Resend Verification Email"}
               </button>
@@ -192,47 +196,48 @@ const Login = () => {
           </div>
         )}
 
-        <p className="mt-6 text-center text-gray-400 text-sm">
+        <p className="mt-6 text-center text-gray-600 text-sm">
           Don’t have an account?{" "}
-          <Link to="/sign-up" className="text-cyan-400 hover:underline font-medium">Sign up</Link>
+          <Link to="/sign-up" className="text-blue-600 hover:underline font-medium">
+            Sign up
+          </Link>
         </p>
 
-        <Link to="/contact-us" className="block mt-4 text-center text-gray-400 hover:text-cyan-400 text-sm">
-          Contact Us
-        </Link>
-
-        <p className="mt-6 text-center text-gray-600 text-xs select-none">
-          © 2025 <a href="https://secxion.com" className="hover:underline">secxion.com</a>
-        </p>
+        <div className="mt-6 text-center text-xs text-gray-400">
+          <Link to="/contact-us" className="hover:text-blue-500 transition-colors">
+            Contact Us
+          </Link>
+          <span className="mx-2">|</span>
+          <a href="https://secxion.com" className="hover:underline" target="_blank" rel="noopener noreferrer">
+            © {new Date().getFullYear()} secxion.com
+          </a>
+        </div>
       </div>
 
-      {/* Slider Verification Modal */}
+      {/* Slider Verification */}
       {verificationVisible && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-60 p-4">
-          <div className="bg-gray-900 p-6 rounded-md shadow-lg max-w-sm w-full text-white">
-            <h2 className="text-xl font-bold mb-4 text-center">Verify You're Human</h2>
-            <p className="text-sm mb-4 text-center">
-              Slide the slider to <span className="font-bold text-cyan-400">{targetValue}</span> to verify.
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-6 rounded-xl border shadow-lg w-full max-w-sm">
+            <h2 className="text-lg font-bold text-gray-800 mb-2 text-center">Human Verification</h2>
+            <p className="text-sm text-gray-600 mb-4 text-center">
+              Slide to match: <span className="font-semibold text-blue-600">{targetValue}</span>
             </p>
 
             <input
-              type="range"
-              min="0"
-              max="100"
-              value={sliderValue}
-              onChange={handleSliderChange}
-              className="w-full accent-cyan-400 mb-4"
+              type="range" min="0" max="100" value={sliderValue} onChange={handleSliderChange}
+              className="w-full h-2 accent-blue-500 mb-4"
             />
 
-            <div className="text-center mb-4">
-              <span className="font-semibold">Your Value:</span> {sliderValue}
+            <div className="text-center text-sm mb-3">
+              <span className="text-gray-500">Current: </span>
+              <span className="font-semibold">{sliderValue}</span>
             </div>
 
             <button
               onClick={handleVerificationComplete}
               disabled={!isVerified}
-              className={`w-full py-3 rounded-md font-bold transition ${
-                isVerified ? "bg-cyan-500 hover:bg-cyan-600" : "bg-gray-700 cursor-not-allowed"
+              className={`w-full py-2 rounded-md font-semibold transition ${
+                isVerified ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
               {isVerified ? "Verify & Login" : "Slide to Verify"}
@@ -240,7 +245,7 @@ const Login = () => {
 
             <button
               onClick={() => setVerificationVisible(false)}
-              className="mt-3 w-full py-2 text-center text-gray-400 hover:text-gray-200 underline"
+              className="mt-3 w-full text-sm text-gray-500 hover:text-blue-600"
             >
               Cancel
             </button>

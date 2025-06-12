@@ -14,7 +14,6 @@ import {
     signinUserAPI,
 } from "./services/apiService";
 import "./styles/Loader.css";
-import DarkModeToggle from "./Components/DarkModeToggle";
 
 function setViewportHeight() {
     const vh = window.innerHeight * 0.01;

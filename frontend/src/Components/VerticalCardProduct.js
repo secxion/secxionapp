@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import fetchCategoryWiseProduct from '../helpers/fetchCategoryWiseProduct'
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6'
 import { Link, useNavigate } from 'react-router-dom'

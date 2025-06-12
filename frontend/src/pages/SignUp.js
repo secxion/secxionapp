@@ -27,9 +27,18 @@ const SignUp = () => {
     const { name, value } = e.target;
     setData((prev) => ({
       ...prev,
-      [name]: value.trim(),
+      [name]: value,
     }));
   };
+
+  const isValidEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const isValidPassword = (password) =>
+    password.length >= 6;
+
+  const isValidTelegram = (number) =>
+    /^(\+?\d{7,15})$/.test(number);
 
   const handleUploadPic = async (e) => {
     const file = e.target.files[0];
@@ -51,8 +60,20 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!isValidEmail(data.email)) {
+      return toast.error("📧 Enter a valid email address.");
+    }
+
+    if (!isValidPassword(data.password)) {
+      return toast.error("🔐 Password must be at least 6 characters.");
+    }
+
     if (data.password !== data.confirmPassword) {
-      return toast.error("🔒 Passwords do not match!");
+      return toast.error("❌ Passwords do not match.");
+    }
+
+    if (data.telegramNumber && !isValidTelegram(data.telegramNumber)) {
+      return toast.error("📞 Invalid Telegram number format.");
     }
 
     setLoading(true);
@@ -67,13 +88,13 @@ const SignUp = () => {
 
       const responseData = await response.json();
       if (response.ok) {
-        toast.success("🎉 Thank You For Signing Up! ₦900 signup bonus awarded. Please verify your email..");
+        toast.success("🎉 Signup successful! ₦900 bonus awarded. Verify your email.");
         setTimeout(() => navigate("/login"), 2500);
       } else {
-        toast.error(responseData.message);
+        toast.error(responseData?.message || "Signup failed.");
       }
     } catch (error) {
-      toast.error("Signup failed. Please try again.");
+      toast.error("🚫 Signup failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -101,99 +122,28 @@ const SignUp = () => {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-            <input
-              type="text"
-              name="name"
-              placeholder="Enter your name"
-              value={data.name}
-              onChange={handleOnChange}
-              required
-              className="w-full p-2 bg-gray-50 border border-gray-300 text-sm rounded"
-            />
-          </div>
+          <InputField label="Name" name="name" value={data.name} onChange={handleOnChange} required />
+          <InputField label="Tag" name="tag" value={data.tag} onChange={handleOnChange} placeholder="e.g. #Director" />
+          <InputField label="Telegram Number" name="telegramNumber" value={data.telegramNumber} onChange={handleOnChange} />
+          <InputField label="Email" name="email" type="email" value={data.email} onChange={handleOnChange} required />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tag</label>
-            <input
-              type="text"
-              name="tag"
-              placeholder="e.g. #Director, #CryptoTrader"
-              value={data.tag}
-              onChange={handleOnChange}
-              className="w-full p-2 bg-gray-50 border border-gray-300 text-sm rounded"
-            />
-          </div>
+          <PasswordField
+            label="Password"
+            name="password"
+            value={data.password}
+            onChange={handleOnChange}
+            show={showPassword}
+            toggle={() => setShowPassword((prev) => !prev)}
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Telegram Number</label>
-            <input
-              type="text"
-              name="telegramNumber"
-              placeholder="Enter your Telegram number"
-              value={data.telegramNumber}
-              onChange={handleOnChange}
-              className="w-full p-2 bg-gray-50 border border-gray-300 text-sm rounded"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              value={data.email}
-              onChange={handleOnChange}
-              required
-              className="w-full p-2 bg-gray-50 border border-gray-300 text-sm rounded"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <div className="flex items-center p-2 bg-gray-50 border border-gray-300 rounded">
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                placeholder="Enter password"
-                value={data.password}
-                onChange={handleOnChange}
-                required
-                className="flex-1 bg-transparent outline-none text-sm"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="text-gray-600 ml-2"
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-            <div className="flex items-center p-2 bg-gray-50 border border-gray-300 rounded">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                name="confirmPassword"
-                placeholder="Confirm password"
-                value={data.confirmPassword}
-                onChange={handleOnChange}
-                required
-                className="flex-1 bg-transparent outline-none text-sm"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword((prev) => !prev)}
-                className="text-gray-600 ml-2"
-              >
-                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
-          </div>
+          <PasswordField
+            label="Confirm Password"
+            name="confirmPassword"
+            value={data.confirmPassword}
+            onChange={handleOnChange}
+            show={showConfirmPassword}
+            toggle={() => setShowConfirmPassword((prev) => !prev)}
+          />
 
           <button
             disabled={loading}
@@ -220,5 +170,42 @@ const SignUp = () => {
     </section>
   );
 };
+
+// 🔹 Modular Reusable Input Field
+const InputField = ({ label, name, value, onChange, type = "text", placeholder = "", required = false }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+    <input
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      required={required}
+      className="w-full p-2 bg-gray-50 border border-gray-300 text-sm rounded"
+    />
+  </div>
+);
+
+// 🔹 Modular Reusable Password Field
+const PasswordField = ({ label, name, value, onChange, show, toggle }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+    <div className="flex items-center p-2 bg-gray-50 border border-gray-300 rounded">
+      <input
+        type={show ? "text" : "password"}
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={`Enter ${label.toLowerCase()}`}
+        required
+        className="flex-1 bg-transparent outline-none text-sm"
+      />
+      <button type="button" onClick={toggle} className="text-gray-600 ml-2">
+        {show ? <FaEyeSlash /> : <FaEye />}
+      </button>
+    </div>
+  </div>
+);
 
 export default SignUp;

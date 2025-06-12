@@ -108,8 +108,6 @@ const protectedRoutes = [
   { path: "chat/:reportId", element: <ReportCard /> },
   { path: "community-feed", element: <Buzz /> },
     { path: "eth", element: <EthWallet /> },
-
-
 ];
 
 const adminRoutes = [

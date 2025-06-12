@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaWallet, FaHistory, FaUniversity } from 'react-icons/fa';
 
 const WalletFooter = ({ activeTab, setActiveTab }) => {
