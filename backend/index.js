@@ -13,21 +13,26 @@ dotenv.config();
 
 const app = express();
 
-// Determine allowed origins
+// Handle __dirname in ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ✅ Serve React build files
+const frontendBuildPath = path.join(__dirname, 'build');
+
+// ✅ Define CORS
 const allowedOrigins = [
   process.env.FRONTEND_URL || '',
   'https://secxion.onrender.com',
-  'http://localhost:3000', // Dev frontend
-  'http://localhost:5000', // Dev backend
+  'http://localhost:3000', // for local dev
 ];
 
-// CORS configuration
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.warn(`❌ Blocked by CORS: ${origin}`);
+      console.warn(`❌ CORS blocked: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -36,22 +41,19 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
-// Security & Middlewares
+// ✅ Middleware
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 
-// API routing
+// ✅ API Routes
 app.use('/api', router);
 
-// Serve frontend build in production
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const frontendBuildPath = path.join(__dirname, 'build'); // built by the build script
-
+// ✅ Serve React frontend (ONLY in production)
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(frontendBuildPath));
+
   app.get('*', (req, res) => {
     res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
       if (err) res.status(500).send(err);
@@ -61,6 +63,7 @@ if (process.env.NODE_ENV === 'production') {
 
 const PORT = process.env.PORT || 5000;
 
+// ✅ Start the server
 connectDB()
   .then(() => {
     const db = mongoose.connection;
