@@ -39,7 +39,10 @@ const corsOptions = {
 
 // Security & Middlewares
 app.use(helmet({ contentSecurityPolicy: false }));
-app.use(cors(corsOptions));
+app.use(cors({
+  origin: true, 
+  credentials: true,
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 
