@@ -1,5 +1,4 @@
 import express from 'express';
-import passport from 'passport';
 import axios from 'axios';
 
 import userSignUpController from '../controller/user/userSignUp.js';

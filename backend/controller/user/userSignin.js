@@ -70,10 +70,11 @@ async function userSignInController(req, res) {
 
         const tokenOptions = {
             httpOnly: true,
-            secure: true,
-            sameSite: 'None',
-            path: '/'
-        };
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+            path: '/',
+            };
+
 
         console.log("✅ Login successful for:", email);
 
