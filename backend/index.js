@@ -24,8 +24,11 @@ const frontendBuildPath = path.join(__dirname, 'build');
 const allowedOrigins = [
   process.env.FRONTEND_URL || '',
   'https://secxion.onrender.com',
-  'http://localhost:3000', // for local dev
+  'http://secxion.onrender.com',
+  'https://secxionx.onrender.com',
+  'http://localhost:3000',       
 ];
+
 
 const corsOptions = {
   origin: (origin, callback) => {
