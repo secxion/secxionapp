@@ -16,7 +16,6 @@ const app = express();
 const allowedOrigins = [
   process.env.FRONTEND_URL || '',
   'https://secxion.onrender.com',
-  'https://secxionx.onrender.com',
 ];
 
 const corsOptions = {
