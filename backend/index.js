@@ -17,30 +17,14 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ Serve React build files
+// Path to React build folder (after copied during build step)
 const frontendBuildPath = path.join(__dirname, 'build');
 
-// ✅ Define CORS
-const allowedOrigins = [
-  process.env.FRONTEND_URL || '',
-  'https://secxion.onrender.com',
-  'http://secxion.onrender.com',
-  'https://secxionx.onrender.com',
-  'http://localhost:3000',       
-];
-
-
+// ✅ CORS config: allow all origins (for mobile / dev testing)
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`❌ CORS blocked: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  origin: true, // reflect request origin
   credentials: true,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
@@ -53,20 +37,22 @@ app.use(cookieParser());
 // ✅ API Routes
 app.use('/api', router);
 
-// ✅ Serve React frontend (ONLY in production)
+// ✅ Serve React frontend (production only)
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(frontendBuildPath));
 
   app.get('*', (req, res) => {
     res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
-      if (err) res.status(500).send(err);
+      if (err) {
+        res.status(500).send(err);
+      }
     });
   });
 }
 
 const PORT = process.env.PORT || 5000;
 
-// ✅ Start the server
+// ✅ Start server
 connectDB()
   .then(() => {
     const db = mongoose.connection;
@@ -74,7 +60,7 @@ connectDB()
 
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
-      console.log('🌐 Allowed CORS origins:', allowedOrigins);
+      console.log('🌐 CORS: all origins allowed (temporary for mobile/dev)');
     });
   })
   .catch((err) => {
