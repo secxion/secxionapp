@@ -25,7 +25,6 @@ const allowedOrigins = [
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
-      // Allow requests with no origin (like Postman or curl)
       callback(null, true);
     } else {
       console.warn(`❌ Blocked by CORS: ${origin}`);
@@ -39,22 +38,18 @@ const corsOptions = {
 
 // Security & Middlewares
 app.use(helmet({ contentSecurityPolicy: false }));
-app.use(cors({
-  origin: true, 
-  credentials: true,
-}));
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 
 // API routing
 app.use('/api', router);
 
-// Serve frontend static build
+// Serve frontend build in production
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const frontendBuildPath = path.join(__dirname, 'build'); // built by the script
+const frontendBuildPath = path.join(__dirname, 'build'); // built by the build script
 
-// Serve only in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(frontendBuildPath));
   app.get('*', (req, res) => {
@@ -64,22 +59,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-if (process.env.NODE_ENV !== 'production') {
-  console.log("✅ Connected to MongoDB at:", db.host);
-}
-
-
-// Fallback route for SPA
-app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
-    if (err) res.status(500).send(err);
-  });
-});
-
-// Start server after DB connection
 const PORT = process.env.PORT || 5000;
-
-
 
 connectDB()
   .then(() => {
