@@ -1,13 +1,10 @@
 {
   "name": "mernx",
   "version": "1.0.0",
-  "private": true,
   "scripts": {
-    "build": "cd frontend && npm install && npm run build && cp -r build ../backend/build",
-    "start": "cd backend && npm start",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "client": "cd frontend && npm start",
-    "server": "cd backend && npm run dev"
+    "install": "cd backend && npm install",
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd backend && npm start"
   },
   "dependencies": {
     "concurrently": "^9.1.2"

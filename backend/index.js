@@ -17,12 +17,12 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Path to React build folder (after copied during build step)
-const frontendBuildPath = path.join(__dirname, 'build');
+// ✅ Path to React build folder (corrected)
+const frontendBuildPath = path.join(__dirname, '../frontend/build');
 
-// ✅ CORS config: allow all origins (for mobile / dev testing)
+// ✅ CORS config: allow all origins (temporary for dev / mobile)
 const corsOptions = {
-  origin: true, // reflect request origin
+  origin: true, // reflects request origin
   credentials: true,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -37,22 +37,20 @@ app.use(cookieParser());
 // ✅ API Routes
 app.use('/api', router);
 
-// ✅ Serve React frontend (production only)
+// ✅ Serve React frontend (only in production)
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(frontendBuildPath));
 
   app.get('*', (req, res) => {
     res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
-      if (err) {
-        res.status(500).send(err);
-      }
+      if (err) res.status(500).send(err);
     });
   });
 }
 
 const PORT = process.env.PORT || 5000;
 
-// ✅ Start server
+// ✅ Start the server
 connectDB()
   .then(() => {
     const db = mongoose.connection;
@@ -60,7 +58,7 @@ connectDB()
 
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
-      console.log('🌐 CORS: all origins allowed (temporary for mobile/dev)');
+      console.log('🌐 CORS: all origins allowed (for mobile/dev)');
     });
   })
   .catch((err) => {
