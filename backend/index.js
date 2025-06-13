@@ -17,6 +17,9 @@ const allowedOrigins = [
   process.env.FRONTEND_URL || '',
   'https://secxion.onrender.com',
   'https://secxionx.onrender.com',
+  'https://secxion.onrender.com/api',
+  'http://secxion.onrender.com',
+  'http://secxion.onrender.com/api',
 ];
 
 const corsOptions = {
