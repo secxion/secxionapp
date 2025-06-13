@@ -1,0 +1,35 @@
+{
+  "files": {
+    "main.css": "/static/css/main.1ce36965.css",
+    "main.js": "/static/js/main.96b01894.js",
+    "static/js/488.535652aa.chunk.js": "/static/js/488.535652aa.chunk.js",
+    "static/css/694.9f2a5526.chunk.css": "/static/css/694.9f2a5526.chunk.css",
+    "static/js/694.6f4880dd.chunk.js": "/static/js/694.6f4880dd.chunk.js",
+    "static/js/893.58c4ae9d.chunk.js": "/static/js/893.58c4ae9d.chunk.js",
+    "static/media/pfpik.gif": "/static/media/pfpik.62c3f584468a78ef9fe1.gif",
+    "static/media/allgiftcards.png": "/static/media/allgiftcards.708f18c21828ea5fc4b8.png",
+    "static/media/itunesall.png": "/static/media/itunesall.8bc7a909d115abb43f2b.png",
+    "static/media/notification.mp3": "/static/media/notification.84309bf56dfcae5558c9.mp3",
+    "static/media/starbucks.jpg": "/static/media/starbucks.b3824b82d57bf9cbb37e.jpg",
+    "static/media/bestbuy.jpg": "/static/media/bestbuy.4468244c398c711859cb.jpg",
+    "static/media/visax.jpg": "/static/media/visax.dd7b02c2d283be5ca5f7.jpg",
+    "service-worker.js": "/service-worker.js",
+    "static/media/applepay.jpg": "/static/media/applepay.11de122d4450b27217fb.jpg",
+    "static/media/walmart.jpg": "/static/media/walmart.4b1e9000856dd03f43f3.jpg",
+    "static/media/1.svg": "/static/media/1.a3d891d7f774db1f02614c29b6027e68.svg",
+    "static/media/ebay.jpg": "/static/media/ebay.90c6bd31596d388c7d1c.jpg",
+    "static/media/googleplay.jpg": "/static/media/googleplay.27ffe9cfa61655d968dc.jpg",
+    "static/media/netflix.jpg": "/static/media/netflix.eb74a9f63dd529e5dca6.jpg",
+    "index.html": "/index.html",
+    "main.1ce36965.css.map": "/static/css/main.1ce36965.css.map",
+    "main.96b01894.js.map": "/static/js/main.96b01894.js.map",
+    "488.535652aa.chunk.js.map": "/static/js/488.535652aa.chunk.js.map",
+    "694.9f2a5526.chunk.css.map": "/static/css/694.9f2a5526.chunk.css.map",
+    "694.6f4880dd.chunk.js.map": "/static/js/694.6f4880dd.chunk.js.map",
+    "893.58c4ae9d.chunk.js.map": "/static/js/893.58c4ae9d.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1ce36965.css",
+    "static/js/main.96b01894.js"
+  ]
+}
