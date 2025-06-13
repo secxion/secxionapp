@@ -1,5 +1,5 @@
 {
-  "name": "mernx",
+  "name": "secxion",
   "version": "1.0.0",
   "scripts": {
     "install": "cd backend && npm install",

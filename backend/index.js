@@ -13,44 +13,46 @@ dotenv.config();
 
 const app = express();
 
-// Handle __dirname in ES module
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const allowedOrigins = [
+  process.env.FRONTEND_URL || '',
+  'https://secxion.onrender.com',
+  'https://secxionx.onrender.com',
+];
 
-// ✅ Path to React build folder (corrected)
-const frontendBuildPath = path.join(__dirname, '../frontend/build');
-
-// ✅ CORS config: allow all origins (temporary for dev / mobile)
 const corsOptions = {
-  origin: true, // reflects request origin
-  credentials: true,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  allowedHeaders: 'Content-Type, Authorization',
 };
 
-// ✅ Middleware
 app.use(helmet({ contentSecurityPolicy: false }));
-app.use(cors(corsOptions));
+app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 
-// ✅ API Routes
-app.use('/api', router);
+app.use('/api', router );
 
-// ✅ Serve React frontend (only in production)
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(frontendBuildPath));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
-      if (err) res.status(500).send(err);
-    });
+const frontendBuildPath = path.join(__dirname, 'build'); 
+app.use(express.static(frontendBuildPath));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
+    if (err) res.status(500).send(err);
   });
-}
+});
 
 const PORT = process.env.PORT || 5000;
 
-// ✅ Start the server
 connectDB()
   .then(() => {
     const db = mongoose.connection;
@@ -58,7 +60,7 @@ connectDB()
 
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
-      console.log('🌐 CORS: all origins allowed (for mobile/dev)');
+      console.log('🌐 Allowed CORS origins:', allowedOrigins);
     });
   })
   .catch((err) => {
