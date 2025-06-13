@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "type": "module",
-  "scripts": {
-  "build": "cd ../frontend && npm install && npm run build && cp -r ../frontend/build ./build",
+"scripts": {
+  "build": "cd ../frontend && npm install && npm run build && cp -r build ../backend/client_build",
   "start": "node index.js",
   "dev": "nodemon index.js"
 },
+
 
   "author": "",
   "license": "ISC",

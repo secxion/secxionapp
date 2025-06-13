@@ -43,7 +43,7 @@ app.use('/api', router );
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const frontendBuildPath = path.join(__dirname, 'build'); 
+const frontendBuildPath = path.join(__dirname, 'client_build');
 app.use(express.static(frontendBuildPath));
 
 app.get('*', (req, res) => {
