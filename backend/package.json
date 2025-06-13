@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "type": "module",
- "scripts": {
-  "build": "cd ../frontend && npm install && npm run build && cp -r build ../backend/",
+  "scripts": {
+  "build": "cd ../frontend && npm install && npm run build && cp -r ../frontend/build ./build",
   "start": "node index.js",
   "dev": "nodemon index.js"
 },
