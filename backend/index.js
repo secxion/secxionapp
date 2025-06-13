@@ -16,10 +16,8 @@ const app = express();
 const allowedOrigins = [
   process.env.FRONTEND_URL || '',
   'https://secxion.onrender.com',
-  'https://secxionx.onrender.com',
-  'https://secxion.onrender.com/api',
   'http://secxion.onrender.com',
-  'http://secxion.onrender.com/api',
+ 
 ];
 
 const corsOptions = {
@@ -63,7 +61,8 @@ connectDB()
     console.log(`✅ Connected to MongoDB at: ${db.host}:${db.port}/${db.name}`);
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      const isProd = process.env.NODE_ENV === 'production';
+      console.log(`🚀 Server running on ${isProd ? 'https://secxion.onrender.com' : `http://localhost:${PORT}`}`);
       console.log('🌐 Allowed CORS origins:', allowedOrigins);
     });
   })
