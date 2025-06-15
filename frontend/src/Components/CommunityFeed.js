@@ -86,7 +86,7 @@ const CommunityFeed = () => {
 
   return (
     <motion.div
-      className="container w-full bg-gradient-to-white from-blue-50 to-indigo-100 dark:bg-gradient-to-br from-gray-800 to-gray-900 py-4 px-2 sm:px-2"
+      className=" w-full bg-gradient-to-white from-blue-50 to-indigo-100 dark:bg-gradient-to-br from-gray-800 to-gray-900 py-4 px-2 sm:px-2"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}

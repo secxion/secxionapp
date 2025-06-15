@@ -80,7 +80,7 @@ const CreatePostCard = ({ onPostCreated, loading, error }) => {
   return (
     <motion.form
       onSubmit={handlePostSubmit}
-      className="container bg-white dark:bg-gray-800 shadow-sm p-8"
+      className=" bg-white dark:bg-gray-800 shadow-sm p-4"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -88,7 +88,7 @@ const CreatePostCard = ({ onPostCreated, loading, error }) => {
       <textarea
         value={newPostContent}
         onChange={(e) => setNewPostContent(e.target.value)} 
-        placeholder="Share your thoughts and connect with the community..."
+        placeholder={`What's on your mind, ${user?.name || 'guest'}?`}
         className="w-full p-3 border rounded dark:bg-gray-700 dark:text-white mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm break-words"
         rows={3}
       />

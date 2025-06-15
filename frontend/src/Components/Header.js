@@ -180,10 +180,11 @@ const Header = () => {
                         </button>
                     </div>
                     {/* Logo */}
-                    <Link to="/home" className="hidden minecraft-font md:flex items-center font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 mr-4 tracking-wide">
-                        <h1 className=" font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">
-                            SXN
-                        </h1>
+                    <Link to="/home" className="hidden md:flex items-center font-bold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 tracking-wide">
+                    <div className="logo-wrapper">
+                        <h1 className="logo-text font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">SXN</h1>
+                        <div className="logo-accent"></div>
+                     </div>
                     </Link>
                     
                     {/* Search Input - Desktop */}
@@ -191,7 +192,7 @@ const Header = () => {
                         <FcSearch className="text-white h-5 w-5 mr-2" />
                         <input
                             type="text"
-                            placeholder="Search gift cards..."
+                                placeholder="Search gift cards, deals, offers..."
                             className="bg-transparent minecraft-font text-white text-[12px] outline-none w-full placeholder:text-[8px] placeholder-gray-600"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}

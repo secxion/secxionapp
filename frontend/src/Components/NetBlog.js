@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import SummaryApi from '../common';
 import { formatDistanceToNow } from 'date-fns';
 import { FaCircle, FaExternalLinkAlt } from 'react-icons/fa';
@@ -71,7 +71,7 @@ const NetBlog = () => {
     const delay = 100;
     setTimeout(() => {
       if (isMobile) {
-        navigate('/community-feed');
+        navigate("/community-feed");
       } else {
         window.open('/community-feed', '_blank', 'noopener,noreferrer');
       }

@@ -88,7 +88,7 @@ const ProductDetails = () => {
   const handleBuyProduct = async(e,id)=>{
     await addToCart(e,id)
     fetchUserAddToCart()
-    navigate("/cart")
+    navigate(obscureRoute("/cart"))
 
   }
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, User, Home, Settings, Shield } from "lucide-react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { FaCaretDown } from "react-icons/fa";
@@ -41,25 +41,33 @@ const CustomDialog = ({ open, onOpenChange, children, title, description }) => {
     if (!open) return null;
 
     return (
-        <div className="net-container fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="net-container fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <motion.div
                 ref={dialogRef}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.2 }}
-                className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md"
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md mx-4 border border-gray-100"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="dialog-title"
                 aria-describedby="dialog-description"
             >
-                {title && <h2 id="dialog-title" className="text-lg font-semibold mb-2">{title}</h2>}
-                {description && <p id="dialog-description" className="text-gray-600 mb-4">{description}</p>}
+                {title && (
+                    <h2 id="dialog-title" className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+                        {title}
+                    </h2>
+                )}
+                {description && (
+                    <div id="dialog-description" className="text-gray-600 mb-6 max-h-60 overflow-y-auto">
+                        <p className="leading-relaxed">{description}</p>
+                    </div>
+                )}
                 {children}
                 <button
                     onClick={() => onOpenChange(false)}
-                    className="mt-4 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                    className="w-full mt-4 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98]"
                 >
                     Close
                 </button>
@@ -75,18 +83,55 @@ const Net = ({ blogs }) => {
     const [transitionClass, setTransitionClass] = useState("translate-x-0");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedBlog, setSelectedBlog] = useState(null);
-    const [isMobile, setIsMobile] = useState(false);
+    const [screenSize, setScreenSize] = useState({
+        isMobile: false,
+        isTablet: false,
+        isDesktop: true
+    });
 
     const { user } = useSelector((state) => state.user);
     const { profilePic, name, role } = user || {};
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const dropdownRef = useRef(null); 
+    const dropdownRef = useRef(null);
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
+    // Enhanced utility function to handle responsive text truncation
+    const getResponsiveText = (text, mobileLength, tabletLength, desktopLength) => {
+        if (!text) return '';
+        
+        let maxLength;
+        if (screenSize.isMobile) {
+            maxLength = mobileLength;
+        } else if (screenSize.isTablet) {
+            maxLength = tabletLength;
+        } else {
+            maxLength = desktopLength;
+        }
+
+        return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+    };
+
+    // Enhanced screen size detection
+    const updateScreenSize = useCallback(() => {
+        const width = window.innerWidth;
+        setScreenSize({
+            isMobile: width < 640,
+            isTablet: width >= 640 && width < 1024,
+            isDesktop: width >= 1024
+        });
+    }, []);
+
+    useEffect(() => {
+        updateScreenSize();
+        window.addEventListener('resize', updateScreenSize);
+        return () => window.removeEventListener('resize', updateScreenSize);
+    }, [updateScreenSize]);
+
+    // Handle dropdown outside clicks
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
@@ -101,21 +146,12 @@ const Net = ({ blogs }) => {
         };
     }, []);
 
-    const checkIsMobile = useCallback(() => {
-        setIsMobile(window.innerWidth < 768);
-    }, []);
-
-    useEffect(() => {
-        checkIsMobile();
-        window.addEventListener('resize', checkIsMobile);
-        return () => window.removeEventListener('resize', checkIsMobile);
-    }, [checkIsMobile]);
-
     const handleBlogClick = (blog) => {
         setSelectedBlog(blog);
         setIsDialogOpen(true);
     };
 
+    // Enhanced blog rotation with smooth transitions
     useEffect(() => {
         const resetTimeout = () => {
             if (timeoutRef.current) {
@@ -125,20 +161,22 @@ const Net = ({ blogs }) => {
 
         const nextBlog = () => {
             resetTimeout();
-            setTransitionClass("translate-x-1/2 opacity-0");
+            setTransitionClass("translate-x-full opacity-0");
             setTimeout(() => {
                 setCurrentIndex((prevIndex) => (prevIndex + 1) % blogs.length);
                 setTransitionClass("translate-x-0 opacity-100");
-                timeoutRef.current = setTimeout(nextBlog, 10000);
-            }, 300);
+                timeoutRef.current = setTimeout(nextBlog, 15000); // Increased duration for better readability
+            }, 600);
         };
 
         if (blogs && blogs.length > 0) {
             setLoading(true);
             timeoutRef.current = setTimeout(() => {
                 setLoading(false);
-                nextBlog();
-            }, 500);
+                if (blogs.length > 1) {
+                    timeoutRef.current = setTimeout(nextBlog, 15000);
+                }
+            }, 1000);
         }
 
         return () => resetTimeout();
@@ -146,83 +184,148 @@ const Net = ({ blogs }) => {
 
     const currentBlog = blogs && blogs.length > 0 ? blogs[currentIndex] : null;
 
-    return (
-        <div className="net-container fixed top-0 left-0 w-full bg-gradient-to-r from-purple-600 to-blue-500 shadow-md h-10 md:h-12 px-1 md:px-2 flex items-center font-mono text-white transition-all duration-300">
-            {(profilePic && name) && (
-                <div className="user-profile-section relative flex items-center mr-4">
-                    <img
-                        src={profilePic}
-                        alt="Profile"
-                        className="w-12 h-12 md:w-12 md:h-12 rounded-full object-cover cursor-pointer"
-                        onClick={toggleDropdown}
-                    />
-                    <span className="text-md md:text-base ml-2 mr-1">Hi, {name}</span>
-                    <FaCaretDown
-                        className="w-4 h-4 cursor-pointer text-white hover:text-gray-200 transition-colors duration-200"
-                        onClick={toggleDropdown}
-                    />
+    // Get responsive text lengths based on screen size
+    const getNameLength = () => screenSize.isMobile ? 8 : screenSize.isTablet ? 15 : 20;
+    const getTitleLength = () => screenSize.isMobile ? 12 : screenSize.isTablet ? 30 : 50;
+    const getContentLength = () => screenSize.isMobile ? 20 : screenSize.isTablet ? 60 : 120;
 
+    return (
+        <div className="net-container fixed top-0 left-0 w-full bg-gradient-to-r from-purple-600 via-blue-500 to-indigo-600 shadow-lg h-8 md:h-10 px-2 md:px-4 lg:px-6 flex items-center font-mono text-white transition-all duration-300 z-50">
+            {/* User Profile Section */}
+            {(profilePic && name) && (
+                <div className="user-profile-section relative flex items-center mr-3 md:mr-6 lg:mr-8 shrink-0">
+                    <div className="relative">
+                        <img
+                            src={profilePic}
+                            alt="Profile"
+                            className="w-7 h-7 md:w-7 md:h-7 lg:w-8 lg:h-8 rounded-full object-cover cursor-pointer ring-2 ring-white/30 hover:ring-white/50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                            onClick={toggleDropdown}
+                        />
+                        <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 md:w-3 md:h-3 bg-green-400 rounded-full border-2 border-white shadow-sm animate-pulse"></div>
+                    </div>
+                    
+                    <div className="ml-2 md:ml-3 flex items-center cursor-pointer group" onClick={toggleDropdown}>
+                        <span className="text-xs md:text-sm lg:text-base font-medium text-white/90 group-hover:text-white transition-colors duration-200">
+                            Hi, <span className="font-semibold">
+                                {getResponsiveText(name, getNameLength(), getNameLength(), name.length)}
+                            </span>
+                        </span>
+                        <FaCaretDown className="w-2.5 h-2.5 md:w-3 md:h-3 ml-1 md:ml-1.5 text-white/70 group-hover:text-white transition-all duration-200 group-hover:scale-110" />
+                    </div>
+
+                    {/* Dropdown Menu */}
                     {isDropdownOpen && (
-                        <div ref={dropdownRef} className="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                        <motion.div
+                            ref={dropdownRef}
+                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                            transition={{ duration: 0.2 }}
+                            className="absolute top-full left-0 mt-3 w-52 bg-white/95 backdrop-blur-md rounded-xl shadow-xl py-2 z-50 border border-gray-200/50"
+                        >
+                            <div className="px-4 py-3 border-b border-gray-200/50 bg-gradient-to-r from-blue-50 to-purple-50">
+                                <p className="text-sm font-bold text-gray-800 truncate">{name}</p>
+                            </div>
+                            
                             <Link
                                 to="/home"
-                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                onClick={() => setIsDropdownOpen(false)} // Close dropdown on click
+                                className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-150 group"
+                                onClick={() => setIsDropdownOpen(false)}
                             >
-                                Home
+                                <Home className="w-4 h-4 mr-3 text-gray-500 group-hover:text-blue-600" />
+                                <span className="group-hover:text-blue-600">Home</span>
                             </Link>
 
                             {user?.role === ROLE.ADMIN && (
                                 <Link
                                     to="/admin-panel"
-                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                    onClick={() => setIsDropdownOpen(false)} // Close dropdown on click
+                                    className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 transition-colors duration-150 group"
+                                    onClick={() => setIsDropdownOpen(false)}
                                 >
-                                    Admin Panel
+                                    <Shield className="w-4 h-4 mr-3 text-gray-500 group-hover:text-purple-600" />
+                                    <span className="group-hover:text-purple-600">Admin Panel</span>
                                 </Link>
                             )}
+                            
                             <Link
                                 to="/profile"
-                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                onClick={() => setIsDropdownOpen(false)} // Close dropdown on click
+                                className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 transition-colors duration-150 group"
+                                onClick={() => setIsDropdownOpen(false)}
                             >
-                                Profile Update
+                                <Settings className="w-4 h-4 mr-3 text-gray-500 group-hover:text-green-600" />
+                                <span className="group-hover:text-green-600">Profile Settings</span>
                             </Link>
-                        </div>
+                        </motion.div>
                     )}
                 </div>
             )}
 
-            <div className="flex-grow relative h-6 overflow-hidden flex items-center">
+            {/* Enhanced News Ticker Section */}
+            <div className="flex-grow relative h-8 md:h-10 overflow-hidden flex items-center min-w-0">
                 {loading ? (
-                    <span className="text-sm font-semibold animate-pulse">Loading...</span>
+                    <div className="flex items-center space-x-3">
+                        <div className="flex space-x-1">
+                            <div className="w-2 h-2 bg-white/70 rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-white/70 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                            <div className="w-2 h-2 bg-white/70 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                        </div>
+                        <span className="text-xs md:text-sm font-medium text-white/80">Loading latest news...</span>
+                    </div>
                 ) : currentBlog ? (
-                    <span className={`absolute transition-transform duration-300 ease-in-out whitespace-nowrap ${transitionClass}`}>
-                        <span
-                            className="font-bold cursor-pointer hover:underline mr-2"
-                            onClick={() => handleBlogClick(currentBlog)}
-                        >
-                            {currentBlog.title}
-                        </span>
+                    <motion.div
+                        className={`absolute inset-0 flex items-center transition-all duration-600 ease-in-out ${transitionClass}`}
+                        initial={{ opacity: 0, x: 100 }}
+                        animate={{ opacity: 1, x: 0 }}
+                    >
+                        <div className="flex items-center space-x-2 md:space-x-4 cursor-pointer group w-full" onClick={() => handleBlogClick(currentBlog)}>
+                            <div className="flex items-center space-x-2 md:space-x-3 flex-shrink-0">
+                                <div className="relative">
+                                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-yellow-400 rounded-full"></div>
+                                    <div className="absolute inset-0 w-1.5 h-1.5 md:w-2 md:h-2 bg-yellow-400 rounded-full animate-ping"></div>
+                                </div>
+                                <span className="text-xs md:text-sm lg:text-base font-bold text-white group-hover:text-yellow-200 transition-colors duration-300">
+                                    {getResponsiveText(currentBlog.title, getTitleLength(), getTitleLength(), currentBlog.title.length)}
+                                </span>
+                            </div>
+                            
+                            <ArrowRight className="w-3 h-3 md:w-4 md:h-4 text-white/70 group-hover:text-white group-hover:translate-x-1 transition-all duration-300 flex-shrink-0" />
+                            
+                            <span className="text-xs md:text-sm text-white/90 group-hover:text-white transition-colors duration-300 truncate flex-grow">
+                                {getResponsiveText(currentBlog.content, getContentLength(), getContentLength(), currentBlog.content.length)}
+                            </span>
+                        </div>
 
-                        <span
-                            className={`inline text-sm ${isMobile ? "truncate max-w-[70%]" : ""} cursor-pointer`}
-                            onClick={() => handleBlogClick(currentBlog)}
-                        >
-                            <ArrowRight className="inline w-4 h-4 text-blue-300 mr-1" />
-                            {isMobile
-                                ? currentBlog.content.length > 40
-                                    ? `${currentBlog.content.substring(0, 40)}...`
-                                    : currentBlog.content
-                                : currentBlog.content}
-                        </span>
-                    </span>
+                        {/* Progress indicator for multiple blogs */}
+                        {blogs.length > 1 && (
+                            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white/20">
+                                <motion.div
+                                    className="h-full bg-yellow-400"
+                                    initial={{ width: "0%" }}
+                                    animate={{ width: "100%" }}
+                                    transition={{ duration: 15, ease: "linear" }}
+                                    key={currentIndex}
+                                />
+                            </div>
+                        )}
+                    </motion.div>
                 ) : (
-                    <span className="italic text-sm">No news available.</span>
+                    <div className="flex items-center space-x-2 text-white/70">
+                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full opacity-50"></div>
+                        <span className="italic text-xs md:text-sm">No news available at the moment</span>
+                    </div>
                 )}
             </div>
 
-            {/* Dialog */}
+            {/* Blog count indicator */}
+            {blogs && blogs.length > 1 && (
+                <div className="hidden md:flex items-center space-x-1 ml-4 text-white/60 text-xs">
+                    <span>{currentIndex + 1}</span>
+                    <div className="w-1 h-1 bg-white/40 rounded-full"></div>
+                    <span>{blogs.length}</span>
+                </div>
+            )}
+
+            {/* Enhanced Blog Details Dialog */}
             <CustomDialog
                 open={isDialogOpen}
                 onOpenChange={setIsDialogOpen}

@@ -1,23 +1,22 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import ROLE from "../common/role";
 import { Dialog, Transition } from '@headlessui/react';
 import {
   HomeIcon,
   GlobeAltIcon,
   InformationCircleIcon,
   PhoneIcon,
-  Cog6ToothIcon,
 } from '@heroicons/react/24/solid';
 import { PiUserSquare as UserIcon } from "react-icons/pi";
 import { FaBlog, FaWallet } from 'react-icons/fa';
 import Clock from 'react-live-clock';
 import timezones from '../helpers/timeZones';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import { faBars, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import NotificationBadge from "../helper/NotificationBadge";
+import './Header.css';
+
 
 const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
   const [timezone, setTimezone] = useState('Africa/Lagos');
@@ -52,10 +51,10 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
         <Dialog.Panel className="relative flex flex-col w-full max-w-sm h-full bg-gradient-to-b from-white via-gray-50 to-white shadow-xl overflow-y-auto pb-6">
 
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 mt-10 border-b border-gray-200 shadow-sm">
+          <div className="flex items-center justify-between px-2 py-4 mt-6 border-b border-gray-200 shadow-sm">
             <button
               type="button"
-              className="text-gray-500 hover:text-blue-600 transition"
+              className="text-gray-500 mr-2 pl-4 hover:text-blue-600 transition"
               onClick={() => setOpen(false)}
             >
               <FontAwesomeIcon icon={faBars} className="h-5 w-5" />
@@ -64,6 +63,13 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
             <Link to="/notifications" title="Notifications" aria-label="Notifications" onClick={handleLinkClick}>
               <NotificationBadge />
             </Link>
+
+            <Link to="/home" className="md:flex items-center font-bold text-transparent text-xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 tracking-wide">
+                                <div className="logo-wrapper">
+                                    <h1 className="logo-text font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">SXN</h1>
+                                    <div className="logo-accent"></div>
+                                 </div>
+                                </Link>
 
             <button
               onClick={handleLogout}

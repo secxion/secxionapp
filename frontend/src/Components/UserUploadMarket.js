@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CgClose } from "react-icons/cg";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -129,7 +129,7 @@ const UserUploadMarket = ({
                 toast.success(`🎉 ${result.message}`);
                 onClose();
                 fetchData();
-                navigate('/record');
+                navigate("/record");
             } else {
                 toast.error(`🚨 ${result.message}`);
             }

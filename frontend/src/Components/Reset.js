@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SummaryApi from "../common";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom"; // 👈 Add this
+import { useNavigate } from "react-router-dom";
 
 const Reset = () => {
   const [step, setStep] = useState("select");
@@ -9,7 +9,7 @@ const Reset = () => {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [newValue, setNewValue] = useState("");
-  const navigate = useNavigate(); // 👈 For redirection
+  const navigate = useNavigate(); 
 
   const handleRequestCode = async () => {
     try {

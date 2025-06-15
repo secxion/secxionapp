@@ -94,7 +94,7 @@ const PaymentRequestForm = () => {
     const handlePaymentMethodChange = (e) => {
         const selected = e.target.value;
         setPaymentMethod(selected);
-        if (selected === 'Ethereum') navigate('/eth');
+        if (selected === 'Ethereum') navigate("/eth");
     };
 
     const handleSubmit = async (e) => {

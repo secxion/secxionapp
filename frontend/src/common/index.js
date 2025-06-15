@@ -1,4 +1,4 @@
-const backendDomain = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+const backendDomain = process.env.REACT_APP_BACKEND_URL || 'https://secxion.onrender.com';
 
 const SummaryApi = {
     signUP : {
@@ -47,7 +47,6 @@ confirmReset: {
         url : `${backendDomain}/api/fetch-currency-rates`,
         method : "get"
     },
-
      fetchEthPrice : {
         url : `${backendDomain}/api/eth-price`,
         method : "GET"

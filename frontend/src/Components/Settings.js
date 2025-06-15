@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SummaryApi from '../common';
 import { toast } from 'react-toastify';
@@ -66,7 +66,7 @@ const Settings = () => {
             if (Object.keys(payload).length === 0) {
                 toast.info("No changes to save.");
                 setLoading(false);
-                navigate('/profile');
+                navigate("/profile");
                 return;
             }
 
@@ -84,7 +84,7 @@ const Settings = () => {
 
             toast.success(data.message || "Profile updated!");
             dispatch(setUserDetails(data.data));
-            navigate('/profile');
+            navigate("/profile");
         } catch (err) {
             setError(err.message);
             toast.error(err.message);
@@ -194,7 +194,7 @@ const Settings = () => {
             {/* Buttons */}
             <div className="flex justify-end space-x-4 mt-6">
                 <button
-                    onClick={() => navigate('/profile')}
+                    onClick={() => navigate("/profile")}
                     disabled={loading || uploadingImage}
                     className="btn-gray px-6 py-2 rounded border border-gray-400 hover:bg-gray-100 disabled:opacity-50"
                 >
@@ -224,7 +224,7 @@ const Settings = () => {
                                 Cancel
                             </button>
                             <button
-                                onClick={() => navigate('/report')}
+                                onClick={() => navigate("/report")}
                                 className="px-5 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-700"
                             >
                                 Go to Report

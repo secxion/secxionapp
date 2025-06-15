@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import SummaryApi from "../common";
 import { MdSend, MdClose, MdAdd } from "react-icons/md";
 import uploadImage from "../helpers/uploadImage";
@@ -34,11 +34,11 @@ const ReportCard = () => {
         const adminReply = foundReport.chatHistory?.some(msg => msg.sender === "admin");
         setHasReceivedReply(adminReply);
       } else {
-        navigate('/report');
+        navigate("/report");
       }
     } catch (error) {
       console.error("Error fetching report:", error);
-      navigate('/report');
+      navigate("/report");
     } finally {
       setIsLoadingInitial(false);
     }

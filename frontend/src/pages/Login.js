@@ -1,10 +1,10 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import SummaryApi from "../common";
 import Context from "../Context";
-import Logo from "../Assets/1.svg";
+import './Header.css';
+
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
@@ -124,9 +124,12 @@ const Login = () => {
     <section className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="bg-white border border-gray-300 p-6 sm:p-8 w-full max-w-md rounded-2xl shadow-xl">
         <div className="flex justify-center mb-5">
-          <Link to="/">
-            <img src={Logo} alt="Secxion Logo" className="w-24 h-auto" />
-          </Link>
+          <Link to="/home" className=" md:flex items-center font-bold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 tracking-wide">
+                                       <div className="logo-wrapper">
+                                           <h1 className="logo-text font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">SXN</h1>
+                                           <div className="logo-accent"></div>
+                                        </div>
+                                       </Link>
         </div>
 
         <div className="text-center mb-6">

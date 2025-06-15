@@ -70,6 +70,12 @@ const Profile = () => {
         }
     };
 
+    // Helper function to truncate text with ellipsis
+    const truncateText = (text, maxLength) => {
+        if (!text) return '';
+        return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+    };
+
     useEffect(() => {
         fetchUserProfile();
         fetchUserDetails();
@@ -77,12 +83,17 @@ const Profile = () => {
 
     if (loadingProfile) {
         return (
-            <div className="mt-28 p-6 max-w-3xl mx-auto bg-white rounded-lg shadow animate-pulse">
-                <div className="flex items-center space-x-4">
-                    <div className="w-20 h-20 rounded-full bg-gray-300"></div>
-                    <div className="flex-grow space-y-3">
-                        <div className="h-5 bg-gray-300 rounded w-3/4"></div>
-                        <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+            <div className="mt-24 p-4 sm:p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-lg animate-pulse">
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                    <div className="flex-shrink-0 mx-auto sm:mx-0">
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-300"></div>
+                    </div>
+                    <div className="flex-grow space-y-3 text-center sm:text-left">
+                        <div className="h-6 bg-gray-300 rounded w-3/4 mx-auto sm:mx-0"></div>
+                        <div className="space-y-2">
+                            <div className="h-4 bg-gray-300 rounded w-full"></div>
+                            <div className="h-4 bg-gray-300 rounded w-2/3 mx-auto sm:mx-0"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -91,52 +102,133 @@ const Profile = () => {
 
     if (errorProfile) {
         return (
-            <div className="mt-28 p-6 max-w-3xl mx-auto bg-red-100 border border-red-500 text-red-700 rounded-md">
-                <p>{errorProfile}</p>
+            <div className="mt-24 p-4 sm:p-6 max-w-4xl mx-auto bg-red-50 border border-red-200 text-red-700 rounded-xl">
+                <div className="flex items-center justify-center">
+                    <div className="text-center">
+                        <p className="font-medium">Error loading profile</p>
+                        <p className="text-sm mt-1">{errorProfile}</p>
+                    </div>
+                </div>
             </div>
         );
     }
 
     if (profileData) {
         return (
-            <div className="mt-28 p-6 max-w-3xl mx-auto bg-white rounded-lg shadow space-y-6">
-                <div className="flex items-center justify-between border-b pb-4">
-                    <div className="flex items-center space-x-4">
-                        <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden shadow">
-                            {profileData?.profilePic ? (
-                                <img
-                                    src={profileData.profilePic}
-                                    alt="Profile"
-                                    className="w-full h-full object-cover rounded-full"
-                                />
-                            ) : (
-                                <PiUserSquare size={48} className="text-blue-700" />
-                            )}
+            <div className="mt-24 p-4 sm:p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-lg border border-gray-100">
+                {/* Header Section */}
+                <div className="border-b border-gray-200 pb-6 mb-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+                        {/* Profile Info */}
+                        <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                            {/* Profile Picture */}
+                            <div className="flex-shrink-0 mx-auto sm:mx-0">
+                                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 flex items-center justify-center overflow-hidden shadow-lg ring-4 ring-white">
+                                    {profileData?.profilePic ? (
+                                        <img
+                                            src={profileData.profilePic}
+                                            alt="Profile"
+                                            className="w-full h-full object-cover rounded-full"
+                                        />
+                                    ) : (
+                                        <PiUserSquare size={40} className="text-indigo-600" />
+                                    )}
+                                </div>
+                            </div>
+                            
+                            {/* User Details */}
+                            <div className="flex-grow min-w-0 text-center sm:text-left">
+                                <div className="space-y-2">
+                                    <h2 
+                                        className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 break-words leading-tight"
+                                        title={profileData.name || 'No Name'} // Show full name on hover
+                                    >
+                                        <span className="block sm:hidden">
+                                            {truncateText(profileData.name || 'No Name', 20)}
+                                        </span>
+                                        <span className="hidden sm:block lg:hidden">
+                                            {truncateText(profileData.name || 'No Name', 25)}
+                                        </span>
+                                        <span className="hidden lg:block">
+                                            {profileData.name || 'No Name'}
+                                        </span>
+                                    </h2>
+                                    
+                                    <div className="space-y-1 text-sm text-gray-600">
+                                        {profileData.email && (
+                                            <p className="flex items-center justify-center sm:justify-start">
+                                                <span className="font-medium text-gray-700 mr-2">Email:</span>
+                                                <span className="break-all" title={profileData.email}>
+                                                    <span className="block sm:hidden">
+                                                        {truncateText(profileData.email, 25)}
+                                                    </span>
+                                                    <span className="hidden sm:block">
+                                                        {profileData.email}
+                                                    </span>
+                                                </span>
+                                            </p>
+                                        )}
+                                        
+                                        {profileData.tag && (
+                                            <p className="flex items-center justify-center sm:justify-start">
+                                                <span className="font-medium text-gray-700 mr-2">Tag:</span>
+                                                <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-xs font-medium">
+                                                    {profileData.tag}
+                                                </span>
+                                            </p>
+                                        )}
+                                        
+                                        {profileData.telegramNumber && (
+                                            <p className="flex items-center justify-center sm:justify-start">
+                                                <span className="font-medium text-gray-700 mr-2">Telegram:</span>
+                                                <span>{profileData.telegramNumber}</span>
+                                            </p>
+                                        )}
+                                        
+                                        {profileData.createdAt && (
+                                            <p className="flex items-center justify-center sm:justify-start text-gray-500">
+                                                <span className="font-medium mr-2">Member Since:</span>
+                                                <span>{moment(profileData.createdAt).format('MMM D, YYYY')}</span>
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <h2 className="text-2xl font-semibold text-gray-800">
-                                {profileData.name || 'No Name'}
-                            </h2>
-                            {profileData.email && <p className="text-gray-600 text-sm">Email: {profileData.email}</p>}
-                            {profileData.tag && <p className="text-gray-600 text-sm">Tag: {profileData.tag}</p>}
-                            {profileData.telegramNumber && (
-                                <p className="text-gray-600 text-sm">Telegram: {profileData.telegramNumber}</p>
-                            )}
-                            {profileData.createdAt && (
-                                <p className="text-gray-500 text-sm">
-                                    Member Since: {moment(profileData.createdAt).format('MMMM D, YYYY')}
-                                </p>
-                            )}
+                        
+                        {/* Edit Button */}
+                        <div className="flex-shrink-0 flex justify-center sm:justify-end">
+                            <button
+                                onClick={handleEditProfile}
+                                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            >
+                                <FaEdit className="w-4 h-4" />
+                                <span>Edit Profile</span>
+                            </button>
                         </div>
                     </div>
-                <button
-                    onClick={handleEditProfile}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition"
-                    >
-                    <FaEdit />
-                    <span className="hidden sm:inline">Edit Profile</span>
-                </button>
-
+                </div>
+                
+                {/* Additional Profile Stats or Content */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div className="bg-gray-50 rounded-lg p-4">
+                        <div className="text-2xl font-bold text-gray-900">
+                            {profileData.createdAt ? moment().diff(moment(profileData.createdAt), 'days') : 0}
+                        </div>
+                        <div className="text-sm text-gray-600">Days Active</div>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                        <div className="text-2xl font-bold text-gray-900">
+                            {profileData.email ? '✓' : '✗'}
+                        </div>
+                        <div className="text-sm text-gray-600">Email Verified</div>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                        <div className="text-2xl font-bold text-gray-900">
+                            {profileData.profilePic ? '✓' : '✗'}
+                        </div>
+                        <div className="text-sm text-gray-600">Profile Picture</div>
+                    </div>
                 </div>
             </div>
         );

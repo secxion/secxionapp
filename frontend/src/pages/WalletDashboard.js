@@ -85,7 +85,7 @@ const WalletDashboard = () => {
     };
     return (
         <div className="flex flex-col bg-white mt-10 sm:mt-10 md:mt-10 ">
-          <header className="fixed mt-10 left-0 top-0 w-full bg-white shadow-md border-b border-gray-200 p-4 z-40">
+          <header className="fixed mt-8 left-0 top-0 w-full bg-white shadow-md border-b border-gray-200 p-4 z-40">
         <div className="flex justify-between items-center max-w-7xl mx-auto">
           <h2 className="text-sm font-semibold flex items-center">
             <FaWallet className="mr-2 text-blue-500" />

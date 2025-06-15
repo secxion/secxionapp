@@ -1,7 +1,5 @@
 import { FaUserCircle } from 'react-icons/fa';
-import { FaWallet } from 'react-icons/fa';
 import { FaEthereum } from 'react-icons/fa';
-import { FaCog } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
@@ -27,24 +25,21 @@ const HomeFooter = () => {
       <div
         className={`flex justify-around items-center text-gray-700 dark:text-gray-300 text-xl`}
       >
-        <Link
-          to="/profile"
+        <Link to="/profile"
           className="flex flex-col items-center hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out"
           aria-label="Profile"
         >
           <FaUserCircle className="mb-0.5" />
         </Link>
 
-        <Link
-          to="/mywallet"
+        <Link to="/mywallet"
           className="flex flex-col items-center hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out"
           aria-label="Naira Wallet"
         >
           <span className="text-lg mb-0.5">₦</span>
         </Link>
 
-        <Link
-          to="/eth"
+        <Link to="/eth"
           className="flex flex-col items-center hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out"
           aria-label="Ethereum"
         >

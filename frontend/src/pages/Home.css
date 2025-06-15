@@ -1,96 +1,87 @@
-
+/* Hero Section */
 .hero-section {
   position: relative;
-  height: 80vh;
   background-size: cover;
   background-position: center;
-  border-radius: 1rem;
-  position: relative;
+  border-radius: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.5s ease-in-out;
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .hero-section {
+    border-radius: 0.75rem;
+  }
 }
 
 .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: inherit;
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: inherit;
 }
 
 .hero-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 1rem;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 1rem;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .hero-title {
-    font-size: 2rem;
-    color: white;
-    margin-bottom: 0.5rem;
-    text-shadow: 0 0 6px #00f7ff, 0 0 12px #00f7ff;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 6px #00f7ff, 0 0 12px #00f7ff;
+  line-height: 1.2;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .hero-description {
-    font-size: 1.25rem;
-    color: #eee;
-    text-shadow: 0 0 6px #0ff;
+  color: #eee;
+  text-shadow: 0 0 6px #0ff;
+  font-style: italic;
+  line-height: 1.4;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .hero-button-container {
-    margin-top: 1rem;
+  margin-top: 1rem;
 }
 
 .hero-button {
-    font-family: 'Press Start 2P', cursive;
-    background-color: #ffcc00;
-    color: #000;
-    border: 2px solid #000;
-    padding: 0.75rem 1.5rem;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    box-shadow: 2px 2px 0 #333;
+  font-family: 'Press Start 2P', cursive;
+  background-color: #ffcc00;
+  color: #000;
+  border: 2px solid #000;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  display: inline-block;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  word-break: keep-all;
+  white-space: nowrap;
 }
 
 .hero-button:hover {
-    background-color: #ffaa00;
-    transform: translateY(-1px);
-    box-shadow: 4px 4px 0 #111;
+  background-color: #ffaa00;
+  transform: translateY(-1px);
 }
 
-.hero-button:focus,
-.menu-link:focus {
-    outline: 2px dashed #00f7ff;
-    outline-offset: 4px;
+.hero-button:focus {
+  outline: 2px dashed #00f7ff;
+  outline-offset: 4px;
 }
 
-@media (min-width: 768px) {
-    .hero-section {
-        height: 70vh;
-        min-height: 400px;
-    }
-    .hero-title {
-        font-size: 4rem;
-    }
-    .hero-description {
-        font-size: 2rem;
-    }
-    .hero-button {
-        padding: 1rem 2rem;
-        font-size: 0.85rem;
-        box-shadow: 4px 4px 0 #333;
-    }
-    .hero-button:hover {
-        box-shadow: 6px 6px 0 #111;
-    }
-}
-/* Update text shadow colors for dark mode */
-.hero-title {
-  text-shadow: 0 0 6px #00f7ff, 0 0 12px #00f7ff;
-}
-
+/* Dark mode hero styles */
 .dark .hero-title {
   text-shadow: 0 0 6px #0ff, 0 0 12px #0ff;
   color: #00e0ff;
@@ -102,209 +93,136 @@
 }
 
 .dark .hero-button {
-  background-color: #222;
-  color: #fff;
-  border-color: #fff;
-  box-shadow: 2px 2px 0 #00f7ff;
+  background-color: #ffd700;
+  color: #000;
+  border-color: #ffd700;
 }
 
 .dark .hero-button:hover {
-  background-color: #333;
-  box-shadow: 4px 4px 0 #00f7ff;
+  background-color: #ffed4e;
 }
 
-
-/* Audio Toggle */
-.audio-toggle-container {
-    position: absolute;
-    right: 40px;
-    z-index: 3;
+/* Menu Section */
+.menu-grid {
+  max-width: 100%;
+  margin: 0 auto;
 }
 
-.audio-toggle-button {
-    background: transparent;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 0.5rem;
-}
-
-.audio-icon-border {
-    border: 2px solid #fff;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    transition: border-color 0.3s ease;
-}
-
-.audio-toggle-button.audio-on .audio-icon-border {
-    border-color: limegreen;
-    color: limegreen;
-    box-shadow: 0 0 5px limegreen;
-}
-
-.audio-toggle-button.audio-off .audio-icon-border {
-    border-color: red;
-    color: red;
-    box-shadow: 0 0 5px red;
-}
-
-.audio-icon {
-    font-size: 1.5rem;
-}
-
-@media (min-width: 768px) {
-    .audio-toggle-container {
-        right: 80px;
-    }
-    .audio-icon-border {
-        width: 50px;
-        height: 50px;
-    }
-    .audio-icon {
-        font-size: 2rem;
-    }
-}
-
-.menu-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Adjusted minmax for smaller screens */
-    gap: 0.75rem;
-    padding: 1.5rem 0;
-    border-bottom: 4px solid #00ffff; /* Cyan border */
-    margin-bottom: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.menu-section-small {
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-}
-
-.menu-item {
-    border: 2px solid #00ffff; /* Cyan border */
-    border-radius: 1rem;
-    padding: 0.75rem;
-    text-align: center;
-    color: white;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-    min-height: 140px; /* Adjusted min-height for smaller screens */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.menu-item:hover {
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2), 0 0 8px #0ff;
-    transform: translateY(-2px);
-    border-color: #0ff;
-}
-
-.menu-item-small {
-    padding: 0.5rem;
-    min-height: 100px;
+.menu-card {
+  position: relative;
+  overflow: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .menu-link {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
-    font-weight: bold;
-    font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
 }
 
-.menu-link:focus {
-    outline: 2px dashed #fff;
-    outline-offset: 4px;
-}
-
-.icon-container {
-    margin-bottom: 0.5rem;
+.menu-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .menu-label {
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #222;
-    font-family: 'Press Start 2P', cursive;
-    text-shadow: 1px 1px 0 #000;
-    text-transform: uppercase;
-    overflow: hidden;
+  font-weight: 600;
+  color: #222;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  text-align: center;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  line-height: 1.3;
+  max-width: 100%;
+}
+
+.dark .menu-label {
+  color: #fff;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Focus states */
+.menu-link:focus {
+  outline: 2px dashed #fff;
+  outline-offset: 2px;
+}
+
+/* Responsive breakpoints */
+@media (min-width: 640px) {
+  .hero-content {
+    padding: 1.5rem;
+  }
+  
+  .menu-link {
+    padding: 0.75rem;
+  }
 }
 
 @media (min-width: 768px) {
-    .menu-section {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 1rem;
-        padding: 2rem 0;
-        margin-bottom: 2rem;
-    }
-    .menu-item {
-        padding: 1rem;
-        min-height: 160px;
-    }
-    .menu-link {
-        font-size: 1.2rem;
-    }
-    .menu-label {
-        font-size: 0.8rem;
-    }
-    .icon-container {
-        margin-bottom: 0.75rem;
-    }
+  .hero-content {
+    padding: 2rem;
+  }
+  
+  .menu-link {
+    padding: 1rem;
+  }
 }
 
-/* Blog Section */
-.blog-section {
-    margin-top: 1.5rem;
-    transition: opacity 0.5s ease;
+@media (min-width: 1024px) {
+  .menu-grid {
+    max-width: 1200px;
+  }
 }
 
-.blog-section.visible {
-    opacity: 1;
-}
-
-.blog-header {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #1a1a1a;
-    text-align: center;
-}
-
-@media (min-width: 768px) {
-    .blog-section {
-        margin-top: 2rem;
-    }
-    .blog-header {
-        font-size: 2rem;
-    }
+@media (min-width: 1280px) {
+  .menu-grid {
+    max-width: 1400px;
+  }
 }
 
 /* Animations */
 .animate-neon1 {
-    animation: neon-glow 1.5s ease-in-out infinite alternate;
+  animation: neon-glow 1.5s ease-in-out infinite alternate;
 }
 
 .animate-neon2 {
-    animation: neon-glow 2s ease-in-out infinite alternate;
+  animation: neon-glow 2s ease-in-out infinite alternate;
 }
 
 @keyframes neon-glow {
-    from {
-        text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
-    }
-    to {
-        text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
-    }
+  from {
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+  }
+  to {
+    text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+  }
 }
+
+.animate-pulseGlow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.8);
+  }
+}
+
+/* Utility classes */
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;   
@@ -327,7 +245,6 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* Optional - Smooth image card look */
 .card-slide {
   width: 15rem;
   height: 10rem;
@@ -339,11 +256,192 @@
   transition: transform 0.3s ease-in-out;
 }
 
-/* Optional - Hover lift */
 .card-slide:hover {
   transform: scale(1.05);
 }
+
+/* Blog Section */
+.blog-section {
+  margin-top: 1.5rem;
+  transition: opacity 0.5s ease;
+}
+
+.blog-section.visible {
+  opacity: 1;
+}
+
+.blog-header {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+  text-align: center;
+  word-break: break-word;
+}
+
+.dark .blog-header {
+  color: #fff;
+}
+
+@media (min-width: 640px) {
+  .blog-section {
+    margin-top: 2rem;
+  }
+  .blog-header {
+    font-size: 2rem;
+  }
+}
+
+/* Audio Toggle */
+.audio-toggle-container {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  z-index: 3;
+}
+
+@media (min-width: 640px) {
+  .audio-toggle-container {
+    right: 40px;
+    top: 40px;
+  }
+}
+
+@media (min-width: 768px) {
+  .audio-toggle-container {
+    right: 60px;
+    top: 60px;
+  }
+}
+
+.audio-toggle-button {
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.audio-icon-border {
+  border: 2px solid #fff;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+@media (min-width: 640px) {
+  .audio-icon-border {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (min-width: 768px) {
+  .audio-icon-border {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+.audio-toggle-button.audio-on .audio-icon-border {
+  border-color: limegreen;
+  color: limegreen;
+  box-shadow: 0 0 5px limegreen;
+}
+
+.audio-toggle-button.audio-off .audio-icon-border {
+  border-color: red;
+  color: red;
+  box-shadow: 0 0 5px red;
+}
+
+.audio-icon {
+  font-size: 1.2rem;
+}
+
+@media (min-width: 640px) {
+  .audio-icon {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .audio-icon {
+    font-size: 2rem;
+  }
+}
+
+/* Base body styles */
 body {
   background-color: #000;
   color: #fff;
+  overflow-x: hidden;
+}
+
+/* Container max-width constraints */
+.container {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1536px;
+  }
+}
+
+/* Text overflow handling */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.word-break {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Ensure no horizontal overflow */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+.overflow-hidden-x {
+  overflow-x: hidden;
 }

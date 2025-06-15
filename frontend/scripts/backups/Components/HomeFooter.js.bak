@@ -1,0 +1,57 @@
+import { FaUserCircle } from 'react-icons/fa';
+import { FaWallet } from 'react-icons/fa';
+import { FaEthereum } from 'react-icons/fa';
+import { FaCog } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import SafeLink from './SafeLink';
+
+const HomeFooter = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return (
+    <footer
+      className={`fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-md w-full py-2`}
+    >
+      <div
+        className={`flex justify-around items-center text-gray-700 dark:text-gray-300 text-xl`}
+      >
+        <SafeLink to="/profile"
+          className="flex flex-col items-center hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out"
+          aria-label="Profile"
+        >
+          <FaUserCircle className="mb-0.5" />
+        </SafeLink>
+
+        <SafeLink to="/mywallet"
+          className="flex flex-col items-center hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out"
+          aria-label="Naira Wallet"
+        >
+          <span className="text-lg mb-0.5">₦</span>
+        </SafeLink>
+
+        <SafeLink to="/eth"
+          className="flex flex-col items-center hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out"
+          aria-label="Ethereum"
+        >
+          <FaEthereum className="mb-0.5" />
+        </SafeLink>
+
+      </div>
+    </footer>
+  );
+};
+
+export default HomeFooter;
