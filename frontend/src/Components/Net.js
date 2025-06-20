@@ -190,7 +190,7 @@ const Net = ({ blogs }) => {
     const getContentLength = () => screenSize.isMobile ? 20 : screenSize.isTablet ? 60 : 120;
 
     return (
-        <div className="net-container fixed top-0 left-0 w-full bg-gradient-to-r from-purple-600 via-blue-500 to-indigo-600 shadow-lg h-8 md:h-10 px-2 md:px-4 lg:px-6 flex items-center font-mono text-white transition-all duration-300 z-50">
+        <div className="net-container fixed top-0 left-0 w-full bg-gradient-to-r from-purple-600 via-blue-500 to-indigo-600 shadow-lg h-9 md:h-11 px-2 md:px-4 lg:px-6 flex items-center font-mono text-white transition-all duration-300 z-50">
             {/* User Profile Section */}
             {(profilePic && name) && (
                 <div className="user-profile-section relative flex items-center mr-3 md:mr-6 lg:mr-8 shrink-0">
@@ -198,7 +198,7 @@ const Net = ({ blogs }) => {
                         <img
                             src={profilePic}
                             alt="Profile"
-                            className="w-7 h-7 md:w-7 md:h-7 lg:w-8 lg:h-8 rounded-full object-cover cursor-pointer ring-2 ring-white/30 hover:ring-white/50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                            className="w-7 h-7 md:w-7 rounded-full md:h-7 lg:w-8 lg:h-8 object-cover cursor-pointer ring-2 ring-white/30 hover:ring-white/50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                             onClick={toggleDropdown}
                         />
                         <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 md:w-3 md:h-3 bg-green-400 rounded-full border-2 border-white shadow-sm animate-pulse"></div>

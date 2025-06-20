@@ -24,6 +24,7 @@ module.exports = {
           '0%': { opacity: '1', transform: 'translateX(0)' },
           '100%': { opacity: '0', transform: 'translateX(-20px)' },
         },
+    
         glowLine: {
           '0%, 100%': { borderColor: '#0ff' },
           '25%': { borderColor: '#0f0' },

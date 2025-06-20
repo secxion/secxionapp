@@ -187,7 +187,6 @@ const Header = () => {
                      </div>
                     </Link>
                     
-                    {/* Search Input - Desktop */}
                     <div className="hidden md:flex items-center bg-black border-2 rounded-md px-4 py-[6px] w-72 glow-border">
                         <FcSearch className="text-white h-5 w-5 mr-2" />
                         <input

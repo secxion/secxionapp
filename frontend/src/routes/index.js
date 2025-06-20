@@ -44,7 +44,6 @@ import Landing from "../pages/Landing";
 import EthWallet from "../pages/EthWallet";
 import AdminEthWithdrawals from "../pages/AdminEthWithdrawals";
 
-
 const publicRoutes = [
   {
     path: "login",

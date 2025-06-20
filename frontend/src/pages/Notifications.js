@@ -194,9 +194,9 @@ const NotificationsPage = () => {
   const hasUnread = notifications.some((n) => !n.isRead);
 
   return (
-    <div className=" py-20 bg-gray-100">
+    <div className=" py-20 -mt-2 bg-gray-100">
       <div className="mx-auto shadow-md rounded-md overflow-hidden bg-white">
-        <div className="fixed bg-white border-b border-gray-200 py-2 z-10">
+        <div className="fixed bg-white py-2 z-10">
           <div className="flex items-center fixed justify-between p-4 mx-auto w-full bg-white shadow-md z-10">
             <nav className="flex space-x-3 w-full" aria-label="Tabs">
               {['all', 'unread', 'read'].map((tab) => (
@@ -216,14 +216,14 @@ const NotificationsPage = () => {
               ))}
               <button
                 onClick={handleDeleteAll}
-                className="py-2 px-3 text-red-600 border rounded border-gray-300 hover:bg-red-600 hover:text-white text-sm"
+                className=" px-3 text-red-600 hover:bg-red-600 hover:text-white text-xs"
               >
                 Delete All
               </button>
               {hasUnread && (
                 <button
                   onClick={handleMarkAllAsRead}
-                  className="py-2 px-3 text-blue-600 border rounded border-gray-300 hover:bg-blue-600 hover:text-white text-sm"
+                  className=" px-3 text-blue-600 hover:bg-blue-600 hover:text-white text-xs"
                 >
                   Mark All Read
                 </button>

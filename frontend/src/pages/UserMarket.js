@@ -5,8 +5,7 @@ import UserUploadMarket from "../Components/UserUploadMarket";
 import HistoryCard from "../Components/HistoryCard";
 import HistoryDetailView from "../Components/HistoryDetailView";
 import UserContext from "../Context";
-import Shimmer from "../Components/Shimmer";
-import Loader from "../Components/Loader";
+
 
 const UserMarket = () => {
   const [openUploadProduct, setOpenUploadProduct] = useState(false);
@@ -85,7 +84,7 @@ const UserMarket = () => {
         <h2 className="font-bold text-lg">Record</h2>
       </div>
 
-      <div className="grid items-center grid-cols-2 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-4 gap-3 py-2 p-4 h-[calc(100vh-190px)] overflow-y-scroll">
+      <div className="grid items-center grid-cols-2 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-4 gap-3 py-2 p-4 overflow-y-scroll">
         {allProduct.map((product) => (
           <HistoryCard
             key={product._id}
@@ -95,9 +94,7 @@ const UserMarket = () => {
           />
         ))}
         {allProduct.length === 0 && !marketId && (
-          <div className="text-gray-500 top-0 text-center w-full text-lg">
-                                <Loader/>
-          </div>
+          <div>Loading...</div>
         )}
         {allProduct.length === 0 && marketId && (
           <p className="text-gray-500 text-center w-full">Market record not found.</p>

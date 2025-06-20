@@ -813,3 +813,24 @@
         box-shadow: 0 4px 16px rgba(255, 71, 87, 0.6);
     }
 }
+
+
+.shape {
+  position: absolute;
+  opacity: 0.15;
+  filter: blur(4px);
+  animation: float 12s ease-in-out infinite;
+  background: linear-gradient(45deg, #6a5acd, #32cd32, #00ced1);
+}
+
+.shape-1 { width: 200px; height: 200px; border-radius: 20%; top: -50px; left: -30px; animation-duration: 18s; }
+.shape-2 { width: 150px; height: 150px; border-radius: 50%; top: 60%; left: -80px; animation-duration: 14s; }
+.shape-3 { width: 300px; height: 300px; border-radius: 5%; bottom: -100px; right: -100px; animation-duration: 20s; }
+.shape-4 { width: 120px; height: 220px; border-radius: 40%; top: 30%; right: -60px; animation-duration: 16s; }
+.shape-5 { width: 180px; height: 120px; border-radius: 30%; bottom: 50px; left: 50%; animation-duration: 22s; }
+
+@keyframes float {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(45deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}

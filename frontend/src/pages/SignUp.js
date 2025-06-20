@@ -4,8 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import uploadImage from "../helpers/uploadImage";
 import SummaryApi from "../common";
 import { toast } from "react-toastify";
-import loginicons from "./pfpik.gif";
 import { motion, AnimatePresence } from "framer-motion";
+import "./Login.css";
+import signupBackground from "./signupbk.png";
 
 const SignUp = () => {
   const [step, setStep] = useState(1);
@@ -17,15 +18,17 @@ const SignUp = () => {
 
   const [data, setData] = useState(() => {
     const saved = localStorage.getItem("signupData");
-    return saved ? JSON.parse(saved) : {
-      email: "",
-      password: "",
-      name: "",
-      confirmPassword: "",
-      profilePic: "",
-      tag: "",
-      telegramNumber: "",
-    };
+    return saved
+      ? JSON.parse(saved)
+      : {
+          email: "",
+          password: "",
+          name: "",
+          confirmPassword: "",
+          profilePic: "",
+          tag: "",
+          telegramNumber: "",
+        };
   });
 
   const navigate = useNavigate();
@@ -112,8 +115,21 @@ const SignUp = () => {
   };
 
   return (
-    <section className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 overflow-hidden">
-      <div className="bg-white w-full max-w-lg p-8 shadow-2xl rounded-2xl border border-gray-200 relative overflow-hidden">
+    <section
+      className="fixed inset-0 flex items-center justify-center z-50 bg-cover bg-center"
+      style={{ backgroundImage: `url(${signupBackground})` }}
+    >
+      <div className="bg-white w-full max-w-lg p-8 shadow-2xl rounded-2xl border border-gray-300 relative overflow-hidden bg-opacity-95">
+        {/* SXN Logo */}
+        <div className="flex items-center justify-center mb-4 font-bold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 tracking-wide">
+          <div className="relative text-center">
+            <h1 className="font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">
+              SXN
+            </h1>
+            <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full"></div>
+          </div>
+        </div>
+
         <h2 className="text-xl font-bold mb-6 text-center">Sign Up Wizard</h2>
         <div className="flex items-center justify-between mb-4">
           {[1, 2, 3, 4, 5].map((n) => (

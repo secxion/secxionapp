@@ -3,8 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SummaryApi from "../common";
 import Context from "../Context";
-import './Header.css';
-
+import "./Login.css";
+import loginBackground from "./loginbk.png";
+import thumbsUpGif from "./thumbsup.gif";
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
@@ -14,28 +15,24 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const { fetchUserDetails } = useContext(Context);
   const navigate = useNavigate();
-
   const [verificationVisible, setVerificationVisible] = useState(false);
   const [sliderValue, setSliderValue] = useState(0);
   const [targetValue, setTargetValue] = useState(0);
   const [isVerified, setIsVerified] = useState(false);
   const [sliderSignature, setSliderSignature] = useState("");
+  const [verifying, setVerifying] = useState(false); 
 
   useEffect(() => {
-    if (verificationVisible) {
-      fetchSliderTarget();
-    }
+    if (verificationVisible) fetchSliderTarget();
   }, [verificationVisible]);
 
   const fetchSliderTarget = async () => {
     try {
       const res = await fetch(SummaryApi.sliderVerification.url, {
         method: SummaryApi.sliderVerification.method,
-        credentials: "include"
+        credentials: "include",
       });
-
       if (!res.ok) throw new Error();
-
       const { target, signature } = await res.json();
       setTargetValue(target);
       setSliderSignature(signature);
@@ -53,43 +50,45 @@ const Login = () => {
   };
 
   const handleVerificationComplete = async () => {
-  if (!isVerified) return;
-  setFormSubmitting(true);
-  setErrorMessage("");
-
-  try {
-    const response = await fetch(SummaryApi.signIn.url, {
-      method: SummaryApi.signIn.method,
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...data,
-        sliderValue,
-        targetValue,
-        slider: {
-          value: sliderValue,
-          signature: sliderSignature,
-        },
-      }),
-    });
-
-    const result = await response.json();
-
-    if (result.success) {
-      toast.success(result.message);
-      fetchUserDetails();
-      navigate("/home");
-    } else {
-      setErrorMessage(result.message || "Invalid credentials. Please try again.");
-      toast.error(result.message);
+    if (!isVerified) return;
+    setVerifying(true);
+    setErrorMessage("");
+    try {
+      const response = await fetch(SummaryApi.signIn.url, {
+        method: SummaryApi.signIn.method,
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...data,
+          sliderValue,
+          targetValue,
+          slider: { value: sliderValue, signature: sliderSignature },
+        }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        setVerificationVisible(false);
+        toast.success(
+          <div className="flex items-center gap-2">
+            <img src={thumbsUpGif} alt="success" className="w-6 h-6" />
+            <span>{result.message || "Login Successful!"}</span>
+          </div>
+        );
+        fetchUserDetails();
+        navigate("/home");
+      } else {
+        setErrorMessage(result.message || "Invalid credentials.");
+        toast.error(result.message || "Verification failed.");
+        setVerificationVisible(true);
+      }
+    } catch {
+      setErrorMessage("An unexpected error occurred.");
+      toast.error("An unexpected error occurred.");
+    } finally {
+      setFormSubmitting(false);
+      setVerifying(false);
     }
-  } catch {
-    setErrorMessage("An unexpected error occurred. Please try again.");
-  } finally {
-    setFormSubmitting(false);
-    setVerificationVisible(false);
-  }
-};
+  };
 
   const handleResendVerificationEmail = async () => {
     setResending(true);
@@ -99,9 +98,10 @@ const Login = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: data.email }),
       });
-
       const result = await res.json();
-      result.success ? toast.success("Verification email sent.") : toast.error(result.message || "Failed to resend.");
+      result.success
+        ? toast.success("Verification email sent.")
+        : toast.error(result.message || "Failed to resend.");
     } catch {
       toast.error("Error resending verification email.");
     } finally {
@@ -118,44 +118,61 @@ const Login = () => {
     e.preventDefault();
     setErrorMessage("");
     setVerificationVisible(true);
+    setFormSubmitting(true);
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="bg-white border border-gray-300 p-6 sm:p-8 w-full max-w-md rounded-2xl shadow-xl">
+    <section
+      className="login-page min-h-screen flex items-center justify-center relative bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${loginBackground})` }}
+    >
+      <div className="shape-lines relative bg-white bg-opacity-95 p-6 sm:p-8 w-full max-w-md rounded-2xl shadow-2xl z-10">
         <div className="flex justify-center mb-5">
-          <Link to="/home" className=" md:flex items-center font-bold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 tracking-wide">
-                                       <div className="logo-wrapper">
-                                           <h1 className="logo-text font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">SXN</h1>
-                                           <div className="logo-accent"></div>
-                                        </div>
-                                       </Link>
+          <Link
+            to="/"
+            className="font-bold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 tracking-wide"
+          >
+            <div className="logo-wrapper">
+              <h1 className="text-3xl logo-text font-extrabold tracking-wide">SXN</h1>
+              <div className="logo-accent" />
+            </div>
+          </Link>
         </div>
 
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Welcome</h1>
-          <p className="text-sm text-gray-500 mt-1">Login to your account</p>
+          <h1 className="text-2xl font-bold text-gray-900">Welcome</h1>
+          <p className="text-sm text-gray-800 mt-1">Login to Enter Market</p>
         </div>
 
         <form className="flex flex-col gap-4" onSubmit={onLoginClick}>
           <div>
-            <label htmlFor="email" className="block text-gray-600 font-medium mb-1">Email</label>
+            <label htmlFor="email" className="block text-gray-950 font-extrabold mb-1">Email</label>
             <input
-              id="email" name="email" type="email" value={data.email} onChange={handleInputChange}
+              id="email"
+              name="email"
+              type="email"
+              value={data.email}
+              onChange={handleInputChange}
               placeholder="you@example.com"
-              className="w-full bg-gray-100 p-3 rounded-lg border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required autoComplete="email"
+                className="w-full bg-gray-100 p-3 pr-12 rounded-lg border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+              autoComplete="email"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-gray-600 font-medium mb-1">Password</label>
+            <label htmlFor="password" className="block text-gray-950 font-extrabold mb-1">Password</label>
             <div className="relative">
               <input
-                id="password" name="password" type={showPassword ? "text" : "password"} value={data.password} onChange={handleInputChange}
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={data.password}
+                onChange={handleInputChange}
                 placeholder="••••••••"
-                className="w-full bg-gray-100 p-3 pr-12 rounded-lg border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                required autoComplete="current-password"
+                className="w-full bg-gray-100 p-3 pr-12 rounded-lg border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                required
+                autoComplete="current-password"
               />
               <button
                 type="button"
@@ -166,7 +183,7 @@ const Login = () => {
                 {showPassword ? "🙈" : "👁️"}
               </button>
             </div>
-            <Link to="/reset" className="block text-right text-sm text-blue-600 hover:underline mt-1">
+            <Link to="/reset" className="block text-right text-sm text-red-300 hover:underline mt-1">
               Forgot password?
             </Link>
           </div>
@@ -180,7 +197,7 @@ const Login = () => {
                 : "bg-blue-600 hover:bg-blue-700 text-white"
             }`}
           >
-            {formSubmitting ? "Logging in..." : "Login"}
+            {formSubmitting ? "Preparing verification..." : "Login"}
           </button>
         </form>
 
@@ -199,9 +216,9 @@ const Login = () => {
           </div>
         )}
 
-        <p className="mt-6 text-center text-gray-600 text-sm">
+        <p className="mt-6 text-center text-gray-800 text-sm">
           Don’t have an account?{" "}
-          <Link to="/sign-up" className="text-blue-600 hover:underline font-medium">
+          <Link to="/sign-up" className="text-black hover:underline font-medium">
             Sign up
           </Link>
         </p>
@@ -211,43 +228,47 @@ const Login = () => {
             Contact Us
           </Link>
           <span className="mx-2">|</span>
-          <a href="https://secxion.com" className="hover:underline" target="_blank" rel="noopener noreferrer">
+          <a href="https://secxion.com" target="_blank" rel="noopener noreferrer" className="hover:underline">
             © {new Date().getFullYear()} secxion.com
           </a>
         </div>
       </div>
 
-      {/* Slider Verification */}
       {verificationVisible && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-6 rounded-xl border shadow-lg w-full max-w-sm">
+          <div className="bg-white p-6 rounded-xl border-2 border-gray-300 shadow-lg w-full max-w-sm">
             <h2 className="text-lg font-bold text-gray-800 mb-2 text-center">Human Verification</h2>
             <p className="text-sm text-gray-600 mb-4 text-center">
               Slide to match: <span className="font-semibold text-blue-600">{targetValue}</span>
             </p>
-
             <input
-              type="range" min="0" max="100" value={sliderValue} onChange={handleSliderChange}
+              type="range"
+              min="0"
+              max="100"
+              value={sliderValue}
+              onChange={handleSliderChange}
               className="w-full h-2 accent-blue-500 mb-4"
             />
-
             <div className="text-center text-sm mb-3">
               <span className="text-gray-500">Current: </span>
               <span className="font-semibold">{sliderValue}</span>
             </div>
-
             <button
               onClick={handleVerificationComplete}
-              disabled={!isVerified}
+              disabled={!isVerified || verifying}
               className={`w-full py-2 rounded-md font-semibold transition ${
-                isVerified ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                isVerified
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
-              {isVerified ? "Verify & Login" : "Slide to Verify"}
+              {verifying ? "Logging in..." : "Verify & Login"}
             </button>
-
             <button
-              onClick={() => setVerificationVisible(false)}
+              onClick={() => {
+                setVerificationVisible(false);
+                setFormSubmitting(false);
+              }}
               className="mt-3 w-full text-sm text-gray-500 hover:text-blue-600"
             >
               Cancel

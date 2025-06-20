@@ -81,24 +81,86 @@ const Profile = () => {
         fetchUserDetails();
     }, [fetchUserProfile, fetchUserDetails]);
 
-    if (loadingProfile) {
-        return (
-            <div className="mt-24 p-4 sm:p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-lg animate-pulse">
-                <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
-                    <div className="flex-shrink-0 mx-auto sm:mx-0">
-                        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-300"></div>
-                    </div>
-                    <div className="flex-grow space-y-3 text-center sm:text-left">
-                        <div className="h-6 bg-gray-300 rounded w-3/4 mx-auto sm:mx-0"></div>
-                        <div className="space-y-2">
-                            <div className="h-4 bg-gray-300 rounded w-full"></div>
-                            <div className="h-4 bg-gray-300 rounded w-2/3 mx-auto sm:mx-0"></div>
+if (loadingProfile) {
+    return (
+        <div className="mt-20 p-4 sm:p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-lg border border-gray-100 animate-fadeIn">
+            <style jsx>{`
+                @keyframes shimmer {
+                    0% {
+                        background-position: -1000px 0;
+                    }
+                    100% {
+                        background-position: 1000px 0;
+                    }
+                }
+                .shimmer {
+                    background: linear-gradient(
+                        to right,
+                        #e0e0e0 0%,
+                        #f8f8f8 50%,
+                        #e0e0e0 100%
+                    );
+                    background-size: 1000px 100%;
+                    animation: shimmer 1.8s infinite linear;
+                }
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(8px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                .animate-fadeIn {
+                    animation: fadeIn 0.6s ease-out forwards;
+                }
+            `}</style>
+
+            <div className="border-b border-gray-200 pb-6 mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                        <div className="flex-shrink-0 mx-auto sm:mx-0">
+                            <div className="h-24 w-24 bg-gray-200 rounded-full shimmer"></div>
                         </div>
+
+                        <div className="flex-grow min-w-0 text-center sm:text-left">
+                            <div className="space-y-2">
+                                <div className="h-6 bg-gray-200 rounded w-40 mx-auto sm:mx-0 shimmer"></div>
+                                <div className="space-y-1 text-sm text-gray-600">
+                                    <div className="h-4 bg-gray-200 rounded w-32 mx-auto sm:mx-0 shimmer"></div>
+                                    <div className="h-4 bg-gray-200 rounded w-24 mx-auto sm:mx-0 shimmer"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex-shrink-0 flex justify-center sm:justify-end">
+                        <div className="h-10 w-24 bg-gray-200 rounded shimmer"></div>
                     </div>
                 </div>
             </div>
-        );
-    }
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="h-6 bg-gray-200 rounded w-20 mx-auto mb-2 shimmer"></div>
+                    <div className="h-4 bg-gray-200 rounded w-16 mx-auto shimmer"></div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="h-6 bg-gray-200 rounded w-20 mx-auto mb-2 shimmer"></div>
+                    <div className="h-4 bg-gray-200 rounded w-16 mx-auto shimmer"></div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="h-6 bg-gray-200 rounded w-20 mx-auto mb-2 shimmer"></div>
+                    <div className="h-4 bg-gray-200 rounded w-16 mx-auto shimmer"></div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+
 
     if (errorProfile) {
         return (
@@ -115,7 +177,7 @@ const Profile = () => {
 
     if (profileData) {
         return (
-            <div className="mt-24 p-4 sm:p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-lg border border-gray-100">
+            <div className="mt-20 p-4 sm:p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-lg border border-gray-100">
                 {/* Header Section */}
                 <div className="border-b border-gray-200 pb-6 mb-6">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
