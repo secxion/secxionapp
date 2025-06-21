@@ -25,13 +25,9 @@ const Net = lazy(() => import("./Components/Net"));
 function Loader() {
     return (
         <div>
-      <div className="flex items-center justify-center h-screen bg-black animate-fadeIn">
+      <div className="flex items-center justify-center h-screen bg-white animate-fadeIn">
   <div className="relative text-center group animate-popIn">
-    <h1 className="text-6xl sm:text-7xl md:text-8xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 animate-glowText">
-      <span className="inline-block animate-sparkle">S</span>
-      <span className="inline-block animate-sparkle delay-[150ms]">X</span>
-      <span className="inline-block animate-sparkle delay-[300ms]">N</span>
-    </h1>
+
     <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-1 w-3/4 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full animate-pulseGlow" />
   </div>
 </div>

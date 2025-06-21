@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.cadb7c0e.css",
-    "main.js": "/static/js/main.fa0df31c.js",
+    "main.css": "/static/css/main.fc19576d.css",
+    "main.js": "/static/js/main.bfe3dfa8.js",
     "static/js/488.535652aa.chunk.js": "/static/js/488.535652aa.chunk.js",
     "static/css/664.87783080.chunk.css": "/static/css/664.87783080.chunk.css",
     "static/js/664.5dcc955d.chunk.js": "/static/js/664.5dcc955d.chunk.js",
@@ -22,15 +22,15 @@
     "static/media/googleplay.jpg": "/static/media/googleplay.27ffe9cfa61655d968dc.jpg",
     "static/media/netflix.jpg": "/static/media/netflix.eb74a9f63dd529e5dca6.jpg",
     "index.html": "/index.html",
-    "main.cadb7c0e.css.map": "/static/css/main.cadb7c0e.css.map",
-    "main.fa0df31c.js.map": "/static/js/main.fa0df31c.js.map",
+    "main.fc19576d.css.map": "/static/css/main.fc19576d.css.map",
+    "main.bfe3dfa8.js.map": "/static/js/main.bfe3dfa8.js.map",
     "488.535652aa.chunk.js.map": "/static/js/488.535652aa.chunk.js.map",
     "664.87783080.chunk.css.map": "/static/css/664.87783080.chunk.css.map",
     "664.5dcc955d.chunk.js.map": "/static/js/664.5dcc955d.chunk.js.map",
     "893.58c4ae9d.chunk.js.map": "/static/js/893.58c4ae9d.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.cadb7c0e.css",
-    "static/js/main.fa0df31c.js"
+    "static/css/main.fc19576d.css",
+    "static/js/main.bfe3dfa8.js"
   ]
 }

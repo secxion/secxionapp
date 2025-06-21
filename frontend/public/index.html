@@ -174,12 +174,52 @@
       .loading-spinner {
         width: 40px;
         height: 40px;
-        border: 2px solid rgba(255, 255, 255, 0.1);
-        border-top: 2px solid #3b82f6;
+        border: 2px solid #222; /* dark border for contrast */
+        border-top: 2px solid #fff;
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin-bottom: 1rem;
+        position: relative;
+        box-shadow: 0 0 4px #fff, 0 0 5px #fff, 0 0 2px #fff;
       }
+
+/* Optional inner glow animation on top border */
+    .loading-spinner::after {
+      content: "";
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border-top: 2px solid transparent, white;
+      animation: glow-spin 1s linear infinite;
+      box-shadow: 0 0 2px #ffffffaa, 0 0 4px #ffffff88, 0 0 8px #ffffff55;
+    }
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes glow-spin {
+  0% {
+    transform: rotate(0deg);
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(360deg);
+    opacity: 0.6;
+  }
+}
+
       
       .loading-text {
         color: #71717a;
@@ -305,7 +345,7 @@
   <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
     <div class="loading-screen">
       <div class="loading-spinner"></div>
-      <div class="loading-text">Opening Secxion...</div>
+      <div class="loading-text"></div>
     </div>
 
     <!-- App Root -->

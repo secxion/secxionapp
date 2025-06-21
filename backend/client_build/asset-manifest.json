@@ -1,34 +1,36 @@
 {
   "files": {
-    "main.css": "/static/css/main.3dec36d9.css",
-    "main.js": "/static/js/main.23f08357.js",
+    "main.css": "/static/css/main.fc19576d.css",
+    "main.js": "/static/js/main.bfe3dfa8.js",
     "static/js/488.535652aa.chunk.js": "/static/js/488.535652aa.chunk.js",
     "static/css/664.87783080.chunk.css": "/static/css/664.87783080.chunk.css",
     "static/js/664.5dcc955d.chunk.js": "/static/js/664.5dcc955d.chunk.js",
     "static/js/893.58c4ae9d.chunk.js": "/static/js/893.58c4ae9d.chunk.js",
-    "static/media/pfpik.gif": "/static/media/pfpik.62c3f584468a78ef9fe1.gif",
     "static/media/allgiftcards.png": "/static/media/allgiftcards.708f18c21828ea5fc4b8.png",
     "static/media/itunesall.png": "/static/media/itunesall.8bc7a909d115abb43f2b.png",
+    "static/media/loginbk.png": "/static/media/loginbk.83f5ec8a30680d22bc25.png",
+    "static/media/signupbk.png": "/static/media/signupbk.58b111103d0d8be39c45.png",
     "static/media/notification.mp3": "/static/media/notification.84309bf56dfcae5558c9.mp3",
     "static/media/starbucks.jpg": "/static/media/starbucks.b3824b82d57bf9cbb37e.jpg",
     "static/media/bestbuy.jpg": "/static/media/bestbuy.4468244c398c711859cb.jpg",
     "static/media/visax.jpg": "/static/media/visax.dd7b02c2d283be5ca5f7.jpg",
+    "static/media/thumbsup.gif": "/static/media/thumbsup.81d62912b13cc5e28cd9.gif",
+    "service-worker.js": "/service-worker.js",
     "static/media/applepay.jpg": "/static/media/applepay.11de122d4450b27217fb.jpg",
     "static/media/walmart.jpg": "/static/media/walmart.4b1e9000856dd03f43f3.jpg",
-    "service-worker.js": "/service-worker.js",
     "static/media/ebay.jpg": "/static/media/ebay.90c6bd31596d388c7d1c.jpg",
     "static/media/googleplay.jpg": "/static/media/googleplay.27ffe9cfa61655d968dc.jpg",
     "static/media/netflix.jpg": "/static/media/netflix.eb74a9f63dd529e5dca6.jpg",
     "index.html": "/index.html",
-    "main.3dec36d9.css.map": "/static/css/main.3dec36d9.css.map",
-    "main.23f08357.js.map": "/static/js/main.23f08357.js.map",
+    "main.fc19576d.css.map": "/static/css/main.fc19576d.css.map",
+    "main.bfe3dfa8.js.map": "/static/js/main.bfe3dfa8.js.map",
     "488.535652aa.chunk.js.map": "/static/js/488.535652aa.chunk.js.map",
     "664.87783080.chunk.css.map": "/static/css/664.87783080.chunk.css.map",
     "664.5dcc955d.chunk.js.map": "/static/js/664.5dcc955d.chunk.js.map",
     "893.58c4ae9d.chunk.js.map": "/static/js/893.58c4ae9d.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.3dec36d9.css",
-    "static/js/main.23f08357.js"
+    "static/css/main.fc19576d.css",
+    "static/js/main.bfe3dfa8.js"
   ]
 }
