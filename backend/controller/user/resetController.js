@@ -1,4 +1,3 @@
-// controllers/user/resetController.js
 import userModel from "../../models/userModel.js";
 import { sendResetCodeEmail } from "../../utils/mailer.js";
 import bcrypt from "bcryptjs";

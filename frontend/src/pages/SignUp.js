@@ -1,3 +1,5 @@
+// MODIFIED: Animated geometric lines + particle trails + input animation
+
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -5,8 +7,8 @@ import uploadImage from "../helpers/uploadImage";
 import SummaryApi from "../common";
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
-import "./Login.css";
 import signupBackground from "./signupbk.png";
+import "./Login.css";
 
 const SignUp = () => {
   const [step, setStep] = useState(1);
@@ -52,7 +54,6 @@ const SignUp = () => {
   const handleUploadPic = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     setUploading(true);
     try {
       toast.info("Uploading image... ⏳");
@@ -66,13 +67,10 @@ const SignUp = () => {
     }
   };
 
-  const goToStep = (s) => {
-    setStep(s);
-  };
+  const goToStep = (s) => setStep(s);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!data.name) return setStep(1);
     if (!data.email || !isValidEmail(data.email)) return setStep(2);
     if (!data.telegramNumber || !isValidTelegram(data.telegramNumber)) return setStep(3);
@@ -81,7 +79,6 @@ const SignUp = () => {
     if (!agreedToTerms) return toast.error("You must agree to terms.");
 
     setLoading(true);
-
     try {
       const response = await fetch(SummaryApi.signUP.url, {
         method: "POST",
@@ -89,16 +86,13 @@ const SignUp = () => {
         credentials: "include",
         body: JSON.stringify(data),
       });
-
       const responseData = await response.json();
       if (response.ok) {
         localStorage.removeItem("signupData");
         toast.success("🎉 Signup successful! ₦900 bonus awarded. Verify your email.");
         setTimeout(() => navigate("/login"), 2500);
       } else {
-        if (responseData.message?.toLowerCase().includes("email")) {
-          setStep(2);
-        }
+        if (responseData.message?.toLowerCase().includes("email")) setStep(2);
         toast.error(responseData?.message || "Signup failed.");
       }
     } catch (error) {
@@ -115,28 +109,28 @@ const SignUp = () => {
   };
 
   return (
-    <section
-      className="fixed inset-0 flex items-center justify-center z-50 bg-cover bg-center"
-      style={{ backgroundImage: `url(${signupBackground})` }}
-    >
-      <div className="bg-white w-full max-w-lg p-8 shadow-2xl rounded-2xl border border-gray-300 relative overflow-hidden bg-opacity-95">
-        {/* SXN Logo */}
-        <div className="flex items-center justify-center mb-4 font-bold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 tracking-wide">
-          <div className="relative text-center">
-            <h1 className="font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">
-              SXN
-            </h1>
-            <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full"></div>
-          </div>
-        </div>
+    <section className="fixed inset-0 flex items-center justify-center z-50 bg-cover bg-center" style={{ backgroundImage: `url(${signupBackground})` }}>
+      {/* Animated Background Geometry */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <svg className="absolute w-full h-full opacity-30" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+        <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[length:40px_40px] animate-pulse" />
+      </div>
 
+      <div className="relative z-10 w-full max-w-lg p-8 shadow-2xl rounded-2xl border border-gray-300 bg-white bg-opacity-95">
+        <div className="flex items-center justify-center mb-4 font-bold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">
+          <h1 className="font-extrabold tracking-wide">SXN</h1>
+        </div>
         <h2 className="text-xl font-bold mb-6 text-center">Sign Up Wizard</h2>
         <div className="flex items-center justify-between mb-4">
           {[1, 2, 3, 4, 5].map((n) => (
-            <div
-              key={n}
-              className={`h-2 flex-1 mx-1 rounded-full transition-all ${n <= step ? "bg-blue-600" : "bg-gray-300"}`}
-            ></div>
+            <div key={n} className={`h-2 flex-1 mx-1 rounded-full transition-all ${n <= step ? "bg-blue-600" : "bg-gray-300"}`} />
           ))}
         </div>
 
@@ -146,13 +140,11 @@ const SignUp = () => {
               <motion.div key="step1" variants={stepVariants} initial="hidden" animate="visible" exit="exit" className="space-y-4">
                 <InputField label="Name" name="name" value={data.name} onChange={handleOnChange} required />
                 <InputField label="Tag" name="tag" value={data.tag} onChange={handleOnChange} />
-                <div className="flex justify-between">
-                  <div></div>
+                <div className="flex justify-end">
                   <button type="button" onClick={() => goToStep(2)} className="btn-next">Next →</button>
                 </div>
               </motion.div>
             )}
-
             {step === 2 && (
               <motion.div key="step2" variants={stepVariants} initial="hidden" animate="visible" exit="exit" className="space-y-4">
                 <InputField label="Email" name="email" type="email" value={data.email} onChange={handleOnChange} required />
@@ -162,7 +154,6 @@ const SignUp = () => {
                 </div>
               </motion.div>
             )}
-
             {step === 3 && (
               <motion.div key="step3" variants={stepVariants} initial="hidden" animate="visible" exit="exit" className="space-y-4">
                 <InputField label="Telegram Number" name="telegramNumber" value={data.telegramNumber} onChange={handleOnChange} />
@@ -172,7 +163,6 @@ const SignUp = () => {
                 </div>
               </motion.div>
             )}
-
             {step === 4 && (
               <motion.div key="step4" variants={stepVariants} initial="hidden" animate="visible" exit="exit" className="space-y-4">
                 <PasswordField label="Password" name="password" value={data.password} onChange={handleOnChange} show={showPassword} toggle={() => setShowPassword((prev) => !prev)} />
@@ -183,21 +173,17 @@ const SignUp = () => {
                 </div>
               </motion.div>
             )}
-
             {step === 5 && (
               <motion.div key="step5" variants={stepVariants} initial="hidden" animate="visible" exit="exit" className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Profile Picture</label>
                   <input type="file" accept="image/*" onChange={handleUploadPic} className="w-full p-2 border border-gray-300 bg-gray-50 text-sm rounded" />
                 </div>
-
                 {data.profilePic && <img src={data.profilePic} alt="Preview" className="h-20 w-20 rounded-full object-cover mx-auto" />}
-
                 <div className="flex items-center">
                   <input type="checkbox" id="terms" checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} className="mr-2" />
                   <label htmlFor="terms" className="text-sm text-gray-700">I agree to the <Link to="/terms" className="text-blue-600 hover:underline">terms and conditions</Link></label>
                 </div>
-
                 <div className="flex justify-between">
                   <button type="button" onClick={() => goToStep(4)} className="btn-back">← Back</button>
                   <button type="submit" disabled={loading || uploading || !data.profilePic} className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded transition disabled:opacity-50">
@@ -218,7 +204,7 @@ const SignUp = () => {
 };
 
 const InputField = ({ label, name, value, onChange, type = "text", placeholder = "", required = false }) => (
-  <div>
+  <div className="group">
     <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
     <input
       type={type}
@@ -227,15 +213,15 @@ const InputField = ({ label, name, value, onChange, type = "text", placeholder =
       onChange={onChange}
       placeholder={placeholder}
       required={required}
-      className="w-full p-2 bg-gray-50 border border-gray-300 text-sm rounded"
+      className="w-full p-2 border border-gray-300 text-sm rounded bg-gray-50 focus:ring-2 focus:ring-blue-300 focus:border-blue-500 transition-all duration-200"
     />
   </div>
 );
 
 const PasswordField = ({ label, name, value, onChange, show, toggle }) => (
-  <div>
+  <div className="group">
     <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-    <div className="flex items-center p-2 bg-gray-50 border border-gray-300 rounded">
+    <div className="flex items-center p-2 bg-gray-50 border border-gray-300 rounded focus-within:ring-2 focus-within:ring-blue-300 focus-within:border-blue-500 transition-all duration-200">
       <input
         type={show ? "text" : "password"}
         name={name}

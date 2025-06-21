@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { SiEthereum } from 'react-icons/si';
 
 import {
   ShieldCheck,
@@ -202,7 +203,7 @@ export default function Landing() {
 
       {/* Navigation Header */}
       <motion.header
-        className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-xl border-b border-white/10"
+        className="relative top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-xl border-b border-white/10"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -217,8 +218,9 @@ export default function Landing() {
             
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <NavLink href="/terms">Terms</NavLink>
               <NavLink href="/about-us">About</NavLink>
+              <NavLink href="/terms">Terms</NavLink>
+              <NavLink href="/privacy">Privacy</NavLink>
               <NavLink href="/contact-us">Contact</NavLink>
             </nav>
 
@@ -259,44 +261,48 @@ export default function Landing() {
         </div>
 
         {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <motion.div
-            className="md:hidden absolute top-16 left-0 right-0 bg-white border-t border-gray-200/50 shadow-lg"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-          >
-            <div className="px-4 py-6 space-y-4">
-              <MobileNavLink href="/terms">Terms</MobileNavLink>
-              <MobileNavLink href="/about-us">About</MobileNavLink>
-              <MobileNavLink href="/contact-us">Contact</MobileNavLink>
-              
-              <div className="border-t border-gray-200 pt-4 space-y-3">
-                {isLoggedIn ? (
-                  <Button 
-                    className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800"
-                    onClick={() => setIsLoggedIn(false)}
-                  >
-                    Log Out
+        <AnimatePresence>
+    {isMenuOpen && (
+      <motion.div
+        key="mobile-menu"
+        className="absolute top-full left-0 right-0 bg-white border-t border-gray-200 shadow-md rounded-b-xl overflow-hidden"
+        initial={{ opacity: 0, y: 0 }}
+        animate={{ opacity: 1, y: 0, transition: { duration: 0.1, ease: 'easeOut' } }}
+        exit={{ opacity: 0, y: 0, transition: { duration: 0.1, ease: 'easeIn' } }}
+      >
+        <div className="px-4 py-6 space-y-4">
+          <MobileNavLink href="/about-us">About</MobileNavLink>
+          <MobileNavLink href="/terms">Terms</MobileNavLink>
+          <MobileNavLink href="/privacy">Privacy</MobileNavLink>
+          <MobileNavLink href="/contact-us">Contact</MobileNavLink>
+
+          <div className="border-t border-gray-200 pt-4 space-y-3">
+            {isLoggedIn ? (
+              <Button
+                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800"
+                onClick={() => setIsLoggedIn(false)}
+              >
+                Log Out
+              </Button>
+            ) : (
+              <>
+                <a href="/login" className="block">
+                  <Button variant="ghost" className="w-full">
+                    Sign In
                   </Button>
-                ) : (
-                  <>
-                    <a href="/login" className="block">
-                      <Button variant="ghost" className="w-full">
-                        Sign In
-                      </Button>
-                    </a>
-                    <a href="/sign-up" className="block">
-                      <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white">
-                        Get Started
-                      </Button>
-                    </a>
-                  </>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        )}
+                </a>
+                <a href="/sign-up" className="block">
+                  <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white">
+                    Get Started
+                  </Button>
+                </a>
+              </>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    )}
+  </AnimatePresence>
       </motion.header>
 
       <main className="pt-16 relative z-10">
@@ -398,7 +404,7 @@ export default function Landing() {
                 highlight={true}
               />
               <ServiceCard
-                icon={<Bitcoin className="h-12 w-12 text-orange-500" />}
+                icon={<SiEthereum className="h-12 w-12 text-blue-500" />}
                 title="Ethereum Trading"
                 description="Securely buy, sell, and store Ethereum with our user-friendly platform. Real-time market rates and instant transactions."
               />
@@ -525,7 +531,7 @@ export default function Landing() {
                   <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full"></div>
                 </div>
               </div>
-              <Link to={"/contact-us"} className="text-sm">Secxionapp@mail.com</Link>
+              <Link to={"/contact-us"} className="text-sm">Send us a message</Link>
             </div>
             
             <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
