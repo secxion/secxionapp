@@ -47,7 +47,11 @@
     "workbox-precaching": "^7.3.0",
     "workbox-routing": "^7.3.0",
     "workbox-strategies": "^7.3.0",
-    "zod": "^3.25.32"
+    "zod": "^3.25.32",
+    "@tailwindcss/line-clamp": "^0.4.4",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.16",
+    "file-loader": "^6.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -77,9 +81,6 @@
     ]
   },
   "devDependencies": {
-    "@tailwindcss/forms": "^0.5.10",
-    "@tailwindcss/line-clamp": "^0.4.4",
-    "@tailwindcss/typography": "^0.5.16",
-    "file-loader": "^6.2.0"
+   
   }
 }
