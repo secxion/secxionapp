@@ -1,7 +1,26 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./src/**/*.{styles.js,style.js,styled.js}",
+    "./src/**/*.{md,mdx}",
+    "./public/index.html",
+    "./public/**/*.html",
+    "../shared/**/*.{js,jsx,ts,tsx}",
+  ],
+  safelist: [
+    "bg-white",
+    "bg-black",
+    "text-white",
+    "text-black",
+    "bg-blue-500",
+    "bg-gradient-to-r",
+    "from-cyan-400",
+    "to-pink-500",
+    "dark:bg-black",
+    "dark:text-white"
+  ],
   theme: {
     container: {
       center: true,
@@ -24,7 +43,6 @@ module.exports = {
           '0%': { opacity: '1', transform: 'translateX(0)' },
           '100%': { opacity: '0', transform: 'translateX(-20px)' },
         },
-    
         glowLine: {
           '0%, 100%': { borderColor: '#0ff' },
           '25%': { borderColor: '#0f0' },
@@ -101,5 +119,9 @@ module.exports = {
       },
     },
   },
-  plugins: [require('@tailwindcss/line-clamp')],
+  plugins: [
+    require('@tailwindcss/line-clamp'),
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+  ],
 };
