@@ -44,7 +44,7 @@ async function userSignUpController(req, res) {
     } catch (emailError) {
       return res.status(503).json({
         success: false,
-        message: "Sign-up temporarily unavailable due to system maintenance. Please try again shortly.",
+        message: "Sign-up temporarily unavailable due to system maintenance. Please try again shortly or contact support for registration.",
       });
     }
 
@@ -70,7 +70,7 @@ async function userSignUpController(req, res) {
     console.error("Signup error:", err);
     return res.status(500).json({
       success: false,
-      message: "Signup failed due to an unexpected server error.",
+      message: "Sign-up temporarily unavailable due to system maintenance. Please try again shortly or contact support for registration.",
     });
   }
 }
