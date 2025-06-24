@@ -305,11 +305,11 @@ export default function Landing() {
   </AnimatePresence>
       </motion.header>
 
-      <main className="pt-16 relative z-10">
+      <main className=" relative z-10">
 
         {/* Hero Section */}
         <motion.section
-          className="relative overflow-hidden py-20 lg:py-32"
+          className="relative overflow-hidden py-10 lg:py-32"
         >
           <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
           <div className="absolute inset-0 pointer-events-none">
@@ -326,10 +326,11 @@ export default function Landing() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.8 }}
               >
-              
+             
                 <span className="bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
                 Welcome to secxion
                 </span>
+                
                 <br />
                 
               </motion.h1>
@@ -350,6 +351,10 @@ export default function Landing() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
               >
+                 <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 group">
+                  <a href="/login">Login</a>
+                </Button>
+                  |
                 <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 group">
                   <UserPlus className="mr-2 h-5 w-5" />
                   <a href="/sign-up">Create an Account</a>
@@ -488,7 +493,7 @@ export default function Landing() {
               Join thousands of users who trust Secxion for their gift card exchanges and custom development needs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-white text-gray-900 hover:bg-gray-100 rounded-xl px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">
+              <Button className="bg-blue-500 text-gray-900 hover:bg-gray-100 rounded-xl px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">
                 <a href="/sign-up" className="flex items-center">
                   Create Free Account
                   <ArrowUpRight className="ml-2 h-5 w-5" />

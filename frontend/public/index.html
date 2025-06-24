@@ -3,13 +3,21 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- Updated viewport for mobile app behavior -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, minimal-ui" />
+    <!-- PWA mobile app settings -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Secxion" />
+    <meta name="application-name" content="Secxion" />
+    
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="color-scheme" content="dark light" />
     <meta
       name="description"
-      content="Secxion - Professional platform for buying and selling gift cards and secure online transaction services"
+      content="Secxion - online transaction services : gift cards, online transactions, secure payments, digital commerce "
     />
     <meta name="keywords" content="gift cards, online transactions, secure payments, digital commerce" />
     <meta name="author" content="Secxion" />
@@ -139,14 +147,25 @@
     </script>
     
     <style>
-    
       * {
         box-sizing: border-box;
+      }
+      
+      /* Fix for mobile viewport issues */
+      html {
+        height: 100%;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+        /* Prevent address bar from showing/hiding on scroll */
+        -webkit-overflow-scrolling: touch;
       }
       
       body {
         margin: 0;
         padding: 0;
+        height: 100%;
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
         background-color: #000000;
         color: #ffffff;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -154,6 +173,87 @@
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        /* Prevent iOS bounce scrolling */
+        position: fixed;
+        width: 100%;
+        /* Mobile-specific fixes */
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      #root {
+        height: 100vh;
+        height: -webkit-fill-available;
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: relative;
+      }
+      
+      /* PWA install button styles */
+      .pwa-install-banner {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 25px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        z-index: 10000;
+        display: none;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .pwa-install-banner.show {
+        display: flex;
+        animation: slideUpFade 0.3s ease-out;
+      }
+      
+      .pwa-install-btn {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      
+      .pwa-install-btn:hover {
+        background: #2563eb;
+      }
+      
+      .pwa-close-btn {
+        background: transparent;
+        color: white;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      @keyframes slideUpFade {
+        from {
+          transform: translate(-50%, 20px);
+          opacity: 0;
+        }
+        to {
+          transform: translate(-50%, 0);
+          opacity: 1;
+        }
       }
       
       .loading-screen {
@@ -174,7 +274,7 @@
       .loading-spinner {
         width: 40px;
         height: 40px;
-        border: 2px solid #222; /* dark border for contrast */
+        border: 2px solid #222;
         border-top: 2px solid #fff;
         border-radius: 50%;
         animation: spin 1s linear infinite;
@@ -183,43 +283,41 @@
         box-shadow: 0 0 4px #fff, 0 0 5px #fff, 0 0 2px #fff;
       }
 
-/* Optional inner glow animation on top border */
-    .loading-spinner::after {
-      content: "";
-      position: absolute;
-      top: -2px;
-      left: -2px;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border-top: 2px solid transparent, white;
-      animation: glow-spin 1s linear infinite;
-      box-shadow: 0 0 2px #ffffffaa, 0 0 4px #ffffff88, 0 0 8px #ffffff55;
-    }
+      .loading-spinner::after {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border-top: 2px solid transparent, white;
+        animation: glow-spin 1s linear infinite;
+        box-shadow: 0 0 2px #ffffffaa, 0 0 4px #ffffff88, 0 0 8px #ffffff55;
+      }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
 
-@keyframes glow-spin {
-  0% {
-    transform: rotate(0deg);
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    transform: rotate(360deg);
-    opacity: 0.6;
-  }
-}
-
+      @keyframes glow-spin {
+        0% {
+          transform: rotate(0deg);
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          transform: rotate(360deg);
+          opacity: 0.6;
+        }
+      }
       
       .loading-text {
         color: #71717a;
@@ -228,19 +326,9 @@
         letter-spacing: 0.05em;
       }
       
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-      
       .loading-hidden {
         opacity: 0;
         visibility: hidden;
-      }
-      
-      /* Smooth scrolling */
-      html {
-        scroll-behavior: smooth;
       }
       
       /* Focus styles */
@@ -265,6 +353,21 @@
       
       ::-webkit-scrollbar-thumb:hover {
         background: #52525b;
+      }
+      
+      /* Mobile-specific fixes */
+      @media (max-width: 768px) {
+        body {
+          position: fixed;
+          overflow: hidden;
+        }
+        
+        #root {
+          height: 100vh;
+          height: -webkit-fill-available;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+        }
       }
     </style>
     
@@ -318,6 +421,116 @@
     </script>
 
     <script>
+      // Enhanced PWA install prompt for both desktop and mobile
+      let deferredPrompt;
+      let installBanner;
+
+      // Create install banner
+      function createInstallBanner() {
+        installBanner = document.createElement('div');
+        installBanner.className = 'pwa-install-banner';
+        installBanner.innerHTML = `
+          <span>📱 Install Secxion App</span>
+          <button class="pwa-install-btn" id="install-btn">Install</button>
+          <button class="pwa-close-btn" id="close-banner">×</button>
+        `;
+        document.body.appendChild(installBanner);
+
+        // Add event listeners
+        document.getElementById('install-btn').addEventListener('click', installApp);
+        document.getElementById('close-banner').addEventListener('click', hideInstallBanner);
+      }
+
+      function showInstallBanner() {
+        if (!installBanner) createInstallBanner();
+        installBanner.classList.add('show');
+      }
+
+      function hideInstallBanner() {
+        if (installBanner) {
+          installBanner.classList.remove('show');
+          localStorage.setItem('pwa-install-dismissed', Date.now());
+        }
+      }
+
+      function installApp() {
+        hideInstallBanner();
+        
+        if (deferredPrompt) {
+          // Chrome/Edge desktop and mobile
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted the install prompt');
+            }
+            deferredPrompt = null;
+          });
+        } else {
+          // iOS Safari or other browsers
+          const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+          const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+          
+          if (isIOS && isSafari) {
+            alert('To install this app on iOS:\n1. Tap the Share button\n2. Tap "Add to Home Screen"');
+          } else {
+            alert('To install this app, use your browser\'s "Add to Home Screen" option.');
+          }
+        }
+      }
+
+      function shouldShowInstallPrompt() {
+        // Don't show if already dismissed recently (within 7 days)
+        const dismissedTime = localStorage.getItem('pwa-install-dismissed');
+        if (dismissedTime && (Date.now() - parseInt(dismissedTime)) < 7 * 24 * 60 * 60 * 1000) {
+          return false;
+        }
+
+        // Don't show if already installed
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+          return false;
+        }
+
+        // Don't show if already has beforeinstallprompt event
+        if (deferredPrompt) {
+          return true;
+        }
+
+        // Show for mobile devices after a delay
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        return isMobile;
+      }
+
+      // Listen for beforeinstallprompt event (Chrome/Edge)
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        // Show install banner after a delay
+        setTimeout(() => {
+          if (shouldShowInstallPrompt()) {
+            showInstallBanner();
+          }
+        }, 3000);
+      });
+
+      // For iOS and other browsers that don't support beforeinstallprompt
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          if (!deferredPrompt && shouldShowInstallPrompt()) {
+            showInstallBanner();
+          }
+        }, 5000);
+      });
+
+      // Listen for successful app installation
+      window.addEventListener('appinstalled', () => {
+        console.log('SXN was installed');
+        hideInstallBanner();
+        deferredPrompt = null;
+      });
+    </script>
+
+    <script>
       window.addEventListener('load', function() {
         setTimeout(() => {
           const loadingScreen = document.querySelector('.loading-screen');
@@ -333,6 +546,31 @@
           const perfData = performance.getEntriesByType('navigation')[0];
           console.log('Page Load Time:', perfData.loadEventEnd - perfData.fetchStart + 'ms');
         }
+      });
+    </script>
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+              console.log('ServiceWorker registration successful');
+            })
+            .catch(function(err) {
+              console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+      }
+    </script>
+
+    <script>
+      window.addEventListener('error', function(event) {
+        console.error('Global error:', event.error);
+      });
+      
+      window.addEventListener('unhandledrejection', function(event) {
+        console.error('Unhandled promise rejection:', event.reason);
       });
     </script>
 
@@ -369,30 +607,6 @@
         </div>
       </div>
     </noscript>
-
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js')
-            .then(function(registration) {
-              console.log('ServiceWorker registration successful');
-            })
-            .catch(function(err) {
-              console.log('ServiceWorker registration failed: ', err);
-            });
-        });
-      }
-    </script>
-
-    <script>
-      window.addEventListener('error', function(event) {
-        console.error('Global error:', event.error);
-      });
-      
-      window.addEventListener('unhandledrejection', function(event) {
-        console.error('Unhandled promise rejection:', event.reason);
-      });
-    </script>
 
   </body>
 </html>

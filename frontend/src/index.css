@@ -720,9 +720,6 @@ input:focus, textarea:focus, select:focus {
 }
 
 
-
-
-
 @container (min-width: 400px) {
   .card {
     display: grid;

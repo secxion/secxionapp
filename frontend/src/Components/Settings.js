@@ -196,7 +196,7 @@ const Settings = () => {
                 <button
                     onClick={() => navigate("/profile")}
                     disabled={loading || uploadingImage}
-                    className="btn-gray px-6 py-2 rounded border border-gray-400 hover:bg-gray-100 disabled:opacity-50"
+                    className="btn-gray px-6 py-2 rounded border text-red-600 border-gray-400 hover:bg-gray-100 disabled:opacity-50"
                 >
                     Cancel
                 </button>
