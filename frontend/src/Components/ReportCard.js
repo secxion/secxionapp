@@ -174,7 +174,7 @@ const ReportCard = () => {
       <div className="border-t bg-white px-6 py-8 space-y-2 z-50">
         <div className="relative">
           <textarea
-            className="w-full p-2 border rounded-lg pr-16 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 text-emerald-700 border rounded-lg pr-16 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Type your message..."
             rows={3}
             value={userReplyText}

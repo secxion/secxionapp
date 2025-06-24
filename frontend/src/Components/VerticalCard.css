@@ -1,11 +1,8 @@
-/* Enhanced VerticalCard.css */
-
-/* Grid Layout */
 .vertical-card-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
-  padding: 0.5rem;
+  gap: 1rem;
+  padding: 0.75rem;
 }
 
 @media (min-width: 640px) {
@@ -35,14 +32,13 @@
   }
 }
 
-/* Main Card Styling */
 .vertical-card {
   position: relative;
   display: block;
   background: linear-gradient(145deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  border: 1px solid rgba(244, 245, 244, 0.89);
   border-radius: 1.5rem;
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -69,13 +65,12 @@
     0 0 0 2px rgba(139, 92, 246, 0.6);
 }
 
-/* Image Section */
 .vertical-card__image-wrapper {
   position: relative;
   aspect-ratio: 1;
   overflow: hidden;
   border-radius: 1.25rem 1.25rem 0 0;
-  background: linear-gradient(135deg, rgba(51, 65, 85, 0.8), rgba(30, 41, 59, 0.8));
+  background: linear-gradient(135deg, rgba(207, 204, 204, 0.8), rgba(12, 12, 12, 0.8));
 }
 
 .vertical-card__image-container {
@@ -101,7 +96,6 @@
   filter: brightness(1.1) contrast(1.1);
 }
 
-/* Placeholder for missing images */
 .vertical-card__placeholder {
   display: flex;
   flex-direction: column;
@@ -110,7 +104,7 @@
   width: 100%;
   height: 100%;
   color: rgba(148, 163, 184, 0.6);
-  background: linear-gradient(135deg, rgba(51, 65, 85, 0.3), rgba(30, 41, 59, 0.3));
+  background: linear-gradient(135deg, rgba(246, 246, 247, 0.3), rgba(248, 248, 248, 0.3));
 }
 
 .vertical-card__placeholder-icon {
@@ -171,11 +165,11 @@
 }
 
 .vertical-card__title {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: rgba(241, 245, 249, 0.95);
-  line-height: 1.4;
-  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(223, 225, 226, 0.95);
+  line-height: 2;
+  margin: 0.5rem 0 1rem 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -188,7 +182,6 @@
   color: rgba(255, 255, 255, 1);
 }
 
-/* Price Display */
 .vertical-card__price {
   display: flex;
   align-items: baseline;
@@ -238,7 +231,6 @@
   font-weight: 500;
 }
 
-/* Enhanced Signature */
 .vertical-card__signature {
   position: absolute;
   bottom: 0.75rem;
@@ -315,7 +307,6 @@
   }
 }
 
-/* Loading Skeleton */
 .vertical-card-skeleton {
   background: linear-gradient(145deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.5));
   border: 1px solid rgba(148, 163, 184, 0.1);

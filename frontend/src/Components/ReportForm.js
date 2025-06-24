@@ -97,12 +97,12 @@ const ReportForm = ({ onReportSubmit }) => {
     };
 
     return (
-        <div className="container mt-10 bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-3">Submit Report</h2>
+        <div className="container bg-white p-4 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold mt-10 mb-3">Submit Report</h2>
             <div className="mb-3">
                 <label className="block text-sm font-medium text-gray-700">Category:</label>
                 <select
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="mt-1 block w-full text-blue-700 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     value={selectedCategory.category} 
                     onChange={(e) => setSelectedCategory({ category: e.target.value, autoReply: selectedCategory.autoReply })}
                 >
@@ -118,7 +118,7 @@ const ReportForm = ({ onReportSubmit }) => {
             <div className="mb-3">
                 <label className="block text-sm font-medium text-gray-700">Message:</label>
                 <textarea
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="mt-1 block w-full text-blue-700 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     placeholder="Describe your issue..."
                     value={reportText}
                     onChange={(e) => setReportText(e.target.value)}
@@ -131,7 +131,7 @@ const ReportForm = ({ onReportSubmit }) => {
                 <div className="flex items-center mt-1">
                     <label className="cursor-pointer flex items-center gap-1 border border-gray-300 rounded-md shadow-sm px-3 py-2 bg-gray-50 hover:bg-gray-100">
                         <FaPaperclip className="text-blue-500" />
-                        <span>Upload</span>
+                        <span className="text-blue-500">Upload</span>
                         <input type="file" className="hidden" onChange={handleUploadImage} />
                     </label>
                     {uploadedImage && (

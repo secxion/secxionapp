@@ -141,7 +141,7 @@ const Login = () => {
 
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Welcome</h1>
-          <p className="text-sm text-gray-800 mt-1">Login to Enter Market</p>
+          <p className="text-sm text-gray-800 mt-1">Login</p>
         </div>
 
         <form className="flex flex-col gap-4" onSubmit={onLoginClick}>
@@ -238,9 +238,13 @@ const Login = () => {
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-6 rounded-xl border-2 border-gray-300 shadow-lg w-full max-w-sm">
             <h2 className="text-lg font-bold text-gray-800 mb-2 text-center">Human Verification</h2>
-            <p className="text-sm text-gray-600 mb-4 text-center">
-              Slide to match: <span className="font-semibold text-blue-600">{targetValue}</span>
-            </p>
+            <div className="text-sm text-gray-600 mb-4 text-center space-y-3">
+              Slide to match <span className="font-semibold text-blue-600 px-1 border-2 border-black">{targetValue}</span>
+              <div className="text-center text-sm mb-3">
+              <span className="text-gray-500">Current: </span>
+              <span className="font-bold text-yellow-700 px-1 ">{sliderValue}</span>
+            </div>
+            </div>
             <input
               type="range"
               min="0"
@@ -249,10 +253,7 @@ const Login = () => {
               onChange={handleSliderChange}
               className="w-full h-2 accent-blue-500 mb-4"
             />
-            <div className="text-center text-sm mb-3">
-              <span className="text-gray-500">Current: </span>
-              <span className="font-semibold">{sliderValue}</span>
-            </div>
+            
             <button
               onClick={handleVerificationComplete}
               disabled={!isVerified || verifying}

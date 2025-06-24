@@ -43,7 +43,6 @@ import { getPendingPostsController, approvePostController, rejectPostController 
 import getUserPostsController from '../controller/user/getUserPostsController.js';
 import { verifyEmailController } from '../controller/user/verifyEmailController.js';
 import deleteUser from '../controller/user/deleteUser.js';
-import checkVerified from '../middleware/checkVerified.js';
 import { sendResetCode, verifyReset } from '../controller/user/resetController.js';
 import { resendVerificationEmailController } from '../controller/user/resendVerificationEmailController.js';
 import { getPaystackBanks, resolveBankAccount, } from '../controller/wallet/paystackController.js';

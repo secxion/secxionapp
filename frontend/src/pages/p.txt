@@ -1,498 +1,381 @@
-import { motion } from "framer-motion";
-import {
-  ShieldCheck,
-  UserPlus,
-  ArrowRight,
-  Zap,
-  Globe,
-  Headphones,
-  Menu,
-  X,
-  ChevronUp,
-  LayoutDashboard,
-  Gift,
-  Bitcoin,
-  Wrench,
-  Shapes,
-  TrendingUp,
-  TrendingDown
-} from "lucide-react";
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { FaBell, FaEnvelopeOpen, FaCheckDouble, FaSpinner, FaInbox } from 'react-icons/fa';
+import NotificationItem from '../Components/NotificationItems';
+import NotificationDetails from '../Components/NotificationDetails';
+import SummaryApi from '../common';
 
-// New Background Motion Component for a subtle, professional animation
-const BackgroundMotion = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-    <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-blue-900/30"></div>
-    {/* Subtle animated particles */}
-    {[...Array(50)].map((_, i) => (
-      <motion.div
-        key={i}
-        className="absolute rounded-full bg-cyan-400/20"
-        initial={{
-          x: Math.random() * 100 + 'vw',
-          y: Math.random() * 100 + 'vh',
-          scale: Math.random() * 0.5 + 0.5,
-          opacity: Math.random() * 0.2
-        }}
-        animate={{
-          x: Math.random() * 100 + 'vw',
-          y: Math.random() * 100 + 'vh',
-        }}
-        transition={{
-          duration: Math.random() * 20 + 20,
-          repeat: Infinity,
-          repeatType: "mirror",
-          ease: "easeInOut"
-        }}
-        style={{
-          width: Math.random() * 3 + 'px',
-          height: Math.random() * 3 + 'px',
-        }}
-      />
-    ))}
-  </div>
-);
+const NotificationsPage = () => {
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [filter, setFilter] = useState('all');
+  const [selectedNotification, setSelectedNotification] = useState(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isMarkingAllRead, setIsMarkingAllRead] = useState(false);
+  const [isDeletingAll, setIsDeletingAll] = useState(false);
 
+  const { user } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const previousCountRef = useRef(0);
 
-// Button Component
-const Button = ({ children, className = "", variant = "default", ...props }) => {
-  const baseClasses = "inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black";
-  const variantClasses = {
-    default: "bg-cyan-500 hover:bg-cyan-600 text-black focus:ring-cyan-400 shadow-[0_0_15px_rgba(0,255,255,0.3)] hover:shadow-[0_0_25px_rgba(0,255,255,0.5)]",
-    ghost: "bg-transparent hover:bg-white/10 text-white focus:ring-gray-500 border border-white/20 hover:border-white/50"
+  const fetchNotifications = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const [transactionRes, reportRes, marketRes] = await Promise.all([
+        fetch(SummaryApi.getTransactionNotifications.url, {
+          method: SummaryApi.getTransactionNotifications.method,
+          credentials: 'include',
+        }),
+        fetch(SummaryApi.getReportNotifications.url, {
+          method: SummaryApi.getReportNotifications.method,
+          credentials: 'include',
+        }),
+        fetch(SummaryApi.getMarketNotifications.url, {
+          method: 'GET',
+          credentials: 'include',
+        }),
+      ]);
+
+      const [transactionData, reportData, marketData] = await Promise.all([
+        transactionRes.json(),
+        reportRes.json(),
+        marketRes.json(),
+      ]);
+
+      if (transactionData.success && reportData.success && marketData.success) {
+        const filteredTxns = transactionData.data.filter((n) =>
+          [
+            'transaction:debit',
+            'transaction:credit',
+            'transaction:payment_completed',
+            'transaction:withdrawal',
+            'transaction:rejected',
+            'transaction:eth_processed',
+          ].includes(n.type)
+        );
+
+        const all = [...filteredTxns, ...reportData.data, ...marketData.data].sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+
+        previousCountRef.current = all.length;
+        setNotifications(all);
+      } else {
+        const errorMessage = [
+          transactionData.message,
+          reportData.message,
+          marketData.message
+        ].filter(Boolean).join(' ') || 'Failed to fetch notifications.';
+        setError(errorMessage);
+      }
+    } catch (err) {
+      console.error('[Fetch Notifications Error]', err);
+      setError('An unexpected error occurred while fetching notifications.');
+    } finally {
+      setLoading(false);
+    }
   };
 
+  useEffect(() => {
+    if (user?._id) {
+      fetchNotifications();
+      const interval = setInterval(fetchNotifications, 30000);
+      return () => clearInterval(interval);
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
+
+  const handleMarkAsRead = async (id) => {
+    try {
+      const res = await fetch(`${SummaryApi.markNotificationAsRead.url}/${id}`, {
+        method: SummaryApi.markNotificationAsRead.method,
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNotifications((prev) =>
+          prev.map((n) => (n._id === id ? { ...n, isRead: true, read: 'READ' } : n))
+        );
+        toast.success(data.message || 'Marked as read');
+      } else {
+        toast.error(data.message || 'Failed to mark as read');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to mark notification as read.');
+    }
+  };
+
+  const handleDeleteNotification = async (id) => {
+    try {
+      const res = await fetch(`${SummaryApi.deleteNotification.url}/${id}`, {
+        method: SummaryApi.deleteNotification.method,
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNotifications((prev) => prev.filter((n) => n._id !== id));
+        toast.success(data.message || 'Notification deleted.');
+      } else {
+        toast.error(data.message || 'Failed to delete notification.');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to delete notification.');
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    setIsMarkingAllRead(true);
+    try {
+      const res = await fetch(SummaryApi.markAllNotificationsAsRead.url, {
+        method: SummaryApi.markAllNotificationsAsRead.method,
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNotifications((prev) =>
+          prev.map((n) => ({ ...n, isRead: true, read: 'READ' }))
+        );
+        toast.success(data.message || 'All notifications marked as read.');
+      } else {
+        toast.error(data.message || 'Failed to mark all as read.');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to mark all as read.');
+    } finally {
+      setIsMarkingAllRead(false);
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    if (!window.confirm('Are you sure you want to delete all notifications? This action cannot be undone.')) {
+      return;
+    }
+    
+    setIsDeletingAll(true);
+    try {
+      const res = await fetch(SummaryApi.deleteAllNotifications.url, {
+        method: SummaryApi.deleteAllNotifications.method,
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNotifications([]);
+        toast.success(data.message || 'All notifications deleted.');
+      } else {
+        toast.error(data.message || 'Failed to delete all notifications.');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to delete all notifications.');
+    } finally {
+      setIsDeletingAll(false);
+    }
+  };
+
+  const handleOpenReportReply = (notification) => {
+    navigate(`/chat/${notification.relatedObjectId}`);
+    if (!notification.isRead) handleMarkAsRead(notification._id);
+  };
+
+  const handleViewDetails = (notification) => {
+    setSelectedNotification(notification);
+    setIsDetailsOpen(true);
+  };
+
+  const handleOpenMarketDetails = (marketId) => {
+    const item = notifications.find((n) => n.relatedObjectId === marketId && n.onModel === 'userproduct');
+    if (item) {
+      setSelectedNotification(item);
+      setIsDetailsOpen(true);
+    }
+  };
+
+  const handleViewCreditDetails = (notification) => {
+    setSelectedNotification(notification);
+    setIsDetailsOpen(true);
+  };
+
+  const handleCloseDetails = () => {
+    setSelectedNotification(null);
+    setIsDetailsOpen(false);
+  };
+
+  const filteredNotifications = () => {
+    if (filter === 'unread') return notifications.filter((n) => !n.isRead);
+    if (filter === 'read') return notifications.filter((n) => n.isRead);
+    return notifications;
+  };
+
+  const hasUnread = notifications.some((n) => !n.isRead);
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
+  // Loading State Component
+  const LoadingState = () => (
+    <div className="flex flex-col items-center justify-center py-16">
+      <FaSpinner className="animate-spin text-4xl text-indigo-500 mb-4" />
+      <p className="text-gray-500 text-lg">Loading notifications...</p>
+    </div>
+  );
+
+  // Error State Component
+  const ErrorState = () => (
+    <div className="flex flex-col items-center justify-center py-16">
+      <div className="text-red-500 text-5xl mb-4">⚠️</div>
+      <p className="text-red-600 text-lg font-medium mb-2">Error Loading Notifications</p>
+      <p className="text-gray-500 text-sm mb-4">{error}</p>
+      <button
+        onClick={fetchNotifications}
+        className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+      >
+        Try Again
+      </button>
+    </div>
+  );
+
+  // Empty State Component
+  const EmptyState = () => (
+    <div className="flex flex-col items-center justify-center py-16">
+      <FaInbox className="text-6xl text-gray-300 mb-4" />
+      <p className="text-gray-500 text-lg font-medium mb-2">No notifications yet</p>
+      <p className="text-gray-400 text-sm">You're all caught up! 🎉</p>
+    </div>
+  );
+
+  if (!user?._id) {
+    return (
+      <div className="min-h-screen py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+            <p className="text-gray-500">Please log in to view your notifications.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <motion.button
-      className={`${baseClasses} ${variantClasses[variant]} ${className}`}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      {...props}
-    >
-      {children}
-    </motion.button>
+    <div className="min-h-screen py-20 bg-gray-50">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          {/* Header */}
+          <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+            <div className="px-6 py-4">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                  <FaBell className="text-indigo-600 text-2xl mr-3" />
+                  <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
+                  {unreadCount > 0 && (
+                    <span className="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                      {unreadCount} unread
+                    </span>
+                  )}
+                </div>
+                {!loading && notifications.length > 0 && (
+                  <div className="flex space-x-2">
+                    {hasUnread && (
+                      <button
+                        onClick={handleMarkAllAsRead}
+                        disabled={isMarkingAllRead}
+                        className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        {isMarkingAllRead ? (
+                          <FaSpinner className="animate-spin mr-1" />
+                        ) : (
+                          <FaCheckDouble className="mr-1" />
+                        )}
+                        Mark All Read
+                      </button>
+                    )}
+                    <button
+                      onClick={handleDeleteAll}
+                      disabled={isDeletingAll}
+                      className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {isDeletingAll ? (
+                        <FaSpinner className="animate-spin mr-1" />
+                      ) : (
+                        '🗑️'
+                      )}
+                      Delete All
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Filter Tabs */}
+              <nav className="flex space-x-8" aria-label="Tabs">
+                {[
+                  { key: 'all', label: 'All', icon: FaBell },
+                  { key: 'unread', label: 'Unread', icon: FaEnvelopeOpen },
+                  { key: 'read', label: 'Read', icon: FaCheckDouble }
+                ].map(({ key, label, icon: Icon }) => (
+                  <button
+                    key={key}
+                    onClick={() => setFilter(key)}
+                    className={`${
+                      filter === key
+                        ? 'border-indigo-500 text-indigo-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center transition-colors`}
+                  >
+                    <Icon className="mr-2 h-4 w-4" />
+                    {label}
+                    {key === 'unread' && unreadCount > 0 && (
+                      <span className="ml-2 bg-indigo-100 text-indigo-600 py-0.5 px-2 rounded-full text-xs">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </nav>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="min-h-96">
+            {loading ? (
+              <LoadingState />
+            ) : error ? (
+              <ErrorState />
+            ) : filteredNotifications().length > 0 ? (
+              <div className="divide-y divide-gray-200">
+                {filteredNotifications().map((notification) => (
+                  <NotificationItem
+                    key={notification._id}
+                    notification={notification}
+                    onMarkAsRead={handleMarkAsRead}
+                    onDelete={handleDeleteNotification}
+                    onOpenReportReply={handleOpenReportReply}
+                    onViewDetails={handleViewDetails}
+                    onOpenMarketDetails={handleOpenMarketDetails}
+                    onViewCreditDetails={handleViewCreditDetails}
+                  />
+                ))}
+              </div>
+            ) : (
+              <EmptyState />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Notification Details Modal */}
+      {isDetailsOpen && selectedNotification && (
+        <NotificationDetails
+          notification={selectedNotification}
+          onClose={handleCloseDetails}
+        />
+      )}
+    </div>
   );
 };
 
-// Navigation Components
-const NavLink = ({ href, children }) => (
-  <a href={href} className="text-gray-300 hover:text-white font-medium transition-colors duration-200">
-    {children}
-  </a>
-);
-
-const MobileNavLink = ({ href, children }) => (
-  <a href={href} className="block py-3 text-lg text-gray-200 hover:text-white font-semibold transition-colors">
-    {children}
-  </a>
-);
-
-// Modernized Card Components with professional borders
-const ServiceCard = ({ icon, title, description }) => (
-  <motion.div
-    className="relative group h-full"
-    whileHover={{ y: -8 }}
-    transition={{ type: "spring", stiffness: 300 }}
-  >
-    <div className="absolute -inset-px bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    <div className="relative bg-gray-900/80 backdrop-blur-sm p-8 rounded-xl h-full border border-white/10">
-      <div className="relative z-10">
-        <div className="mb-4 inline-block p-3 bg-white/10 rounded-lg">
-          {icon}
-        </div>
-        <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
-        <p className="text-gray-400 leading-relaxed">{description}</p>
-      </div>
-    </div>
-  </motion.div>
-);
-
-const FeatureCard = ({ icon, title, description }) => (
-  <motion.div
-    className="relative group h-full"
-    transition={{ type: "spring", stiffness: 400 }}
-  >
-    <div className="bg-white/5 p-6 rounded-xl border border-white/10 h-full transition-all duration-300 group-hover:border-white/20 group-hover:bg-white/10">
-      <div className="flex items-center mb-4">
-        <div className="p-2 bg-gray-700 rounded-lg mr-4">
-          {icon}
-        </div>
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
-      </div>
-      <p className="text-gray-400 text-sm leading-relaxed">{description}</p>
-    </div>
-  </motion.div>
-);
-
-export default function Landing() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showScrollTop, setShowScrollTop] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currencies, setCurrencies] = useState([
-    { name: 'BTC', price: '68,450.50', change: '+2.15%' },
-    { name: 'ETH', price: '3,550.75', change: '-0.50%' },
-    { name: 'USD/NGN', price: '1,450.20', change: '+0.10%' },
-    { name: 'EUR/USD', price: '1.0855', change: '-0.25%' },
-    { name: 'SOL', price: '150.80', change: '+5.75%' },
-    { name: 'DOGE', price: '0.162', change: '+3.20%' },
-  ]);
-
-  useEffect(() => {
-    const updateCurrencies = () => {
-      setCurrencies(prev => prev.map(currency => ({
-        ...currency,
-        price: (parseFloat(currency.price.replace(/,/g, '')) * (0.98 + Math.random() * 0.04)).toLocaleString('en-US', {
-          minimumFractionDigits: currency.name === 'DOGE' ? 3 : 2,
-          maximumFractionDigits: currency.name === 'DOGE' ? 3 : 2
-        }),
-        change: `${Math.random() > 0.5 ? '+' : '-'}${(Math.random() * 5).toFixed(2)}%`
-      })));
-    };
-
-    const interval = setInterval(updateCurrencies, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 300);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" }
-    }
-  };
-
-  return (
-    <motion.div
-      className="min-h-screen bg-black text-white font-sans relative"
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-    >
-      <BackgroundMotion />
-
-      {/* Navigation Header */}
-      <motion.header
-        className="fixed top-0 left-0 right-0 z-50 bg-black/50 backdrop-blur-xl border-b border-white/10"
-        variants={itemVariants}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <Link to="/" className="flex items-center">
-               <h1 className="font-extrabold text-3xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">SXN</h1>
-            </Link>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-10">
-              <NavLink href="#features">Features</NavLink>
-              <NavLink href="#services">Services</NavLink>
-              <NavLink href="/contact-us">Contact</NavLink>
-            </nav>
-
-            <div className="hidden md:flex items-center space-x-4">
-              {isLoggedIn ? (
-                 <>
-                   <Button variant="ghost" className="flex items-center">
-                     <LayoutDashboard className="mr-2 h-4 w-4" />
-                     Dashboard
-                   </Button>
-                   <Button
-                     className="bg-red-500 hover:bg-red-600 text-white focus:ring-red-400"
-                     onClick={() => setIsLoggedIn(false)}
-                   >
-                     Log Out
-                   </Button>
-                 </>
-              ) : (
-                <>
-                  <NavLink href="/login">Sign In</NavLink>
-                  <Button>
-                    Get Started <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </>
-              )}
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors z-50"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <motion.div
-            className="md:hidden absolute top-0 left-0 right-0 h-screen bg-black/90 backdrop-blur-xl"
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          >
-            <div className="flex flex-col items-center justify-center h-full px-8 space-y-8">
-              <MobileNavLink href="#features">Features</MobileNavLink>
-              <MobileNavLink href="#services">Services</MobileNavLink>
-              <MobileNavLink href="/about-us">About Us</MobileNavLink>
-              <MobileNavLink href="/contact-us">Contact</MobileNavLink>
-              <div className="flex flex-col space-y-6 pt-8 w-full">
-                <Button variant="ghost" className="w-full text-lg">Sign In</Button>
-                <Button className="w-full text-lg">Get Started</Button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </motion.header>
-
-      <main className="pt-20 relative z-10">
-        {/* Live Market Ticker */}
-        <div className="bg-black/50 py-3 overflow-hidden border-b-2 border-t-2 border-white/10">
-          <div className="flex animate-scroll whitespace-nowrap">
-            {[...currencies, ...currencies].map((currency, index) => (
-              <div key={index} className="inline-flex items-center mx-6">
-                <span className="font-bold text-cyan-400">{currency.name}</span>
-                <span className="ml-3 text-white font-semibold tracking-wider">{currency.price}</span>
-                <span className={`ml-3 text-sm flex items-center ${currency.change.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>
-                  {currency.change.startsWith('+') ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
-                  {currency.change}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-
-        {/* Hero Section */}
-        <motion.section
-          className="relative overflow-hidden py-24 lg:py-40 text-center"
-          variants={itemVariants}
-        >
-          <div className="absolute inset-0 z-0">
-             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/10 rounded-full filter blur-3xl opacity-50 animate-pulse"></div>
-          </div>
-          <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.h1
-              className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tighter mb-6"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-            >
-              <span className="text-gray-200">
-                Your All-in-One
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                Digital Finance Hub
-              </span>
-            </motion.h1>
-
-            <motion.p
-              className="text-lg md:text-xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              Seamlessly trade gift cards, manage crypto assets, and execute global payments. Power your tasks with a platform you can customize.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-            >
-              <Button className="px-8 py-4 text-lg">
-                <UserPlus className="mr-3 h-6 w-6" />
-                Create Free Account
-              </Button>
-            </motion.div>
-          </div>
-        </motion.section>
-
-        {/* Services Section */}
-        <motion.section id="services" className="py-24 bg-black" variants={itemVariants}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-5xl font-bold mb-4">A Flexible Platform for Modern Finance</h2>
-              <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto">
-                From everyday transactions to specialized crypto services, we provide the tools you need to thrive.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <ServiceCard
-                icon={<Gift className="h-10 w-10 text-pink-400" />}
-                title="Gift Card Marketplace"
-                description="Instantly buy and sell gift cards from hundreds of top brands worldwide at the best rates."
-              />
-              <ServiceCard
-                icon={<Bitcoin className="h-10 w-10 text-orange-400" />}
-                title="Crypto & Digital Assets"
-                description="Securely trade, store, and manage a wide range of cryptocurrencies and digital vouchers."
-              />
-              <ServiceCard
-                icon={<Wrench className="h-10 w-10 text-teal-400" />}
-                title="Customizable Toolkit"
-                description="Request and integrate custom tools and scripts into your dashboard to automate tasks."
-              />
-            </div>
-          </div>
-        </motion.section>
-
-        {/* Features Section */}
-        <motion.section id="features" className="py-24 bg-gray-900/50" variants={itemVariants}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-5xl font-bold mb-4">
-                Engineered for Performance and Security
-              </h2>
-              <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
-                We built our platform on a foundation of trust, speed, and user-centric design.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <FeatureCard
-                icon={<ShieldCheck className="h-8 w-8 text-green-400" />}
-                title="Unmatched Security"
-                description="Your assets are protected with multi-layer security, including cold storage and real-time fraud monitoring."
-              />
-              <FeatureCard
-                icon={<Zap className="h-8 w-8 text-yellow-400" />}
-                title="Lightning-Fast Transactions"
-                description="Our powerful matching engine executes trades and payments in milliseconds, not minutes."
-              />
-              <FeatureCard
-                icon={<Globe className="h-8 w-8 text-blue-400" />}
-                title="Global & Borderless"
-                description="Access global markets and make payments across borders with transparent, low-cost fees."
-              />
-              <FeatureCard
-                icon={<LayoutDashboard className="h-8 w-8 text-indigo-400" />}
-                title="Personalized Dashboard"
-                description="Tailor your workspace with the tools and data you need. Your platform, your rules."
-              />
-              <FeatureCard
-                icon={<Headphones className="h-8 w-8 text-purple-400" />}
-                title="Dedicated 24/7 Support"
-                description="Our expert support team is always available to help you with any questions or issues."
-              />
-              <FeatureCard
-                icon={<Shapes className="h-8 w-8 text-red-400" />}
-                title="Flexible & Adaptable"
-                description="The platform evolves with you. As your needs change, request new tools to be added."
-              />
-            </div>
-          </div>
-        </motion.section>
-
-        {/* CTA Section */}
-        <motion.section
-          className="py-20 bg-gradient-to-r from-blue-900/50 via-cyan-900/50 to-gray-900/50"
-          variants={itemVariants}
-        >
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
-              Ready to Take Control?
-            </h2>
-            <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
-              Join thousands of users who trust SXN. An account is free and setup takes under a minute.
-            </p>
-            <Button className="bg-white text-black hover:bg-gray-200 px-8 py-4 text-lg font-bold shadow-lg hover:shadow-cyan-400/30">
-              Sign Up For Free <ArrowRight className="ml-3 h-5 w-5" />
-            </Button>
-          </div>
-        </motion.section>
-      </main>
-
-      {/* Scroll to Top Button */}
-      {showScrollTop && (
-        <motion.button
-          className="fixed bottom-6 right-6 bg-cyan-500 text-black p-3 rounded-full shadow-lg z-50"
-          onClick={scrollToTop}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          whileHover={{ scale: 1.1, rotate: 90 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <ChevronUp className="h-6 w-6" />
-        </motion.button>
-      )}
-
-      {/* Footer */}
-      <footer className="bg-black border-t-2 border-white/10 text-gray-400 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div className="md:col-span-1 mb-6 md:mb-0">
-                    <h1 className="font-extrabold text-2xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-2">SXN</h1>
-                    <p className="text-sm">Your secure platform for the new digital economy.</p>
-                </div>
-                <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
-                    <div>
-                        <h3 className="font-semibold text-white mb-4">Platform</h3>
-                        <ul className="space-y-2">
-                            <li><a href="#services" className="hover:text-white transition-colors">Services</a></li>
-                            <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
-                            <li><a href="/sign-up" className="hover:text-white transition-colors">Sign Up</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 className="font-semibold text-white mb-4">Company</h3>
-                        <ul className="space-y-2">
-                            <li><a href="/about-us" className="hover:text-white transition-colors">About Us</a></li>
-                            <li><a href="/contact-us" className="hover:text-white transition-colors">Contact</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 className="font-semibold text-white mb-4">Legal</h3>
-                        <ul className="space-y-2">
-                            <li><a href="/terms" className="hover:text-white transition-colors">Terms of Service</a></li>
-                            <li><a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div className="border-t border-gray-800 mt-12 pt-8 text-center text-sm">
-                <p>
-                    © {new Date().getFullYear()} SXN. All Rights Reserved. Designed by <span className="font-semibold text-white">BMXII</span>.
-                </p>
-            </div>
-        </div>
-      </footer>
-
-      {/* Custom Keyframes for Ticker */}
-      <style jsx>{`
-        @keyframes animate-scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-scroll {
-          animation: animate-scroll 40s linear infinite;
-        }
-      `}</style>
-    </motion.div>
-  );
-}
+export default NotificationsPage;

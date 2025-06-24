@@ -63,7 +63,7 @@ const ReportList = ({ newReport }) => {
                 <p>No reports submitted yet.</p>
             ) : (
                 reports.map((report) => (
-                    <div key={report._id} className="mb-4 p-4 border rounded-lg">
+                    <div key={report._id} className="mb-4 p-4 border text-emerald-700 rounded-lg">
                         <div className="flex justify-between items-center mb-2">
                             <p className="font-semibold">{report.category}</p>
                             <button onClick={() => handleOpenChat(report._id)} className="text-blue-600">Open Chat</button>

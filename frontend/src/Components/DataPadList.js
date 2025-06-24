@@ -1,79 +1,81 @@
-import React from "react";
-import { MdDelete } from "react-icons/md";
-import { toast } from "react-toastify";
-import SummaryApi from "../common";
-import { motion } from "framer-motion"; 
+import React, { useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import NoteCard from "./NoteCard";
+console.log("DEBUG >> NoteCard:", NoteCard);
+console.log("DEBUG >> typeof NoteCard:", typeof NoteCard);
 
-const formatDate = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-    });
-};
+const DataPadList = ({ dataPads, onOpen, onDelete, isLoading }) => {
+  const handleEdit = useCallback((dataPad) => {
+    onOpen(dataPad);
+  }, [onOpen]);
 
-const DataPadList = ({ onOpen, dataPads, setDataPads }) => {
-    const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this data?")) return;
+  const handleView = useCallback((dataPad) => {
+    onOpen(dataPad);
+  }, [onOpen]);
 
-        try {
-            const response = await fetch(`${SummaryApi.deleteData.url}/${id}`, {
-                method: SummaryApi.deleteData.method,
-                credentials: "include",
-            });
-
-            const responseData = await response.json();
-            if (responseData.success) {
-                toast.success("Data deleted successfully! 🗑️");
-                setDataPads((prev) => prev.filter((item) => item._id !== id));
-            } else {
-                toast.error(responseData.message || "Failed to delete data.");
-            }
-        } catch (error) {
-            console.error("Error deleting data:", error);
-            toast.error("Error deleting data.");
-        }
-    };
-
+  if (isLoading) {
     return (
-      <div className="container overflow-x-hidden space-y-4 overflow-y-auto max-h-[calc(100vh-160px)] p-2">
-            {dataPads.map((dataPad) => (
-                <motion.div
-                    key={dataPad._id}
-                    className="bg-white dark:bg-gray-700 rounded-lg shadow-md cursor-pointer transition-shadow duration-200 hover:shadow-lg"
-                    onClick={() => onOpen(dataPad)} 
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                >
-                    <div className="p-4">
-                        {/* Title */}
-                        <h4 className="font-semibold text-lg truncate text-gray-800 dark:text-gray-100">{dataPad.title}</h4>
-
-                        {/* Created Date */}
-                        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-                            Created on: {formatDate(dataPad.createdAt)}
-                        </p>
-
-                        {/* Action Buttons */}
-                        <div className="flex items-center justify-end mt-3">
-                            <motion.button
-                                onClick={(e) => {
-                                    e.stopPropagation(); // Prevent card click when deleting
-                                    handleDelete(dataPad._id);
-                                }}
-                                className="text-red-500 hover:text-red-600 focus:outline-none transition-colors duration-200"
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                            >
-                                <MdDelete className="mr-1" /> Delete
-                            </motion.button>
-                        </div>
-                    </div>
-                </motion.div>
-            ))}
-        </div>
+      <div className="space-y-4">
+        {[...Array(3)].map((_, index) => (
+          <div
+            key={index}
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-5 animate-pulse"
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex-1">
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+              </div>
+              <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+            </div>
+            <div className="space-y-2 mb-4">
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/6"></div>
+            </div>
+            <div className="flex space-x-2">
+              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-16"></div>
+              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-20"></div>
+            </div>
+          </div>
+        ))}
+      </div>
     );
+  }
+console.log("NoteCard:", NoteCard);
+console.log("typeof NoteCard:", typeof NoteCard);
+
+  return (
+    <div className="space-y-4 pb-20">
+      <AnimatePresence mode="popLayout">
+        {dataPads.map((dataPad) => (
+          <NoteCard
+            key={dataPad._id}
+            dataPad={dataPad}
+            onEdit={handleEdit}
+            onDelete={onDelete}
+            onView={handleView}
+          />
+        ))}
+      </AnimatePresence>
+      
+      {dataPads.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-12"
+        >
+          <div className="text-gray-400 dark:text-gray-600 text-6xl mb-4">📝</div>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+            No notes found
+          </h3>
+          <p className="text-gray-500 dark:text-gray-400">
+            Create your first note to get started
+          </p>
+        </motion.div>
+      )}
+    </div>
+  );
 };
 
 export default DataPadList;

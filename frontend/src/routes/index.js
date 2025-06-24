@@ -21,7 +21,6 @@ import Net from "../Components/Net";
 import UsersMarket from "../pages/UsersMarket";
 import BlogManagementPage from "../pages/BlogManagement";
 import Report from "../pages/Report";
-import DataPad from "../pages/DataPad";
 import AdminReports from "../pages/AdminReports";
 import Room from "../pages/Room";
 import ContactUs from "../pages/ContactUs";
@@ -40,6 +39,7 @@ import Privacy from "../Components/Privacy";
 import Profiler from "../Components/Profiler";
 import VerifyEmail from "../Components/VerifyEmail";
 import NotFound from "../pages/NotFound";
+import DataPad from '../pages/DataPad';
 import Landing from "../pages/Landing";
 import EthWallet from "../pages/EthWallet";
 import AdminEthWithdrawals from "../pages/AdminEthWithdrawals";
@@ -100,7 +100,7 @@ const protectedRoutes = [
   { path: "settings", element: <Settings /> },
   { path: "report", element: <Report /> },
   { path: "reports/:reportId", element: <ReportDetailsPage /> },
-  { path: "datapad", element: <DataPad /> },
+  { path: "datapad", element: <DataPad/> },
   { path: "r", element: <Room /> },
   { path: "mywallet", element: <WalletDashboard /> },
   { path: "notifications", element: <NotificationsPage /> },

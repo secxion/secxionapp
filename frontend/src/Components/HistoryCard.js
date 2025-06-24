@@ -42,21 +42,21 @@ const HistoryCard = ({ data, isDetailViewOpen, onCloseDetailView }) => {
   return (
     <>
       <div
-        className='container mt-10 bg-cream p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 duration-300 cursor-pointer'
+        className='container mt-10 p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 duration-300 cursor-pointer'
         onClick={onCloseDetailView} 
       >
         <div className='w-full'>
-          <p className="text-purple font-semibold">
-            Market ID: <span className='truncate block'>{data._id}</span>
+          <p className="text-green-500 font-semibold">
+            Market ID: <span className='text-green-700 truncate block'>{data._id}</span>
           </p>
-          <p className="text-blue text-sm mt-1">
+          <p className="text-blue-500 text-sm mt-1">
             Created At: <span className='truncate block'>{data.timestamp ? new Date(data.timestamp).toLocaleString() : "N/A"}</span>
           </p>
-          <p className="text-blue text-sm mt-1">
+          <p className="text-blue-500 text-sm mt-1">
             Status: <span className='truncate block'>{renderStatusIndicator(initialStatus)}</span>
           </p>
           {initialStatus === 'CANCEL' && (
-            <p className="text-blue text-sm mt-1">
+            <p className="text-red-600 text-sm mt-1">
               Cancel Reason: <span className='truncate block'>{data.cancelReason || 'N/A'}</span>
             </p>
           )}

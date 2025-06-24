@@ -200,7 +200,7 @@ const UserUploadMarket = ({
                             value={data.totalAmount}
                             onChange={handleOnChange}
                             placeholder="Enter total face value"
-                            className="w-full border p-3 rounded-lg shadow-sm focus:ring focus:ring-blue-300 bg-white"
+                            className="w-full border p-3 rounded-lg shadow-sm text-blue-700 focus:ring focus:ring-blue-300 bg-white"
                             required
                         />
                     </div>
@@ -222,7 +222,7 @@ const UserUploadMarket = ({
                             placeholder="Code, notes, details..."
                             value={data.userRemark}
                             onChange={handleOnChange}
-                            className="w-full border p-3 rounded-lg shadow-sm focus:ring focus:ring-blue-300 bg-white resize-none"
+                            className="w-full border p-3 rounded-lg shadow-sm text-blue-700 focus:ring focus:ring-blue-300 bg-white resize-none"
                         />
                     </div>
 

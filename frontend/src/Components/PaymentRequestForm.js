@@ -182,7 +182,7 @@ const PaymentRequestForm = () => {
                             <input
                                 id="amount"
                                 type="text"
-                                className="w-full pl-10 pr-20 py-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
+                                className="w-full pl-10 pr-20 py-2 text-blue-700 border rounded-md focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
                                 placeholder="Enter amount"
                                 value={amount}
                                 onChange={handleAmountChange}
@@ -221,7 +221,7 @@ const PaymentRequestForm = () => {
                             value={selectedBankAccount}
                             onChange={(e) => setSelectedBankAccount(e.target.value)}
                             onFocus={() => setShouldRefreshAccounts(true)}
-                            className="w-full py-2 px-3 border rounded-md shadow-sm"
+                            className="w-full py-2 px-3 text-blue-700 border rounded-md shadow-sm"
                         >
                             <option value="">Select a bank account</option>
                             {isLoadingBankAccounts ? (

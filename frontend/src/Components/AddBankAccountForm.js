@@ -164,7 +164,7 @@ const AddBankAccountForm = ({ onCancel }) => {
             name="bankCode"
             value={form.bankCode}
             onChange={handleChange}
-            className="w-full border px-3 py-2 mt-1 rounded"
+            className="w-full border text-blue-700 px-3 py-2 mt-1 rounded"
             required
           >
             <option value="">-- Select Bank --</option>
@@ -183,7 +183,7 @@ const AddBankAccountForm = ({ onCancel }) => {
             name="accountNumber"
             value={form.accountNumber}
             onChange={handleChange}
-            className="w-full border px-3 py-2 mt-1 rounded"
+            className="w-full border text-blue-700 px-3 py-2 mt-1 rounded"
             required
             maxLength={10}
           />

@@ -111,15 +111,15 @@ const HistoryDetailView = ({
 
           <div>
             <label htmlFor="totalAmount" className="block font-medium text-gray-700 mb-2">Total FaceValue:</label>
-            <div>{productDetails.totalAmount}</div>
+            <div className='text-gray-900'>{productDetails.totalAmount}</div>
           </div>
           <div>
             <label htmlFor="calculatedTotalAmount" className="block font-medium text-gray-700 mb-2">Total Amount:</label>
-            <div>{productDetails.calculatedTotalAmount}</div>
+            <div className='text-gray-900'>{productDetails.calculatedTotalAmount}</div>
           </div>
           <div>
             <label htmlFor="userRemark" className="block font-medium text-gray-700 mb-2">Remarks:</label>
-            <div>{productDetails.userRemark}</div>
+            <div className='text-gray-900'>{productDetails.userRemark}</div>
           </div>
 
           {productDetails.crImage && (
@@ -139,13 +139,13 @@ const HistoryDetailView = ({
 
           <div>
             <label className="block font-medium text-gray-700 mb-2">Status:</label>
-            <div>{data.status || 'N/A'}</div>
+            <div className='text-gray-900'>{data.status || 'N/A'}</div>
           </div>
 
           {data.status === "CANCELLED" && (
             <div>
               <label className="block font-medium text-gray-700 mb-2">Cancel Reason:</label>
-              <div>{data.cancelReason || 'N/A'}</div>
+              <div className='text-red-900'>{data.cancelReason || 'N/A'}</div>
             </div>
           )}
         </form>

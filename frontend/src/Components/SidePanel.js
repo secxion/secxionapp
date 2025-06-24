@@ -71,10 +71,10 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
         {/* Backdrop */}
         <Transition.Child
           as={Fragment}
-          enter="ease-in-out duration-500"
+          enter="ease-in-out duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"
-          leave="ease-in-out duration-500"
+          leave="ease-in-out duration-300"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
@@ -83,10 +83,10 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
 
         <Transition.Child
           as={Fragment}
-          enter="transform transition ease-in-out duration-500"
+          enter="transform transition ease-in-out duration-300"
           enterFrom="-translate-x-full"
           enterTo="translate-x-0"
-          leave="transform transition ease-in-out duration-300"
+          leave="transform transition ease-in-out duration-100"
           leaveFrom="translate-x-0"
           leaveTo="-translate-x-full"
         >
