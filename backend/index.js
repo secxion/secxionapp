@@ -10,7 +10,6 @@ import xss from 'xss-clean';
 import mongoSanitize from 'express-mongo-sanitize';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import logger, { requestLogger } from './utils/logger.js'; // Import logger
 
 dotenv.config();
 
@@ -58,10 +57,6 @@ app.use(cookieParser());
 app.use(xss()); // 🧼 Sanitize input from XSS
 app.use(mongoSanitize()); // 🧽 Prevent NoSQL injection
 
-// ✨ Winston Request Logger Middleware
-// This will automatically log every incoming request to the terminal.
-app.use(requestLogger);
-
 // 🔀 API Routing
 app.use('/api', router);
 
@@ -75,27 +70,10 @@ if (isProduction) {
 
   app.get('*', (req, res) => {
     res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
-      if (err) {
-        logger.error('Error serving frontend fallback file:', err);
-        res.status(500).send(err);
-      }
+      if (err) res.status(500).send(err);
     });
   });
 }
-
-// Global Error Handler Middleware
-// This should be the last middleware
-app.use((err, req, res, next) => {
-    logger.error({
-        message: `Unhandled Error: ${err.message}`,
-        stack: err.stack,
-        url: req.originalUrl,
-        method: req.method,
-        ip: req.ip,
-    });
-    res.status(500).send('Something broke!');
-});
-
 
 const PORT = process.env.PORT || 5000;
 
@@ -103,14 +81,14 @@ const PORT = process.env.PORT || 5000;
 connectDB()
   .then(() => {
     const db = mongoose.connection;
-    logger.info(`✅ MongoDB Connected at ${db.host}:${db.port}/${db.name}`);
+    console.log(`✅ MongoDB Connected at ${db.host}:${db.port}/${db.name}`);
 
     app.listen(PORT, () => {
-      logger.info(`🚀 Server running at ${isProduction ? 'https://secxion.onrender.com' : `http://localhost:${PORT}`}`);
-      logger.info(`🌐 Allowed origins: [${allowedOrigins.join(', ')}]`);
+      console.log(`🚀 Server running at ${isProduction ? 'https://secxion.onrender.com' : `http://localhost:${PORT}`}`);
+      console.log('🌐 Allowed origins:', allowedOrigins);
     });
   })
   .catch((err) => {
-    logger.error('❌ DB Connection Failed:', err.message);
+    console.error('❌ DB Connection Failed:', err.message);
     process.exit(1);
   });
