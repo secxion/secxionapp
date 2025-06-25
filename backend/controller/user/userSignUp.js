@@ -15,11 +15,19 @@ async function userSignUpController(req, res) {
       });
     }
 
-    const userExists = await userModel.findOne({ email });
-    if (userExists) {
+    const userExistsByEmail = await userModel.findOne({ email });
+    if (userExistsByEmail) {
       return res.status(409).json({
         success: false,
         message: "A user with this email already exists.",
+      });
+    }
+
+    const userExistsByName = await userModel.findOne({ name });
+    if (userExistsByName) {
+      return res.status(409).json({
+        success: false,
+        message: "A user with this display name already exists. Please choose a different display name.",
       });
     }
 
@@ -38,17 +46,16 @@ async function userSignUpController(req, res) {
       emailToken,
     };
 
-    // ✉️ Try sending email before saving user
     try {
       await sendVerificationEmail(email, emailToken);
     } catch (emailError) {
+      console.error("Email sending error:", emailError);
       return res.status(503).json({
         success: false,
         message: "Sign-up temporarily unavailable due to system maintenance. Please try again shortly or contact support for registration.",
       });
     }
 
-    // ✅ Save user only if email worked
     const newUser = new userModel(tempUser);
     await newUser.save();
 
@@ -68,6 +75,22 @@ async function userSignUpController(req, res) {
 
   } catch (err) {
     console.error("Signup error:", err);
+
+    if (err.code === 11000) {
+      if (err.keyPattern && err.keyPattern.name) {
+        return res.status(409).json({
+          success: false,
+          message: `The display name "${err.keyValue.name}" is already taken. Please choose a unique display name.`,
+        });
+      }
+       if (err.keyPattern && err.keyPattern.email) {
+         return res.status(409).json({
+          success: false,
+          message: `A user with email "${err.keyValue.email}" already exists.`,
+        });
+       }
+    }
+
     return res.status(500).json({
       success: false,
       message: "Sign-up temporarily unavailable due to system maintenance. Please try again shortly or contact support for registration.",
