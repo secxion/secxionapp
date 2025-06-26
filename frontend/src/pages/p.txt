@@ -1,459 +1,677 @@
-import React, { useState, useEffect } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
-import uploadImage from "../helpers/uploadImage";
-import SummaryApi from "../common";
-import { toast } from "react-toastify";
-import { motion, AnimatePresence } from "framer-motion";
-import "./Login.css";
-import signupBackground from "./signupbk.png";
 
-const SignUp = () => {
-  const [step, setStep] = useState(1);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const [clock, setClock] = useState(new Date());
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  const [data, setData] = useState(() => {
-    const saved = localStorage.getItem("signupData");
-    return saved
-      ? JSON.parse(saved)
-      : {
-        email: "",
-        password: "",
-        name: "",
-        confirmPassword: "",
-        profilePic: "",
-        tag: "",
-        telegramNumber: "",
-      };
-  });
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    localStorage.setItem("signupData", JSON.stringify(data));
-  }, [data]);
-
-  useEffect(() => {
-    const interval = setInterval(() => setClock(new Date()), 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleOnChange = (e) => {
-    const { name, value } = e.target;
-    setData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const isValidPassword = (password) => password.length >= 6;
-  const isValidTelegram = (number) => /^(\+?\d{7,15})$/.test(number);
-
-  const handleUploadPic = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    setUploading(true);
-    try {
-      toast.info("Uploading image... ⏳");
-      const uploadedImage = await uploadImage(file);
-      setData((prev) => ({ ...prev, profilePic: uploadedImage.url }));
-      toast.success("Profile picture uploaded successfully! 📸");
-    } catch (error) {
-      toast.error("Failed to upload image.");
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const goToStep = (s) => setStep(s);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!data.name) return setStep(1);
-    if (!data.email || !isValidEmail(data.email)) return setStep(2);
-    if (!data.telegramNumber || !isValidTelegram(data.telegramNumber)) return setStep(3);
-    if (!isValidPassword(data.password) || data.password !== data.confirmPassword) return setStep(4);
-    if (!data.profilePic) return toast.error("Please upload a profile picture.");
-    if (!agreedToTerms) return toast.error("You must agree to terms.");
-
-    setLoading(true);
-
-    try {
-      const response = await fetch(SummaryApi.signUP.url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
-
-      const responseData = await response.json();
-      if (response.ok) {
-        localStorage.removeItem("signupData");
-        toast.success("🎉 Signup successful! ₦900 bonus awarded. Verify your email.");
-        setTimeout(() => navigate("/login"), 2500);
-      } else {
-        if (responseData.message?.toLowerCase().includes("email")) setStep(2);
-        toast.error(responseData?.message || "Signup failed.");
-      }
-    } catch (error) {
-      toast.error("🚫 Signup failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const stepVariants = {
-    hidden: { opacity: 0, x: 50 },
-    visible: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -50 },
-  };
-
-  return (
-    <section
-      className="fixed inset-0 flex flex-col justify-between z-50 bg-cover bg-center"
-      style={{ backgroundImage: `url(${signupBackground})` }}
-    >
-      {/* Animated Grid Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute w-full h-full animate-pulse bg-[radial-gradient(circle,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:40px_40px]" />
-      </div>
-
-      {/* Sign Up Form Box */}
-      <div className="relative z-10 flex items-center justify-center grow px-4">
-        <div className="bg-white dark:bg-gray-900 w-full max-w-lg p-8 shadow-2xl rounded-2xl border border-gray-200 dark:border-gray-700 bg-opacity-95 dark:bg-opacity-95 backdrop-blur-md">
-          {/* Logo */}
-          <div className="flex justify-center mb-6">
-            <Link
-              to="/"
-              className="font-bold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 tracking-wide"
-            >
-              <div className="logo-wrapper">
-                <h1 className="text-3xl logo-text font-extrabold tracking-wide">SXN</h1>
-                <div className="logo-accent" />
-              </div>
-            </Link>
-          </div>
-
-          <h2 className="text-xl font-bold mb-6 text-center">Sign Up Wizard</h2>
-          <div className="flex items-center justify-between mb-4">
-            {[1, 2, 3, 4, 5].map((n) => (
-              <div
-                key={n}
-                className={`h-2 flex-1 mx-1 rounded-full transition-all ${n <= step ? "bg-blue-600" : "bg-gray-300"
-                  }`}
-              />
-            ))}
-          </div>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Press+Start+2P&display=swap');
 
 
-          <form onSubmit={handleSubmit} className="overflow-hidden">
-            <AnimatePresence mode="wait">
-              {step === 1 && (
-                <motion.div 
-                  key="step1" 
-                  variants={stepVariants} 
-                  initial="hidden" 
-                  animate="visible" 
-                  exit="exit" 
-                  className="space-y-6"
-                >
-                  
-                  <InputField 
-                    label="Full Name" 
-                    name="name" 
-                    value={data.name} 
-                    onChange={handleOnChange} 
-                    placeholder="Enter your full name"
-                    required 
-                  />
-                  <InputField 
-                    label="Tag (Optional)" 
-                    name="tag" 
-                    value={data.tag} 
-                    onChange={handleOnChange} 
-                    placeholder="Your unique tag"
-                  />
-                  
-                  <div className="flex justify-end pt-4">
-                    <button 
-                      type="button" 
-                      onClick={() => goToStep(2)} 
-                      className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-                    >
-                      Continue →
-                    </button>
-                  </div>
-                </motion.div>
-              )}
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  transition: background-color 0.4s ease, color 0.4s ease;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  font-weight: 600;
+}
 
-              {step === 2 && (
-                <motion.div 
-                  key="step2" 
-                  variants={stepVariants} 
-                  initial="hidden" 
-                  animate="visible" 
-                  exit="exit" 
-                  className="space-y-6"
-                >
-                  <div className="text-center mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                      Email Address
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      We'll use this to verify your account
-                    </p>
-                  </div>
-                  
-                  <InputField 
-                    label="Email Address" 
-                    name="email" 
-                    type="email" 
-                    value={data.email} 
-                    onChange={handleOnChange} 
-                    placeholder="Enter your email address"
-                    required 
-                  />
-                  
-                  <div className="flex justify-between pt-4">
-                    <button 
-                      type="button" 
-                      onClick={() => goToStep(1)} 
-                      className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-200"
-                    >
-                      ← Back
-                    </button>
-                    <button 
-                      type="button" 
-                      onClick={() => goToStep(3)} 
-                      className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-                    >
-                      Continue →
-                    </button>
-                  </div>
-                </motion.div>
-              )}
 
-              {step === 3 && (
-                <motion.div 
-                  key="step3" 
-                  variants={stepVariants} 
-                  initial="hidden" 
-                  animate="visible" 
-                  exit="exit" 
-                  className="space-y-6"
-                >
-                  <div className="text-center mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                      Contact Information
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Your Telegram number
-                    </p>
-                  </div>
-                  
-                  <InputField 
-                    label="Telegram Number" 
-                    name="telegramNumber" 
-                    value={data.telegramNumber} 
-                    onChange={handleOnChange} 
-                    placeholder="+1234567890"
-                  />
-                  
-                  <div className="flex justify-between pt-4">
-                    <button 
-                      type="button" 
-                      onClick={() => goToStep(2)} 
-                      className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-200"
-                    >
-                      ← Back
-                    </button>
-                    <button 
-                      type="button" 
-                      onClick={() => goToStep(4)} 
-                      className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-                    >
-                      Continue →
-                    </button>
-                  </div>
-                </motion.div>
-              )}
+:root {
+  --gray-50: #fffaf0; 
+  --gray-100: #f5f5f5;
+  --gray-200: #d4d4d4;
+  --gray-900: #000000;
 
-              {step === 4 && (
-                <motion.div 
-                  key="step4" 
-                  variants={stepVariants} 
-                  initial="hidden" 
-                  animate="visible" 
-                  exit="exit" 
-                  className="space-y-6"
-                >
-                  <div className="text-center mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                      Secure Your Account
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Create a strong password (minimum 6 characters)
-                    </p>
-                  </div>
-                  
-                  <PasswordField 
-                    label="Password" 
-                    name="password" 
-                    value={data.password} 
-                    onChange={handleOnChange} 
-                    show={showPassword} 
-                    toggle={() => setShowPassword((prev) => !prev)} 
-                  />
-                  <PasswordField 
-                    label="Confirm Password" 
-                    name="confirmPassword" 
-                    value={data.confirmPassword} 
-                    onChange={handleOnChange} 
-                    show={showConfirmPassword} 
-                    toggle={() => setShowConfirmPassword((prev) => !prev)} 
-                  />
-                  
-                  <div className="flex justify-between pt-4">
-                    <button 
-                      type="button" 
-                      onClick={() => goToStep(3)} 
-                      className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-200"
-                    >
-                      ← Back
-                    </button>
-                    <button 
-                      type="button" 
-                      onClick={() => goToStep(5)} 
-                      className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-                    >
-                      Continue →
-                    </button>
-                  </div>
-                </motion.div>
-              )}
+  --blue-600: #1e40af;
+  --blue-700: #1e3a8a;
 
-             {step === 5 && (
-                <motion.div key="step5" variants={stepVariants} initial="hidden" animate="visible" exit="exit" className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Profile Picture</label>
-                    <input type="file" accept="image/*" onChange={handleUploadPic} className="w-full p-2 border border-gray-300 bg-gray-50 text-sm rounded" />
-                  </div>
+  --red-500: #ef4444;
+  --red-600: #dc2626;
 
-                  {data.profilePic && (
-                    <img src={data.profilePic} alt="Preview" className="h-20 w-20 rounded-full object-cover mx-auto" />
-                  )}
+  --color-bg: var(--gray-50);
+  --color-text: var(--gray-900);
+  --color-accent: #ffffff;
+  --color-border: #111111;
+  --color-card-bg: #ffffff;
+  --color-hover: #eaeaea;
+  --color-danger: var(--red-500);
 
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="terms"
-                      checked={agreedToTerms}
-                      onChange={(e) => setAgreedToTerms(e.target.checked)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <label htmlFor="terms" className="text-sm text-gray-700 leading-snug">
-                      I agree to the{" "}
-                      <Link to="/terms" className="text-blue-600 hover:underline">terms and conditions</Link>
-                    </label>
-                  </div>
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.15);
+  --transition-fast: 0.3s ease-in-out;
+}
 
-                  <div className="flex justify-between">
-                    <button type="button" onClick={() => goToStep(4)} className="btn-back">← Back</button>
-                    <button
-                      type="submit"
-                      disabled={loading || uploading || !data.profilePic}
-                      className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded transition disabled:opacity-50"
-                    >
-                      {loading ? "Signing Up..." : uploading ? "Uploading..." : "Sign Up 🚀"}
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </form>
+/* ========================
+   DARK MODE VARIABLES
+======================== */
+.dark {
+  --gray-50: #0a0a0a;
+  --gray-100: #111111;
+  --gray-200: #2a2a2a;
+  --gray-900: #ffffff;
 
-          <div className="mt-8 text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Already have an account?{" "}
-              <Link 
-                to="/login" 
-                className="text-blue-600 dark:text-blue-400 hover:underline font-semibold"
-              >
-                Sign In
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
+  --blue-400: #60a5fa;
+  --red-400: #f87171;
 
-      <footer className="relative z-10 text-center text-xs text-white p-4 bg-black/40 backdrop-blur-sm">
-        <div className="flex justify-center items-center space-x-4">
-          <Link to="/contact" className="hover:underline">Contact Us</Link>
-          <span>|</span>
-          <span>© 2025 secxion.com</span>
-        </div>
-        <div className="mt-2 text-white/80">
-          {clock.toLocaleDateString()} • {clock.toLocaleTimeString()}
-        </div>
-      </footer>
-    </section>
-  );
-};
+  --color-bg: var(--gray-50);
+  --color-text: var(--gray-900);
+  --color-accent: #ffffff;
+  --color-border: #2e2e2e;
+  --color-card-bg: #181818;
+  --color-hover: #333333;
+  --color-danger: var(--red-400);
+}
 
-const InputField = ({ 
-  label, 
-  name, 
-  value, 
-  onChange, 
-  type = "text", 
-  placeholder = "", 
-  required = false 
-}) => (
-  <div className="space-y-2">
-    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-      {label} {required && <span className="text-red-500">*</span>}
-    </label>
-    <input
-      type={type}
-      name={name}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      required={required}
-      className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
-    />
-  </div>
-);
+/* ========================
+   UI COMPONENTS
+======================== */
+.app-container {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
 
-const PasswordField = ({ label, name, value, onChange, show, toggle }) => (
-  <div className="space-y-2">
-    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-      {label} <span className="text-red-500">*</span>
-    </label>
-    <div className="relative">
-      <input
-        type={show ? "text" : "password"}
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={`Enter ${label.toLowerCase()}`}
-        required
-        className="w-full px-4 py-3 pr-12 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
-      />
-      <button 
-        type="button" 
-        onClick={toggle} 
-        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200"
-      >
-        {show ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-      </button>
-    </div>
-  </div>
-);
+.card {
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  font-weight: 600;
+}
 
-export default SignUp;
+.card:hover {
+  background-color: var(--color-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.app-header,
+.app-footer {
+  background-color: var(--color-card-bg);
+  border-bottom: 2px solid var(--color-border);
+  padding: 1.25rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text);
+}
+
+.app-footer {
+  border-top: 2px solid var(--color-border);
+}
+
+.btn {
+  @apply px-5 py-2 rounded-md font-bold uppercase tracking-wide transition-all duration-300;
+  background-color: var(--color-text);
+  color: var(--color-accent);
+  border: 2px solid var(--color-text);
+}
+
+.btn:hover {
+  background-color: transparent;
+  color: var(--color-text);
+  border-color: var(--color-text);
+}
+
+.btn-danger {
+  background-color: var(--color-danger);
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background-color: var(--red-600);
+}
+
+.input {
+  background-color: var(--color-card-bg);
+  border: 2px solid var(--color-border);
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  color: var(--color-text);
+  transition: all var(--transition-fast);
+  font-weight: 500;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease-in-out;
+}
+
+body.dark .glass {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.08);
+}
+
+/* ========================
+   SCROLLBAR
+======================== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-text);
+  border-radius: 4px;
+}
+
+
+.text-accent {
+  color: var(--color-accent);
+}
+.text-danger {
+  color: var(--color-danger);
+}
+code {
+  font-family: 'Press Start 2P', cursive;
+}
+
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@layer utilities {
+  .animate-spin-on-hover:hover {
+    animation: spin 1s linear infinite;
+  }
+
+  .text-outline {
+    text-shadow: 1px 0 black, -1px 0 black, 0 1px black, 0 -1px black;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 3px #fff, 0 0 8px #fff;
+  }
+
+  .text-bold-fake {
+    transform: scale(1.05);
+  }
+
+  .neon-text {
+    text-shadow: 0 0 5px #fff, 0 0 15px #0ff;
+  }
+
+  .neon-glow {
+    box-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+  }
+
+  .minecraft-font {
+    font-family: 'Press Start 2P', cursive;
+    image-rendering: pixelated;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .minecraft-outline {
+    text-shadow: 1px 0 black, -1px 0 black, 0 1px black, 0 -1px black;
+  }
+
+  .neon-minecraft {
+    text-shadow: 0 0 2px #0ff, 0 0 4px #0ff, 0 0 8px #0ff;
+  }
+
+  .border-custom {
+    border: 2px solid var(--color-border);
+  }
+
+  .bg-card {
+    background-color: var(--color-card-bg);
+  }
+
+  .shadow-md-custom {
+    box-shadow: var(--shadow-md);
+  }
+}
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  scroll-behavior: smooth;
+  scroll-padding-top: 4rem;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  min-height: 100vh;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+
+@font-display swap;
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-md);
+  letter-spacing: -0.025em;
+}
+
+h1 {
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-black);
+}
+
+h2 {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-extrabold);
+}
+
+h3 {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+}
+
+h4 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+h5 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-medium);
+}
+
+h6 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+}
+
+p {
+  margin-bottom: var(--space-md);
+  color: var(--color-text-secondary);
+}
+
+ul, ol {
+  margin-bottom: var(--space-md);
+  padding-left: var(--space-lg);
+}
+
+li {
+  margin-bottom: var(--space-xs);
+  color: var(--color-text-secondary);
+}
+
+code, pre {
+  font-family: 'Fira Code', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875em;
+}
+
+code {
+  background-color: var(--color-bg-tertiary);
+  padding: 0.125rem 0.25rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-accent);
+}
+
+pre {
+  background-color: var(--color-bg-secondary);
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  border: 1px solid var(--color-border-primary);
+}
+
+@media (min-width: 576px) {
+  html {
+    font-size: 16px;
+  }
+  
+  h1 { font-size: var(--font-size-6xl); }
+  h2 { font-size: var(--font-size-5xl); }
+  h3 { font-size: var(--font-size-4xl); }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --space-md: 1.25rem;
+    --space-lg: 2rem;
+    --space-xl: 2.5rem;
+  }
+  
+  body {
+    font-size: var(--font-size-lg);
+  }
+  
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+  
+  body {
+    line-height: var(--line-height-relaxed);
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .container {
+    max-width: 1536px;
+  }
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+.content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: var(--contain-intrinsic-size);
+}
+
+.content-hidden {
+  content-visibility: hidden;
+}
+
+.content-visible {
+  content-visibility: visible;
+}
+
+.lazy-load {
+  content-visibility: auto;
+  contain-intrinsic-size: 200px;
+}
+
+@supports (container-type: inline-size) {
+  .container-query {
+    container-type: inline-size;
+  }
+}
+
+.grid-auto-fit {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-lg);
+}
+
+.grid-auto-fill {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-md);
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.text-fluid-sm {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+.text-fluid-base {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+}
+
+.text-fluid-lg {
+  font-size: clamp(1.25rem, 3vw, 1.875rem);
+}
+
+.text-fluid-xl {
+  font-size: clamp(1.875rem, 4vw, 3rem);
+}
+
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+.aspect-video {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect-4-3 {
+  aspect-ratio: 4 / 3;
+}
+
+.text-neon-blue {
+  color: var(--neon-blue);
+  text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
+}
+
+.text-neon-green {
+  color: var(--neon-green);
+  text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green), 0 0 30px var(--neon-green);
+}
+
+.text-neon-pink {
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink), 0 0 30px var(--neon-pink);
+}
+
+.text-neon-yellow {
+  color: var(--neon-yellow);
+  text-shadow: 0 0 10px var(--neon-yellow), 0 0 20px var(--neon-yellow), 0 0 30px var(--neon-yellow);
+}
+
+.glow-blue {
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 20px rgba(0, 255, 255, 0.1);
+  border: 1px solid var(--neon-blue);
+}
+
+.glow-green {
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.5), inset 0 0 20px rgba(0, 255, 0, 0.1);
+  border: 1px solid var(--neon-green);
+}
+
+.glow-pink {
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.5), inset 0 0 20px rgba(255, 0, 255, 0.1);
+  border: 1px solid var(--neon-pink);
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
+  }
+  50% {
+    box-shadow: 0 0 30px var(--neon-blue), 0 0 40px var(--neon-blue);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  transition: all var(--transition-fast);
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(0, 132, 255, 0.1);
+}
+
+/* Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm) var(--space-lg);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-neon {
+  background: transparent;
+  color: var(--neon-blue);
+  border: 2px solid var(--neon-blue);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+.btn-neon:hover {
+  background-color: var(--neon-blue);
+  color: var(--color-bg-primary);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Display */
+.block { display: block; }
+.inline-block { display: inline-block; }
+.inline { display: inline; }
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.grid { display: grid; }
+.hidden { display: none; }
+
+/* Position */
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed { position: fixed; }
+.sticky { position: sticky; }
+
+/* Overflow */
+.overflow-hidden { overflow: hidden; }
+.overflow-auto { overflow: auto; }
+.overflow-scroll { overflow: scroll; }
+
+/* Text Alignment */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }

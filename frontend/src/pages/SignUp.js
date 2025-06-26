@@ -140,12 +140,12 @@ const SignUp = () => {
 
       if (response.ok) {
         localStorage.removeItem("signupData");
-        toast.success("🎉 Signup successful! Check your email for verification.");
+        toast.success("🎉 Signup successful! Check your email inbox or spam for verification.");
         setTimeout(() => navigate("/login"), 2500); 
       } else {
         const backendMessage = responseData.message ? String(responseData.message).toLowerCase() : "";
         
-        console.log("Processed Backend Message:", backendMessage); // KEEP THIS LOG!
+        console.log("Processed Backend Message:", backendMessage);
 
         if (backendMessage.includes("email already exists") || (backendMessage.includes("user with email") && backendMessage.includes("already exists"))) {
           toast.error("This email is already registered. Please use a different email or log in.");
@@ -225,7 +225,7 @@ const SignUp = () => {
             <AnimatePresence mode="wait">
               {step === 1 && (
                 <motion.div key="step1" variants={stepVariants} initial="hidden" animate="visible" exit="exit" className="space-y-4">
-                  <InputField label="Name" name="name" value={data.name} onChange={handleOnChange} required placeholder="Your unique username or display name" />
+                  <InputField label="Display Name" name="name" value={data.name} onChange={handleOnChange} required placeholder="Your unique username or display name" />
                   <InputField label="Tag (Optional)" name="tag" value={data.tag} onChange={handleOnChange} placeholder="e.g., ProTrader, CryptoEnthusiast" />
                   <div className="flex justify-between mt-6">
                     <div /> {/* Empty div for alignment */}

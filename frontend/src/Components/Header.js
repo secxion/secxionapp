@@ -191,7 +191,7 @@ const Header = () => {
                         <FcSearch className="text-white h-5 w-5 mr-2" />
                         <input
                             type="text"
-                                placeholder="Search gift cards, deals, offers..."
+                                placeholder="Search gift/visa/credit cards, deals, offers..."
                             className="bg-transparent minecraft-font text-white text-[12px] outline-none w-full placeholder:text-[8px] placeholder-gray-600"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
@@ -203,7 +203,7 @@ const Header = () => {
                             <BiSearch className="text-yellow-700 h-5 w-5 mr-2" />
                             <input
                                 type="text"
-                                placeholder="Search gift cards..."
+                                placeholder="Search gift/visa/credit cards, offers ..."
                                 className="bg-transparent minecraft-font text-white text-[12px] outline-none w-full placeholder:text-[8px] placeholder-gray-600"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}

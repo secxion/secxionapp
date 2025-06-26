@@ -3,9 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SummaryApi from "../common";
 import Context from "../Context";
-import "./Login.css";
+import "./Login.css"; // Assuming this might contain global or base styles
 import loginBackground from "./loginbk.png";
 import thumbsUpGif from "./thumbsup.gif";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import icons for consistency
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
@@ -32,27 +33,32 @@ const Login = () => {
         method: SummaryApi.sliderVerification.method,
         credentials: "include",
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) throw new Error("Failed to fetch verification challenge.");
       const { target, signature } = await res.json();
       setTargetValue(target);
       setSliderSignature(signature);
       setSliderValue(0);
       setIsVerified(false);
-    } catch {
-      toast.error("Failed to load verification challenge.");
+    } catch (error) {
+      console.error("Error fetching slider target:", error);
+      toast.error("Failed to load verification challenge. Please try again.");
     }
   };
 
   const handleSliderChange = (e) => {
     const val = Number(e.target.value);
     setSliderValue(val);
-    setIsVerified(Math.abs(val - targetValue) <= 3);
+    setIsVerified(Math.abs(val - targetValue) <= 3); // Allow a small tolerance
   };
 
   const handleVerificationComplete = async () => {
-    if (!isVerified) return;
+    if (!isVerified) {
+      toast.error("Please complete the verification challenge.");
+      return;
+    }
     setVerifying(true);
-    setErrorMessage("");
+    setErrorMessage(""); // Clear previous errors
+
     try {
       const response = await fetch(SummaryApi.signIn.url, {
         method: SummaryApi.signIn.method,
@@ -66,7 +72,8 @@ const Login = () => {
         }),
       });
       const result = await response.json();
-      if (result.success) {
+
+      if (response.ok && result.success) {
         setVerificationVisible(false);
         toast.success(
           <div className="flex items-center gap-2">
@@ -74,16 +81,18 @@ const Login = () => {
             <span>{result.message || "Login Successful!"}</span>
           </div>
         );
-        fetchUserDetails();
+        await fetchUserDetails(); // Ensure user details are fetched before navigating
         navigate("/home");
       } else {
-        setErrorMessage(result.message || "Invalid credentials.");
-        toast.error(result.message || "Verification failed.");
-        setVerificationVisible(true);
+        setErrorMessage(result.message || "Login failed. Please try again.");
+        toast.error(result.message || "Verification failed. Please try again.");
+        setVerificationVisible(true); 
+        fetchSliderTarget(); 
       }
-    } catch {
-      setErrorMessage("An unexpected error occurred.");
-      toast.error("An unexpected error occurred.");
+    } catch (error) {
+      console.error("Login verification error:", error);
+      setErrorMessage("An unexpected error occurred during login. Please try again.");
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setFormSubmitting(false);
       setVerifying(false);
@@ -100,10 +109,11 @@ const Login = () => {
       });
       const result = await res.json();
       result.success
-        ? toast.success("Verification email sent.")
-        : toast.error(result.message || "Failed to resend.");
-    } catch {
-      toast.error("Error resending verification email.");
+        ? toast.success("Verification email sent successfully! Please check your inbox.")
+        : toast.error(result.message || "Failed to resend verification email.");
+    } catch (error) {
+      console.error("Resend email error:", error);
+      toast.error("Error resending verification email. Please try again.");
     } finally {
       setResending(false);
     }
@@ -116,9 +126,13 @@ const Login = () => {
 
   const onLoginClick = (e) => {
     e.preventDefault();
-    setErrorMessage("");
-    setVerificationVisible(true);
-    setFormSubmitting(true);
+    if (!data.email || !data.password) {
+      toast.error("Please enter both email and password.");
+      return;
+    }
+    setErrorMessage(""); 
+    setVerificationVisible(true); // Show the verification modal
+    setFormSubmitting(true); 
   };
 
   return (
@@ -126,7 +140,12 @@ const Login = () => {
       className="login-page min-h-screen flex items-center justify-center relative bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${loginBackground})` }}
     >
-      <div className="shape-lines relative bg-white bg-opacity-95 p-6 sm:p-8 w-full max-w-md rounded-2xl shadow-2xl z-10">
+      {/* Overlay for dark mode compatibility on background */}
+      <div className="absolute inset-0 bg-black/30 dark:bg-black/60 z-0"></div>
+
+      {/* Login Form Box */}
+      <div className="shape-lines relative bg-white bg-opacity-95 dark:bg-gray-800 dark:bg-opacity-95 p-6 sm:p-8 w-full max-w-md rounded-2xl shadow-2xl dark:shadow-none dark:border dark:border-gray-700 z-10">
+        {/* Logo */}
         <div className="flex justify-center mb-5">
           <Link
             to="/"
@@ -140,29 +159,34 @@ const Login = () => {
         </div>
 
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Welcome</h1>
-          <p className="text-sm text-gray-800 mt-1">Login</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Welcome Back!</h1>
+          <p className="text-sm text-gray-800 dark:text-gray-300 mt-1">Login to your account</p>
         </div>
 
         <form className="flex flex-col gap-4" onSubmit={onLoginClick}>
           <div>
-            <label htmlFor="email" className="block text-gray-950 font-extrabold mb-1">Email</label>
-            <input
+            <label htmlFor="email" className="block text-gray-950 dark:text-gray-200 font-extrabold mb-1">Email</label>
+            <div className="relative flex items-center w-full rounded-lg border-2 border-blue-600 bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 
+                            dark:bg-gray-700 dark:border-blue-600">
+              <input
               id="email"
               name="email"
               type="email"
               value={data.email}
               onChange={handleInputChange}
               placeholder="you@example.com"
-                className="w-full bg-gray-100 p-3 pr-12 rounded-lg border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full p-3 pr-12 rounded-lg border-2 border-blue-600 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 
+                         dark:bg-gray-700 dark:border-blue-600 dark:text-white dark:placeholder-gray-400"
               required
               autoComplete="email"
-            />
+            /></div>
+            
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-gray-950 font-extrabold mb-1">Password</label>
-            <div className="relative">
+            <label htmlFor="password" className="block text-gray-950 dark:text-gray-200 font-extrabold mb-1">Password</label>
+            <div className="relative flex items-center w-full p-1 rounded-lg border-2 border-blue-600 bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 
+                            dark:bg-gray-700 dark:border-blue-600">
               <input
                 id="password"
                 name="password"
@@ -170,7 +194,8 @@ const Login = () => {
                 value={data.password}
                 onChange={handleInputChange}
                 placeholder="••••••••"
-                className="w-full bg-gray-100 p-3 pr-12 rounded-lg border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="flex-1 bg-transparent outline-none text-gray-900 placeholder-gray-400 
+                           dark:text-white dark:placeholder-gray-400"
                 required
                 autoComplete="current-password"
               />
@@ -183,7 +208,7 @@ const Login = () => {
                 {showPassword ? "🙈" : "👁️"}
               </button>
             </div>
-            <Link to="/reset" className="block text-right text-sm text-red-300 hover:underline mt-1">
+            <Link to="/reset" className="block text-right text-sm text-red-600 hover:underline mt-1 dark:text-red-400">
               Forgot password?
             </Link>
           </div>
@@ -191,24 +216,24 @@ const Login = () => {
           <button
             type="submit"
             disabled={formSubmitting}
-            className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 ${
-              formSubmitting
-                ? "bg-blue-300 text-white cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700 text-white"
-            }`}
+            className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg 
+                        ${formSubmitting
+                            ? "bg-blue-300 text-white cursor-not-allowed"
+                            : "bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"
+                        }`}
           >
-            {formSubmitting ? "Preparing verification..." : "Login"}
+            {formSubmitting ? "Verifying..." : "Login"}
           </button>
         </form>
 
         {errorMessage && (
-          <div className="mt-4 text-center text-red-500 text-sm">
+          <div className="mt-4 text-center text-red-500 dark:text-red-400 text-sm">
             <p>{errorMessage}</p>
             {errorMessage.toLowerCase().includes("verify") && (
               <button
                 onClick={handleResendVerificationEmail}
                 disabled={resending}
-                className="mt-2 text-blue-600 hover:underline font-medium"
+                className="mt-2 text-blue-600 hover:underline font-medium dark:text-blue-400 dark:hover:text-blue-300"
               >
                 {resending ? "Resending..." : "Resend Verification Email"}
               </button>
@@ -216,15 +241,15 @@ const Login = () => {
           </div>
         )}
 
-        <p className="mt-6 text-center text-gray-800 text-sm">
+        <p className="mt-6 text-center text-gray-800 dark:text-gray-300 text-sm">
           Don’t have an account?{" "}
-          <Link to="/sign-up" className="text-black hover:underline font-medium">
+          <Link to="/sign-up" className="text-black hover:underline font-medium dark:text-white dark:hover:text-gray-200">
             Sign up
           </Link>
         </p>
 
-        <div className="mt-6 text-center text-xs text-gray-400">
-          <Link to="/contact-us" className="hover:text-blue-500 transition-colors">
+        <div className="mt-6 text-center text-xs text-gray-400 dark:text-gray-500">
+          <Link to="/contact-us" className="hover:text-blue-500 transition-colors dark:hover:text-blue-400">
             Contact Us
           </Link>
           <span className="mx-2">|</span>
@@ -236,13 +261,13 @@ const Login = () => {
 
       {verificationVisible && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-6 rounded-xl border-2 border-gray-300 shadow-lg w-full max-w-sm">
-            <h2 className="text-lg font-bold text-gray-800 mb-2 text-center">Human Verification</h2>
-            <div className="text-sm text-gray-600 mb-4 text-center space-y-3">
-              Slide to match <span className="font-semibold text-blue-600 px-1 border-2 border-black">{targetValue}</span>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border-2 border-gray-300 dark:border-gray-700 shadow-lg w-full max-w-sm text-gray-900 dark:text-gray-100">
+            <h2 className="text-lg font-bold mb-2 text-center">Human Verification</h2>
+            <div className="text-sm text-gray-600 dark:text-gray-300 mb-4 text-center space-y-3">
+              Slide to match <span className="font-semibold text-blue-600 px-1 border-2 border-black dark:border-white">{targetValue}</span>
               <div className="text-center text-sm mb-3">
-              <span className="text-gray-500">Current: </span>
-              <span className="font-bold text-yellow-700 px-1 ">{sliderValue}</span>
+              <span className="text-gray-500 dark:text-gray-400">Current: </span>
+              <span className="font-bold text-yellow-700 dark:text-yellow-400 px-1 ">{sliderValue}</span>
             </div>
             </div>
             <input
@@ -251,26 +276,26 @@ const Login = () => {
               max="100"
               value={sliderValue}
               onChange={handleSliderChange}
-              className="w-full h-2 accent-blue-500 mb-4"
+              className="w-full h-2 accent-blue-500 dark:accent-blue-400 mb-4 cursor-pointer"
             />
             
             <button
               onClick={handleVerificationComplete}
               disabled={!isVerified || verifying}
-              className={`w-full py-2 rounded-md font-semibold transition ${
-                isVerified
-                  ? "bg-blue-600 text-white hover:bg-blue-700"
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              }`}
+              className={`w-full py-2 rounded-md font-semibold transition shadow-md hover:shadow-lg
+                          ${isVerified
+                              ? "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+                              : "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400"
+                          }`}
             >
               {verifying ? "Logging in..." : "Verify & Login"}
             </button>
             <button
               onClick={() => {
                 setVerificationVisible(false);
-                setFormSubmitting(false);
+                setFormSubmitting(false); // Reset form submitting state on cancel
               }}
-              className="mt-3 w-full text-sm text-gray-500 hover:text-blue-600"
+              className="mt-3 w-full text-sm text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500"
             >
               Cancel
             </button>
