@@ -9,10 +9,9 @@ html, body, #root {
   margin: 0;
   padding: 0;
   width: 100%;
-  min-height: 100vh;
   font-family: 'Inter', sans-serif;
   color: var(--color-text);
-  background-color: var(--color-bg);
+  background-color: white;
   transition: background-color 0.4s ease, color 0.4s ease;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -142,8 +141,7 @@ html, body, #root {
     UI COMPONENTS
 ======================== */
 .app-container {
-  min-height: 100vh;
-  background-color: var(--color-bg);
+  background-color: white;
   color: var(--color-text);
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
@@ -239,16 +237,15 @@ body.dark .glass {
     SCROLLBAR
 ======================== */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-bg);
+  background: white;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: var(--color-accent); /* Yellow scrollbar thumb */
-  border-radius: 4px;
+  background-color: white; /* Yellow scrollbar thumb */
+  border-radius: 2px;
 }
-
 
 .text-accent {
   color: var(--color-accent); /* Yellow accent text */
@@ -256,12 +253,6 @@ body.dark .glass {
 .text-danger {
   color: var(--color-danger);
 }
-code {
-  font-family: 'Press Start 2P', cursive;
-  background-color: var(--color-bg-tertiary); /* Dark gray background for code */
-  color: var(--color-text); /* Light text for code */
-}
-
 
 @keyframes fade-in {
   from {
@@ -316,21 +307,6 @@ code {
 
   .neon-glow {
     box-shadow: 0 0 10px var(--neon-yellow), 0 0 20px var(--neon-yellow); /* Yellow neon glow */
-  }
-
-  .minecraft-font {
-    font-family: 'Press Start 2P', cursive;
-    image-rendering: pixelated;
-    -webkit-font-smoothing: none;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  .minecraft-outline {
-    text-shadow: 1px 0 black, -1px 0 black, 0 1px black, 0 -1px black;
-  }
-
-  .neon-minecraft {
-    text-shadow: 0 0 2px var(--neon-yellow), 0 0 4px var(--neon-yellow), 0 0 8px var(--neon-yellow); /* Yellow neon minecraft */
   }
 
   .border-custom {

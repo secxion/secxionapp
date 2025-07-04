@@ -125,13 +125,11 @@ html {
 
 /* ========== Layout Containers ========== */
 .app-container {
-  min-height: 100vh;
   background-color: var(--color-bg);
   color: var(--color-text);
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 container {
-  min-height: 100vh;
   background-color: var(--color-bg);
   color: var(--color-text);
   transition: background-color var(--transition-fast), color var(--transition-fast);
@@ -202,16 +200,16 @@ container {
 
 /* ========== Scrollbar (optional) ========== */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-bg);
+  background: white;
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: var(--color-border);
-  border-radius: 4px;
+  border-radius: 0px;
 }
 
 /* ========== Animations ========== */

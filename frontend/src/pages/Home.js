@@ -1,390 +1,112 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import {
-  FaWallet,
-  FaUser,
-  FaStore,
-  FaBook,
-  FaClipboardList,
-} from "react-icons/fa";
-import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
+import { 
+  Wallet, 
+  User, 
+  Store, 
+  Book, 
+  ClipboardList, 
+  Menu, 
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Bell,
+  Search,
+  MessageCircle,
+  RefreshCw,
+  TrendingUp,
+  TrendingDown,
+  Eye,
+  EyeOff
+} from "lucide-react";
+import SummaryApi from '../common';
+import giftCardImages from "../helper/heroimages";
 import HomeFooter from "../Components/HomeFooter";
 import NetBlog from "../Components/NetBlog";
-import giftCardImages from "../helper/heroimages";
-
-const AnimatedGeometricBackground = () => {
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-
-  useEffect(() => {
-    const updateDimensions = () => {
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight
-      });
-    };
-
-    updateDimensions();
-    window.addEventListener('resize', updateDimensions);
-    return () => window.removeEventListener('resize', updateDimensions);
-  }, []);
-
-  const generateLines = () => {
-    const lines = [];
-    const numLines = 15;
-    
-    for (let i = 0; i < numLines; i++) {
-      const startX = Math.random() * dimensions.width;
-      const startY = Math.random() * dimensions.height;
-      const endX = Math.random() * dimensions.width;
-      const endY = Math.random() * dimensions.height;
-      
-      lines.push({
-        id: i,
-        startX,
-        startY,
-        endX,
-        endY,
-        animationDelay: Math.random() * 8,
-        duration: 4 + Math.random() * 6
-      });
-    }
-    return lines;
-  };
-
-  const generateDots = () => {
-    const dots = [];
-    const numDots = 25;
-    
-    for (let i = 0; i < numDots; i++) {
-      dots.push({
-        id: i,
-        x: Math.random() * dimensions.width,
-        y: Math.random() * dimensions.height,
-        size: 2 + Math.random() * 6,
-        animationDelay: Math.random() * 5,
-        duration: 3 + Math.random() * 4
-      });
-    }
-    return dots;
-  };
-
-  const generateCircles = () => {
-    const circles = [];
-    const numCircles = 12;
-    
-    for (let i = 0; i < numCircles; i++) {
-      circles.push({
-        id: i,
-        x: Math.random() * dimensions.width,
-        y: Math.random() * dimensions.height,
-        size: 20 + Math.random() * 60,
-        animationDelay: Math.random() * 6,
-        duration: 5 + Math.random() * 8
-      });
-    }
-    return circles;
-  };
-
-  const lines = generateLines();
-  const dots = generateDots();
-  const circles = generateCircles();
-
-  return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      <svg width="100%" height="100%" className="absolute inset-0">
-        {lines.map((line) => (
-          <motion.line
-            key={line.id}
-            x1={line.startX}
-            y1={line.startY}
-            x2={line.endX}
-            y2={line.endY}
-            stroke="url(#lineGradient)"
-            strokeWidth="1.5"
-            opacity="0.4"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ 
-              pathLength: [0, 1, 0.3, 0],
-              opacity: [0, 0.6, 0.8, 0]
-            }}
-            transition={{
-              duration: line.duration,
-              delay: line.animationDelay,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-        ))}
-        
-        {/* Animated dots */}
-        {dots.map((dot) => (
-          <motion.circle
-            key={dot.id}
-            cx={dot.x}
-            cy={dot.y}
-            r={dot.size}
-            fill="url(#dotGradient)"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ 
-              scale: [0, 1.2, 0.8, 0],
-              opacity: [0, 0.8, 0.6, 0]
-            }}
-            transition={{
-              duration: dot.duration,
-              delay: dot.animationDelay,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-        ))}
-
-        {/* Animated circles */}
-        {circles.map((circle) => (
-          <motion.circle
-            key={circle.id}
-            cx={circle.x}
-            cy={circle.y}
-            r={circle.size}
-            fill="none"
-            stroke="url(#circleGradient)"
-            strokeWidth="2"
-            opacity="0.3"
-            initial={{ scale: 0, rotate: 0 }}
-            animate={{ 
-              scale: [0, 1, 1.2, 0],
-              rotate: [0, 180, 360],
-              opacity: [0, 0.5, 0.3, 0]
-            }}
-            transition={{
-              duration: circle.duration,
-              delay: circle.animationDelay,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-        ))}
-
-        <defs>
-          <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#a16207" stopOpacity="0.8" /> {/* Darker Yellow/Orange */}
-            <stop offset="50%" stopColor="#facc15" stopOpacity="0.6" /> {/* Yellow */}
-            <stop offset="100%" stopColor="#1f2937" stopOpacity="0.4" /> {/* Dark Gray */}
-          </linearGradient>
-          <radialGradient id="dotGradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#eab308" stopOpacity="0.9" /> {/* Strong Yellow */}
-            <stop offset="100%" stopColor="#4b5563" stopOpacity="0.3" /> {/* Gray */}
-          </radialGradient>
-          <linearGradient id="circleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#fcd34d" stopOpacity="0.6" /> {/* Light Yellow */}
-            <stop offset="50%" stopColor="#1f2937" stopOpacity="0.4" /> {/* Dark Gray */}
-            <stop offset="100%" stopColor="#92400e" stopOpacity="0.3" /> {/* Dark Orange */}
-          </linearGradient>
-        </defs>
-      </svg>
-
-      <div className="absolute inset-0">
-        {[...Array(10)].map((_, i) => {
-          const size = 15 + Math.random() * 30;
-          return (
-            <motion.div
-              key={`triangle-${i}`}
-              className="absolute"
-              style={{
-                left: `${Math.random() * 95}%`,
-                top: `${Math.random() * 95}%`,
-                width: 0,
-                height: 0,
-                borderLeft: `${size}px solid transparent`,
-                borderRight: `${size}px solid transparent`,
-                borderBottom: `${size * 1.2}px solid rgba(252, 211, 77, 0.4)`, // Yellowish
-              }}
-              animate={{
-                rotate: [0, 120, 240, 360],
-                scale: [1, 1.3, 0.8, 1],
-                opacity: [0.3, 0.7, 0.4, 0.3],
-                x: [0, 20, -10, 0],
-                y: [0, -15, 10, 0],
-              }}
-              transition={{
-                duration: 8 + Math.random() * 6,
-                repeat: Infinity,
-                delay: Math.random() * 4,
-                ease: "easeInOut"
-              }}
-            />
-          );
-        })}
-      </div>
-
-      <div className="absolute inset-0">
-        {[...Array(8)].map((_, i) => {
-          const size = 20 + Math.random() * 40;
-          return (
-            <motion.div
-              key={`square-${i}`}
-              className="absolute border-2 opacity-30"
-              style={{
-                left: `${Math.random() * 90}%`,
-                top: `${Math.random() * 90}%`,
-                width: `${size}px`,
-                height: `${size}px`,
-                borderColor: `rgba(252, 211, 77, 0.5)`, // Yellowish
-              }}
-              animate={{
-                rotate: [0, 45, 90, 135, 180, 225, 270, 315, 360],
-                scale: [1, 1.4, 0.6, 1],
-                opacity: [0.3, 0.8, 0.2, 0.3],
-                borderRadius: ["0%", "25%", "50%", "25%", "0%"],
-              }}
-              transition={{
-                duration: 10 + Math.random() * 8,
-                repeat: Infinity,
-                delay: Math.random() * 5,
-                ease: "linear"
-              }}
-            />
-          );
-        })}
-      </div>
-
-      <div className="absolute inset-0">
-        {[...Array(6)].map((_, i) => {
-          const size = 25 + Math.random() * 35;
-          return (
-            <motion.div
-              key={`hexagon-${i}`}
-              className="absolute opacity-40"
-              style={{
-                left: `${Math.random() * 88}%`,
-                top: `${Math.random() * 88}%`,
-                width: `${size}px`,
-                height: `${size}px`,
-                background: `linear-gradient(45deg, rgba(252, 211, 77, 0.4), rgba(245, 158, 11, 0.4))`, // Yellow to Orange
-                clipPath: 'polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%)',
-              }}
-              animate={{
-                rotate: [0, 60, 120, 180, 240, 300, 360],
-                scale: [1, 1.5, 0.8, 1.2, 1],
-                opacity: [0.4, 0.8, 0.3, 0.6, 0.4],
-              }}
-              transition={{
-                duration: 12 + Math.random() * 8,
-                repeat: Infinity,
-                delay: Math.random() * 6,
-                ease: "easeInOut"
-              }}
-            />
-          );
-        })}
-      </div>
-
-      <div className="absolute inset-0">
-        {[...Array(5)].map((_, i) => {
-          const centerX = Math.random() * window.innerWidth;
-          const centerY = Math.random() * window.innerHeight;
-          const radius = 50 + Math.random() * 100;
-          
-          return (
-            <motion.div
-              key={`orbit-${i}`}
-              className="absolute w-3 h-3 bg-gradient-to-r from-yellow-500 to-yellow-700 rounded-full opacity-60" // Yellow gradient
-              style={{
-                left: centerX,
-                top: centerY,
-              }}
-              animate={{
-                x: [
-                  radius * Math.cos(0),
-                  radius * Math.cos(Math.PI / 2),
-                  radius * Math.cos(Math.PI),
-                  radius * Math.cos(3 * Math.PI / 2),
-                  radius * Math.cos(2 * Math.PI),
-                ],
-                y: [
-                  radius * Math.sin(0),
-                  radius * Math.sin(Math.PI / 2),
-                  radius * Math.sin(Math.PI),
-                  radius * Math.sin(3 * Math.PI / 2),
-                  radius * Math.sin(2 * Math.PI),
-                ],
-                scale: [1, 1.5, 1, 0.5, 1],
-              }}
-              transition={{
-                duration: 8 + Math.random() * 6,
-                repeat: Infinity,
-                delay: Math.random() * 4,
-                ease: "linear"
-              }}
-            />
-          );
-        })}
-      </div>
-    </div>
-  );
-};
 
 const menuItems = [
   {
     label: "Market",
     path: "/section",
-    color: "bg-gradient-to-r from-yellow-600 to-yellow-800", // Updated gradient
-    icon: <FaStore className="text-3xl sm:text-4xl md:text-5xl text-gray-900" />, // Icon color for dark background
+    color: "bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200",
+    icon: <Store className="w-10 h-10 text-blue-600" />,
+    description: "Explore marketplace"
   },
   {
     label: "Transaction Record",
     path: "/record",
-    color: "bg-gradient-to-r from-gray-700 to-gray-900", // Updated gradient
-    icon: <FaClipboardList className="text-3xl sm:text-4xl md:text-5xl text-yellow-400" />, // Icon color for dark background
+    color: "bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200",
+    icon: <ClipboardList className="w-10 h-10 text-green-600" />,
+    description: "View transaction history"
   },
   {
     label: "Wallet",
     path: "/mywallet",
-    color: "bg-gradient-to-r from-yellow-600 to-yellow-800", // Updated gradient
-    icon: <FaWallet className="text-3xl sm:text-4xl md:text-5xl text-gray-900" />, // Icon color for dark background
+    color: "bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200",
+    icon: <Wallet className="w-10 h-10 text-purple-600" />,
+    description: "Manage your assets"
   },
   {
     label: "Profile",
     path: "/profile",
-    color: "bg-gradient-to-r from-gray-700 to-gray-900", // Updated gradient
-    icon: <FaUser className="text-3xl sm:text-4xl md:text-5xl text-yellow-400" />, // Icon color for dark background
+    color: "bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200",
+    icon: <User className="w-10 h-10 text-orange-600" />,
+    description: "Account settings"
   },
   {
     label: "Data Pad",
     path: "/datapad",
-    color: "bg-gradient-to-r from-yellow-600 to-yellow-800", // Updated gradient
-    icon: <FaBook className="text-3xl sm:text-4xl md:text-5xl text-gray-900" />, // Icon color for dark background
+    color: "bg-gradient-to-br from-teal-50 to-teal-100 hover:from-teal-100 hover:to-teal-200",
+    icon: <Book className="w-10 h-10 text-teal-600" />,
+    description: "Access your data"
   },
   {
     label: "Contact Support",
     path: "/report",
-    color: "bg-gradient-to-r from-gray-700 to-gray-900", // Updated gradient
-    icon: (
-      <IoChatbubbleEllipsesOutline className="text-3xl sm:text-4xl md:text-5xl text-yellow-400" /> // Icon color for dark background
-    ),
+    color: "bg-gradient-to-br from-red-50 to-red-100 hover:from-red-100 hover:to-red-200",
+    icon: <MessageCircle className="w-10 h-10 text-red-600" />,
+    description: "Get help and support"
   },
 ];
 
-const cardVariants = {
-  initial: { opacity: 0, y: 20, scale: 0.95 },
-  animate: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.5, ease: "easeInOut" },
-  },
-  whileHover: {
-    scale: 1.05,
-    transition: { duration: 0.2, ease: "easeOut" },
-  },
-};
-
 const Home = () => {
+  const { user } = useSelector((state) => state.user);
+  const navigate = useNavigate();
   const menuSectionRef = useRef(null);
+  
+  // Hero carousel state
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [showBlog, setShowBlog] = useState(true);
+  const [heroImages, setHeroImages] = useState([]);
+  
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  // Wallet balance state
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [isLoadingBalance, setIsLoadingBalance] = useState(false);
+  const [errorBalance, setErrorBalance] = useState('');
+  const [showBalance, setShowBalance] = useState(true);
+  
+  // Ethereum balance state (from context or similar)
+  const [ethBalance, setEthBalance] = useState(0);
+  const [ethRate, setEthRate] = useState(0);
+  
+  // Transaction history state
+  const [transactions, setTransactions] = useState([]);
+  const [loadingTransactions, setLoadingTransactions] = useState(false);
+  const [errorTransactions, setErrorTransactions] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [visibleTransactions, setVisibleTransactions] = useState(3);
+  const [showAll, setShowAll] = useState(false);
+  
+  // Refresh state
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(null);
 
-  useEffect(() => {
+   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % giftCardImages.length);
     }, 6000);
@@ -397,134 +119,406 @@ const Home = () => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const truncateText = (text, maxLength) => {
-    if (!text) return '';
-    return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+  
+
+  // Navigation handler
+  const handleNavigation = (path) => {
+    navigate(path);
   };
 
+  // Wallet balance API
+  const fetchWalletBalance = useCallback(async () => {
+    if (!user?.id && !user?._id) return;
+
+    setIsLoadingBalance(true);
+    setErrorBalance('');
+    try {
+      const response = await fetch(`${SummaryApi.getWalletBalance.url}/${user._id || user.id}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      const data = await response.json();
+      if (data.success) {
+        setWalletBalance(data.balance || 0);
+      } else {
+        setErrorBalance(data.message || 'Failed to fetch wallet balance.');
+      }
+    } catch (err) {
+      setErrorBalance('An unexpected error occurred while fetching wallet balance.');
+      console.error("Error fetching wallet balance:", err);
+    } finally {
+      setIsLoadingBalance(false);
+    }
+  }, [user]);
+
+  // Transaction history API
+  const fetchTransactions = useCallback(async (currentStatusFilter) => {
+    if (!user?.id && !user?._id) {
+      console.warn('User not found in Redux. Cannot fetch transactions.');
+      setErrorTransactions('User authentication details not found.');
+      return;
+    }
+
+    setLoadingTransactions(true);
+    setErrorTransactions('');
+    try {
+      let url = `${SummaryApi.transactions.url}`;
+      const userId = user?.id || user?._id;
+      url += `?userId=${userId}`;
+
+      if (currentStatusFilter && currentStatusFilter !== 'all') {
+        url += `&status=${currentStatusFilter}`;
+      }
+
+      console.log('Fetching transactions from:', url);
+      const response = await fetch(url, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log('Transactions data:', data);
+      if (data.success && data.transactions) {
+        setTransactions(data.transactions);
+      } else {
+        setErrorTransactions(data.message || 'Failed to fetch transactions.');
+      }
+    } catch (err) {
+      console.error('Error fetching transactions:', err);
+      setErrorTransactions('An unexpected error occurred while fetching transactions.');
+    } finally {
+      setLoadingTransactions(false);
+    }
+  }, [user]);
+
+  // Refresh all data
+  const refreshAllData = useCallback(async () => {
+    setIsRefreshing(true);
+    setLastUpdated(null);
+    
+    try {
+      await Promise.all([
+        fetchWalletBalance(),
+        fetchTransactions(statusFilter)
+      ]);
+      setLastUpdated(new Date().toLocaleTimeString([], {
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }));
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [fetchWalletBalance, fetchTransactions, statusFilter]);
+
+  // Initialize data on component mount
+  useEffect(() => {
+    if (user) {
+      fetchWalletBalance();
+      fetchTransactions(statusFilter);
+    }
+  }, [user, fetchWalletBalance, fetchTransactions, statusFilter]);
+
+
+  // Calculate portfolio stats
+  const portfolioValue = walletBalance + (ethBalance * ethRate);
+  const portfolioGrowth = portfolioValue > 0 ? ((portfolioValue - walletBalance) / walletBalance * 100).toFixed(1) : 0;
+  const recentTransactionCount = transactions.filter(t => {
+    const transactionDate = new Date(t.createdAt || t.timestamp);
+    const dayAgo = new Date();
+    dayAgo.setDate(dayAgo.getDate() - 1);
+    return transactionDate >= dayAgo;
+  }).length;
+
+  // Update quick stats with real data
+  const quickStats = [
+    { 
+      label: "Portfolio Value", 
+      value: `₦${portfolioValue.toLocaleString()}`, 
+      change: portfolioGrowth > 0 ? `+${portfolioGrowth}%` : `${portfolioGrowth}%`, 
+      positive: portfolioGrowth >= 0 
+    },
+    
+    { 
+      label: "Recent Transactions", 
+      value: recentTransactionCount.toString(), 
+      change: `${transactions.length} total`, 
+      positive: recentTransactionCount > 0 
+    },
+  ];
+
+  const formatTransactionStatus = (status) => {
+    const statusMap = {
+      'pending': 'Pending',
+      'approved-processing': 'Processing',
+      'completed': 'Completed',
+      'rejected': 'Rejected'
+    };
+    return statusMap[status] || status;
+  };
+
+  const getStatusColor = (status) => {
+    const colorMap = {
+      'pending': 'bg-yellow-100 text-yellow-800',
+      'approved-processing': 'bg-blue-100 text-blue-800',
+      'completed': 'bg-green-100 text-green-800',
+      'rejected': 'bg-red-100 text-red-800'
+    };
+    return colorMap[status] || 'bg-gray-100 text-gray-800';
+  };
+
+
+  const filteredMenuItems = menuItems.filter(item =>
+    item.label.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const displayedTransactions = showAll ? transactions : transactions.slice(0, visibleTransactions);
+
+  const handleViewMore = () => {
+    setShowAll(true);
+    setVisibleTransactions(transactions.length);
+  };
+
+  const handleCloseViewMore = () => {
+    setShowAll(false);
+    setVisibleTransactions(3);
+  };
+
+
   return (
-    <div className="relative min-h-screen bg-gray-950"> {/* Main background set to dark */}
-      <AnimatedGeometricBackground />
-      
-      <main className="relative z-10 container mx-auto px-2 sm:px-4 lg:px-6 space-y-6 sm:space-y-8 text-gray-100 min-h-screen"> {/* Text color set to light */}
-        <header
-          className="relative h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-[70vh] min-h-[350px] sm:min-h-[400px] mt-20 sm:mt-24 bg-cover bg-center rounded-lg sm:rounded-xl flex items-center justify-center transition-all duration-500 ease-in-out shadow-lg overflow-hidden" // Removed 'hero-section' class
+    <div className="relative bg-white shadow-sm border-b border-gray-200 top-0 z-10 w-full px-4 py-10 space-y-12">
+        {/* Hero Section */}
+       <header
+          className="relative w-full h-[65vh] min-h-[320px] mt-16 bg-cover bg-center flex items-center justify-center shadow-xl rounded-3xl overflow-hidden"
           style={{ backgroundImage: `url(${currentImage.url})` }}
         >
-          <div className="absolute inset-0 bg-black/70 rounded-lg sm:rounded-xl" /> {/* Replaced 'hero-overlay' with Tailwind */}
-          <div className="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto"> {/* Replaced 'hero-content' with Tailwind */}
+          <div className="absolute inset-0" />
+          <div className="relative z-10 text-center px-4 max-w-3xl mx-auto">
             <motion.div
-              className="mt-4 sm:mt-6" // Removed 'hero-button-container'
+              className="mt-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              <Link to="/section"
-                className="inline-block font-press-start bg-yellow-500 text-gray-900 border-2 border-yellow-700 px-3 py-2 sm:px-4 sm:py-2 md:px-6 md:py-3 text-xs sm:text-sm uppercase shadow-[2px_2px_0_#a16207] hover:bg-yellow-600 hover:shadow-[4px_4px_0_#854d0e] transition-all duration-200 animate-pulseGlow focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2" // Removed 'hero-button' class
-              >
-                <span className="block sm:hidden">Market</span>
-                <span className="hidden sm:block">Market</span>
+              <Link to="/section" className="inline-block bg-yellow-500 text-white border-2 border-yellow-600 px-6 py-3 uppercase font-semibold text-sm rounded-full shadow-lg hover:bg-yellow-600 transition duration-200">
+                Market
               </Link>
             </motion.div>
           </div>
         </header>
 
-        {/* Toggle Button - Updated colors */}
-        <div className="flex justify-center px-2">
-          <button
-            onClick={() => setShowBlog(!showBlog)}
-            className="bg-gradient-to-r from-yellow-600 to-yellow-800 hover:from-yellow-700 hover:to-yellow-900 text-gray-900 px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-semibold shadow-md transition duration-300 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 backdrop-blur-sm"
-          >
-            {showBlog ? "Show Menu" : "Show Blog"}
-          </button>
-        </div>
-
-        {/* Blog Section */}
-        <AnimatePresence mode="wait">
-          {showBlog && (
-            <motion.section
-              key="blog"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -30 }}
-              transition={{ duration: 0.6 }}
-              className="px-2 sm:px-4 md:px-6 pb-16 sm:pb-20"
-            >
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 sm:mb-6 text-gray-100 break-words"> {/* Text color set to light */}
-                <span className="block sm:hidden">Latest News</span>
-                <span className="hidden sm:block">Latest Insights</span>
-              </h2>
-              <div className="max-w-7xl mx-auto">
-                <NetBlog limit={4} />
-              </div>
-            </motion.section>
+      {/* Quick Stats */}
+      <section className="py-8 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Account Overview</h2>
+              {lastUpdated && (
+                <p className="text-sm text-gray-500 mt-1">
+                  Last updated: {lastUpdated}
+                </p>
+              )}
+            </div>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setShowBalance(!showBalance)}
+                className="p-2 text-gray-400 hover:text-gray-600"
+                title={showBalance ? "Hide Balance" : "Show Balance"}
+              >
+                {showBalance ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
+              </button>
+              <button
+                onClick={refreshAllData}
+                disabled={isRefreshing}
+                className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                title="Refresh Data"
+              >
+                <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
+              </button>
+            </div>
+          </div>
+          
+          {errorBalance && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-700 text-sm">{errorBalance}</p>
+            </div>
           )}
-        </AnimatePresence>
-
-        {/* Menu Section */}
-        <AnimatePresence mode="wait">
-          {!showBlog && (
-            <motion.section
-              key="menu"
-              ref={menuSectionRef}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -30 }}
-              transition={{ duration: 0.6 }}
-              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6 px-2 sm:px-4 md:px-6 pb-20 sm:pb-24" // Removed 'menu-grid' class
-            >
-              {menuItems.map((item, index) => (
-                <motion.div
-                  key={index}
-                  variants={cardVariants}
-                  initial="initial"
-                  animate="animate"
-                  whileHover="whileHover"
-                  className={`rounded-lg sm:rounded-xl p-3 sm:p-4 text-center shadow-lg cursor-pointer ${item.color} transition-all duration-300 min-h-[120px] sm:min-h-[140px] md:min-h-[160px] flex flex-col items-center justify-center hover:shadow-xl backdrop-blur-sm`} // Removed 'menu-card' class
-                >
-                  <Link
-                    to={item.path}
-                    className="flex flex-col items-center gap-2 sm:gap-3 text-gray-100 w-full h-full justify-center focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 focus:ring-offset-transparent rounded-lg" // Removed 'menu-link' class
-                  >
-                    <div className="flex-shrink-0"> {/* Removed 'menu-icon-container' class */}
-                      {item.icon}
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {quickStats.map((stat, index) => (
+              <div key={index} className="bg-gray-50 rounded-xl p-6 hover:shadow-md transition-shadow duration-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <p className="text-sm text-gray-600 mb-1">{stat.label}</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {showBalance ? stat.value : "••••••"}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <div className={`px-2 py-1 rounded-full text-xs font-semibold flex items-center ${
+                      stat.positive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}>
+                      {stat.positive ? <TrendingUp className="w-3 h-3 mr-1" /> : <TrendingDown className="w-3 h-3 mr-1" />}
+                      {stat.change}
                     </div>
-                    <span className="text-xs sm:text-sm md:text-base font-semibold uppercase tracking-wide leading-tight text-center break-words max-w-full overflow-hidden"> {/* Removed 'menu-label' class and text-shadow */}
-                      <span className="block sm:hidden">
-                        {truncateText(item.label, 12)}
-                      </span>
-                      <span className="hidden sm:block md:hidden">
-                        {truncateText(item.label, 15)}
-                      </span>
-                      <span className="hidden md:block lg:hidden">
-                        {truncateText(item.label, 18)}
-                      </span>
-                      <span className="hidden lg:block">
-                        {item.label}
-                      </span>
-                    </span>
-                  </Link>
-                </motion.div>
-              ))}
-            </motion.section>
-          )}
-        </AnimatePresence>
-
-        {/* Footer */}
-        <div className="mt-auto">
-          <HomeFooter
-            onBlogClick={() => {
-              setShowBlog(true);
-              scrollToSection(menuSectionRef);
-            }}
-            onMenuClick={() => {
-              setShowBlog(false);
-              scrollToSection(menuSectionRef);
-            }}
-            isBlogVisible={showBlog}
-          />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* Menu Grid */}
+      <section ref={menuSectionRef} className="py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Quick Access
+            </h2>
+            <p className="text-lg text-gray-600">
+              Navigate to your features
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredMenuItems.map((item, index) => (
+              <div
+                key={index}
+                className={`${item.color} rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer group`}
+                onClick={() => handleNavigation(item.path)}
+              >
+                <div className="flex flex-col items-center text-center">
+                  <div className="mb-4 group-hover:scale-110 transition-transform duration-200">
+                    {item.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                    {item.label}
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Recent Activity */}
+      <section className="py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                Recent Activity
+              </h2>
+              <p className="text-lg text-gray-600">
+                Your latest transactions and activities
+              </p>
+            </div>
+            <button 
+              onClick={() => handleNavigation('/record')}
+              className="text-blue-600 hover:text-blue-800 font-medium"
+            >
+              View All Trade Status→
+            </button>
+          </div>
+          
+          {loadingTransactions ? (
+            <div className="bg-gray-50 rounded-xl p-8 text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading transactions...</p>
+            </div>
+          ) : errorTransactions ? (
+            <div className="bg-red-50 rounded-xl p-6 border border-red-200">
+              <p className="text-red-700">Error loading transactions: {errorTransactions}</p>
+              <button 
+                onClick={() => fetchTransactions(statusFilter)}
+                className="mt-2 text-red-600 hover:text-red-800 font-medium"
+              >
+                Try Again
+              </button>
+            </div>
+          ) : transactions.length === 0 ? (
+            <div className="bg-gray-50 rounded-xl p-8 text-center">
+              <Wallet className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-600 text-lg">No transactions found</p>
+              <p className="text-gray-500">Your transaction history will appear here</p>
+            </div>
+          ) : (
+            <div className="bg-gray-50 rounded-xl p-6">
+              <div className="space-y-4">
+                {displayedTransactions.map((transaction, index) => (
+                  <div key={transaction._id || index} className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                        <Wallet className="text-blue-600 w-5 h-5" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900">
+                          {transaction.type || 'Transaction'} #{transaction._id?.slice(-8) || 'N/A'}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {transaction.createdAt ? new Date(transaction.createdAt).toLocaleDateString() : 'Unknown date'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className={`font-semibold ${
+                        transaction.type === 'credit' || transaction.amount > 0 
+                          ? 'text-green-600' 
+                          : 'text-red-600'
+                      }`}>
+                        {transaction.type === 'credit' || transaction.amount > 0 ? '+' : '-'}
+                        ₦{Math.abs(transaction.amount || 0).toLocaleString()}
+                      </p>
+                      <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(transaction.status)}`}>
+                        {formatTransactionStatus(transaction.status || 'pending')}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {transactions.length > 3 && (
+                <div className="mt-4 text-center">
+                  {!showAll ? (
+                    <button
+                      onClick={handleViewMore}
+                      className="text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      View More ({transactions.length - visibleTransactions} more)
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleCloseViewMore}
+                      className="text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      Show Less
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Blog Section */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <NetBlog />
+        </div>
+      </section>
+
+      {/* Footer */}
+      <HomeFooter />
     </div>
   );
 };

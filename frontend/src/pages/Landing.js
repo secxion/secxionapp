@@ -189,7 +189,7 @@ export default function Landing() {
   return (
     <motion.div
       // Main background gradient changed to black and dark gray
-      className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 mt text-gray-100 font-sans relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 mt-10 text-gray-100 font-sans relative overflow-hidden"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
@@ -215,6 +215,7 @@ export default function Landing() {
                   SXN
                 </h1>
                 <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full"></div> {/* Updated underline gradient */}
+              
               </div>
             </div>
             

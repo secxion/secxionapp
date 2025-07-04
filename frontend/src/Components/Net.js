@@ -7,9 +7,11 @@ import { FaCaretDown } from "react-icons/fa";
 import ROLE from "../common/role";
 import "./Net.css";
 
+// A custom, accessible dialog component
 const CustomDialog = ({ open, onOpenChange, children, title, description }) => {
     const dialogRef = useRef(null);
 
+    // Close dialog on outside click
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dialogRef.current && !dialogRef.current.contains(event.target) && open) {
@@ -24,6 +26,7 @@ const CustomDialog = ({ open, onOpenChange, children, title, description }) => {
         };
     }, [open, onOpenChange]);
 
+    // Close dialog on 'Escape' key press
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === 'Escape' && open) {
@@ -67,7 +70,7 @@ const CustomDialog = ({ open, onOpenChange, children, title, description }) => {
                 {children}
                 <button
                     onClick={() => onOpenChange(false)}
-                    className="w-full mt-4 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98]"
+                    className="w-full mt-4 px-4 py-3 bg-gray-800 text-white rounded-xl font-medium hover:bg-gray-900 transition-colors duration-200 shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98]"
                 >
                     Close
                 </button>
@@ -75,6 +78,7 @@ const CustomDialog = ({ open, onOpenChange, children, title, description }) => {
         </div>
     );
 };
+
 
 const Net = ({ blogs }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -99,7 +103,7 @@ const Net = ({ blogs }) => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
-    // Enhanced utility function to handle responsive text truncation
+    // Utility function to handle responsive text truncation
     const getResponsiveText = (text, mobileLength, tabletLength, desktopLength) => {
         if (!text) return '';
         
@@ -115,7 +119,7 @@ const Net = ({ blogs }) => {
         return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
     };
 
-    // Enhanced screen size detection
+    // Screen size detection
     const updateScreenSize = useCallback(() => {
         const width = window.innerWidth;
         setScreenSize({
@@ -151,7 +155,7 @@ const Net = ({ blogs }) => {
         setIsDialogOpen(true);
     };
 
-    // Enhanced blog rotation with smooth transitions
+    // Blog rotation with smooth transitions
     useEffect(() => {
         const resetTimeout = () => {
             if (timeoutRef.current) {
@@ -165,7 +169,7 @@ const Net = ({ blogs }) => {
             setTimeout(() => {
                 setCurrentIndex((prevIndex) => (prevIndex + 1) % blogs.length);
                 setTransitionClass("translate-x-0 opacity-100");
-                timeoutRef.current = setTimeout(nextBlog, 15000); // Increased duration for better readability
+                timeoutRef.current = setTimeout(nextBlog, 15000); 
             }, 600);
         };
 
@@ -190,7 +194,8 @@ const Net = ({ blogs }) => {
     const getContentLength = () => screenSize.isMobile ? 20 : screenSize.isTablet ? 60 : 120;
 
     return (
-        <div className="net-container fixed top-0 left-0 w-full bg-gradient-to-r from-purple-600 via-blue-500 to-indigo-600 shadow-lg h-9 md:h-11 px-2 md:px-4 lg:px-6 flex items-center font-mono text-white transition-all duration-300 z-50">
+        // UPDATED: Changed background to cream white (bg-yellow-50)
+        <div className="net-container fixed top-0 left-0 w-full bg-white h-9 md:h-11 px-2 md:px-4 lg:px-6 flex items-center font-mono text-gray-900 transition-all duration-300 z-50">
             {/* User Profile Section */}
             {(profilePic && name) && (
                 <div className="user-profile-section relative flex items-center mr-3 md:mr-6 lg:mr-8 shrink-0">
@@ -198,19 +203,20 @@ const Net = ({ blogs }) => {
                         <img
                             src={profilePic}
                             alt="Profile"
-                            className="w-7 h-7 md:w-7 rounded-full md:h-7 lg:w-8 lg:h-8 object-cover cursor-pointer ring-2 ring-white/30 hover:ring-white/50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                            className="w-7 h-7 md:w-7 rounded-full md:h-7 lg:w-8 lg:h-8 object-cover cursor-pointer ring-2 ring-gray-200 hover:ring-gray-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-105"
                             onClick={toggleDropdown}
                         />
-                        <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 md:w-3 md:h-3 bg-green-400 rounded-full border-2 border-white shadow-sm animate-pulse"></div>
+                        <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 md:w-3 md:h-3 bg-green-400 rounded-full border-2 border-white shadow-sm"></div>
                     </div>
                     
                     <div className="ml-2 md:ml-3 flex items-center cursor-pointer group" onClick={toggleDropdown}>
-                        <span className="text-xs md:text-sm lg:text-base font-medium text-white/90 group-hover:text-white transition-colors duration-200">
-                            Hi, <span className="font-semibold">
+                        {/* UPDATED: Made profile name bolder and blacker */}
+                        <span className="text-xs md:text-sm lg:text-base font-medium text-gray-800 group-hover:text-black transition-colors duration-200">
+                            Hi, <span className="font-bold text-black">
                                 {getResponsiveText(name, getNameLength(), getNameLength(), name.length)}
                             </span>
                         </span>
-                        <FaCaretDown className="w-2.5 h-2.5 md:w-3 md:h-3 ml-1 md:ml-1.5 text-white/70 group-hover:text-white transition-all duration-200 group-hover:scale-110" />
+                        <FaCaretDown className="w-2.5 h-2.5 md:w-3 md:h-3 ml-1 md:ml-1.5 text-gray-500 group-hover:text-black transition-all duration-200 group-hover:scale-110" />
                     </div>
 
                     {/* Dropdown Menu */}
@@ -221,9 +227,9 @@ const Net = ({ blogs }) => {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -10, scale: 0.95 }}
                             transition={{ duration: 0.2 }}
-                            className="absolute top-full left-0 mt-3 w-52 bg-white/95 backdrop-blur-md rounded-xl shadow-xl py-2 z-50 border border-gray-200/50"
+                            className="absolute top-full left-0 mt-3 w-52 bg-white rounded-xl shadow-lg py-2 z-50 border border-gray-100"
                         >
-                            <div className="px-4 py-3 border-b border-gray-200/50 bg-gradient-to-r from-blue-50 to-purple-50">
+                            <div className="px-4 py-3 border-b border-gray-100">
                                 <p className="text-sm font-bold text-gray-800 truncate">{name}</p>
                             </div>
                             
@@ -260,16 +266,16 @@ const Net = ({ blogs }) => {
                 </div>
             )}
 
-            {/* Enhanced News Ticker Section */}
+            {/* News Ticker Section */}
             <div className="flex-grow relative h-8 md:h-10 overflow-hidden flex items-center min-w-0">
                 {loading ? (
                     <div className="flex items-center space-x-3">
                         <div className="flex space-x-1">
-                            <div className="w-2 h-2 bg-white/70 rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-white/70 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                            <div className="w-2 h-2 bg-white/70 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                            <div className="w-2 h-2 bg-gray-400/70 rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-gray-400/70 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                            <div className="w-2 h-2 bg-gray-400/70 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                         </div>
-                        <span className="text-xs md:text-sm font-medium text-white/80">Loading latest news...</span>
+                        <span className="text-xs md:text-sm font-medium text-gray-500">Loading latest news...</span>
                     </div>
                 ) : currentBlog ? (
                     <motion.div
@@ -283,33 +289,21 @@ const Net = ({ blogs }) => {
                                     <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-yellow-400 rounded-full"></div>
                                     <div className="absolute inset-0 w-1.5 h-1.5 md:w-2 md:h-2 bg-yellow-400 rounded-full animate-ping"></div>
                                 </div>
-                                <span className="text-xs md:text-sm lg:text-base font-bold text-white group-hover:text-yellow-200 transition-colors duration-300">
+                                <span className="text-xs md:text-sm lg:text-base font-bold text-yellow-600 group-hover:text-yellow-700 transition-colors duration-300">
                                     {getResponsiveText(currentBlog.title, getTitleLength(), getTitleLength(), currentBlog.title.length)}
                                 </span>
                             </div>
                             
-                            <ArrowRight className="w-3 h-3 md:w-4 md:h-4 text-white/70 group-hover:text-white group-hover:translate-x-1 transition-all duration-300 flex-shrink-0" />
+                            <ArrowRight className="w-3 h-3 md:w-4 md:h-4 text-gray-400 group-hover:text-black group-hover:translate-x-1 transition-all duration-300 flex-shrink-0" />
                             
-                            <span className="text-xs md:text-sm text-white/90 group-hover:text-white transition-colors duration-300 truncate flex-grow">
+                            {/* UPDATED: Made blog content snippet darker and bolder */}
+                            <span className="text-xs md:text-sm font-medium text-gray-800 group-hover:text-black transition-colors duration-300 truncate flex-grow">
                                 {getResponsiveText(currentBlog.content, getContentLength(), getContentLength(), currentBlog.content.length)}
                             </span>
                         </div>
-
-                        {/* Progress indicator for multiple blogs */}
-                        {blogs.length > 1 && (
-                            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white/20">
-                                <motion.div
-                                    className="h-full bg-yellow-400"
-                                    initial={{ width: "0%" }}
-                                    animate={{ width: "100%" }}
-                                    transition={{ duration: 15, ease: "linear" }}
-                                    key={currentIndex}
-                                />
-                            </div>
-                        )}
                     </motion.div>
                 ) : (
-                    <div className="flex items-center space-x-2 text-white/70">
+                    <div className="flex items-center space-x-2 text-gray-500">
                         <div className="w-1.5 h-1.5 bg-gray-400 rounded-full opacity-50"></div>
                         <span className="italic text-xs md:text-sm">No news available at the moment</span>
                     </div>
@@ -318,14 +312,14 @@ const Net = ({ blogs }) => {
 
             {/* Blog count indicator */}
             {blogs && blogs.length > 1 && (
-                <div className="hidden md:flex items-center space-x-1 ml-4 text-white/60 text-xs">
+                <div className="hidden md:flex items-center space-x-1 ml-4 text-gray-400 text-xs">
                     <span>{currentIndex + 1}</span>
-                    <div className="w-1 h-1 bg-white/40 rounded-full"></div>
+                    <div className="w-1 h-1 bg-gray-400/70 rounded-full"></div>
                     <span>{blogs.length}</span>
                 </div>
             )}
 
-            {/* Enhanced Blog Details Dialog */}
+            {/* Blog Details Dialog */}
             <CustomDialog
                 open={isDialogOpen}
                 onOpenChange={setIsDialogOpen}

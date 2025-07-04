@@ -29,14 +29,13 @@ if (isProduction) {
   });
 }
 
-// 🌐 Allowed Origins
 const allowedOrigins = [
   process.env.FRONTEND_URL?.trim() || '',
+  'http://localhost:3000',
+  'https://secxion.com',
   'https://secxion.onrender.com',
-  "secxion.com",
-  "https://secxion.com",
-  "www.secxion.com"
 ];
+
 
 // ✅ CORS Config
 const corsOptions = {
@@ -63,6 +62,13 @@ app.use(mongoSanitize()); // 🧽 Prevent NoSQL injection
 // 🔀 API Routing
 app.use('/api', router);
 
+// 🛠 Catch unmatched API routes in development
+if (!isProduction) {
+  app.use('/api/*', (req, res) => {
+    res.status(404).json({ error: 'API route not found in development mode' });
+  });
+}
+
 // 🌐 Serve Frontend in Production
 if (isProduction) {
   const __filename = fileURLToPath(import.meta.url);
@@ -88,6 +94,7 @@ connectDB()
     app.listen(PORT, () => {
       console.log(`🚀 Server running at ${isProduction ? 'https://secxion.com' : `http://localhost:${PORT}`}`);
       console.log('🌐 Allowed origins:', allowedOrigins);
+    
     });
   })
   .catch((err) => {

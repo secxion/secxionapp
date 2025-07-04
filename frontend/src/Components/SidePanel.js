@@ -21,7 +21,6 @@ import {
 } from '@heroicons/react/24/outline';
 import Clock from 'react-live-clock';
 import timezones from '../helpers/timeZones';
-import NotificationBadge from "../helper/NotificationBadge";
 import './Header.css';
 
 const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
@@ -68,7 +67,6 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="fixed inset-0 z-50 md:hidden" onClose={() => setOpen(false)}>
-        {/* Backdrop */}
         <Transition.Child
           as={Fragment}
           enter="ease-in-out duration-300"
@@ -90,43 +88,16 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
           leaveFrom="translate-x-0"
           leaveTo="-translate-x-full"
         >
-          <Dialog.Panel className="relative flex flex-col w-full max-w-sm h-full overflow-hidden">
-            {/* Animated Geometric Background */}
-            <div className="absolute inset-0 bg-slate-500">
-              {/* Animated shapes */}
-              <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute -top-10 -left-10 w-32 h-32 bg-gradient-to-r from-blue-400/20 to-purple-600/20 rounded-full blur-xl animate-pulse"></div>
-                <div className="absolute top-20 -right-10 w-24 h-24 bg-gradient-to-r from-pink-400/20 to-rose-600/20 rounded-full blur-lg animate-bounce" style={{animationDelay: '1s'}}></div>
-                <div className="absolute top-1/2 -left-8 w-20 h-20 bg-gradient-to-r from-cyan-400/20 to-blue-600/20 rounded-full blur-lg animate-pulse" style={{animationDelay: '2s'}}></div>
-                <div className="absolute bottom-20 right-4 w-28 h-28 bg-gradient-to-r from-emerald-400/20 to-teal-600/20 rounded-full blur-xl animate-bounce" style={{animationDelay: '3s'}}></div>
-                
-                {/* Geometric shapes */}
-                <div className="absolute top-1/4 left-1/2 w-16 h-16 border border-white/10 rotate-45 animate-spin" style={{animationDuration: '20s'}}></div>
-                <div className="absolute bottom-1/3 left-1/4 w-12 h-12 border border-purple-400/20 rotate-12 animate-pulse"></div>
-                <div className="absolute top-1/3 right-1/4 w-8 h-8 bg-gradient-to-r from-pink-400/30 to-purple-600/30 transform rotate-45 animate-pulse" style={{animationDelay: '1.5s'}}></div>
-              </div>
-              
-              {/* Overlay for content readability */}
-              <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"></div>
-            </div>
-
-            {/* Content */}
+          <Dialog.Panel className="relative flex flex-col w-full max-w-sm h-full overflow-hidden bg-white text-black shadow-xl">
             <div className="relative z-10 flex flex-col h-full">
-              {/* Header */}
-              <div className="flex items-center justify-between px-6 py-10 border-b border-white/10">
+              <div className="flex items-center justify-between px-6 py-10 border-b border-gray-200">
                 <button
                   type="button"
-                  className="text-white/70 hover:text-white transition-colors duration-200"
+                  className="text-gray-500 hover:text-black transition-colors duration-200"
                   onClick={() => setOpen(false)}
                 >
                   <XMarkIcon className="h-6 w-6" />
                 </button>
-
-                <Link to="/notifications" title="Notifications" aria-label="Notifications" onClick={handleLinkClick}>
-                  <div className="relative h-6 w-6 text-white/70 hover:text-white transition-colors duration-200">
-                    <NotificationBadge />
-                  </div>
-                </Link>
 
                 <Link to="/home" onClick={handleLinkClick} className="flex items-center">
                   <div className="logo-wrapper">
@@ -147,31 +118,29 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
                 </button>
               </div>
 
-              {/* Navigation */}
               <nav className="flex-1 px-4 py-6 space-y-3 overflow-y-auto">
                 {navigationItems.map(({ path, icon: Icon, label, gradient }) => (
                   <Link
                     key={label}
                     to={path}
                     onClick={handleLinkClick}
-                    className="group flex items-center px-4 py-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg"
+                    className="group flex items-center px-4 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 border border-gray-300 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg"
                   >
                     <div className={`flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r ${gradient} mr-4 group-hover:scale-110 transition-transform duration-300`}>
                       <Icon className="h-5 w-5 text-white" />
                     </div>
-                    <span className="text-white/90 group-hover:text-white font-medium text-sm transition-colors duration-200">
+                    <span className="text-gray-800 group-hover:text-black font-medium text-sm transition-colors duration-200">
                       {label}
                     </span>
                   </Link>
                 ))}
               </nav>
 
-              {/* Timezone Selector */}
-              <div className="px-4 py-4 border-t border-white/10">
+              <div className="px-4 py-4 border-t border-gray-200">
                 <button
                   type="button"
                   onClick={toggleTimezones}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 hover:border-white/20 rounded-xl text-white/90 hover:text-white transition-all duration-300 group"
+                  className="w-full flex items-center justify-between px-4 py-3 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-xl text-gray-800 hover:text-black transition-all duration-300 group"
                 >
                   <div className="flex items-center">
                     <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-400 mr-3">
@@ -181,28 +150,28 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
                       {getSelectedTimezoneLabel() || 'Select Timezone'}
                     </span>
                   </div>
-                  <ChevronDownIcon 
-                    className={`h-5 w-5 text-white/60 transform transition-transform duration-300 ${showTimezones ? 'rotate-180' : ''} group-hover:text-white/80`}
+                  <ChevronDownIcon
+                    className={`h-5 w-5 text-gray-500 transform transition-transform duration-300 ${showTimezones ? 'rotate-180' : ''} group-hover:text-black`}
                   />
                 </button>
 
                 {showTimezones && (
-                  <div className="mt-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl shadow-2xl max-h-48 overflow-y-auto">
+                  <div className="mt-3 bg-gray-100 border border-gray-300 rounded-xl shadow-2xl max-h-48 overflow-y-auto">
                     <ul className="py-2">
                       {timezones.map((tz) => (
                         <li key={tz.value}>
                           <button
                             onClick={() => handleTimezoneChange(tz.value)}
-                            className={`w-full text-left px-4 py-2 hover:bg-white/10 transition-colors duration-200 text-sm ${
-                              timezone === tz.value 
-                                ? 'text-cyan-300 font-semibold bg-white/5' 
-                                : 'text-white/80 hover:text-white'
+                            className={`w-full text-left px-4 py-2 hover:bg-gray-200 transition-colors duration-200 text-sm ${
+                              timezone === tz.value
+                                ? 'text-cyan-700 font-semibold bg-gray-200'
+                                : 'text-gray-800 hover:text-black'
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <span>{tz.label}</span>
                               {timezone === tz.value && (
-                                <CheckIcon className="h-4 w-4 text-cyan-300" />
+                                <CheckIcon className="h-4 w-4 text-cyan-600" />
                               )}
                             </div>
                           </button>
@@ -213,24 +182,23 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
                 )}
               </div>
 
-              {/* Time Display */}
-              <div className="px-4 py-6 text-center border-t border-white/10">
-                <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+              <div className="px-4 py-6 text-center border-t border-gray-200">
+                <div className="bg-gray-100 border border-gray-300 rounded-xl p-4">
                   <div className="flex items-center justify-center mb-2">
-                    <ClockIcon className="h-5 w-5 text-cyan-400 mr-2" />
-                    <span className="text-white/60 text-xs uppercase tracking-wide font-medium">Current Time</span>
+                    <ClockIcon className="h-5 w-5 text-cyan-600 mr-2" />
+                    <span className="text-gray-600 text-xs uppercase tracking-wide font-medium">Current Time</span>
                   </div>
                   <Clock
                     format={'HH:mm:ss'}
                     ticking={true}
                     timezone={timezone}
-                    className="text-2xl font-bold text-white mb-1 tabular-nums"
+                    className="text-2xl font-bold text-black mb-1 tabular-nums"
                   />
                   <Clock
                     format={'dddd, MMMM Do YYYY'}
                     ticking={true}
                     timezone={timezone}
-                    className="text-sm text-white/60 font-medium"
+                    className="text-sm text-gray-600 font-medium"
                   />
                 </div>
               </div>

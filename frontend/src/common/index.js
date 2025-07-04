@@ -1,6 +1,4 @@
-const backendDomain =
-  process.env.REACT_APP_BACKEND_URL?.trim() ||
-  'https://secxion.com';
+const backendDomain = process.env.REACT_APP_BACKEND_URL || "https://secxion.com";
 
 const SummaryApi = {
     signUP : {

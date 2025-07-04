@@ -8,14 +8,14 @@ import Context from "../Context";
 import { useSound } from "../Context/SoundContext";
 import { useDebounce } from "../hooks/useDebounce";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faSignOutAlt, faVolumeUp, faVolumeMute } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faSignOutAlt, faVolumeUp, faVolumeMute, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { PiBell } from 'react-icons/pi';
 import notificationSound from '../Assets/notification.mp3';
 import SummaryApi from "../common";
 import { BiSearch } from 'react-icons/bi';
 import SidePanel from "./SidePanel";
-import './Header.css';
-import './Pop.css';
+import NotificationBadge from "../helper/NotificationBadge";
+
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ const Header = () => {
   const { soundEnabled, toggleSound } = useSound();
   const { token } = useContext(Context);
   const navigate = useNavigate();
-  const searchInput = useLocation();
+  const location = useLocation();
 
   const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
@@ -34,9 +34,9 @@ const Header = () => {
   const audioRef = useRef(null);
 
   const searchQuery = useMemo(() => {
-    const URLSearch = new URLSearchParams(searchInput.search);
+    const URLSearch = new URLSearchParams(location.search);
     return URLSearch.get("q") || "";
-  }, [searchInput]);
+  }, [location]);
   const [search, setSearch] = useState(searchQuery);
   const debouncedSearch = useDebounce(search, 300);
 
@@ -110,7 +110,7 @@ const Header = () => {
         console.error("❌ Error fetching new notifications:", error);
       }
     }
-  }, [user?._id, playNotificationSound, triggerVibration]);
+  }, [user?._id]);
 
   useEffect(() => {
     if (debouncedSearch.trim()) {
@@ -155,127 +155,118 @@ const Header = () => {
     }
   }, [dispatch, navigate, token]);
 
+  const goBack = () => navigate(-1);
   const toggleMobileMenu = () => setMobileMenuOpen(prev => !prev);
   const closeMobileMenu = () => setMobileMenuOpen(false);
   const truncatedMessage = useMemo(() => truncateWords(popupMessage, 10), [popupMessage]);
 
   return (
-    <>
-      <header className="header-spa left-0 right-0 top-0 pt-8 mb-8 inset-0 bg-black/80 backdrop-blur-md fixed w-full z-40 border-b border-white/20 shadow-md transition-all duration-300 flex items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="w-full mx-auto flex items-center justify-between">
-
-          {/* Mobile Menu Button */}
-          <div className="flex items-center gap-2">
+    <header className="fixed w-full z-40 bg-white text-black shadow-sm right-0 left-0 top-0 px-4 sm:px-6 lg:px-8 flex flex-col gap-2 sm:mt-8 md:mt-10 lg:mt-10 mt-8">
+      <div className="flex items-center justify-between min-h-[56px]">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-4">
             <button onClick={toggleMobileMenu} className="text-gray-500 hover:text-blue-600 md:hidden">
               <FontAwesomeIcon icon={faBars} className="h-5 w-5" />
             </button>
+
+            <div className="md:hidden flex-1 flex items-center justify-center">
+              <div className="flex items-center border border-gray-300 rounded-md px-2 py-1 w-full max-w-[200px]">
+                <BiSearch className="text-yellow-700 h-4 w-4 mr-1" />
+                <input
+                  type="text"
+                placeholder="gift cards, vc, cc...."
+                  className="bg-transparent text-black text-xs outline-none w-full placeholder:text-[10px] placeholder-gray-500"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Logo */}
-          <Link to="/home" className="hidden md:flex left-0 items-center font-bold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 tracking-wide">
-            <div className="logo-wrapper">
-              <h1 className="logo-text font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">SXN</h1>
-              <div className="logo-accent"></div>
-            </div>
+          <Link to="/home" className="relative hidden md:flex items-center font-bold text-xl text-yellow-600 tracking-wide">
+            <h1 className="font-extrabold tracking-wide">
+               <h1 className="font-extrabold text-2xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600"> {/* Updated logo gradient */}
+                  SXN
+                </h1>
+                <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full"></div> {/* Updated underline gradient */}
+            </h1>
           </Link>
 
-        <div className="flex gap-2">
-            
-            {/* Desktop Search */}
-          <div className="hidden md:flex items-center bg-black border-2 rounded-md px-4 py-[6px] w-72 glow-border">
-            <FcSearch className="text-white h-5 w-5 mr-2" />
-            <input
-              type="text"
-              placeholder="Search gift/visa/credit cards, deals, offers..."
-              className="bg-transparent minecraft-font text-white text-[12px] outline-none w-full placeholder:text-[8px] placeholder-gray-600"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+          <div className="hidden md:flex gap-3 items-center">
+            {location.pathname === "/search" && (
+              <button onClick={goBack} className="text-yellow-600 hover:text-yellow-800">
+                <FontAwesomeIcon icon={faArrowLeft} className="h-5 w-5" />
+              </button>
+            )}
 
-          {/* Mobile Search */}
-          <div className="md:hidden flex items-center w-full mx-4">
-            <div className="flex items-center bg-black border-2 rounded-md px-2 py-[6px] w-full glow-border">
-              <BiSearch className="text-yellow-700 h-5 w-5 mr-2" />
+            <div className="flex items-center border border-gray-300 rounded-md px-3 py-1 w-64">
+              <FcSearch className="text-gray-600 h-4 w-4 mr-2" />
               <input
                 type="text"
-                placeholder="Search gift/visa/credit cards, offers ..."
-                className="bg-transparent minecraft-font text-white text-[12px] outline-none w-full placeholder:text-[8px] placeholder-gray-600"
+                placeholder="gift cards, vc, cc..."
+                className="bg-transparent text-black text-sm outline-none w-full placeholder:text-xs placeholder-gray-500"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-          </div>
 
-          {/* Navigation */}
-          <nav className="hidden minecraft-font text-[9px] md:flex items-center gap-2">
-            <Link to="/record" className="px-3 py-1 border border-cyan-500 text-gray-900 hover:bg-cyan-600 hover:text-white rounded transition duration-200">
-              Trade Status
-            </Link>
-            <Link to="/datapad" className="px-3 py-1 border border-yellow-500 text-gray-900 hover:bg-yellow-500 hover:text-black rounded transition duration-200">
-              DataPad
-            </Link>
-            <Link to="/notifications" className="relative px-3 py-1 border border-emerald-500 text-gray-900 hover:bg-emerald-600 hover:text-white rounded transition duration-200">
-              <PiBell className={animateNotification ? 'animate-ping-slow text-2xl' : 'text-2xl'} />
-              {unreadNotificationCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs px-1.5 py-0.5 rounded-full">
-                  {unreadNotificationCount}
-                </span>
-              )}
-            </Link>
-            {user?._id && (
-              <button
-                onClick={handleLogout}
-                disabled={loading}
-                className="px-3 py-1 border border-red-500 text-gray-900 hover:bg-red-600 hover:text-white rounded transition flex items-center"
-              >
-                <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
-                Logout
-              </button>
-            )}
-            <button
-              onClick={toggleSound}
-              className="px-3 py-1 border border-gray-500 text-gray-900 hover:bg-gray-600 hover:text-white rounded transition flex items-center"
-              title={soundEnabled ? "Disable Sound" : "Enable Sound"}
-            >
-              <FontAwesomeIcon icon={soundEnabled ? faVolumeUp : faVolumeMute} className="mr-1" />
-              <span className="hidden sm:inline">{soundEnabled ? "" : ""}</span>
-            </button>
-          </nav>
-          
-          </div>
-          
-
-          {/* Mobile Audio Toggle */}
-          <div className="md:hidden flex items-center ml-4">
-            <button onClick={toggleSound} className="text-gray-500 hover:text-blue-600">
-              <FontAwesomeIcon icon={soundEnabled ? faVolumeUp : faVolumeMute} className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Notification Popup */}
-        {showPopup && (
-          <div className="pop-alert w-screen right-0 left-0 bg-white text-black items-center justify-center px-4 py-10 -mt-2 shadow-lg animate-slide-in z-50">
-            <p className="text-sm font-medium">{truncatedMessage.truncated}</p>
-            {truncatedMessage.isTruncated && (
-              <Link to="/notifications" className="block text-blue-500 hover:underline text-xs">
-                Read More
+            <nav className="flex items-center justify-between mx-auto gap-3 text-xs">
+              <Link to="/record" className="px-2 py-1 border border-cyan-500 text-black hover:bg-cyan-600 hover:text-white rounded">
+                Trade Status
               </Link>
-            )}
-          </div>
-        )}
+              <Link to="/datapad" className="px-3 py-1 border border-yellow-500 text-black hover:bg-yellow-500 hover:text-black rounded">
+                DataPad
+              </Link>
+              {user?._id && (
+                <button
+                  onClick={handleLogout}
+                  disabled={loading}
+                  className="px-3 py-1 border border-red-500 text-black hover:bg-red-600 hover:text-white rounded flex items-center"
+                >
+                  <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" /> Logout
+                </button>
+              )}
+              
+            </nav>
 
-        <audio ref={audioRef} src={notificationSound} preload="auto" />
-        <SidePanel
-          open={mobileMenuOpen}
-          setOpen={setMobileMenuOpen}
-          handleLogout={handleLogout}
-          loading={loading}
-          onCloseMenu={closeMobileMenu}
-        />
-      </header>
-    </>
+            
+          </div>
+
+                <Link to="/notifications" title="Notifications" aria-label="Notifications">
+                  <div className="relative h-6 w-6 text-gray-600 hover:text-black transition-colors duration-200">
+                    <NotificationBadge />
+                  </div>
+                </Link>
+
+          <button
+                onClick={toggleSound}
+                className="px-3 py-1 border ml-4 border-gray-500 text-black hover:bg-gray-600 hover:text-white rounded flex items-center"
+              >
+                <FontAwesomeIcon icon={soundEnabled ? faVolumeUp : faVolumeMute} className="mr-1" />
+              </button>
+        </div>
+      </div>
+
+      {showPopup && (
+        <div className="absolute w-full left-0 top-full bg-white text-black px-4 py-3 shadow-lg z-50 animate-slide-in">
+          <p className="text-sm font-medium">{truncatedMessage.truncated}</p>
+          {truncatedMessage.isTruncated && (
+            <Link to="/notifications" className="block text-blue-500 hover:underline text-xs">
+              Read More
+            </Link>
+          )}
+        </div>
+      )}
+
+      <audio ref={audioRef} src={notificationSound} preload="auto" />
+      <SidePanel
+        open={mobileMenuOpen}
+        setOpen={setMobileMenuOpen}
+        handleLogout={handleLogout}
+        loading={loading}
+        onCloseMenu={closeMobileMenu}
+      />
+    </header>
   );
 };
 
