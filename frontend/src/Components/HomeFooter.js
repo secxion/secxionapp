@@ -20,30 +20,43 @@ const HomeFooter = () => {
 
   return (
     <footer
-      className={`fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-md w-full py-2`}
+      className={`fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-md w-full py-2 border-2 border-black`} // Added black border
     >
+      {/* Added glossy text styles directly here as they are small and specific */}
+      <style>{`
+        .glossy-icon-text {
+          text-shadow:
+            -0.5px -0.5px 0 #fff,
+            0.5px -0.5px 0 #fff,
+            -0.5px 0.5px 0 #fff,
+            0.5px 0.5px 0 #fff,
+            1px 1px 3px rgba(0,0,0,0.3);
+          -webkit-text-stroke: 0.3px #000;
+          color: #000;
+        }
+      `}</style>
       <div
         className={`flex justify-around items-center text-gray-700 dark:text-gray-300 text-xl`}
       >
         <Link to="/profile"
-          className="flex flex-col items-center hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out"
+          className="flex flex-col items-center hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out border-4 border-yellow-500 rounded-lg p-2" // Added bold yellow border
           aria-label="Profile"
         >
-          <FaUserCircle className="mb-0.5" />
+          <FaUserCircle className="mb-0.5 glossy-icon-text" /> {/* Applied glossy-icon-text */}
         </Link>
 
         <Link to="/mywallet"
-          className="flex flex-col items-center hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out"
+          className="flex flex-col items-center hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out border-4 border-yellow-500 rounded-lg p-2" // Added bold yellow border
           aria-label="Naira Wallet"
         >
-          <span className="text-lg mb-0.5">₦</span>
+          <span className="text-lg mb-0.5 glossy-icon-text">₦</span> {/* Applied glossy-icon-text */}
         </Link>
 
         <Link to="/eth"
-          className="flex flex-col items-center hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out"
+          className="flex flex-col items-center hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out border-4 border-yellow-500 rounded-lg p-2" // Added bold yellow border
           aria-label="Ethereum"
         >
-          <FaEthereum className="mb-0.5" />
+          <FaEthereum className="mb-0.5 glossy-icon-text" /> {/* Applied glossy-icon-text */}
         </Link>
 
       </div>

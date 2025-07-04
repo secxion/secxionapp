@@ -60,26 +60,26 @@ const CustomDialog = ({ open, onOpenChange, children, title, description }) => {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md mx-4 border border-gray-100"
+                className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md mx-4 border-4 border-yellow-500" // Added bold yellow border
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="dialog-title"
                 aria-describedby="dialog-description"
             >
                 {title && (
-                    <h2 id="dialog-title" className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+                    <h2 id="dialog-title" className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 glossy-heading"> {/* Applied glossy-heading */}
                         {title}
                     </h2>
                 )}
                 {description && (
-                    <div id="dialog-description" className="text-gray-600 mb-6 max-h-60 overflow-y-auto">
+                    <div id="dialog-description" className="text-gray-600 mb-6 max-h-60 overflow-y-auto glossy-text"> {/* Applied glossy-text */}
                         <p className="leading-relaxed">{description}</p>
                     </div>
                 )}
                 {children}
                 <button
                     onClick={() => onOpenChange(false)}
-                    className="w-full mt-4 px-4 py-3 bg-gray-800 text-white rounded-xl font-medium hover:bg-gray-900 transition-colors duration-200 shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98]"
+                    className="w-full mt-4 px-4 py-3 bg-gray-800 text-white rounded-xl font-medium hover:bg-gray-900 transition-colors duration-200 shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] glossy-text" // Applied glossy-text
                 >
                     Close
                 </button>
@@ -101,9 +101,9 @@ const Net = ({ blogs }) => {
         isTablet: false,
         isDesktop: true
     });
-  const dispatch = useDispatch();
-  const { token } = useContext(Context);
-  const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { token } = useContext(Context);
+    const navigate = useNavigate();
 
     const { user } = useSelector((state) => state.user);
     const { profilePic, name, role } = user || {};
@@ -166,31 +166,31 @@ const Net = ({ blogs }) => {
         setSelectedBlog(blog);
         setIsDialogOpen(true);
     };
- const handleLogout = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(SummaryApi.logout_user.url, {
-        method: SummaryApi.logout_user.method,
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      if (data.success) {
-        toast.success(data.message);
-        dispatch(setUserDetails(null));
-        navigate("/");
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error("Logout failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }, [dispatch, navigate, token]);
+   const handleLogout = useCallback(async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(SummaryApi.logout_user.url, {
+                method: SummaryApi.logout_user.method,
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            if (data.success) {
+                toast.success(data.message);
+                dispatch(setUserDetails(null));
+                navigate("/");
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error("Logout failed. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    }, [dispatch, navigate, token]);
     // Blog rotation with smooth transitions
     useEffect(() => {
         const resetTimeout = () => {
@@ -230,8 +230,27 @@ const Net = ({ blogs }) => {
     const getContentLength = () => screenSize.isMobile ? 20 : screenSize.isTablet ? 60 : 120;
 
     return (
-        // UPDATED: Changed background to cream white (bg-yellow-50)
-        <div className="net-container fixed top-0 left-0 w-full bg-white h-9 md:h-11 px-2 md:px-4 lg:px-6 flex items-center font-mono text-gray-900 transition-all duration-300 z-50">
+        <div className="net-container fixed top-0 left-0 w-full bg-white h-9 md:h-11 px-2 md:px-4 lg:px-6 flex items-center font-mono text-gray-900 transition-all duration-300 z-50 border-2 border-black"> {/* Black border applied */}
+            <style>{`
+                .glossy-text {
+                  text-shadow:
+                    -1px -1px 0 #fff,
+                    1px -1px 0 #fff,
+                    -1px 1px 0 #fff,
+                    1px 1px 0 #fff,
+                    2px 2px 5px rgba(0,0,0,0.5);
+                  -webkit-text-stroke: 0.5px #000;
+                  color: #000;
+                }
+                .glossy-heading {
+                  text-shadow:
+                    0 0 5px rgba(255,255,255,0.7),
+                    0 0 10px rgba(255,255,255,0.5),
+                    2px 2px 5px rgba(0,0,0,0.3);
+                  -webkit-text-stroke: 0.7px #333;
+                  color: #000;
+                }
+            `}</style>
             
             {/* User Profile Section */}
             {(profilePic && name) && (
@@ -240,18 +259,17 @@ const Net = ({ blogs }) => {
                         <img
                             src={profilePic}
                             alt="Profile"
-                            className="w-7 h-7 md:w-7 rounded-full md:h-7 lg:w-8 lg:h-8 object-cover cursor-pointer ring-2 ring-gray-200 hover:ring-gray-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-105"
+                            className="w-7 h-7 md:w-7 rounded-full md:h-7 lg:w-8 lg:h-8 object-cover cursor-pointer ring-2 ring-gray-200 hover:ring-gray-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-105 border-4 border-yellow-500" // Added bold yellow border
                             onClick={toggleDropdown}
                         />
                         <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 md:w-3 md:h-3 bg-green-400 rounded-full border-2 border-white shadow-sm"></div>
                     </div>
                     
                     <div className="ml-2 md:ml-3 flex items-center cursor-pointer group" onClick={toggleDropdown}>
-                        {/* UPDATED: Made profile name bolder and blacker */}
-                        <span className="text-xs md:text-sm lg:text-base font-bold text-gray-800 group-hover:text-black transition-colors duration-200">
-                            Hi,
+                        <span className="text-xs md:text-sm lg:text-base font-bold text-gray-800 group-hover:text-black transition-colors duration-200 glossy-text"> {/* Applied glossy-text */}
+                            Hi
                         </span>
-                        <FaCaretDown className="w-2.5 h-2.5 md:w-3 md:h-3 ml-1 md:ml-1.5 text-gray-500 group-hover:text-black transition-all duration-200 group-hover:scale-110" />
+                        <FaCaretDown className="w-2.5 h-2.5 md:w-3 md:h-3 ml-1 md:ml-1.5 text-gray-500 group-hover:text-black transition-all duration-200 group-hover:scale-110 glossy-text" /> {/* Applied glossy-text */}
                     </div>
 
                     {/* Dropdown Menu */}
@@ -262,15 +280,15 @@ const Net = ({ blogs }) => {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -10, scale: 0.95 }}
                             transition={{ duration: 0.2 }}
-                            className="absolute top-full left-0 mt-3 w-52 bg-white rounded-xl shadow-lg py-2 z-50 border border-gray-100"
+                            className="absolute top-full left-0 mt-3 w-52 bg-white rounded-xl shadow-lg py-2 z-50 border-4 border-yellow-500" // Added bold yellow border
                         >
                             <div className="px-4 py-3 border-b border-gray-100">
-                                <p className="text-sm font-bold text-gray-800 truncate">{name}</p>
+                                <p className="text-sm font-bold text-gray-800 truncate glossy-text">{name}</p> {/* Applied glossy-text */}
                             </div>
                             
                             <Link
                                 to="/home"
-                                className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-150 group"
+                                className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-150 group glossy-text" // Applied glossy-text
                                 onClick={() => setIsDropdownOpen(false)}
                             >
                                 <Home className="w-4 h-4 mr-3 text-gray-500 group-hover:text-blue-600" />
@@ -280,7 +298,7 @@ const Net = ({ blogs }) => {
                             {user?.role === ROLE.ADMIN && (
                                 <Link
                                     to="/admin-panel"
-                                    className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 transition-colors duration-150 group"
+                                    className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 transition-colors duration-150 group glossy-text" // Applied glossy-text
                                     onClick={() => setIsDropdownOpen(false)}
                                 >
                                     <Shield className="w-4 h-4 mr-3 text-gray-500 group-hover:text-purple-600" />
@@ -290,7 +308,7 @@ const Net = ({ blogs }) => {
                             
                             <Link
                                 to="/profile"
-                                className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 transition-colors duration-150 group"
+                                className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 transition-colors duration-150 group glossy-text" // Applied glossy-text
                                 onClick={() => setIsDropdownOpen(false)}
                             >
                                 <Settings className="w-4 h-4 mr-3 text-gray-500 group-hover:text-green-600" />
@@ -301,7 +319,7 @@ const Net = ({ blogs }) => {
                 <button
                   onClick={handleLogout}
                   disabled={loading}
-                  className="px-3 py-1 border border-red-500 text-black hover:bg-red-600 hover:text-white rounded flex items-center"
+                  className="px-3 py-1 border-4 border-red-700 text-black hover:bg-red-600 hover:text-white rounded flex items-center glossy-text" // Bold border and glossy-text
                 >
                   <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" /> Logout
                 </button>
@@ -310,10 +328,10 @@ const Net = ({ blogs }) => {
                     )}
                 </div>
             )}
-<Link to="/notifications" title="Notifications" aria-label="Notifications">
-                  <div className="relative h-6 w-6 pr-8 mr-4 text-gray-600 hover:text-black transition-colors duration-200">
-                    <NotificationBadge />
-                  </div>
+            <Link to="/notifications" title="Notifications" aria-label="Notifications">
+                    <div className="relative ml-2 h-6 w-6 pr-8 mr-4 text-gray-600 hover:text-black transition-colors duration-200 glossy-text"> {/* Applied glossy-text */}
+                      <NotificationBadge />
+                    </div>
                 </Link>
 
             {/* News Ticker Section */}
@@ -325,7 +343,7 @@ const Net = ({ blogs }) => {
                             <div className="w-2 h-2 bg-gray-400/70 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
                             <div className="w-2 h-2 bg-gray-400/70 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                         </div>
-                        <span className="text-xs md:text-sm font-medium text-gray-500">Loading latest news...</span>
+                        <span className="text-xs md:text-sm font-medium text-gray-500 glossy-text">Loading latest news...</span> {/* Applied glossy-text */}
                     </div>
                 ) : currentBlog ? (
                     <motion.div
@@ -336,40 +354,37 @@ const Net = ({ blogs }) => {
                         <div className="flex items-center space-x-2 md:space-x-4 cursor-pointer group w-full" onClick={() => handleBlogClick(currentBlog)}>
                             <div className="flex items-center space-x-2 md:space-x-3 flex-shrink-0">
                                 <div className="relative">
-                                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-yellow-400 rounded-full"></div>
+                                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-yellow-400 rounded-full border border-yellow-600"></div> {/* Added yellow border */}
                                     <div className="absolute inset-0 w-1.5 h-1.5 md:w-2 md:h-2 bg-yellow-400 rounded-full animate-ping"></div>
                                 </div>
-                                <span className="text-xs md:text-sm lg:text-base font-bold text-yellow-600 group-hover:text-yellow-700 transition-colors duration-300">
+                                <span className="text-xs md:text-sm lg:text-base font-bold text-yellow-600 group-hover:text-yellow-700 transition-colors duration-300 glossy-text"> {/* Applied glossy-text */}
                                     {getResponsiveText(currentBlog.title, getTitleLength(), getTitleLength(), currentBlog.title.length)}
                                 </span>
                             </div>
                             
-                            <ArrowRight className="w-3 h-3 md:w-4 md:h-4 text-gray-400 group-hover:text-black group-hover:translate-x-1 transition-all duration-300 flex-shrink-0" />
+                            <ArrowRight className="w-3 h-3 md:w-4 md:h-4 text-gray-400 group-hover:text-black group-hover:translate-x-1 transition-all duration-300 flex-shrink-0 glossy-text" /> {/* Applied glossy-text */}
                             
-                            {/* UPDATED: Made blog content snippet darker and bolder */}
-                            <span className="text-xs md:text-sm font-medium text-gray-800 group-hover:text-black transition-colors duration-300 truncate flex-grow">
+                            <span className="text-xs md:text-sm font-medium text-gray-800 group-hover:text-black transition-colors duration-300 truncate flex-grow glossy-text"> {/* Applied glossy-text */}
                                 {getResponsiveText(currentBlog.content, getContentLength(), getContentLength(), currentBlog.content.length)}
                             </span>
                         </div>
                     </motion.div>
                 ) : (
                     <div className="flex items-center space-x-2 text-gray-500">
-                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full opacity-50"></div>
-                        <span className="italic text-xs md:text-sm">No news available at the moment</span>
+                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full opacity-50 border border-gray-600"></div> {/* Added border */}
+                        <span className="italic text-xs md:text-sm glossy-text">No news available at the moment</span> {/* Applied glossy-text */}
                     </div>
                 )}
             </div>
 
             {/* Blog count indicator */}
             {blogs && blogs.length > 1 && (
-                <div className="hidden md:flex items-center space-x-1 ml-4 text-gray-400 text-xs">
+                <div className="hidden md:flex items-center space-x-1 ml-4 text-gray-400 text-xs glossy-text"> {/* Applied glossy-text */}
                     <span>{currentIndex + 1}</span>
-                    <div className="w-1 h-1 bg-gray-400/70 rounded-full"></div>
+                    <div className="w-1 h-1 bg-gray-400/70 rounded-full border border-gray-600"></div> {/* Added border */}
                     <span>{blogs.length}</span>
                 </div>
             )}
-
-            
 
             {/* Blog Details Dialog */}
             <CustomDialog

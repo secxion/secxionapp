@@ -117,7 +117,8 @@ const Header = () => {
       navigate(`/search?q=${encodeURIComponent(debouncedSearch)}`);
     }
   }, [debouncedSearch, navigate]);
-const handleLogout = useCallback(async () => {
+
+  const handleLogout = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(SummaryApi.logout_user.url, {
@@ -160,21 +161,41 @@ const handleLogout = useCallback(async () => {
   const truncatedMessage = useMemo(() => truncateWords(popupMessage, 10), [popupMessage]);
 
   return (
-    <header className="fixed w-full z-40 bg-white text-black shadow-sm right-0 left-0 top-0 px-4 sm:px-6 lg:px-8 flex flex-col gap-2 sm:mt-8 md:mt-10 lg:mt-10 mt-8">
+    <header className="fixed w-full z-40 bg-white text-black shadow-sm right-0 left-0 top-0 px-4 sm:px-6 lg:px-8 flex flex-col gap-2 sm:mt-8 md:mt-10 lg:mt-10 mt-8 border-2 border-black"> {/* Black border applied */}
+      <style>{`
+        .glossy-text {
+          text-shadow:
+            -1px -1px 0 #fff,
+            1px -1px 0 #fff,
+            -1px 1px 0 #fff,
+            1px 1px 0 #fff,
+            2px 2px 5px rgba(0,0,0,0.5); /* Adds a subtle shadow for depth */
+          -webkit-text-stroke: 0.5px #000; /* Subtle black stroke for definition */
+          color: #000; /* Ensures the base text color is black */
+        }
+        .glossy-heading {
+          text-shadow:
+            0 0 5px rgba(255,255,255,0.7), /* Lighter glow for gloss */
+            0 0 10px rgba(255,255,255,0.5),
+            2px 2px 5px rgba(0,0,0,0.3); /* Subtle shadow for depth */
+          -webkit-text-stroke: 0.7px #333; /* Slightly thicker stroke for headings */
+          color: #000; /* Ensures the base text color is black */
+        }
+      `}</style>
       <div className="flex items-center justify-between min-h-[56px]">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-4">
             <button onClick={toggleMobileMenu} className="text-gray-500 hover:text-blue-600 md:hidden">
-              <FontAwesomeIcon icon={faBars} className="h-5 w-5" />
+              <FontAwesomeIcon icon={faBars} className="h-5 w-5 glossy-text" /> {/* Applied glossy-text */}
             </button>
 
             <div className="md:hidden flex-1 flex items-center justify-center">
-              <div className="flex items-center border border-gray-300 rounded-md px-2 ml-4 py-1 w-full max-w-[200px]">
-                <BiSearch className="text-yellow-700 h-4 w-4 mr-1" />
+              <div className="flex items-center border-4 border-yellow-500 rounded-md px-2 ml-4 py-1 w-full max-w-[200px]"> {/* Bold yellow border */}
+                <BiSearch className="text-yellow-700 h-4 w-4 mr-1 glossy-text" /> {/* Applied glossy-text */}
                 <input
                   type="text"
-                placeholder="gift cards, vc, cc...."
-                  className="bg-transparent text-black text-xs outline-none w-full placeholder:text-[10px] placeholder-gray-500"
+                  placeholder="gift cards, vc, cc...."
+                  className="bg-transparent text-black text-xs outline-none w-full placeholder:text-[10px] placeholder-gray-500 glossy-text" // Applied glossy-text
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -184,49 +205,47 @@ const handleLogout = useCallback(async () => {
 
           <Link to="/home" className="relative hidden md:flex items-center font-bold text-xl text-yellow-600 tracking-wide">
             <h1 className="font-extrabold tracking-wide">
-               <h1 className="font-extrabold text-2xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600"> {/* Updated logo gradient */}
+                <h1 className="font-extrabold text-2xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 glossy-heading"> {/* Updated logo gradient and applied glossy-heading */}
                   SXN
                 </h1>
-                <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full"></div> {/* Updated underline gradient */}
+                <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full border border-yellow-700"></div> {/* Updated underline gradient and added border */}
             </h1>
           </Link>
 
           <div className="hidden md:flex gap-3 items-center">
             {location.pathname === "/search" && (
               <button onClick={goBack} className="text-yellow-600 hover:text-yellow-800">
-                <FontAwesomeIcon icon={faArrowLeft} className="h-5 w-5" />
+                <FontAwesomeIcon icon={faArrowLeft} className="h-5 w-5 glossy-text" /> {/* Applied glossy-text */}
               </button>
             )}
 
-            <div className="flex items-center border border-gray-300 rounded-md px-3 py-1 w-64">
-              <FcSearch className="text-gray-600 h-4 w-4 mr-2" />
+            <div className="flex items-center border-4 border-yellow-500 rounded-md px-3 py-1 w-64"> {/* Bold yellow border */}
+              <FcSearch className="text-gray-600 h-4 w-4 mr-2 glossy-text" /> {/* Applied glossy-text */}
               <input
                 type="text"
                 placeholder="gift cards, vc, cc..."
-                className="bg-transparent text-black text-sm outline-none w-full placeholder:text-xs placeholder-gray-500"
+                className="bg-transparent text-black text-sm outline-none w-full placeholder:text-xs placeholder-gray-500 glossy-text" // Applied glossy-text
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
 
             <nav className="flex items-center justify-between mx-auto gap-3 text-xs">
-              <Link to="/record" className="px-2 py-1 border border-cyan-500 text-black hover:bg-cyan-600 hover:text-white rounded">
+              <Link to="/record" className="px-2 py-1 border-4 border-cyan-700 text-black hover:bg-cyan-600 hover:text-white rounded glossy-text"> {/* Bold border and glossy-text */}
                 Trade Status
               </Link>
-              <Link to="/datapad" className="px-3 py-1 border border-yellow-500 text-black hover:bg-yellow-500 hover:text-black rounded">
+              <Link to="/datapad" className="px-3 py-1 border-4 border-yellow-700 text-black hover:bg-yellow-500 hover:text-black rounded glossy-text"> {/* Bold border and glossy-text */}
                 DataPad
               </Link>
-              
-              
             </nav>
           </div>
 
           <button
-                onClick={toggleSound}
-                className="px-3 py-1 border ml-4 border-gray-500 text-black hover:bg-gray-600 hover:text-white rounded flex items-center"
-              >
-                <FontAwesomeIcon icon={soundEnabled ? faVolumeUp : faVolumeMute} className="mr-1" />
-              </button>
+            onClick={toggleSound}
+            className="px-3 py-1 border-4 ml-4 border-gray-700 text-black hover:bg-gray-600 hover:text-white rounded flex items-center glossy-text" // Bold border and glossy-text
+          >
+            <FontAwesomeIcon icon={soundEnabled ? faVolumeUp : faVolumeMute} className="mr-1" />
+          </button>
         </div>
       </div>
 
