@@ -87,7 +87,7 @@ connectDB()
     console.log(`✅ MongoDB Connected at ${db.host}:${db.port}/${db.name}`);
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running at ${isProduction ? 'https://secxion.onrender.com' : `http://localhost:${PORT}`}`);
+      console.log(`🚀 Server running at ${isProduction ? 'https://secxion.com' : `http://localhost:${PORT}`}`);
       console.log('🌐 Allowed origins:', allowedOrigins);
     });
   })
