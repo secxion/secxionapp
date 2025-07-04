@@ -34,6 +34,12 @@ module.exports = {
       },
     },
     extend: {
+      height: {
+        'screen': 'calc(var(--vh, 1vh) * 100)',
+      },
+      minHeight: {
+        'screen': 'calc(var(--vh, 1vh) * 100)',
+      },
       keyframes: {
         slideFadeIn: {
           '0%': { opacity: '0', transform: 'translateX(-20px)' },
