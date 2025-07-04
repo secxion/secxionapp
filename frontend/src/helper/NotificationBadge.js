@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import notificationSound from '../Assets/notification.mp3';
 import PopAlert from './PopAlert';
-import './Pop.css';
 
 const NotificationBadge = () => {
     const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);

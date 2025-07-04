@@ -13,6 +13,8 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import Context from "../Context";
 import { setUserDetails } from "../store/userSlice";
+import NotificationBadge from "../helper/NotificationBadge";
+
 
 // A custom, accessible dialog component
 const CustomDialog = ({ open, onOpenChange, children, title, description }) => {
@@ -230,6 +232,7 @@ const Net = ({ blogs }) => {
     return (
         // UPDATED: Changed background to cream white (bg-yellow-50)
         <div className="net-container fixed top-0 left-0 w-full bg-white h-9 md:h-11 px-2 md:px-4 lg:px-6 flex items-center font-mono text-gray-900 transition-all duration-300 z-50">
+            
             {/* User Profile Section */}
             {(profilePic && name) && (
                 <div className="user-profile-section relative flex items-center mr-3 md:mr-6 lg:mr-8 shrink-0">
@@ -245,10 +248,8 @@ const Net = ({ blogs }) => {
                     
                     <div className="ml-2 md:ml-3 flex items-center cursor-pointer group" onClick={toggleDropdown}>
                         {/* UPDATED: Made profile name bolder and blacker */}
-                        <span className="text-xs md:text-sm lg:text-base font-medium text-gray-800 group-hover:text-black transition-colors duration-200">
-                            Hi, <span className="font-bold text-black">
-                                {getResponsiveText(name, getNameLength(), getNameLength(), name.length)}
-                            </span>
+                        <span className="text-xs md:text-sm lg:text-base font-bold text-gray-800 group-hover:text-black transition-colors duration-200">
+                            Hi,
                         </span>
                         <FaCaretDown className="w-2.5 h-2.5 md:w-3 md:h-3 ml-1 md:ml-1.5 text-gray-500 group-hover:text-black transition-all duration-200 group-hover:scale-110" />
                     </div>
@@ -309,6 +310,11 @@ const Net = ({ blogs }) => {
                     )}
                 </div>
             )}
+<Link to="/notifications" title="Notifications" aria-label="Notifications">
+                  <div className="relative h-6 w-6 pr-8 mr-4 text-gray-600 hover:text-black transition-colors duration-200">
+                    <NotificationBadge />
+                  </div>
+                </Link>
 
             {/* News Ticker Section */}
             <div className="flex-grow relative h-8 md:h-10 overflow-hidden flex items-center min-w-0">
@@ -362,6 +368,8 @@ const Net = ({ blogs }) => {
                     <span>{blogs.length}</span>
                 </div>
             )}
+
+            
 
             {/* Blog Details Dialog */}
             <CustomDialog

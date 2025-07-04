@@ -142,7 +142,7 @@ const handleLogout = useCallback(async () => {
       setLoading(false);
     }
   }, [dispatch, navigate, token]);
-  
+
   useEffect(() => {
     fetchUnreadCount();
     fetchNewNotifications();
@@ -169,7 +169,7 @@ const handleLogout = useCallback(async () => {
             </button>
 
             <div className="md:hidden flex-1 flex items-center justify-center">
-              <div className="flex items-center border border-gray-300 rounded-md px-2 py-1 w-full max-w-[200px]">
+              <div className="flex items-center border border-gray-300 rounded-md px-2 ml-4 py-1 w-full max-w-[200px]">
                 <BiSearch className="text-yellow-700 h-4 w-4 mr-1" />
                 <input
                   type="text"
@@ -219,15 +219,7 @@ const handleLogout = useCallback(async () => {
               
               
             </nav>
-
-            
           </div>
-
-                <Link to="/notifications" title="Notifications" aria-label="Notifications">
-                  <div className="relative h-6 w-6 text-gray-600 hover:text-black transition-colors duration-200">
-                    <NotificationBadge />
-                  </div>
-                </Link>
 
           <button
                 onClick={toggleSound}
@@ -237,17 +229,6 @@ const handleLogout = useCallback(async () => {
               </button>
         </div>
       </div>
-
-      {showPopup && (
-        <div className="absolute w-full left-0 top-full bg-white text-black px-4 py-3 shadow-lg z-50 animate-slide-in">
-          <p className="text-sm font-medium">{truncatedMessage.truncated}</p>
-          {truncatedMessage.isTruncated && (
-            <Link to="/notifications" className="block text-blue-500 hover:underline text-xs">
-              Read More
-            </Link>
-          )}
-        </div>
-      )}
 
       <audio ref={audioRef} src={notificationSound} preload="auto" />
       <SidePanel
