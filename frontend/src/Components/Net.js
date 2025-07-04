@@ -259,7 +259,7 @@ const Net = ({ blogs }) => {
                         <img
                             src={profilePic}
                             alt="Profile"
-                            className="w-7 h-7 md:w-7 rounded-full md:h-7 lg:w-8 lg:h-8 object-cover cursor-pointer ring-2 ring-gray-200 hover:ring-gray-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-105 border-4 border-yellow-500" // Added bold yellow border
+                            className="w-10 h-10 md:w-10 rounded-full md:h-10 lg:w-10 lg:h-10 object-cover cursor-pointer ring-2 ring-gray-200 hover:ring-gray-300 transition-all duration-300 transform hover:scale-105" // Added bold yellow border
                             onClick={toggleDropdown}
                         />
                         <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 md:w-3 md:h-3 bg-green-400 rounded-full border-2 border-white shadow-sm"></div>
@@ -329,7 +329,7 @@ const Net = ({ blogs }) => {
                 </div>
             )}
             <Link to="/notifications" title="Notifications" aria-label="Notifications">
-                    <div className="relative ml-2 h-6 w-6 pr-8 mr-4 text-gray-600 hover:text-black transition-colors duration-200 glossy-text"> {/* Applied glossy-text */}
+                    <div className="relative ml-2 text-md h-7 w-10 pr-8 mr-4 text-gray-600 hover:text-black transition-colors duration-200 glossy-text"> {/* Applied glossy-text */}
                       <NotificationBadge />
                     </div>
                 </Link>

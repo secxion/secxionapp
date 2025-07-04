@@ -190,7 +190,7 @@ const Header = () => {
             </button>
 
             <div className="md:hidden flex-1 flex items-center justify-center">
-              <div className="flex items-center border-4 border-yellow-500 rounded-md px-2 ml-4 py-1 w-full max-w-[200px]"> {/* Bold yellow border */}
+              <div className="flex items-center border-4 border-gray-700 rounded-md px-2 ml-4 py-1 w-full max-w-[200px]"> {/* Bold yellow border */}
                 <BiSearch className="text-yellow-700 h-4 w-4 mr-1 glossy-text" /> {/* Applied glossy-text */}
                 <input
                   type="text"
@@ -219,12 +219,12 @@ const Header = () => {
               </button>
             )}
 
-            <div className="flex items-center border-4 border-yellow-500 rounded-md px-3 py-1 w-64"> {/* Bold yellow border */}
+            <div className="flex items-center border-4 border-gray-700 rounded-md px-3 py-1 w-64"> {/* Bold yellow border */}
               <FcSearch className="text-gray-600 h-4 w-4 mr-2 glossy-text" /> {/* Applied glossy-text */}
               <input
                 type="text"
                 placeholder="gift cards, vc, cc..."
-                className="bg-transparent text-black text-sm outline-none w-full placeholder:text-xs placeholder-gray-500 glossy-text" // Applied glossy-text
+                className="bg-transparent text-black text-sm outline-none w-full placeholder:text-sm placeholder-gray-500 glossy-text" // Applied glossy-text
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
