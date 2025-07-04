@@ -32,7 +32,10 @@ if (isProduction) {
 // 🌐 Allowed Origins
 const allowedOrigins = [
   process.env.FRONTEND_URL?.trim() || '',
-  'https://secxion.onrender.com'
+  'https://secxion.onrender.com',
+  "secxion.com",
+  "https://secxion.com",
+  "www.secxion.com"
 ];
 
 // ✅ CORS Config
