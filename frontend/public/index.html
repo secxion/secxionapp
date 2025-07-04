@@ -12,8 +12,9 @@
     <meta name="apple-mobile-web-app-title" content="Secxion" />
     <meta name="application-name" content="Secxion" />
     
+    <!-- Updated theme colors for black and yellow theme -->
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#fdd835" media="(prefers-color-scheme: light)" />
     <meta name="color-scheme" content="dark light" />
     <meta
       name="description"
@@ -65,20 +66,34 @@
               mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular'],
             },
             colors: {
+              // Updated Tailwind colors to match the black and yellow theme
               gray: {
-                50: '#fafafa',
-                100: '#f4f4f5',
-                200: '#e4e4e7',
-                300: '#d4d4d8',
-                400: '#a1a1aa',
-                500: '#71717a',
-                600: '#52525b',
-                700: '#3f3f46',
-                800: '#27272a',
-                900: '#18181b',
-                950: '#09090b',
+                50: '#f9fafb',
+                100: '#f3f4f6',
+                200: '#e5e7eb',
+                300: '#d1d5db',
+                400: '#9ca3af',
+                500: '#6b7280',
+                600: '#4b5563',
+                700: '#374151',
+                800: '#1f2937',
+                900: '#111827',
+                950: '#000000', // Pure black for dark backgrounds
               },
-              blue: {
+              yellow: {
+                50: '#fffde7', 
+                100: '#fff9c4',
+                200: '#fff59d',
+                300: '#fff176',
+                400: '#ffee58',
+                500: '#ffeb3b',
+                600: '#fdd835', // Primary yellow for accents
+                700: '#fbc02d',
+                800: '#f9a825',
+                900: '#f57f17',
+                950: '#e65100',
+              },
+              blue: { // Keeping blue for general use if needed, but yellow is primary accent
                 50: '#eff6ff',
                 100: '#dbeafe',
                 200: '#bfdbfe',
@@ -91,7 +106,7 @@
                 900: '#1e3a8a',
                 950: '#172554',
               },
-              emerald: {
+              emerald: { // Keeping emerald for general use if needed
                 50: '#ecfdf5',
                 100: '#d1fae5',
                 200: '#a7f3d0',
@@ -166,8 +181,9 @@
         height: 100%;
         min-height: 100vh;
         min-height: -webkit-fill-available;
-        background-color: #000000;
-        color: #ffffff;
+        /* Updated background color to dark gray for consistency with black theme */
+        background-color: #111827; 
+        color: #f3f4f6; /* Light gray text for dark theme */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         overflow-x: hidden;
         line-height: 1.6;
@@ -196,8 +212,9 @@
         bottom: 20px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.9);
-        color: white;
+        /* Updated background for black and yellow theme */
+        background: rgba(0, 0, 0, 0.9); /* Dark background for the banner */
+        color: #fdd835; /* Yellow text for the banner */
         padding: 12px 20px;
         border-radius: 25px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -207,7 +224,7 @@
         align-items: center;
         gap: 10px;
         font-size: 14px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(253, 216, 53, 0.3); /* Yellow border for contrast */
       }
       
       .pwa-install-banner.show {
@@ -216,8 +233,8 @@
       }
       
       .pwa-install-btn {
-        background: #3b82f6;
-        color: white;
+        background: #fdd835; /* Yellow button */
+        color: #111827; /* Dark text on button */
         border: none;
         padding: 8px 16px;
         border-radius: 15px;
@@ -228,12 +245,12 @@
       }
       
       .pwa-install-btn:hover {
-        background: #2563eb;
+        background: #fbc02d; /* Slightly darker yellow on hover */
       }
       
       .pwa-close-btn {
         background: transparent;
-        color: white;
+        color: #fdd835; /* Yellow close button */
         border: none;
         font-size: 18px;
         cursor: pointer;
@@ -262,7 +279,8 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(135deg, #000000 0%, #111111 50%, #000000 100%);
+        /* Updated background for black and yellow theme */
+        background: linear-gradient(135deg, #000000 0%, #111827 50%, #000000 100%);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -274,13 +292,13 @@
       .loading-spinner {
         width: 40px;
         height: 40px;
-        border: 2px solid #222;
-        border-top: 2px solid #fff;
+        border: 2px solid #1f2937; /* Dark gray border */
+        border-top: 2px solid #fdd835; /* Yellow top border */
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin-bottom: 1rem;
         position: relative;
-        box-shadow: 0 0 4px #fff, 0 0 5px #fff, 0 0 2px #fff;
+        box-shadow: 0 0 4px #fdd835, 0 0 5px #fdd835, 0 0 2px #fdd835; /* Yellow glow */
       }
 
       .loading-spinner::after {
@@ -291,9 +309,9 @@
         width: 100%;
         height: 100%;
         border-radius: 50%;
-        border-top: 2px solid transparent, white;
+        border-top: 2px solid transparent, #fdd835; /* Yellow glow */
         animation: glow-spin 1s linear infinite;
-        box-shadow: 0 0 2px #ffffffaa, 0 0 4px #ffffff88, 0 0 8px #ffffff55;
+        box-shadow: 0 0 2px #fdd835aa, 0 0 4px #fdd83588, 0 0 8px #fdd83555;
       }
 
       @keyframes spin {
@@ -320,7 +338,7 @@
       }
       
       .loading-text {
-        color: #71717a;
+        color: #fdd835; /* Yellow for loading text */
         font-size: 0.875rem;
         font-weight: 500;
         letter-spacing: 0.05em;
@@ -333,7 +351,7 @@
       
       /* Focus styles */
       *:focus {
-        outline: 2px solid #3b82f6;
+        outline: 2px solid #fdd835; /* Yellow focus outline */
         outline-offset: 2px;
       }
       
@@ -343,16 +361,16 @@
       }
       
       ::-webkit-scrollbar-track {
-        background: #18181b;
+        background: #000000; /* Black track */
       }
       
       ::-webkit-scrollbar-thumb {
-        background: #3f3f46;
+        background: #fdd835; /* Yellow thumb */
         border-radius: 4px;
       }
       
       ::-webkit-scrollbar-thumb:hover {
-        background: #52525b;
+        background: #fbc02d; /* Slightly darker yellow on hover */
       }
       
       /* Mobile-specific fixes */
@@ -408,7 +426,7 @@
           const staticPaths = ['/static', '/api', '/assets'];
           
           return staticExtensions.some(ext => pathname.endsWith(ext)) ||
-                 staticPaths.some(path => pathname.startsWith(path));
+                       staticPaths.some(path => pathname.startsWith(path));
         };
         
         const isReactRoute = !isStaticAsset(location.pathname) && location.pathname !== '/';
@@ -590,17 +608,17 @@
     <div id="root" class="min-h-screen"></div>
     
     <noscript>
-      <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
+      <div class="min-h-screen flex items-center justify-center bg-gray-950 dark:bg-gray-950"> {/* Changed background to dark gray */}
         <div class="text-center p-8 max-w-md mx-auto">
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+          <h1 class="text-2xl font-bold text-gray-100 dark:text-gray-100 mb-4"> {/* Changed text to light gray */}
             Secxion
           </h1>
-          <p class="text-gray-600 dark:text-gray-400 mb-6">
+          <p class="text-gray-400 dark:text-gray-400 mb-6"> {/* Changed text to light gray */}
             This application requires JavaScript to run. Please enable JavaScript in your browser and refresh the page.
           </p>
           <button 
             onclick="location.reload()" 
-            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+            class="bg-yellow-600 hover:bg-yellow-700 text-gray-900 px-6 py-2 rounded-lg font-medium transition-colors" {/* Changed button colors to yellow and dark text */}
           >
             Refresh Page
           </button>

@@ -34,9 +34,10 @@ import { Link } from "react-router-dom";
 const Button = ({ children, className = "", variant = "default", ...props }) => {
   const baseClasses = "inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2";
   const variantClasses = {
-    default: "bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500",
-    ghost: "bg-transparent hover:bg-gray-100 text-gray-700 focus:ring-gray-500",
-    secondary: "bg-gray-100 hover:bg-gray-200 text-gray-900 focus:ring-gray-500"
+    // Updated button variants for black and yellow theme
+    default: "bg-yellow-600 hover:bg-yellow-700 text-gray-900 focus:ring-yellow-500",
+    ghost: "bg-transparent hover:bg-gray-800 text-gray-100 focus:ring-yellow-500",
+    secondary: "bg-gray-800 hover:bg-gray-700 text-gray-100 focus:ring-yellow-500"
   };
   
   return (
@@ -51,13 +52,13 @@ const Button = ({ children, className = "", variant = "default", ...props }) => 
 
 // Navigation Components
 const NavLink = ({ href, children }) => (
-  <a href={href} className="text-white/90 hover:text-white font-medium transition-colors">
+  <a href={href} className="text-gray-300 hover:text-yellow-400 font-medium transition-colors">
     {children}
   </a>
 );
 
 const MobileNavLink = ({ href, children }) => (
-  <a href={href} className="block py-2 text-gray-700 hover:text-gray-900 font-medium transition-colors">
+  <a href={href} className="block py-2 text-gray-100 hover:text-yellow-400 font-medium transition-colors">
     {children}
   </a>
 );
@@ -70,19 +71,19 @@ const ServiceCard = ({ icon, title, description, highlight }) => {
       whileHover={{ scale: 1.02, y: -5 }}
       transition={{ type: "spring", stiffness: 300 }}
     >
-      <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 relative overflow-hidden h-full">
+      <div className="bg-gray-900 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-800 relative overflow-hidden h-full"> {/* Updated background and border */}
         {highlight && (
-          <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+          <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600 to-yellow-800 text-gray-900 text-xs font-bold px-3 py-1 rounded-full"> {/* Updated highlight tag */}
             POPULAR
           </div>
         )}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-50 to-purple-50 rounded-full transform translate-x-16 -translate-y-16 group-hover:scale-150 transition-transform duration-500 opacity-50"></div>
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-gray-800 to-gray-700 rounded-full transform translate-x-16 -translate-y-16 group-hover:scale-150 transition-transform duration-500 opacity-50"></div> {/* Updated decorative element */}
         <div className="relative z-10">
-          <div className="mb-6 inline-block p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl group-hover:from-white group-hover:to-gray-50 transition-all duration-300">
+          <div className="mb-6 inline-block p-4 bg-gradient-to-br from-gray-800 to-gray-700 rounded-xl group-hover:from-gray-700 group-hover:to-gray-600 transition-all duration-300"> {/* Updated icon background */}
             {icon}
           </div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">{title}</h3>
-          <p className="text-gray-600 leading-relaxed text-lg">{description}</p>
+          <h3 className="text-2xl font-bold text-gray-100 mb-4">{title}</h3> {/* Updated text color */}
+          <p className="text-gray-300 leading-relaxed text-lg">{description}</p> {/* Updated text color */}
         </div>
       </div>
     </motion.div>
@@ -97,14 +98,14 @@ const FeatureCard = ({ icon, title, description }) => {
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 300 }}
     >
-      <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 h-full">
+      <div className="bg-gray-900 p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-800 h-full"> {/* Updated background and border */}
         <div className="flex items-start mb-4">
-          <div className="p-3 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg mr-4 flex-shrink-0">
+          <div className="p-3 bg-gradient-to-br from-gray-800 to-gray-700 rounded-lg mr-4 flex-shrink-0"> {/* Updated icon background */}
             {icon}
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
-            <p className="text-gray-600 text-sm leading-relaxed">{description}</p>
+            <h3 className="text-lg font-semibold text-gray-100 mb-2">{title}</h3> {/* Updated text color */}
+            <p className="text-gray-300 text-sm leading-relaxed">{description}</p> {/* Updated text color */}
           </div>
         </div>
       </div>
@@ -120,15 +121,15 @@ const StepCard = ({ number, title, description, icon }) => {
       whileHover={{ scale: 1.05 }}
       transition={{ type: "spring", stiffness: 300 }}
     >
-      <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-        <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-4">
+      <div className="bg-gray-900 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800"> {/* Updated background and border */}
+        <div className="w-16 h-16 bg-gradient-to-r from-yellow-600 to-yellow-800 rounded-full flex items-center justify-center text-gray-900 font-bold text-xl mx-auto mb-4"> {/* Updated number circle */}
           {number}
         </div>
         <div className="mb-4 flex justify-center">
           {icon}
         </div>
-        <h3 className="text-xl font-bold text-gray-900 mb-3">{title}</h3>
-        <p className="text-gray-600 leading-relaxed">{description}</p>
+        <h3 className="text-xl font-bold text-gray-100 mb-3">{title}</h3> {/* Updated text color */}
+        <p className="text-gray-300 leading-relaxed">{description}</p> {/* Updated text color */}
       </div>
     </motion.div>
   );
@@ -187,32 +188,33 @@ export default function Landing() {
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 text-gray-900 font-sans relative overflow-hidden"
+      // Main background gradient changed to black and dark gray
+      className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 text-gray-100 font-sans relative overflow-hidden"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
     >
-      {/* Geometric Background Elements */}
+      {/* Geometric Background Elements - Updated colors for black theme */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-10 left-10 w-32 h-32 border-4 border-blue-200/30 rotate-45 animate-spin [animation-duration:20s]"></div>
-        <div className="absolute top-1/4 right-20 w-20 h-20 bg-gradient-to-r from-purple-200/40 to-pink-200/40 rounded-full animate-pulse"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-40 h-40 border-4 border-indigo-200/30 rounded-full animate-bounce [animation-duration:3s]"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-cyan-200/20 rounded-full"></div>
-        <div className="absolute bottom-20 right-10 w-24 h-24 bg-gradient-to-br from-teal-200/30 to-green-200/30 transform rotate-12 animate-pulse"></div>
+        <div className="absolute top-10 left-10 w-32 h-32 border-4 border-gray-700/30 rotate-45 animate-spin [animation-duration:20s]"></div>
+        <div className="absolute top-1/4 right-20 w-20 h-20 bg-gradient-to-r from-yellow-900/40 to-yellow-800/40 rounded-full animate-pulse"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-40 h-40 border-4 border-gray-700/30 rounded-full animate-bounce [animation-duration:3s]"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-yellow-700/20 rounded-full"></div> {/* Updated border color */}
+        <div className="absolute bottom-20 right-10 w-24 h-24 bg-gradient-to-br from-yellow-800/30 to-yellow-700/30 transform rotate-12 animate-pulse"></div> {/* Updated background */}
       </div>
 
       {/* Navigation Header */}
       <motion.header
-        className="relative top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-xl border-b border-white/10"
+        className="fixed top-0 left-0 right-0 z-50 bg-gray-950/95 backdrop-blur-xl border-b border-gray-700/10" // Updated background and border
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <div className="relative">
-                <h1 className="font-extrabold text-2xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">
+                <h1 className="font-extrabold text-2xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600"> {/* Updated logo gradient */}
                   SXN
                 </h1>
-                <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full"></div>
+                <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full"></div> {/* Updated underline gradient */}
               </div>
             </div>
             
@@ -227,12 +229,12 @@ export default function Landing() {
             <div className="hidden md:flex items-center space-x-4">
               {isLoggedIn ? (
                 <>
-                  <Button variant="ghost" className="text-white hover:text-gray-300 flex items-center">
+                  <Button variant="ghost" className="text-gray-300 hover:text-yellow-400 flex items-center">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
                     Dashboard
                   </Button>
                   <Button 
-                    className="bg-gray-200 hover:bg-gray-300 text-gray-800"
+                    className="bg-gray-800 hover:bg-gray-700 text-gray-100"
                     onClick={() => setIsLoggedIn(false)}
                   >
                     Log Out
@@ -240,10 +242,10 @@ export default function Landing() {
                 </>
               ) : (
                 <>
-                  <Button variant="ghost" className="text-white hover:text-gray-300">
+                  <Button variant="ghost" className="text-gray-300 hover:text-yellow-400">
                     <a href="/login">Sign In</a>
                   </Button>
-                  <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg">
+                  <Button className="bg-gradient-to-r from-yellow-600 to-yellow-800 hover:from-yellow-700 hover:to-yellow-900 text-gray-900 shadow-lg"> {/* Updated button gradient */}
                     <a href="/sign-up">Get Started</a>
                   </Button>
                 </>
@@ -252,7 +254,7 @@ export default function Landing() {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden p-2 rounded-lg hover:bg-gray-800 transition-colors text-white"
+              className="md:hidden p-2 rounded-lg hover:bg-gray-800 transition-colors text-yellow-400" // Updated text color
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -265,7 +267,7 @@ export default function Landing() {
     {isMenuOpen && (
       <motion.div
         key="mobile-menu"
-        className="absolute top-full left-0 right-0 bg-white border-t border-gray-200 shadow-md rounded-b-xl overflow-hidden"
+        className="absolute top-full left-0 right-0 bg-gray-900 border-t border-gray-700 shadow-md rounded-b-xl overflow-hidden"
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0, transition: { duration: 0.1, ease: 'easeOut' } }}
         exit={{ opacity: 0, y: 0, transition: { duration: 0.1, ease: 'easeIn' } }}
@@ -276,10 +278,10 @@ export default function Landing() {
           <MobileNavLink href="/privacy">Privacy</MobileNavLink>
           <MobileNavLink href="/contact-us">Contact</MobileNavLink>
 
-          <div className="border-t border-gray-200 pt-4 space-y-3">
+          <div className="border-t border-gray-700 pt-4 space-y-3"> {/* Updated border */}
             {isLoggedIn ? (
               <Button
-                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800"
+                className="w-full bg-gray-800 hover:bg-gray-700 text-gray-100"
                 onClick={() => setIsLoggedIn(false)}
               >
                 Log Out
@@ -287,12 +289,12 @@ export default function Landing() {
             ) : (
               <>
                 <a href="/login" className="block">
-                  <Button variant="ghost" className="w-full">
+                  <Button variant="ghost" className="w-full text-gray-100 hover:text-yellow-400">
                     Sign In
                   </Button>
                 </a>
                 <a href="/sign-up" className="block">
-                  <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white">
+                  <Button className="w-full bg-gradient-to-r from-yellow-600 to-yellow-800 hover:from-yellow-700 hover:to-yellow-900 text-gray-900"> {/* Updated button gradient */}
                     Get Started
                   </Button>
                 </a>
@@ -311,11 +313,11 @@ export default function Landing() {
         <motion.section
           className="relative overflow-hidden py-10 lg:py-32"
         >
-          <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
+          <div className="absolute inset-0 bg-grid-gray-900 [mask-image:linear-gradient(to_bottom,white,transparent)]"></div> {/* Updated grid background */}
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-200/30 rounded-full filter blur-3xl opacity-50 animate-pulse"></div>
-            <div className="absolute top-1/2 right-1/4 w-96 h-96 bg-indigo-200/30 rounded-full filter blur-3xl opacity-50 animate-pulse"></div>
-            <div className="absolute bottom-1/4 left-1/2 w-80 h-80 bg-purple-200/30 rounded-full filter blur-3xl opacity-50 animate-pulse"></div>
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-yellow-900/30 rounded-full filter blur-3xl opacity-50 animate-pulse"></div> {/* Updated blur circles */}
+            <div className="absolute top-1/2 right-1/4 w-96 h-96 bg-yellow-800/30 rounded-full filter blur-3xl opacity-50 animate-pulse"></div> {/* Updated blur circles */}
+            <div className="absolute bottom-1/4 left-1/2 w-80 h-80 bg-yellow-700/30 rounded-full filter blur-3xl opacity-50 animate-pulse"></div> {/* Updated blur circles */}
           </div>
           
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -326,8 +328,8 @@ export default function Landing() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.8 }}
               >
-             
-                <span className="bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
+              
+                <span className="bg-gradient-to-r from-gray-100 via-yellow-400 to-yellow-600 bg-clip-text text-transparent"> {/* Updated text gradient */}
                 Welcome to secxion
                 </span>
                 
@@ -336,7 +338,7 @@ export default function Landing() {
               </motion.h1>
 
               <motion.p
-                className="text-xl sm:text-2xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed"
+                className="text-xl sm:text-2xl text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
@@ -351,11 +353,11 @@ export default function Landing() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
               >
-                 <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 group">
-                  <a href="/login">Login</a>
-                </Button>
-                  |
-                <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 group">
+                  <Button className="bg-gradient-to-r from-yellow-600 to-yellow-800 hover:from-yellow-700 hover:to-yellow-900 text-gray-900 rounded-xl px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 group"> {/* Updated button gradient */}
+                    <a href="/login">Login</a>
+                  </Button>
+                  <span className="text-gray-400">|</span> {/* Divider color adjusted */}
+                <Button className="bg-gradient-to-r from-yellow-600 to-yellow-800 hover:from-yellow-700 hover:to-yellow-900 text-gray-900 rounded-xl px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 group"> {/* Updated button gradient */}
                   <UserPlus className="mr-2 h-5 w-5" />
                   <a href="/sign-up">Create an Account</a>
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -364,21 +366,21 @@ export default function Landing() {
 
               {/* Trust Indicators */}
               <motion.div
-                className="flex flex-wrap justify-center items-center gap-6 text-sm text-gray-500"
+                className="flex flex-wrap justify-center items-center gap-6 text-sm text-gray-400"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
               >
                 <div className="flex items-center">
-                  <ShieldCheck className="h-4 w-4 mr-2 text-green-500" />
+                  <ShieldCheck className="h-4 w-4 mr-2 text-yellow-500" /> {/* Updated icon color */}
                   Bank-Grade Security
                 </div>
                 <div className="flex items-center">
-                  <Zap className="h-4 w-4 mr-2 text-yellow-500" />
+                  <Zap className="h-4 w-4 mr-2 text-yellow-500" /> {/* Updated icon color */}
                   Instant Transactions
                 </div>
                 <div className="flex items-center">
-                  <Star className="h-4 w-4 mr-2 text-blue-500" />
+                  <Star className="h-4 w-4 mr-2 text-yellow-500" /> {/* Updated icon color */}
                   24/7 Support
                 </div>
               </motion.div>
@@ -387,44 +389,44 @@ export default function Landing() {
         </motion.section>
 
         {/* Services Section */}
-        <motion.section id="services" className="py-24 bg-gradient-to-br from-gray-50 to-blue-50 relative overflow-hidden">
+        <motion.section id="services" className="py-24 bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden"> {/* Updated background */}
           <div className="absolute top-0 left-0 w-full h-full">
-            <div className="absolute top-10 right-10 w-24 h-24 border-2 border-pink-200 transform rotate-45"></div>
-            <div className="absolute bottom-20 left-10 w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full opacity-50"></div>
+            <div className="absolute top-10 right-10 w-24 h-24 border-2 border-yellow-700 transform rotate-45"></div> {/* Updated border color */}
+            <div className="absolute bottom-20 left-10 w-32 h-32 bg-gradient-to-br from-yellow-800 to-yellow-700 rounded-full opacity-50"></div> {/* Updated background */}
           </div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-100 mb-4"> {/* Updated text color */}
                 Our Core Services
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto"> {/* Updated text color */}
                 We provide secure, fast, and reliable services to help you maximize the value of your digital assets
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <ServiceCard
-                icon={<Gift className="h-12 w-12 text-pink-500" />}
+                icon={<Gift className="h-12 w-12 text-yellow-500" />} 
                 title="Gift Card Exchange"
                 description="Sell your unused gift cards from major retailers for Ethereum or cash. We offer competitive rates and support 50+ popular gift card brands."
                 highlight={true}
               />
               <ServiceCard
-                icon={<SiEthereum className="h-12 w-12 text-blue-500" />}
+                icon={<SiEthereum className="h-12 w-12 text-yellow-500" />} 
                 title="Ethereum Trading"
                 description="Securely buy, sell, and store Ethereum with our user-friendly platform. Real-time market rates and instant transactions."
               />
               <ServiceCard
-                icon={<Smartphone className="h-12 w-12 text-blue-500" />}
+                icon={<Smartphone className="h-12 w-12 text-yellow-500" />}
                 title="Bank Transfer Payments"
                 description="Receive your payments directly to your bank account, get Instant credit on payment request, secure, and reliable transfer services with no limited transactions"
               />
               <ServiceCard
-        icon={<Code className="h-12 w-12 text-purple-500" />}
-        title="Custom Development"
-        description="Struggling with off-the-shelf tools or bad scripts? At Secxion, we specialize in crafting custom software solutions designed precisely for your unique needs. Our expert developers in the LiveScript department build robust, reliable tools and scripts, ensuring 100% ownership and full functionality. We understand the frustration of failed tasks, restrictive protocols, and unmet expectations – that's why over 400 users trust Secxion for excellent, dependable results. Create a free Secxion account today and use 'LIVESCRIPT' to submit your custom development request. Let us build the perfect solution to empower your success."
-      />
+                icon={<Code className="h-12 w-12 text-yellow-500" />} 
+                title="Custom Development"
+                description="Struggling with off-the-shelf tools or bad scripts? At Secxion, we specialize in crafting custom software solutions designed precisely for your unique needs. Our expert developers in the LiveScript department build robust, reliable tools and scripts, ensuring 100% ownership and full functionality. We understand the frustration of failed tasks, restrictive protocols, and unmet expectations – that's why over 400 users trust Secxion for excellent, dependable results. Create a free Secxion account today and use 'LIVESCRIPT' to submit your custom development request. Let us build the perfect solution to empower your success."
+              />
               <ServiceCard
-                icon={<Wrench className="h-12 w-12 text-teal-500" />}
+                icon={<Wrench className="h-12 w-12 text-yellow-500" />}
                 title="Open Source Tools"
                 description="Access and customize powerful open-source tools. We help you integrate and modify existing solutions for your needs."
               />
@@ -434,44 +436,44 @@ export default function Landing() {
         </motion.section>
 
         {/* Features Section */}
-        <motion.section className="py-24 bg-white relative overflow-hidden">
+        <motion.section className="py-24 bg-gray-950 relative overflow-hidden"> {/* Updated background */}
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-100 mb-4"> {/* Updated text color */}
                 Why Choose Secxion?
               </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              <p className="text-xl text-gray-300 max-w-2xl mx-auto"> {/* Updated text color */}
                 Built with security, speed, and user experience at the forefront
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <FeatureCard
-                icon={<ShieldCheck className="h-8 w-8 text-green-500" />}
+                icon={<ShieldCheck className="h-8 w-8 text-yellow-500" />} 
                 title="Bank-Level Security"
                 description="Your transactions and data are protected with multi-layer encryption, cold storage, and real-time fraud monitoring."
               />
               <FeatureCard
-                icon={<Zap className="h-8 w-8 text-yellow-500" />}
+                icon={<Zap className="h-8 w-8 text-yellow-500" />} 
                 title="Lightning-Fast Processing"
                 description="Complete transactions in minutes, not hours. Our optimized system ensures quick verification and instant payouts."
               />
               <FeatureCard
-                icon={<Globe className="h-8 w-8 text-blue-500" />}
+                icon={<Globe className="h-8 w-8 text-yellow-500" />}
                 title="Global Accessibility"
                 description="Access our services from anywhere in the world. Support for multiple currencies and payment methods."
               />
               <FeatureCard
-                icon={<Headphones className="h-8 w-8 text-purple-500" />}
+                icon={<Headphones className="h-8 w-8 text-yellow-500" />} 
                 title="24/7 Expert Support"
                 description="Our dedicated support team is always available to help with any questions or issues you may encounter."
               />
               <FeatureCard
-                icon={<CheckCircle className="h-8 w-8 text-green-500" />}
+                icon={<CheckCircle className="h-8 w-8 text-yellow-500" />} 
                 title="Transparent Pricing"
                 description="No hidden fees or surprise charges. Our transparent pricing structure ensures you know exactly what you'll receive."
               />
               <FeatureCard
-                icon={<Shapes className="h-8 w-8 text-red-500" />}
+                icon={<Shapes className="h-8 w-8 text-yellow-500" />} 
                 title="Flexible Solutions"
                 description="From gift card exchanges to custom tool development, we adapt our services to meet your specific needs."
               />
@@ -480,26 +482,26 @@ export default function Landing() {
         </motion.section>
 
         {/* CTA Section */}
-        <motion.section className="py-24 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 relative overflow-hidden">
+        <motion.section className="py-24 bg-gradient-to-r from-black via-gray-900 to-gray-800 relative overflow-hidden"> {/* Updated background */}
           <div className="absolute inset-0 bg-black/20"></div>
           <div className="absolute inset-0">
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-blue-600/80 to-purple-600/80"></div>
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-gray-900/80 to-gray-800/80"></div> {/* Updated background */}
           </div>
           <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-100 mb-6"> {/* Updated text color */}
               Ready to Start Trading?
             </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto"> {/* Updated text color */}
               Join thousands of users who trust Secxion for their gift card exchanges and custom development needs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-blue-500 text-gray-900 hover:bg-gray-100 rounded-xl px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">
+              <Button className="bg-yellow-500 text-gray-900 hover:bg-yellow-600 rounded-xl px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"> {/* Updated button colors */}
                 <a href="/sign-up" className="flex items-center">
                   Create Free Account
                   <ArrowUpRight className="ml-2 h-5 w-5" />
                 </a>
               </Button>
-              <Button variant="ghost" className="border-2 border-white text-white hover:bg-white hover:text-gray-900 rounded-xl px-8 py-4 text-lg font-semibold">
+              <Button variant="ghost" className="border-2 border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-gray-900 rounded-xl px-8 py-4 text-lg font-semibold"> {/* Updated button colors */}
                 <a href="/contact-us">Contact Sales</a>
               </Button>
             </div>
@@ -510,7 +512,7 @@ export default function Landing() {
       {/* Scroll to Top Button */}
       {showScrollTop && (
         <motion.button
-          className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white p-3 rounded-full shadow-lg z-50"
+          className="fixed bottom-6 right-6 bg-gradient-to-r from-yellow-600 to-yellow-800 hover:from-yellow-700 hover:to-yellow-900 text-gray-900 p-3 rounded-full shadow-lg z-50" 
           onClick={scrollToTop}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -523,45 +525,45 @@ export default function Landing() {
       )}
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-12 relative overflow-hidden">
+      <footer className="bg-gray-950 text-gray-400 py-12 relative overflow-hidden"> {/* Updated background */}
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500"></div>
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600"></div> {/* Updated border gradient */}
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-1 mb-6 md:mb-0">
               <div className="flex items-center space-x-2 mb-4">
                 <div className="relative">
-                  <h1 className="font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">SXN</h1>
-                  <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full"></div>
+                  <h1 className="font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600">SXN</h1> {/* Updated logo gradient */}
+                  <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full"></div> {/* Updated underline gradient */}
                 </div>
               </div>
-              <Link to={"/contact-us"} className="text-sm">Send us a message</Link>
+              <Link to={"/contact-us"} className="text-sm text-gray-300 hover:text-yellow-400">Send us a message</Link> {/* Updated text and hover color */}
             </div>
             
             <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
             
               <div>
-                <h3 className="font-semibold text-white mb-4">Company</h3>
+                <h3 className="font-semibold text-gray-100 mb-4">Company</h3> {/* Updated text color */}
                 <ul className="space-y-2">
-                  <li><a href="/about-us" className="hover:text-white transition-colors">About Us</a></li>
-                 <li><a href="/terms" className="hover:text-white transition-colors">Terms of Service</a></li>
-                  <li><a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                  <li><a href="/about-us" className="text-gray-300 hover:text-yellow-400 transition-colors">About Us</a></li> {/* Updated text and hover color */}
+                  <li><a href="/terms" className="text-gray-300 hover:text-yellow-400 transition-colors">Terms of Service</a></li> {/* Updated text and hover color */}
+                  <li><a href="/privacy" className="text-gray-300 hover:text-yellow-400 transition-colors">Privacy Policy</a></li> {/* Updated text and hover color */}
                 </ul>
               </div>
                 
             </div>
           </div>
           
-          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-sm">
-            <p>
-              © {new Date().getFullYear()} Secxion. All Rights Reserved. Built with ❤️ by <span className="font-semibold text-white">BMXII.org</span>.
+          <div className="border-t border-gray-700 mt-12 pt-8 text-center text-sm"> {/* Updated border color */}
+            <p className="text-gray-400"> {/* Updated text color */}
+              © {new Date().getFullYear()} Secxion. All Rights Reserved. Built with ❤️ by <span className="font-semibold text-yellow-400">BMXII.org</span>. {/* Updated text color */}
             </p>
           </div>
         </div>
       </footer>
 
-      {/* Custom Styles */}
+     {/* Custom Styles */}
       <style jsx>{`
         @keyframes animate-scroll {
           0% { transform: translateX(0); }

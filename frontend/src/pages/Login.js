@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SummaryApi from "../common";
 import Context from "../Context";
-import "./Login.css"; // Assuming this might contain global or base styles
-import loginBackground from "./loginbk.png";
+// import "./Login.css"; // Assuming this might contain global or base styles - consider removing if all styles are Tailwind
+import loginBackground from "./loginbk.png"; // Keep background image, adjust overlay
 import thumbsUpGif from "./thumbsup.gif";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import icons for consistency
 
@@ -140,34 +140,33 @@ const Login = () => {
       className="login-page min-h-screen flex items-center justify-center relative bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${loginBackground})` }}
     >
-      {/* Overlay for dark mode compatibility on background */}
-      <div className="absolute inset-0 bg-black/30 dark:bg-black/60 z-0"></div>
+      {/* Overlay for dark mode compatibility on background - adjusted opacity for black theme */}
+      <div className="absolute inset-0 bg-black/70 z-0"></div>
 
-      {/* Login Form Box */}
-      <div className="shape-lines relative bg-white bg-opacity-95 dark:bg-gray-800 dark:bg-opacity-95 p-6 sm:p-8 w-full max-w-md rounded-2xl shadow-2xl dark:shadow-none dark:border dark:border-gray-700 z-10">
-        {/* Logo */}
+      {/* Login Form Box - updated for black and yellow theme */}
+      <div className="shape-lines relative bg-gray-900 bg-opacity-95 p-6 sm:p-8 w-full max-w-md rounded-2xl shadow-2xl border border-gray-700 z-10">
+        {/* Logo - updated gradient for black and yellow theme */}
         <div className="flex justify-center mb-5">
           <Link
             to="/"
-            className="font-bold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 tracking-wide"
+            className="font-bold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 tracking-wide"
           >
             <div className="logo-wrapper">
               <h1 className="text-3xl logo-text font-extrabold tracking-wide">SXN</h1>
-              <div className="logo-accent" />
+              <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full" /> {/* Updated logo accent */}
             </div>
           </Link>
         </div>
 
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Welcome Back!</h1>
-          <p className="text-sm text-gray-800 dark:text-gray-300 mt-1">Login to your account</p>
+          <h1 className="text-2xl font-bold text-gray-100">Welcome Back!</h1> {/* Updated text color */}
+          <p className="text-sm text-gray-300 mt-1">Login to your account</p> {/* Updated text color */}
         </div>
 
         <form className="flex flex-col gap-4" onSubmit={onLoginClick}>
           <div>
-            <label htmlFor="email" className="block text-gray-950 dark:text-gray-200 font-extrabold mb-1">Email</label>
-            <div className="relative flex items-center w-full rounded-lg border-2 border-blue-600 bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 
-                            dark:bg-gray-700 dark:border-blue-600">
+            <label htmlFor="email" className="block text-gray-200 font-extrabold mb-1">Email</label> {/* Updated text color */}
+            <div className="relative flex items-center w-full rounded-lg border-2 border-yellow-600 bg-gray-800 focus-within:ring-2 focus-within:ring-yellow-500"> {/* Updated border and background */}
               <input
               id="email"
               name="email"
@@ -175,8 +174,7 @@ const Login = () => {
               value={data.email}
               onChange={handleInputChange}
               placeholder="you@example.com"
-              className="w-full p-3 pr-12 rounded-lg border-2 border-blue-600 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 
-                         dark:bg-gray-700 dark:border-blue-600 dark:text-white dark:placeholder-gray-400"
+              className="w-full p-3 pr-12 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-0" // Removed redundant border, updated text/placeholder
               required
               autoComplete="email"
             /></div>
@@ -184,9 +182,8 @@ const Login = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-gray-950 dark:text-gray-200 font-extrabold mb-1">Password</label>
-            <div className="relative flex items-center w-full p-1 rounded-lg border-2 border-blue-600 bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 
-                            dark:bg-gray-700 dark:border-blue-600">
+            <label htmlFor="password" className="block text-gray-200 font-extrabold mb-1">Password</label> {/* Updated text color */}
+            <div className="relative flex items-center w-full p-1 rounded-lg border-2 border-yellow-600 bg-gray-800 focus-within:ring-2 focus-within:ring-yellow-500"> {/* Updated border and background */}
               <input
                 id="password"
                 name="password"
@@ -194,21 +191,20 @@ const Login = () => {
                 value={data.password}
                 onChange={handleInputChange}
                 placeholder="••••••••"
-                className="flex-1 bg-transparent outline-none text-gray-900 placeholder-gray-400 
-                           dark:text-white dark:placeholder-gray-400"
+                className="flex-1 bg-transparent outline-none text-gray-100 placeholder-gray-400" // Updated text/placeholder
                 required
                 autoComplete="current-password"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
+                className="absolute right-3 top-3 text-yellow-500 hover:text-yellow-400" // Updated icon color
                 tabIndex={-1}
               >
-                {showPassword ? "🙈" : "👁️"}
+                {showPassword ? <FaEyeSlash className="h-5 w-5" /> : <FaEye className="h-5 w-5" />} {/* Using Lucide icons */}
               </button>
             </div>
-            <Link to="/reset" className="block text-right text-sm text-red-600 hover:underline mt-1 dark:text-red-400">
+            <Link to="/reset" className="block text-right text-sm text-yellow-500 hover:underline mt-1"> {/* Updated link color */}
               Forgot password?
             </Link>
           </div>
@@ -218,8 +214,8 @@ const Login = () => {
             disabled={formSubmitting}
             className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg 
                         ${formSubmitting
-                            ? "bg-blue-300 text-white cursor-not-allowed"
-                            : "bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"
+                            ? "bg-gray-700 text-gray-400 cursor-not-allowed" // Updated disabled state
+                            : "bg-gradient-to-r from-yellow-600 to-yellow-800 hover:from-yellow-700 hover:to-yellow-900 text-gray-900" // Updated enabled state
                         }`}
           >
             {formSubmitting ? "Verifying..." : "Login"}
@@ -227,13 +223,13 @@ const Login = () => {
         </form>
 
         {errorMessage && (
-          <div className="mt-4 text-center text-red-500 dark:text-red-400 text-sm">
+          <div className="mt-4 text-center text-red-400 text-sm"> {/* Updated text color */}
             <p>{errorMessage}</p>
             {errorMessage.toLowerCase().includes("verify") && (
               <button
                 onClick={handleResendVerificationEmail}
                 disabled={resending}
-                className="mt-2 text-blue-600 hover:underline font-medium dark:text-blue-400 dark:hover:text-blue-300"
+                className="mt-2 text-yellow-500 hover:underline font-medium hover:text-yellow-400" // Updated link color
               >
                 {resending ? "Resending..." : "Resend Verification Email"}
               </button>
@@ -241,33 +237,34 @@ const Login = () => {
           </div>
         )}
 
-        <p className="mt-6 text-center text-gray-800 dark:text-gray-300 text-sm">
+        <p className="mt-6 text-center text-gray-300 text-sm"> {/* Updated text color */}
           Don’t have an account?{" "}
-          <Link to="/sign-up" className="text-black hover:underline font-medium dark:text-white dark:hover:text-gray-200">
+          <Link to="/sign-up" className="text-yellow-500 hover:underline font-medium hover:text-yellow-400"> {/* Updated link color */}
             Sign up
           </Link>
         </p>
 
-        <div className="mt-6 text-center text-xs text-gray-400 dark:text-gray-500">
-          <Link to="/contact-us" className="hover:text-blue-500 transition-colors dark:hover:text-blue-400">
+        <div className="mt-6 text-center text-xs text-gray-500"> {/* Updated text color */}
+          <Link to="/contact-us" className="hover:text-yellow-400 transition-colors"> {/* Updated hover color */}
             Contact Us
           </Link>
-          <span className="mx-2">|</span>
+          <span className="mx-2 text-gray-600">|</span> {/* Divider color adjusted */}
           <a href="https://secxion.com" target="_blank" rel="noopener noreferrer" className="hover:underline">
             © {new Date().getFullYear()} secxion.com
           </a>
         </div>
       </div>
 
+      {/* Verification Modal - updated for black and yellow theme */}
       {verificationVisible && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border-2 border-gray-300 dark:border-gray-700 shadow-lg w-full max-w-sm text-gray-900 dark:text-gray-100">
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"> {/* Increased overlay opacity */}
+          <div className="bg-gray-900 p-6 rounded-xl border-2 border-gray-700 shadow-lg w-full max-w-sm text-gray-100"> {/* Updated background and border */}
             <h2 className="text-lg font-bold mb-2 text-center">Human Verification</h2>
-            <div className="text-sm text-gray-600 dark:text-gray-300 mb-4 text-center space-y-3">
-              Slide to match <span className="font-semibold text-blue-600 px-1 border-2 border-black dark:border-white">{targetValue}</span>
+            <div className="text-sm text-gray-300 mb-4 text-center space-y-3"> {/* Updated text color */}
+              Slide to match <span className="font-semibold text-yellow-500 px-1 border-2 border-yellow-700 rounded-md">{targetValue}</span> {/* Updated text and border */}
               <div className="text-center text-sm mb-3">
-              <span className="text-gray-500 dark:text-gray-400">Current: </span>
-              <span className="font-bold text-yellow-700 dark:text-yellow-400 px-1 ">{sliderValue}</span>
+              <span className="text-gray-400">Current: </span> {/* Updated text color */}
+              <span className="font-bold text-yellow-400 px-1 ">{sliderValue}</span> {/* Updated text color */}
             </div>
             </div>
             <input
@@ -276,7 +273,7 @@ const Login = () => {
               max="100"
               value={sliderValue}
               onChange={handleSliderChange}
-              className="w-full h-2 accent-blue-500 dark:accent-blue-400 mb-4 cursor-pointer"
+              className="w-full h-2 accent-yellow-500 mb-4 cursor-pointer" // Updated accent color
             />
             
             <button
@@ -284,8 +281,8 @@ const Login = () => {
               disabled={!isVerified || verifying}
               className={`w-full py-2 rounded-md font-semibold transition shadow-md hover:shadow-lg
                           ${isVerified
-                              ? "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-                              : "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400"
+                              ? "bg-gradient-to-r from-yellow-600 to-yellow-800 text-gray-900 hover:from-yellow-700 hover:to-yellow-900" // Updated enabled state
+                              : "bg-gray-700 text-gray-400 cursor-not-allowed" // Updated disabled state
                           }`}
             >
               {verifying ? "Logging in..." : "Verify & Login"}
@@ -293,9 +290,9 @@ const Login = () => {
             <button
               onClick={() => {
                 setVerificationVisible(false);
-                setFormSubmitting(false); // Reset form submitting state on cancel
+                setFormSubmitting(false);
               }}
-              className="mt-3 w-full text-sm text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500"
+              className="mt-3 w-full text-sm text-gray-400 hover:text-yellow-500" // Updated text and hover color
             >
               Cancel
             </button>

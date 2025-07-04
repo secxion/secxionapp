@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -24,53 +23,123 @@ html, body, #root {
 
 
 :root {
-  --gray-50: #fffaf0; 
-  --gray-100: #f5f5f5;
-  --gray-200: #d4d4d4;
-  --gray-900: #000000;
+  /* Black and Yellow theme colors for LIGHT mode (default) */
+  --gray-50: #f9fafb; 
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-900: #111827; /* Dark gray for primary text in light mode */
 
-  --blue-600: #1e40af;
-  --blue-700: #1e3a8a;
+  --yellow-50: #fffde7;
+  --yellow-100: #fff9c4;
+  --yellow-200: #fff59d;
+  --yellow-300: #fff176;
+  --yellow-400: #ffee58;
+  --yellow-500: #ffeb3b;
+  --yellow-600: #fdd835; /* Primary yellow accent */
+  --yellow-700: #fbc02d;
+  --yellow-800: #f9a825;
+  --yellow-900: #f57f17;
+  --yellow-950: #e65100;
+
+  --blue-600: #2563eb; /* Keeping blue for potential secondary accents */
+  --blue-700: #1d4ed8;
 
   --red-500: #ef4444;
   --red-600: #dc2626;
 
-  --color-bg: var(--gray-50);
-  --color-text: var(--gray-900);
-  --color-accent: #ffffff; /* sharp white on black */
-  --color-border: #111111;
-  --color-card-bg: #ffffff;
-  --color-hover: #eaeaea;
+  --color-bg: #f9fafb; /* Very light gray/off-white for light mode background */
+  --color-text: var(--gray-900); /* Dark gray text in light mode */
+  --color-accent: var(--yellow-600); /* Yellow accent */
+  --color-border: var(--gray-200); /* Light gray border */
+  --color-card-bg: #ffffff; /* White card background in light mode */
+  --color-hover: var(--gray-100); /* Light gray for hover */
   --color-danger: var(--red-500);
 
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.15);
   --transition-fast: 0.3s ease-in-out;
+
+  /* Font sizes and spacing variables */
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-size-5xl: 3rem;
+  --font-size-6xl: 3.75rem;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  --line-height-normal: 1.5;
+  --line-height-tight: 1.25;
+  --line-height-relaxed: 1.75;
+
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
 }
 
 /* ========================
-   DARK MODE VARIABLES
+    DARK MODE VARIABLES (Black & Yellow)
 ======================== */
 .dark {
-  --gray-50: #0a0a0a;
-  --gray-100: #111111;
-  --gray-200: #2a2a2a;
-  --gray-900: #ffffff;
+  --gray-50: #000000; /* Pure black for dark mode background */
+  --gray-100: #111827; /* Very dark gray */
+  --gray-200: #1f2937; /* Dark gray */
+  --gray-900: #f3f4f6; /* Light gray for primary text in dark mode */
+
+  --yellow-50: #fffde7; 
+  --yellow-100: #fff9c4;
+  --yellow-200: #fff59d;
+  --yellow-300: #fff176;
+  --yellow-400: #ffee58;
+  --yellow-500: #ffeb3b;
+  --yellow-600: #fdd835; /* Primary yellow accent */
+  --yellow-700: #fbc02d;
+  --yellow-800: #f9a825;
+  --yellow-900: #f57f17;
+  --yellow-950: #e65100;
 
   --blue-400: #60a5fa;
   --red-400: #f87171;
 
-  --color-bg: var(--gray-50);
-  --color-text: var(--gray-900);
-  --color-accent: #ffffff;
-  --color-border: #2e2e2e;
-  --color-card-bg: #181818;
-  --color-hover: #333333;
+  --color-bg: var(--gray-50); /* Dark mode background set to pure black */
+  --color-text: var(--gray-900); /* Dark mode text set to light gray */
+  --color-accent: var(--yellow-600); /* Yellow accent */
+  --color-border: var(--gray-700); /* Medium dark gray border */
+  --color-card-bg: var(--gray-100); /* Very dark gray card background */
+  --color-hover: var(--gray-200); /* Dark gray for hover */
   --color-danger: var(--red-400);
+
+  --color-text-primary: var(--gray-900); /* Light gray for primary text */
+  --color-text-secondary: var(--gray-400); /* Medium gray for secondary text */
+  --color-bg-primary: var(--gray-50); /* Pure black for primary background */
+  --color-bg-secondary: var(--gray-100); /* Very dark gray for secondary background */
+  --color-bg-tertiary: var(--gray-200); /* Dark gray for tertiary background */
+  --color-border-primary: var(--gray-700); /* Medium dark gray border */
+  --color-accent-hover: var(--yellow-700); /* Slightly darker yellow on hover */
+
+  /* Neon colors for the black theme */
+  --neon-blue: #0ff; /* Cyan for blue neon */
+  --neon-green: #0f0; /* Bright green for green neon */
+  --neon-pink: #f0f; /* Magenta for pink neon */
+  --neon-yellow: var(--yellow-400); /* Bright yellow for yellow neon */
 }
 
 /* ========================
-   UI COMPONENTS
+    UI COMPONENTS
 ======================== */
 .app-container {
   min-height: 100vh;
@@ -111,15 +180,15 @@ html, body, #root {
 
 .btn {
   @apply px-5 py-2 rounded-md font-bold uppercase tracking-wide transition-all duration-300;
-  background-color: var(--color-text);
-  color: var(--color-accent);
-  border: 2px solid var(--color-text);
+  background-color: var(--color-accent); /* Yellow button background */
+  color: var(--gray-900); /* Dark text on yellow button */
+  border: 2px solid var(--color-accent);
 }
 
 .btn:hover {
   background-color: transparent;
-  color: var(--color-text);
-  border-color: var(--color-text);
+  color: var(--color-accent); /* Yellow text on hover */
+  border-color: var(--color-accent);
 }
 
 .btn-danger {
@@ -143,31 +212,31 @@ html, body, #root {
 
 .input:focus {
   outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+  border-color: var(--color-accent); /* Yellow focus border */
+  box-shadow: 0 0 0 3px rgba(253, 216, 53, 0.3); /* Yellow glow on focus */
 }
 
 /* ========================
-   GLASS UI
+    GLASS UI
 ======================== */
 .glass {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05); /* Lighter transparent for dark theme */
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(253, 216, 53, 0.2); /* Yellow tint border */
   border-radius: 1rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease-in-out;
 }
 
 body.dark .glass {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2); /* Darker transparent for dark mode */
+  border: 1px solid rgba(253, 216, 53, 0.3); /* Stronger yellow tint border */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 /* ========================
-   SCROLLBAR
+    SCROLLBAR
 ======================== */
 ::-webkit-scrollbar {
   width: 8px;
@@ -176,19 +245,21 @@ body.dark .glass {
   background: var(--color-bg);
 }
 ::-webkit-scrollbar-thumb {
-  background-color: var(--color-text);
+  background-color: var(--color-accent); /* Yellow scrollbar thumb */
   border-radius: 4px;
 }
 
 
 .text-accent {
-  color: var(--color-accent);
+  color: var(--color-accent); /* Yellow accent text */
 }
 .text-danger {
   color: var(--color-danger);
 }
 code {
   font-family: 'Press Start 2P', cursive;
+  background-color: var(--color-bg-tertiary); /* Dark gray background for code */
+  color: var(--color-text); /* Light text for code */
 }
 
 
@@ -240,11 +311,11 @@ code {
   }
 
   .neon-text {
-    text-shadow: 0 0 5px #fff, 0 0 15px #0ff;
+    text-shadow: 0 0 5px var(--neon-yellow), 0 0 15px var(--neon-yellow); /* Yellow neon text */
   }
 
   .neon-glow {
-    box-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+    box-shadow: 0 0 10px var(--neon-yellow), 0 0 20px var(--neon-yellow); /* Yellow neon glow */
   }
 
   .minecraft-font {
@@ -259,7 +330,7 @@ code {
   }
 
   .neon-minecraft {
-    text-shadow: 0 0 2px #0ff, 0 0 4px #0ff, 0 0 8px #0ff;
+    text-shadow: 0 0 2px var(--neon-yellow), 0 0 4px var(--neon-yellow), 0 0 8px var(--neon-yellow); /* Yellow neon minecraft */
   }
 
   .border-custom {
@@ -308,7 +379,7 @@ body {
 }
 
 :focus {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-accent); /* Yellow focus outline */
   outline-offset: 2px;
 }
 
@@ -317,7 +388,7 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-accent); /* Yellow focus outline */
   outline-offset: 2px;
 }
 
@@ -327,7 +398,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
-  color: var(--color-text-primary);
+  color: var(--color-text-primary); /* Primary text color */
   margin-bottom: var(--space-md);
   letter-spacing: -0.025em;
 }
@@ -364,7 +435,7 @@ h6 {
 
 p {
   margin-bottom: var(--space-md);
-  color: var(--color-text-secondary);
+  color: var(--color-text-secondary); /* Secondary text color */
 }
 
 ul, ol {
@@ -374,7 +445,7 @@ ul, ol {
 
 li {
   margin-bottom: var(--space-xs);
-  color: var(--color-text-secondary);
+  color: var(--color-text-secondary); /* Secondary text color */
 }
 
 code, pre {
@@ -383,18 +454,18 @@ code, pre {
 }
 
 code {
-  background-color: var(--color-bg-tertiary);
+  background-color: var(--color-bg-tertiary); /* Dark gray background */
   padding: 0.125rem 0.25rem;
   border-radius: var(--radius-sm);
-  color: var(--color-accent);
+  color: var(--color-accent); /* Yellow accent color */
 }
 
 pre {
-  background-color: var(--color-bg-secondary);
+  background-color: var(--color-bg-secondary); /* Very dark gray background */
   padding: var(--space-md);
   border-radius: var(--radius-lg);
   overflow-x: auto;
-  border: 1px solid var(--color-border-primary);
+  border: 1px solid var(--color-border-primary); /* Dark gray border */
 }
 
 @media (min-width: 576px) {
@@ -598,7 +669,7 @@ input, textarea, select {
 input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(0, 132, 255, 0.1);
+  box-shadow: 0 0 0 3px var(--color-accent); /* Adjusted shadow to use accent color */
 }
 
 /* Button Styles */
@@ -619,27 +690,27 @@ input:focus, textarea:focus, select:focus {
 }
 
 .btn-primary {
-  background-color: var(--color-accent);
-  color: white;
+  background-color: var(--color-accent); /* Yellow primary button */
+  color: var(--gray-900); /* Dark text on primary button */
 }
 
 .btn-primary:hover {
-  background-color: var(--color-accent-hover);
+  background-color: var(--color-accent-hover); /* Slightly darker yellow on hover */
   transform: translateY(-1px);
   box-shadow: var(--shadow-lg);
 }
 
 .btn-neon {
   background: transparent;
-  color: var(--neon-blue);
-  border: 2px solid var(--neon-blue);
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  color: var(--neon-yellow); /* Yellow neon button text */
+  border: 2px solid var(--neon-yellow); /* Yellow neon button border */
+  box-shadow: 0 0 20px rgba(253, 216, 53, 0.3); /* Yellow neon shadow */
 }
 
 .btn-neon:hover {
-  background-color: var(--neon-blue);
-  color: var(--color-bg-primary);
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+  background-color: var(--neon-yellow);
+  color: var(--color-bg-primary); /* Dark text on hover */
+  box-shadow: 0 0 30px rgba(253, 216, 53, 0.6);
 }
 
 .sr-only {
@@ -680,8 +751,8 @@ input:focus, textarea:focus, select:focus {
 .text-right { text-align: right; }
 
 /* ==========================================================================
-   DARK MODE SUPPORT
-   ========================================================================== */
+    DARK MODE SUPPORT
+    ========================================================================== */
 
 .dark {
   color-scheme: dark;

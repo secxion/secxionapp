@@ -8,14 +8,14 @@ import userReducer from "./userSlice";
 const persistConfig = {
   key: "user",
   storage,
-  whitelist: ["user", "isLoggedIn"], 
+  whitelist: ["user", "token"],
 };
 
 const persistedUserReducer = persistReducer(persistConfig, userReducer);
 
 export const store = configureStore({
   reducer: {
-    user: persistedUserReducer, 
+    user: persistedUserReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { FaEye, FaEyeSlash, FaFaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Corrected import for consistency
 import { Link, useNavigate } from "react-router-dom";
 import uploadImage from "../helpers/uploadImage";
 import SummaryApi from "../common";
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
-import "./Login.css"; 
+// import "./Login.css"; // Removed, assuming all styles are now Tailwind
 import signupBackground from "./signupbk.png";
 
 const SignUp = () => {
@@ -188,34 +188,32 @@ const SignUp = () => {
       className="fixed inset-0 flex flex-col justify-between z-50 bg-cover bg-center"
       style={{ backgroundImage: `url(${signupBackground})` }}
     >
-      {/* Animated Grid Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute w-full h-full animate-pulse bg-[radial-gradient(circle,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:40px_40px]" />
-      </div>
+      {/* Overlay for dark mode compatibility on background */}
+      <div className="absolute inset-0 bg-black/70 z-0"></div> {/* Increased opacity for theme */}
 
-      {/* Sign Up Form Box */}
-      <div className="relative z-10 flex items-center justify-center grow px-4 py-8"> {/* Added py-8 for better spacing on smaller screens */}
-        <div className="bg-white dark:bg-gray-800 w-full max-w-lg p-8 shadow-2xl rounded-2xl border border-gray-200 dark:border-gray-700 bg-opacity-95 backdrop-blur-md">
-          {/* Logo */}
+      {/* Sign Up Form Box - Updated for black and yellow theme */}
+      <div className="relative z-10 flex items-center justify-center grow px-4 py-8">
+        <div className="bg-gray-900 bg-opacity-95 w-full max-w-lg p-8 shadow-2xl rounded-2xl border border-gray-700 backdrop-blur-md"> {/* Updated background, border, and removed dark: prefix as it's the default now */}
+          {/* Logo - Updated gradient for black and yellow theme */}
           <div className="flex justify-center mb-5">
             <Link
               to="/"
-              className="font-bold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 tracking-wide"
+              className="font-bold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 tracking-wide"
             >
               <div className="logo-wrapper">
                 <h1 className="text-3xl logo-text font-extrabold tracking-wide">SXN</h1>
-                <div className="logo-accent" />
+                <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full" /> {/* Updated logo accent */}
               </div>
             </Link>
           </div>
 
-          <h2 className="text-xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">Sign Up Wizard</h2>
+          <h2 className="text-xl font-bold mb-6 text-center text-gray-100">Sign Up Wizard</h2> {/* Updated text color */}
           <div className="flex items-center justify-between mb-4">
             {[1, 2, 3, 4, 5].map((n) => (
               <div
                 key={n}
                 className={`h-2 flex-1 mx-1 rounded-full transition-all ${
-                  n <= step ? "bg-blue-600" : "bg-gray-300 dark:bg-gray-600"
+                  n <= step ? "bg-yellow-600" : "bg-gray-700" // Updated progress bar colors
                 }`}
               />
             ))}
@@ -229,7 +227,7 @@ const SignUp = () => {
                   <InputField label="Tag (Optional)" name="tag" value={data.tag} onChange={handleOnChange} placeholder="e.g., ProTrader, CryptoEnthusiast" />
                   <div className="flex justify-between mt-6">
                     <div /> {/* Empty div for alignment */}
-                    <button type="button" onClick={() => goToStep(2)} className="btn-next">Next →</button>
+                    <button type="button" onClick={() => goToStep(2)} className="btn-next bg-yellow-600 hover:bg-yellow-700 text-gray-900 font-medium py-2 px-4 rounded transition">Next →</button> {/* Updated button styling */}
                   </div>
                 </motion.div>
               )}
@@ -237,8 +235,8 @@ const SignUp = () => {
                 <motion.div key="step2" variants={stepVariants} initial="hidden" animate="visible" exit="exit" className="space-y-4">
                   <InputField label="Email" name="email" type="email" value={data.email} onChange={handleOnChange} required placeholder="you@example.com" />
                   <div className="flex justify-between mt-6">
-                    <button type="button" onClick={() => goToStep(1)} className="btn-back">← Back</button>
-                    <button type="button" onClick={() => goToStep(3)} className="btn-next">Next →</button>
+                    <button type="button" onClick={() => goToStep(1)} className="btn-back bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded transition">← Back</button> {/* Updated button styling */}
+                    <button type="button" onClick={() => goToStep(3)} className="btn-next bg-yellow-600 hover:bg-yellow-700 text-gray-900 font-medium py-2 px-4 rounded transition">Next →</button> {/* Updated button styling */}
                   </div>
                 </motion.div>
               )}
@@ -246,8 +244,8 @@ const SignUp = () => {
                 <motion.div key="step3" variants={stepVariants} initial="hidden" animate="visible" exit="exit" className="space-y-4">
                   <InputField label="Telegram Number (Optional)" name="telegramNumber" value={data.telegramNumber} onChange={handleOnChange} placeholder="+1234567890 (optional)" />
                   <div className="flex justify-between mt-6">
-                    <button type="button" onClick={() => goToStep(2)} className="btn-back">← Back</button>
-                    <button type="button" onClick={() => goToStep(4)} className="btn-next">Next →</button>
+                    <button type="button" onClick={() => goToStep(2)} className="btn-back bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded transition">← Back</button> {/* Updated button styling */}
+                    <button type="button" onClick={() => goToStep(4)} className="btn-next bg-yellow-600 hover:bg-yellow-700 text-gray-900 font-medium py-2 px-4 rounded transition">Next →</button> {/* Updated button styling */}
                   </div>
                 </motion.div>
               )}
@@ -256,56 +254,57 @@ const SignUp = () => {
                   <PasswordField label="Password" name="password" value={data.password} onChange={handleOnChange} show={showPassword} toggle={() => setShowPassword((prev) => !prev)} />
                   <PasswordField label="Confirm Password" name="confirmPassword" value={data.confirmPassword} onChange={handleOnChange} show={showConfirmPassword} toggle={() => setShowConfirmPassword((prev) => !prev)} />
                   <div className="flex justify-between mt-6">
-                    <button type="button" onClick={() => goToStep(3)} className="btn-back">← Back</button>
-                    <button type="button" onClick={() => goToStep(5)} className="btn-next">Next →</button>
+                    <button type="button" onClick={() => goToStep(3)} className="btn-back bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded transition">← Back</button> {/* Updated button styling */}
+                    <button type="button" onClick={() => goToStep(5)} className="btn-next bg-yellow-600 hover:bg-yellow-700 text-gray-900 font-medium py-2 px-4 rounded transition">Next →</button> {/* Updated button styling */}
                   </div>
                 </motion.div>
               )}
               {step === 5 && (
                 <motion.div key="step5" variants={stepVariants} initial="hidden" animate="visible" exit="exit" className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Profile Picture</label>
-                    {/* File input also gets a bold blue border */}
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Profile Picture</label> {/* Updated text color */}
+                    {/* File input also gets a bold yellow border */}
                     <input 
                       type="file" 
                       accept="image/*" 
                       onChange={handleUploadPic} 
-                      className="w-full p-2 border-2 border-blue-600 bg-gray-50 text-sm rounded 
-                                 dark:bg-gray-700 dark:border-blue-600 dark:text-white 
+                      className="w-full p-2 border-2 border-yellow-600 bg-gray-800 text-sm rounded 
+                                 text-gray-100 
                                  file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 
-                                 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 
-                                 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300 dark:hover:file:bg-blue-800" 
+                                 file:text-sm file:font-semibold file:bg-yellow-500 file:text-gray-900 
+                                 hover:file:bg-yellow-600" // Updated colors for file input
                     />
                   </div>
 
                   {data.profilePic && (
                     <div className="flex justify-center my-4">
-                       <img src={data.profilePic} alt="Profile Preview" className="h-24 w-24 rounded-full object-cover shadow-lg border-2 border-blue-500" />
+                       <img src={data.profilePic} alt="Profile Preview" className="h-24 w-24 rounded-full object-cover shadow-lg border-2 border-yellow-500" /> {/* Updated border color */}
                     </div>
                   )}
 
                   <div className="flex items-center space-x-2">
-                    <div       className="flex items-center px-1 bg-gray-50 border-2 border-blue-600 rounded focus-within:ring-blue-500 focus-within:border-blue-500 dark:bg-gray-700 dark:border-blue-600"
-><input
-                      type="checkbox"
-                      id="terms"
-                      checked={agreedToTerms}
-                      onChange={(e) => setAgreedToTerms(e.target.checked)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:checked:bg-blue-500"
-                    /></div>
+                    <div className="flex items-center px-1 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500"> {/* Updated colors */}
+                      <input
+                        type="checkbox"
+                        id="terms"
+                        checked={agreedToTerms}
+                        onChange={(e) => setAgreedToTerms(e.target.checked)}
+                        className="w-4 h-4 text-yellow-600 border-gray-700 rounded focus:ring-yellow-500 bg-gray-800 checked:bg-yellow-500" // Updated checkbox colors
+                      />
+                    </div>
                     
-                    <label htmlFor="terms" className="text-sm text-gray-700 dark:text-gray-300 leading-snug">
+                    <label htmlFor="terms" className="text-sm text-gray-300 leading-snug"> {/* Updated text color */}
                       I agree to the{" "}
-                      <Link to="/terms" className="text-blue-600 hover:underline dark:text-blue-400">terms and conditions</Link>
+                      <Link to="/terms" className="text-yellow-500 hover:underline">terms and conditions</Link> {/* Updated link color */}
                     </label>
                   </div>
 
                   <div className="flex justify-between mt-6">
-                    <button type="button" onClick={() => goToStep(4)} className="btn-back">← Back</button>
+                    <button type="button" onClick={() => goToStep(4)} className="btn-back bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded transition">← Back</button> {/* Updated button styling */}
                     <button
                       type="submit"
                       disabled={loading || uploading || !data.profilePic || !agreedToTerms} 
-                      className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded transition disabled:opacity-50 disabled:cursor-not-allowed dark:bg-blue-700 dark:hover:bg-blue-800"
+                      className="bg-yellow-600 hover:bg-yellow-700 text-gray-900 text-sm font-medium py-2 px-4 rounded transition disabled:opacity-50 disabled:cursor-not-allowed" // Updated button styling
                     >
                       {loading ? "Signing Up..." : uploading ? "Uploading..." : "Sign Up 🚀"}
                     </button>
@@ -315,17 +314,18 @@ const SignUp = () => {
             </AnimatePresence>
           </form>
 
-          <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+          <div className="mt-6 text-center text-sm text-gray-400"> {/* Updated text color */}
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-600 hover:underline font-medium dark:text-blue-400">
+            <Link to="/login" className="text-yellow-500 hover:underline font-medium"> {/* Updated link color */}
               Login
             </Link>
           </div>
         </div>
       </div>
 
-      <footer className="relative z-10 text-center text-xs text-white p-3 bg-black/30 backdrop-blur-sm shadow-inner sm:shadow-none">
-        Contact Us | © 2025 secxion.com
+      {/* Footer - Updated for black and yellow theme */}
+      <footer className="relative z-10 text-center text-xs text-gray-400 p-3 bg-black/50 backdrop-blur-sm shadow-inner sm:shadow-none"> {/* Updated text color and background opacity */}
+        Contact Us | © {new Date().getFullYear()} secxion.com
         <br />
         {clock.toLocaleDateString()} {clock.toLocaleTimeString()}
       </footer>
@@ -333,33 +333,31 @@ const SignUp = () => {
   );
 };
 
-// Reusable InputField component
+// Reusable InputField component - Updated for black and yellow theme
 const InputField = ({ label, name, value, onChange, type = "text", placeholder = "", required = false }) => (
   <div>
-    <label htmlFor={name} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{label}</label>
-    <div className="flex items-center p-2 bg-gray-50 border-2 border-blue-600 rounded focus-within:ring-blue-500 focus-within:border-blue-500 dark:bg-gray-700 dark:border-blue-600"
->
+    <label htmlFor={name} className="block text-sm font-medium text-gray-300 mb-1">{label}</label> {/* Updated text color */}
+    <div className="flex items-center p-2 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500"> {/* Updated background, border, and focus ring */}
       <input
-      id={name}
-      type={type}
-      name={name}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      required={required}
-      // Applied classes for bolder blue border in both light and dark modes
-      className="w-full p-2 bg-gray-50 border-2 border-blue-600 text-sm rounded focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-blue-600 dark:text-white dark:placeholder-gray-400"
-    /></div>
-    
+        id={name}
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        required={required}
+        className="w-full p-2 bg-transparent text-sm rounded focus:ring-0 focus:outline-none text-gray-100 placeholder-gray-400" // Removed redundant border, updated text/placeholder
+      />
+    </div>
   </div>
 );
 
-// Reusable PasswordField component
+// Reusable PasswordField component - Updated for black and yellow theme
 const PasswordField = ({ label, name, value, onChange, show, toggle }) => (
   <div>
-    <label htmlFor={name} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{label}</label>
+    <label htmlFor={name} className="block text-sm font-medium text-gray-300 mb-1">{label}</label> {/* Updated text color */}
     <div 
-      className="flex items-center p-2 bg-gray-50 border-2 border-blue-600 rounded focus-within:ring-blue-500 focus-within:border-blue-500 dark:bg-gray-700 dark:border-blue-600"
+      className="flex items-center p-2 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500" // Updated background, border, and focus ring
     >
       <input
         id={name}
@@ -369,9 +367,9 @@ const PasswordField = ({ label, name, value, onChange, show, toggle }) => (
         onChange={onChange}
         placeholder={`Enter ${label.toLowerCase()}`}
         required
-        className="flex-1 bg-transparent outline-none text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+        className="flex-1 bg-transparent outline-none text-sm text-gray-100 placeholder-gray-400" // Updated text/placeholder
       />
-      <button type="button" onClick={toggle} className="text-gray-600 dark:text-gray-400 ml-2 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+      <button type="button" onClick={toggle} className="text-yellow-500 ml-2 p-1 rounded-full hover:bg-gray-700 transition-colors"> {/* Updated icon color and hover background */}
         {show ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
       </button>
     </div>

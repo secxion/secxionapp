@@ -12,9 +12,7 @@ import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import HomeFooter from "../Components/HomeFooter";
 import NetBlog from "../Components/NetBlog";
 import giftCardImages from "../helper/heroimages";
-import "./Home.css";
 
-// Animated Geometric Background Component
 const AnimatedGeometricBackground = () => {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
@@ -31,7 +29,6 @@ const AnimatedGeometricBackground = () => {
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
-  // Generate random animated lines
   const generateLines = () => {
     const lines = [];
     const numLines = 15;
@@ -55,7 +52,6 @@ const AnimatedGeometricBackground = () => {
     return lines;
   };
 
-  // Generate random animated dots
   const generateDots = () => {
     const dots = [];
     const numDots = 25;
@@ -73,7 +69,6 @@ const AnimatedGeometricBackground = () => {
     return dots;
   };
 
-  // Generate floating circles
   const generateCircles = () => {
     const circles = [];
     const numCircles = 12;
@@ -97,9 +92,7 @@ const AnimatedGeometricBackground = () => {
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      {/* SVG Lines and Dots */}
       <svg width="100%" height="100%" className="absolute inset-0">
-        {/* Animated connecting lines */}
         {lines.map((line) => (
           <motion.line
             key={line.id}
@@ -172,26 +165,24 @@ const AnimatedGeometricBackground = () => {
           />
         ))}
 
-        {/* Gradient definitions */}
         <defs>
           <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8" />
-            <stop offset="50%" stopColor="#8b5cf6" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#ef4444" stopOpacity="0.4" />
+            <stop offset="0%" stopColor="#a16207" stopOpacity="0.8" /> {/* Darker Yellow/Orange */}
+            <stop offset="50%" stopColor="#facc15" stopOpacity="0.6" /> {/* Yellow */}
+            <stop offset="100%" stopColor="#1f2937" stopOpacity="0.4" /> {/* Dark Gray */}
           </linearGradient>
           <radialGradient id="dotGradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.9" />
-            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.3" />
+            <stop offset="0%" stopColor="#eab308" stopOpacity="0.9" /> {/* Strong Yellow */}
+            <stop offset="100%" stopColor="#4b5563" stopOpacity="0.3" /> {/* Gray */}
           </radialGradient>
           <linearGradient id="circleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#10b981" stopOpacity="0.6" />
-            <stop offset="50%" stopColor="#f59e0b" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#ef4444" stopOpacity="0.3" />
+            <stop offset="0%" stopColor="#fcd34d" stopOpacity="0.6" /> {/* Light Yellow */}
+            <stop offset="50%" stopColor="#1f2937" stopOpacity="0.4" /> {/* Dark Gray */}
+            <stop offset="100%" stopColor="#92400e" stopOpacity="0.3" /> {/* Dark Orange */}
           </linearGradient>
         </defs>
       </svg>
 
-      {/* Floating CSS Triangles */}
       <div className="absolute inset-0">
         {[...Array(10)].map((_, i) => {
           const size = 15 + Math.random() * 30;
@@ -206,7 +197,7 @@ const AnimatedGeometricBackground = () => {
                 height: 0,
                 borderLeft: `${size}px solid transparent`,
                 borderRight: `${size}px solid transparent`,
-                borderBottom: `${size * 1.2}px solid rgba(99, 102, 241, 0.4)`,
+                borderBottom: `${size * 1.2}px solid rgba(252, 211, 77, 0.4)`, // Yellowish
               }}
               animate={{
                 rotate: [0, 120, 240, 360],
@@ -226,7 +217,6 @@ const AnimatedGeometricBackground = () => {
         })}
       </div>
 
-      {/* Floating Squares */}
       <div className="absolute inset-0">
         {[...Array(8)].map((_, i) => {
           const size = 20 + Math.random() * 40;
@@ -239,7 +229,7 @@ const AnimatedGeometricBackground = () => {
                 top: `${Math.random() * 90}%`,
                 width: `${size}px`,
                 height: `${size}px`,
-                borderColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.5)`,
+                borderColor: `rgba(252, 211, 77, 0.5)`, // Yellowish
               }}
               animate={{
                 rotate: [0, 45, 90, 135, 180, 225, 270, 315, 360],
@@ -258,7 +248,6 @@ const AnimatedGeometricBackground = () => {
         })}
       </div>
 
-      {/* Floating Hexagons */}
       <div className="absolute inset-0">
         {[...Array(6)].map((_, i) => {
           const size = 25 + Math.random() * 35;
@@ -271,7 +260,7 @@ const AnimatedGeometricBackground = () => {
                 top: `${Math.random() * 88}%`,
                 width: `${size}px`,
                 height: `${size}px`,
-                background: `linear-gradient(45deg, rgba(34, 197, 94, 0.4), rgba(168, 85, 247, 0.4))`,
+                background: `linear-gradient(45deg, rgba(252, 211, 77, 0.4), rgba(245, 158, 11, 0.4))`, // Yellow to Orange
                 clipPath: 'polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%)',
               }}
               animate={{
@@ -290,7 +279,6 @@ const AnimatedGeometricBackground = () => {
         })}
       </div>
 
-      {/* Orbiting Elements */}
       <div className="absolute inset-0">
         {[...Array(5)].map((_, i) => {
           const centerX = Math.random() * window.innerWidth;
@@ -300,7 +288,7 @@ const AnimatedGeometricBackground = () => {
           return (
             <motion.div
               key={`orbit-${i}`}
-              className="absolute w-3 h-3 bg-gradient-to-r from-pink-500 to-violet-500 rounded-full opacity-60"
+              className="absolute w-3 h-3 bg-gradient-to-r from-yellow-500 to-yellow-700 rounded-full opacity-60" // Yellow gradient
               style={{
                 left: centerX,
                 top: centerY,
@@ -340,39 +328,39 @@ const menuItems = [
   {
     label: "Market",
     path: "/section",
-    color: "bg-gradient-to-r from-blue-500 to-purple-500 dark:from-blue-700 dark:to-purple-800",
-    icon: <FaStore className="text-3xl sm:text-4xl md:text-5xl text-black dark:text-white" />,
+    color: "bg-gradient-to-r from-yellow-600 to-yellow-800", // Updated gradient
+    icon: <FaStore className="text-3xl sm:text-4xl md:text-5xl text-gray-900" />, // Icon color for dark background
   },
   {
     label: "Transaction Record",
     path: "/record",
-    color: "bg-gradient-to-r from-green-500 to-teal-500 dark:from-green-700 dark:to-teal-800",
-    icon: <FaClipboardList className="text-3xl sm:text-4xl md:text-5xl text-black dark:text-white" />,
+    color: "bg-gradient-to-r from-gray-700 to-gray-900", // Updated gradient
+    icon: <FaClipboardList className="text-3xl sm:text-4xl md:text-5xl text-yellow-400" />, // Icon color for dark background
   },
   {
     label: "Wallet",
     path: "/mywallet",
-    color: "bg-gradient-to-r from-yellow-500 to-orange-500 dark:from-yellow-600 dark:to-orange-600",
-    icon: <FaWallet className="text-3xl sm:text-4xl md:text-5xl text-black dark:text-white" />,
+    color: "bg-gradient-to-r from-yellow-600 to-yellow-800", // Updated gradient
+    icon: <FaWallet className="text-3xl sm:text-4xl md:text-5xl text-gray-900" />, // Icon color for dark background
   },
   {
     label: "Profile",
     path: "/profile",
-    color: "bg-gradient-to-r from-red-500 to-pink-500 dark:from-red-600 dark:to-pink-700",
-    icon: <FaUser className="text-3xl sm:text-4xl md:text-5xl text-black dark:text-white" />,
+    color: "bg-gradient-to-r from-gray-700 to-gray-900", // Updated gradient
+    icon: <FaUser className="text-3xl sm:text-4xl md:text-5xl text-yellow-400" />, // Icon color for dark background
   },
   {
     label: "Data Pad",
     path: "/datapad",
-    color: "bg-gradient-to-r from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-800",
-    icon: <FaBook className="text-3xl sm:text-4xl md:text-5xl text-black dark:text-white" />,
+    color: "bg-gradient-to-r from-yellow-600 to-yellow-800", // Updated gradient
+    icon: <FaBook className="text-3xl sm:text-4xl md:text-5xl text-gray-900" />, // Icon color for dark background
   },
   {
     label: "Contact Support",
     path: "/report",
-    color: "bg-gradient-to-r from-indigo-500 to-indigo-600 dark:from-indigo-700 dark:to-indigo-900",
+    color: "bg-gradient-to-r from-gray-700 to-gray-900", // Updated gradient
     icon: (
-      <IoChatbubbleEllipsesOutline className="text-3xl sm:text-4xl md:text-5xl text-black dark:text-white" />
+      <IoChatbubbleEllipsesOutline className="text-3xl sm:text-4xl md:text-5xl text-yellow-400" /> // Icon color for dark background
     ),
   },
 ];
@@ -415,26 +403,24 @@ const Home = () => {
   };
 
   return (
-    <div className="relative min-h-screen">
-      {/* Animated Geometric Background */}
+    <div className="relative min-h-screen bg-gray-950"> {/* Main background set to dark */}
       <AnimatedGeometricBackground />
       
-      <main className="relative z-10 container mx-auto px-2 sm:px-4 lg:px-6 space-y-6 sm:space-y-8 dark:text-white min-h-screen">
-        {/* Hero Section */}
+      <main className="relative z-10 container mx-auto px-2 sm:px-4 lg:px-6 space-y-6 sm:space-y-8 text-gray-100 min-h-screen"> {/* Text color set to light */}
         <header
-          className="hero-section relative h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-[70vh] min-h-[350px] sm:min-h-[400px] mt-20 sm:mt-24 bg-cover bg-center rounded-lg sm:rounded-xl flex items-center justify-center transition-all duration-500 ease-in-out shadow-lg overflow-hidden"
+          className="relative h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-[70vh] min-h-[350px] sm:min-h-[400px] mt-20 sm:mt-24 bg-cover bg-center rounded-lg sm:rounded-xl flex items-center justify-center transition-all duration-500 ease-in-out shadow-lg overflow-hidden" // Removed 'hero-section' class
           style={{ backgroundImage: `url(${currentImage.url})` }}
         >
-          <div className="hero-overlay absolute inset-0 bg-black/60 rounded-lg sm:rounded-xl" />
-          <div className="hero-content relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto">
+          <div className="absolute inset-0 bg-black/70 rounded-lg sm:rounded-xl" /> {/* Replaced 'hero-overlay' with Tailwind */}
+          <div className="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto"> {/* Replaced 'hero-content' with Tailwind */}
             <motion.div
-              className="hero-button-container mt-4 sm:mt-6"
+              className="mt-4 sm:mt-6" // Removed 'hero-button-container'
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
               <Link to="/section"
-                className="hero-button inline-block font-press-start bg-yellow-400 dark:bg-yellow-500 text-black border-2 border-black dark:border-yellow-600 px-3 py-2 sm:px-4 sm:py-2 md:px-6 md:py-3 text-xs sm:text-sm uppercase shadow-[2px_2px_0_#333] hover:bg-yellow-500 dark:hover:bg-yellow-600 hover:shadow-[4px_4px_0_#111] transition-all duration-200 animate-pulseGlow focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2"
+                className="inline-block font-press-start bg-yellow-500 text-gray-900 border-2 border-yellow-700 px-3 py-2 sm:px-4 sm:py-2 md:px-6 md:py-3 text-xs sm:text-sm uppercase shadow-[2px_2px_0_#a16207] hover:bg-yellow-600 hover:shadow-[4px_4px_0_#854d0e] transition-all duration-200 animate-pulseGlow focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2" // Removed 'hero-button' class
               >
                 <span className="block sm:hidden">Market</span>
                 <span className="hidden sm:block">Market</span>
@@ -443,11 +429,11 @@ const Home = () => {
           </div>
         </header>
 
-        {/* Toggle Button */}
+        {/* Toggle Button - Updated colors */}
         <div className="flex justify-center px-2">
           <button
             onClick={() => setShowBlog(!showBlog)}
-            className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-semibold shadow-md transition duration-300 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 backdrop-blur-sm"
+            className="bg-gradient-to-r from-yellow-600 to-yellow-800 hover:from-yellow-700 hover:to-yellow-900 text-gray-900 px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-semibold shadow-md transition duration-300 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 backdrop-blur-sm"
           >
             {showBlog ? "Show Menu" : "Show Blog"}
           </button>
@@ -464,7 +450,7 @@ const Home = () => {
               transition={{ duration: 0.6 }}
               className="px-2 sm:px-4 md:px-6 pb-16 sm:pb-20"
             >
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 sm:mb-6 dark:text-white break-words">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 sm:mb-6 text-gray-100 break-words"> {/* Text color set to light */}
                 <span className="block sm:hidden">Latest News</span>
                 <span className="hidden sm:block">Latest Insights</span>
               </h2>
@@ -485,7 +471,7 @@ const Home = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
               transition={{ duration: 0.6 }}
-              className="menu-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6 px-2 sm:px-4 md:px-6 pb-20 sm:pb-24"
+              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6 px-2 sm:px-4 md:px-6 pb-20 sm:pb-24" // Removed 'menu-grid' class
             >
               {menuItems.map((item, index) => (
                 <motion.div
@@ -494,16 +480,16 @@ const Home = () => {
                   initial="initial"
                   animate="animate"
                   whileHover="whileHover"
-                  className={`menu-card rounded-lg sm:rounded-xl p-3 sm:p-4 text-center shadow-lg cursor-pointer ${item.color} transition-all duration-300 min-h-[120px] sm:min-h-[140px] md:min-h-[160px] flex flex-col items-center justify-center hover:shadow-xl backdrop-blur-sm`}
+                  className={`rounded-lg sm:rounded-xl p-3 sm:p-4 text-center shadow-lg cursor-pointer ${item.color} transition-all duration-300 min-h-[120px] sm:min-h-[140px] md:min-h-[160px] flex flex-col items-center justify-center hover:shadow-xl backdrop-blur-sm`} // Removed 'menu-card' class
                 >
                   <Link
                     to={item.path}
-                    className="menu-link flex flex-col items-center gap-2 sm:gap-3 text-white w-full h-full justify-center focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-transparent rounded-lg"
+                    className="flex flex-col items-center gap-2 sm:gap-3 text-gray-100 w-full h-full justify-center focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 focus:ring-offset-transparent rounded-lg" // Removed 'menu-link' class
                   >
-                    <div className="menu-icon-container flex-shrink-0">
+                    <div className="flex-shrink-0"> {/* Removed 'menu-icon-container' class */}
                       {item.icon}
                     </div>
-                    <span className="menu-label text-xs sm:text-sm md:text-base font-semibold uppercase tracking-wide leading-tight text-center break-words max-w-full overflow-hidden">
+                    <span className="text-xs sm:text-sm md:text-base font-semibold uppercase tracking-wide leading-tight text-center break-words max-w-full overflow-hidden"> {/* Removed 'menu-label' class and text-shadow */}
                       <span className="block sm:hidden">
                         {truncateText(item.label, 12)}
                       </span>
