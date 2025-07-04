@@ -80,7 +80,6 @@ if (isProduction) {
 
 const PORT = process.env.PORT || 5000;
 
-// 🔌 Connect and Start Server
 connectDB()
   .then(() => {
     const db = mongoose.connection;
