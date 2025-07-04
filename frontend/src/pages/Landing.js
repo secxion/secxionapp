@@ -208,15 +208,70 @@ export default function Landing() {
         className="fixed top-0 left-0 right-0 z-50 bg-gray-950/95 backdrop-blur-xl border-b border-gray-700/10" // Updated background and border
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <div className="relative">
-                <h1 className="font-extrabold text-2xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600"> {/* Updated logo gradient */}
-                  SXN
-                </h1>
-                <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full"></div> {/* Updated underline gradient */}
-              </div>
-            </div>
+          <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SecurePay - E-commerce Transaction Platform Logo">
+  <defs>
+    <!-- Premium gold gradient for trust and value -->
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#B8860B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B6914;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Security vault gradient -->
+    <linearGradient id="vaultGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a2a2a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1a1a1a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Security shadow effect -->
+    <filter id="securityShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="3" stdDeviation="4" flood-opacity="0.4"/>
+    </filter>
+    
+    <!-- Glow effect for premium feel -->
+    <filter id="premiumGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Secure vault container (represents security & protection) -->
+  <rect x="50" y="50" width="200" height="200" 
+        fill="url(#vaultGradient)" 
+        stroke="#000000" 
+        stroke-width="2" 
+        rx="6"
+        filter="url(#securityShadow)"/>
+  
+  <!-- Transaction zone (golden ratio represents value & trust) -->
+  <rect x="70" y="100" width="160" height="100" 
+        fill="url(#goldGradient)" 
+        stroke="#2C3E50" 
+        stroke-width="1.5" 
+        rx="4"
+        filter="url(#premiumGlow)"/>
+  
+
+  
+  <!-- Subtle transaction pattern overlay -->
+  <pattern id="securityPattern" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+    <rect width="4" height="4" fill="transparent"/>
+    <circle cx="2" cy="2" r="0.5" fill="#34495E" opacity="0.3"/>
+  </pattern>
+  
+  <!-- Apply security pattern to brackets -->
+  <rect x="50" y="50" width="200" height="200" fill="url(#securityPattern)" opacity="0.3"/>
+  
+  <!-- Trust seal elements -->
+  <circle cx="85" cy="115" r="2" fill="#E74C3C" opacity="0.6"/>
+  <circle cx="215" cy="115" r="2" fill="#E74C3C" opacity="0.6"/>
+  <circle cx="85" cy="185" r="2" fill="#27AE60" opacity="0.6"/>
+  <circle cx="215" cy="185" r="2" fill="#27AE60" opacity="0.6"/>
+</svg>
             
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
