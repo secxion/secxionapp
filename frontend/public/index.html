@@ -3,58 +3,41 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="/favicon.ico" />
-    <!-- Updated viewport for mobile app behavior -->
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, minimal-ui" />
-    <!-- PWA mobile app settings -->
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Secxion" />
     <meta name="application-name" content="Secxion" />
-    
-    <!-- Updated theme colors for black and yellow theme -->
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#fdd835" media="(prefers-color-scheme: light)" />
     <meta name="color-scheme" content="dark light" />
-    <meta
-      name="description"
-      content="Secxion - online transaction services : gift cards, online transactions, secure payments, digital commerce "
-    />
+    <meta name="description" content="Secxion - online transaction services : gift cards, online transactions, secure payments, digital commerce " />
     <meta name="keywords" content="gift cards, online transactions, secure payments, digital commerce" />
     <meta name="author" content="Secxion" />
-    
-    <!-- Open Graph Meta Tags -->
+
     <meta property="og:title" content="Secxion - Secure Digital Transactions" />
     <meta property="og:description" content="Professional platform for gift cards and online transaction services" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://secxion.com" />
     <meta property="og:image" content="/og-image.png" />
-    
-    <!-- Twitter Card Meta Tags -->
+
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Secxion - Secure Digital Transactions" />
     <meta name="twitter:description" content="Professional platform for gift cards and online transaction services" />
     <meta name="twitter:image" content="/twitter-image.png" />
-    
+
     <link rel="manifest" href="/manifest.json" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    
+
     <title>Secxion - Professional Digital Transaction Platform</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    
-    <link 
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" 
-      rel="stylesheet"
-    />
-    <link 
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" 
-      rel="stylesheet"
-    />
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter&family=JetBrains+Mono&display=swap" rel="stylesheet" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -66,329 +49,16 @@
               mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular'],
             },
             colors: {
-              // Updated Tailwind colors to match the black and yellow theme
-              gray: {
-                50: '#f9fafb',
-                100: '#f3f4f6',
-                200: '#e5e7eb',
-                300: '#d1d5db',
-                400: '#9ca3af',
-                500: '#6b7280',
-                600: '#4b5563',
-                700: '#374151',
-                800: '#1f2937',
-                900: '#111827',
-                950: '#000000', // Pure black for dark backgrounds
-              },
-              yellow: {
-                50: '#fffde7', 
-                100: '#fff9c4',
-                200: '#fff59d',
-                300: '#fff176',
-                400: '#ffee58',
-                500: '#ffeb3b',
-                600: '#fdd835', // Primary yellow for accents
-                700: '#fbc02d',
-                800: '#f9a825',
-                900: '#f57f17',
-                950: '#e65100',
-              },
-              blue: { // Keeping blue for general use if needed, but yellow is primary accent
-                50: '#eff6ff',
-                100: '#dbeafe',
-                200: '#bfdbfe',
-                300: '#93c5fd',
-                400: '#60a5fa',
-                500: '#3b82f6',
-                600: '#2563eb',
-                700: '#1d4ed8',
-                800: '#1e40af',
-                900: '#1e3a8a',
-                950: '#172554',
-              },
-              emerald: { // Keeping emerald for general use if needed
-                50: '#ecfdf5',
-                100: '#d1fae5',
-                200: '#a7f3d0',
-                300: '#6ee7b7',
-                400: '#34d399',
-                500: '#10b981',
-                600: '#059669',
-                700: '#047857',
-                800: '#065f46',
-                900: '#064e3b',
-                950: '#022c22',
-              },
-            },
-            animation: {
-              'fade-up': 'fadeUp 0.6s ease-out',
-              'fade-in': 'fadeIn 0.5s ease-out',
-              'slide-in': 'slideIn 0.4s ease-out',
-              'bounce-gentle': 'bounceGentle 2s ease-in-out infinite',
-              'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
-            },
-            keyframes: {
-              fadeUp: {
-                '0%': { opacity: '0', transform: 'translateY(20px)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' },
-              },
-              fadeIn: {
-                '0%': { opacity: '0' },
-                '100%': { opacity: '1' },
-              },
-              slideIn: {
-                '0%': { opacity: '0', transform: 'translateX(-20px)' },
-                '100%': { opacity: '1', transform: 'translateX(0)' },
-              },
-              bounceGentle: {
-                '0%, 100%': { transform: 'translateY(0)' },
-                '50%': { transform: 'translateY(-10px)' },
-              },
-              pulseSoft: {
-                '0%, 100%': { opacity: '1' },
-                '50%': { opacity: '0.8' },
-              },
-            },
-            backdropBlur: {
-              xs: '2px',
-            },
-            spacing: {
-              '18': '4.5rem',
-              '88': '22rem',
+              gray: { 50: '#f9fafb', 100: '#f3f4f6', 200: '#e5e7eb', 300: '#d1d5db', 400: '#9ca3af', 500: '#6b7280', 600: '#4b5563', 700: '#374151', 800: '#1f2937', 900: '#111827', 950: '#000000' },
+              yellow: { 50: '#fffde7', 100: '#fff9c4', 200: '#fff59d', 300: '#fff176', 400: '#ffee58', 500: '#ffeb3b', 600: '#fdd835', 700: '#fbc02d', 800: '#f9a825', 900: '#f57f17', 950: '#e65100' },
+              blue: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a', 950: '#172554' },
+              emerald: { 50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b', 950: '#022c22' },
             },
           },
         },
-      }
+      };
     </script>
-    
-    <style>
-      * {
-        box-sizing: border-box;
-      }
-      
-      /* Fix for mobile viewport issues */
-      html {
-        height: 100%;
-        overflow-x: hidden;
-        scroll-behavior: smooth;
-        /* Prevent address bar from showing/hiding on scroll */
-        -webkit-overflow-scrolling: touch;
-      }
-      
-      body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        min-height: 100vh;
-        min-height: -webkit-fill-available;
-        /* Updated background color to dark gray for consistency with black theme */
-        background-color: #111827; 
-        color: #f3f4f6; /* Light gray text for dark theme */
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        overflow-x: hidden;
-        line-height: 1.6;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        /* Prevent iOS bounce scrolling */
-        position: fixed;
-        width: 100%;
-        /* Mobile-specific fixes */
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -webkit-tap-highlight-color: transparent;
-      }
-      
-      #root {
-        height: 100vh;
-        height: -webkit-fill-available;
-        overflow-y: auto;
-        overflow-x: hidden;
-        position: relative;
-      }
-      
-      /* PWA install button styles */
-      .pwa-install-banner {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        /* Updated background for black and yellow theme */
-        background: rgba(0, 0, 0, 0.9); /* Dark background for the banner */
-        color: #fdd835; /* Yellow text for the banner */
-        padding: 12px 20px;
-        border-radius: 25px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        backdrop-filter: blur(10px);
-        z-index: 10000;
-        display: none;
-        align-items: center;
-        gap: 10px;
-        font-size: 14px;
-        border: 1px solid rgba(253, 216, 53, 0.3); /* Yellow border for contrast */
-      }
-      
-      .pwa-install-banner.show {
-        display: flex;
-        animation: slideUpFade 0.3s ease-out;
-      }
-      
-      .pwa-install-btn {
-        background: #fdd835; /* Yellow button */
-        color: #111827; /* Dark text on button */
-        border: none;
-        padding: 8px 16px;
-        border-radius: 15px;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.2s;
-      }
-      
-      .pwa-install-btn:hover {
-        background: #fbc02d; /* Slightly darker yellow on hover */
-      }
-      
-      .pwa-close-btn {
-        background: transparent;
-        color: #fdd835; /* Yellow close button */
-        border: none;
-        font-size: 18px;
-        cursor: pointer;
-        padding: 0;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      
-      @keyframes slideUpFade {
-        from {
-          transform: translate(-50%, 20px);
-          opacity: 0;
-        }
-        to {
-          transform: translate(-50%, 0);
-          opacity: 1;
-        }
-      }
-      
-      .loading-screen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        /* Updated background for black and yellow theme */
-        background: linear-gradient(135deg, #000000 0%, #111827 50%, #000000 100%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
-      }
-      
-      .loading-spinner {
-        width: 40px;
-        height: 40px;
-        border: 2px solid #1f2937; /* Dark gray border */
-        border-top: 2px solid #fdd835; /* Yellow top border */
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin-bottom: 1rem;
-        position: relative;
-        box-shadow: 0 0 4px #fdd835, 0 0 5px #fdd835, 0 0 2px #fdd835; /* Yellow glow */
-      }
 
-      .loading-spinner::after {
-        content: "";
-        position: absolute;
-        top: -2px;
-        left: -2px;
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        border-top: 2px solid transparent, #fdd835; /* Yellow glow */
-        animation: glow-spin 1s linear infinite;
-        box-shadow: 0 0 2px #fdd835aa, 0 0 4px #fdd83588, 0 0 8px #fdd83555;
-      }
-
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      @keyframes glow-spin {
-        0% {
-          transform: rotate(0deg);
-          opacity: 0.6;
-        }
-        50% {
-          opacity: 1;
-        }
-        100% {
-          transform: rotate(360deg);
-          opacity: 0.6;
-        }
-      }
-      
-      .loading-text {
-        color: #fdd835; /* Yellow for loading text */
-        font-size: 0.875rem;
-        font-weight: 500;
-        letter-spacing: 0.05em;
-      }
-      
-      .loading-hidden {
-        opacity: 0;
-        visibility: hidden;
-      }
-      
-      /* Focus styles */
-      *:focus {
-        outline: 2px solid #fdd835; /* Yellow focus outline */
-        outline-offset: 2px;
-      }
-      
-      /* Custom scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      
-      ::-webkit-scrollbar-track {
-        background: #000000; /* Black track */
-      }
-      
-      ::-webkit-scrollbar-thumb {
-        background: #fdd835; /* Yellow thumb */
-        border-radius: 4px;
-      }
-      
-      ::-webkit-scrollbar-thumb:hover {
-        background: #fbc02d; /* Slightly darker yellow on hover */
-      }
-      
-      /* Mobile-specific fixes */
-      @media (max-width: 768px) {
-        body {
-          position: fixed;
-          overflow: hidden;
-        }
-        
-        #root {
-          height: 100vh;
-          height: -webkit-fill-available;
-          overflow-y: auto;
-          -webkit-overflow-scrolling: touch;
-        }
-      }
-    </style>
-    
     <script>
       (function() {
         const getTheme = () => {
@@ -396,200 +66,16 @@
           if (stored && ['light', 'dark'].includes(stored)) return stored;
           return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         };
-        
         const setTheme = (theme) => {
           document.documentElement.classList.toggle('dark', theme === 'dark');
           localStorage.setItem('theme', theme);
         };
-        
         const theme = getTheme();
         setTheme(theme);
-        
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-          if (!localStorage.getItem('theme')) {
-            setTheme(e.matches ? 'dark' : 'light');
-          }
+          if (!localStorage.getItem('theme')) setTheme(e.matches ? 'dark' : 'light');
         });
-        
-        window.toggleTheme = () => {
-          const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-          setTheme(newTheme);
-        };
       })();
-    </script>
-
-    <script>
-      (function() {
-        const isStaticAsset = (pathname) => {
-          const staticExtensions = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.eot'];
-          const staticPaths = ['/static', '/api', '/assets'];
-          
-          return staticExtensions.some(ext => pathname.endsWith(ext)) ||
-                       staticPaths.some(path => pathname.startsWith(path));
-        };
-        
-        const isReactRoute = !isStaticAsset(location.pathname) && location.pathname !== '/';
-        
-        if (isReactRoute) {
-          window.addEventListener('popstate', function(event) {
-          });
-        }
-      })();
-    </script>
-
-    <script>
-      // Enhanced PWA install prompt for both desktop and mobile
-      let deferredPrompt;
-      let installBanner;
-
-      // Create install banner
-      function createInstallBanner() {
-        installBanner = document.createElement('div');
-        installBanner.className = 'pwa-install-banner';
-        installBanner.innerHTML = `
-          <span>📱 Install Secxion App</span>
-          <button class="pwa-install-btn" id="install-btn">Install</button>
-          <button class="pwa-close-btn" id="close-banner">×</button>
-        `;
-        document.body.appendChild(installBanner);
-
-        // Add event listeners
-        document.getElementById('install-btn').addEventListener('click', installApp);
-        document.getElementById('close-banner').addEventListener('click', hideInstallBanner);
-      }
-
-      function showInstallBanner() {
-        if (!installBanner) createInstallBanner();
-        installBanner.classList.add('show');
-      }
-
-      function hideInstallBanner() {
-        if (installBanner) {
-          installBanner.classList.remove('show');
-          localStorage.setItem('pwa-install-dismissed', Date.now());
-        }
-      }
-
-      function installApp() {
-        hideInstallBanner();
-        
-        if (deferredPrompt) {
-          // Chrome/Edge desktop and mobile
-          deferredPrompt.prompt();
-          deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-              console.log('User accepted the install prompt');
-            }
-            deferredPrompt = null;
-          });
-        } else {
-          // iOS Safari or other browsers
-          const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-          const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-          
-          if (isIOS && isSafari) {
-            alert('To install this app on iOS:\n1. Tap the Share button\n2. Tap "Add to Home Screen"');
-          } else {
-            alert('To install this app, use your browser\'s "Add to Home Screen" option.');
-          }
-        }
-      }
-
-      function shouldShowInstallPrompt() {
-        // Don't show if already dismissed recently (within 7 days)
-        const dismissedTime = localStorage.getItem('pwa-install-dismissed');
-        if (dismissedTime && (Date.now() - parseInt(dismissedTime)) < 7 * 24 * 60 * 60 * 1000) {
-          return false;
-        }
-
-        // Don't show if already installed
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-          return false;
-        }
-
-        // Don't show if already has beforeinstallprompt event
-        if (deferredPrompt) {
-          return true;
-        }
-
-        // Show for mobile devices after a delay
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        return isMobile;
-      }
-
-      // Listen for beforeinstallprompt event (Chrome/Edge)
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        
-        // Show install banner after a delay
-        setTimeout(() => {
-          if (shouldShowInstallPrompt()) {
-            showInstallBanner();
-          }
-        }, 3000);
-      });
-
-      // For iOS and other browsers that don't support beforeinstallprompt
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          if (!deferredPrompt && shouldShowInstallPrompt()) {
-            showInstallBanner();
-          }
-        }, 5000);
-      });
-
-      // Listen for successful app installation
-      window.addEventListener('appinstalled', () => {
-        console.log('SXN was installed');
-        hideInstallBanner();
-        deferredPrompt = null;
-      });
-    </script>
-
-    <script>
-      window.addEventListener('load', function() {
-        setTimeout(() => {
-          const loadingScreen = document.querySelector('.loading-screen');
-          if (loadingScreen) {
-            loadingScreen.classList.add('loading-hidden');
-            setTimeout(() => {
-              loadingScreen.remove();
-            }, 800);
-          }
-        }, 500);
-        
-        if ('performance' in window) {
-          const perfData = performance.getEntriesByType('navigation')[0];
-          console.log('Page Load Time:', perfData.loadEventEnd - perfData.fetchStart + 'ms');
-        }
-      });
-    </script>
-
-    <!-- Service Worker Registration -->
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js')
-            .then(function(registration) {
-              console.log('ServiceWorker registration successful');
-            })
-            .catch(function(err) {
-              console.log('ServiceWorker registration failed: ', err);
-            });
-        });
-      }
-    </script>
-
-    <script>
-      window.addEventListener('error', function(event) {
-        console.error('Global error:', event.error);
-      });
-      
-      window.addEventListener('unhandledrejection', function(event) {
-        console.error('Unhandled promise rejection:', event.reason);
-      });
     </script>
 
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
@@ -597,34 +83,27 @@
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
   </head>
-  
+
   <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
     <div class="loading-screen">
       <div class="loading-spinner"></div>
       <div class="loading-text"></div>
     </div>
 
-    <!-- App Root -->
     <div id="root" class="min-h-screen"></div>
-    
+
     <noscript>
-      <div class="min-h-screen flex items-center justify-center bg-gray-950 dark:bg-gray-950"> {/* Changed background to dark gray */}
+      <div class="min-h-screen flex items-center justify-center bg-gray-950 dark:bg-gray-950">
         <div class="text-center p-8 max-w-md mx-auto">
-          <h1 class="text-2xl font-bold text-gray-100 dark:text-gray-100 mb-4"> {/* Changed text to light gray */}
-            Secxion
-          </h1>
-          <p class="text-gray-400 dark:text-gray-400 mb-6"> {/* Changed text to light gray */}
+          <h1 class="text-2xl font-bold text-gray-100 dark:text-gray-100 mb-4">Secxion</h1>
+          <p class="text-gray-400 dark:text-gray-400 mb-6">
             This application requires JavaScript to run. Please enable JavaScript in your browser and refresh the page.
           </p>
-          <button 
-            onclick="location.reload()" 
-            class="bg-yellow-600 hover:bg-yellow-700 text-gray-900 px-6 py-2 rounded-lg font-medium transition-colors" {/* Changed button colors to yellow and dark text */}
-          >
+          <button onclick="location.reload()" class="bg-yellow-600 hover:bg-yellow-700 text-gray-900 px-6 py-2 rounded-lg font-medium transition-colors">
             Refresh Page
           </button>
         </div>
       </div>
     </noscript>
-
   </body>
 </html>
