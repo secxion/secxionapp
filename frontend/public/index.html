@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -32,9 +33,43 @@
     <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-  </head>
 
-    <div id="root" class="min-h-screen"></div>
+    <style>
+      /* Prevent text size adjustment on mobile Safari */
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+      /* Define a custom property for the actual viewport height (vh) */
+      /* This helps mitigate issues with 100vh on mobile browsers due to dynamic toolbars */
+      :root {
+        --vh: 1vh; /* Fallback for browsers that don't support custom property assignment in JS */
+      }
+      @supports (height: 100dvh) { /* Use d-units (dynamic viewport units) if supported */
+        :root {
+          --vh: 1dvh;
+        }
+      }
+    </style>
+
+    <script>
+      // Function to set the --vh CSS variable based on window.innerHeight
+      // window.innerHeight accounts for browser UI (like address bar) being visible/hidden
+      function setViewportHeight() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      }
+
+      // Set it initially
+      setViewportHeight();
+
+      // Recalculate on resize (especially useful for orientation changes or browser UI changes)
+      window.addEventListener('resize', setViewportHeight);
+      window.addEventListener('orientationchange', setViewportHeight);
+    </script>
+
+  </head>
+  <body>
+    <div id="root" class="min-h-screen"></div> 
 
     <noscript>
       <div class="min-h-screen flex items-center justify-center bg-gray-950 dark:bg-gray-950">
