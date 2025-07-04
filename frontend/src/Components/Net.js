@@ -1,11 +1,18 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, {useContext, useEffect, useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, User, Home, Settings, Shield } from "lucide-react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaCaretDown } from "react-icons/fa";
 import ROLE from "../common/role";
 import "./Net.css";
+import SummaryApi from "../common";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faSignOutAlt, faVolumeUp, faVolumeMute, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import Context from "../Context";
+import { setUserDetails } from "../store/userSlice";
 
 // A custom, accessible dialog component
 const CustomDialog = ({ open, onOpenChange, children, title, description }) => {
@@ -92,6 +99,9 @@ const Net = ({ blogs }) => {
         isTablet: false,
         isDesktop: true
     });
+  const dispatch = useDispatch();
+  const { token } = useContext(Context);
+  const navigate = useNavigate();
 
     const { user } = useSelector((state) => state.user);
     const { profilePic, name, role } = user || {};
@@ -154,7 +164,31 @@ const Net = ({ blogs }) => {
         setSelectedBlog(blog);
         setIsDialogOpen(true);
     };
-
+ const handleLogout = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(SummaryApi.logout_user.url, {
+        method: SummaryApi.logout_user.method,
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
+        toast.success(data.message);
+        dispatch(setUserDetails(null));
+        navigate("/");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error("Logout failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, [dispatch, navigate, token]);
     // Blog rotation with smooth transitions
     useEffect(() => {
         const resetTimeout = () => {
@@ -261,6 +295,16 @@ const Net = ({ blogs }) => {
                                 <Settings className="w-4 h-4 mr-3 text-gray-500 group-hover:text-green-600" />
                                 <span className="group-hover:text-green-600">Profile Settings</span>
                             </Link>
+
+                            {user?._id && (
+                <button
+                  onClick={handleLogout}
+                  disabled={loading}
+                  className="px-3 py-1 border border-red-500 text-black hover:bg-red-600 hover:text-white rounded flex items-center"
+                >
+                  <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" /> Logout
+                </button>
+              )}
                         </motion.div>
                     )}
                 </div>

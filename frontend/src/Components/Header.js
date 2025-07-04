@@ -117,19 +117,7 @@ const Header = () => {
       navigate(`/search?q=${encodeURIComponent(debouncedSearch)}`);
     }
   }, [debouncedSearch, navigate]);
-
-  useEffect(() => {
-    fetchUnreadCount();
-    fetchNewNotifications();
-    const unreadInterval = setInterval(fetchUnreadCount, 5000);
-    const notifyInterval = setInterval(fetchNewNotifications, 5000);
-    return () => {
-      clearInterval(unreadInterval);
-      clearInterval(notifyInterval);
-    };
-  }, [fetchUnreadCount, fetchNewNotifications]);
-
-  const handleLogout = useCallback(async () => {
+const handleLogout = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(SummaryApi.logout_user.url, {
@@ -154,6 +142,17 @@ const Header = () => {
       setLoading(false);
     }
   }, [dispatch, navigate, token]);
+  
+  useEffect(() => {
+    fetchUnreadCount();
+    fetchNewNotifications();
+    const unreadInterval = setInterval(fetchUnreadCount, 5000);
+    const notifyInterval = setInterval(fetchNewNotifications, 5000);
+    return () => {
+      clearInterval(unreadInterval);
+      clearInterval(notifyInterval);
+    };
+  }, [fetchUnreadCount, fetchNewNotifications]);
 
   const goBack = () => navigate(-1);
   const toggleMobileMenu = () => setMobileMenuOpen(prev => !prev);
@@ -217,15 +216,7 @@ const Header = () => {
               <Link to="/datapad" className="px-3 py-1 border border-yellow-500 text-black hover:bg-yellow-500 hover:text-black rounded">
                 DataPad
               </Link>
-              {user?._id && (
-                <button
-                  onClick={handleLogout}
-                  disabled={loading}
-                  className="px-3 py-1 border border-red-500 text-black hover:bg-red-600 hover:text-white rounded flex items-center"
-                >
-                  <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" /> Logout
-                </button>
-              )}
+              
               
             </nav>
 
