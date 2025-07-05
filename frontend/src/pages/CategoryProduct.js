@@ -84,39 +84,18 @@ const CategoryProduct = () => {
   };
 
   return (
-    <div className="p-2 fixed top-[90px] left-0 right-0 bottom-0 rounded-2xl flex flex-col md:flex-row bg-white text-white border-2 border-black"> {/* Changed rounded-md to rounded-2xl */}
-      {/* Glossy Text Styles */}
-      <style>{`
-        .glossy-text {
-          text-shadow:
-            0.5px 0.5px 1px rgba(255,255,255,0.4), /* Reduced white shadow */
-            -0.5px -0.5px 1px rgba(0,0,0,0.2); /* Subtle black shadow */
-          -webkit-text-stroke: 0.2px #000; /* Thinner stroke */
-          color: #333; /* Darker base color for better contrast */
-        }
-        .glossy-heading {
-          text-shadow:
-            0 0 3px rgba(255,255,255,0.5), /* Reduced white glow */
-            1px 1px 3px rgba(0,0,0,0.2); /* Reduced black shadow */
-          -webkit-text-stroke: 0.4px #333; /* Thinner stroke */
-          color: #000; /* Darker base color */
-        }
-        .glossy-icon-text {
-          filter: drop-shadow(0.5px 0.5px 1px rgba(0,0,0,0.4));
-        }
-      `}</style>
-
+    <div className="p-2 fixed top-[80px] left-0 right-0 bottom-0 rounded-2xl flex flex-col md:flex-row bg-white text-white"> {/* Changed rounded-md to rounded-2xl */}
       {/* Mobile Top Bar Filter */}
-      <div className="md:hidden w-full bg-white px-2 py-2 flex overflow-x-auto gap-3 scrollbar-thin scrollbar-thumb-gray-400 border-b-4 border-yellow-500"> {/* Bold yellow border applied */}
+      <div className="md:hidden w-full bg-white px-2 py-3 flex overflow-x-auto gap-3 scrollbar-thin scrollbar-thumb-gray-400"> {/* Bold yellow border applied */}
         {productCategory.map((category) => (
-          <label key={category.id} className="flex items-center gap-1 bg-gray-900 px-2 py-1 rounded text-white whitespace-nowrap text-xs border border-gray-700 hover:border-yellow-400 transition-all duration-200 glossy-text"> {/* Applied glossy-text and hover border */}
+          <label key={category.id} className="flex items-center gap-1 bg-gray-900 px-2 py-2 rounded whitespace-nowrap text-xs border border-gray-700 hover:border-yellow-400 transition-all duration-200"> {/* Applied glossy-text and hover border */}
             {iconMap[category.value]}
             <input
               type="checkbox"
               value={category.value}
               checked={!!selectCategory[category.value]}
               onChange={handleSelectCategory}
-              className="accent-blue-500 h-4 w-4"
+              className="accent-blue-500 h-4 w-4 text-gray-500"
             />
             <span>{category.label}</span>
           </label>
@@ -128,11 +107,11 @@ const CategoryProduct = () => {
         <h4 className="text-lg font-semibold mb-3 flex items-center glossy-heading"> {/* Applied glossy-heading */}
           <FaFilter className="mr-2" /> Filter
         </h4>
-        <form className="space-y-2">
+        <form className="space-y-4 ">
           {productCategory.map((category) => (
             <label
               key={category.id}
-              className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-blue-600/50 transition border border-gray-700 hover:border-yellow-400 glossy-text" // Applied glossy-text and hover border
+              className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-blue-600/50 transition border border-gray-700 hover:border-yellow-400 " // Applied glossy-text and hover border
             >
               {iconMap[category.value]}
               <input
@@ -142,11 +121,11 @@ const CategoryProduct = () => {
                 onChange={handleSelectCategory}
                 className="accent-blue-500 h-4 w-4"
               />
-              <span className="text-sm text-white">{category.label}</span>
+              <span className="text-sm text-gray-400">{category.label}</span>
             </label>
           ))}
         </form>
-        <div className="mt-6 text-sm text-gray-400 border-t border-gray-800 pt-3 glossy-text"> {/* Applied glossy-text */}
+        <div className="mt-6 text-sm text-gray-400 border-t border-gray-800 pt-3 "> {/* Applied glossy-text */}
           Can't find it? <br />
           <Link to="/report" className="text-green-400 underline hover:text-green-300">Report here</Link>
         </div>

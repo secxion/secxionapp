@@ -253,8 +253,17 @@ const Net = ({ blogs }) => {
                             transition={{ duration: 0.2 }}
                             className="absolute top-full left-0 mt-3 w-52 bg-white rounded-xl shadow-lg py-2 z-50 border-4 border-yellow-500" // Added bold yellow border
                         >
-                            <div className="px-4 py-3 border-b border-gray-100">
+                            <div className=" flex px-4 py-3 border-b border-gray-100">
                                 <p className="text-sm font-bold text-gray-800 truncate glossy-text">{name}</p> {/* Applied glossy-text */}
+                              {user?._id && (
+                <button
+                  onClick={handleLogout}
+                  disabled={loading}
+                  className="px-1 py-1 -mt-1 text-xs ml-20 border-4 border-red-700 text-black rounded flex items-center glossy-text" // Bold border and glossy-text
+                >
+                  <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                </button>
+              )}
                             </div>
                             
                             <Link
@@ -286,21 +295,13 @@ const Net = ({ blogs }) => {
                                 <span className="group-hover:text-green-600">Profile Settings</span>
                             </Link>
 
-                            {user?._id && (
-                <button
-                  onClick={handleLogout}
-                  disabled={loading}
-                  className="px-2 py-1 text-xs ml-20 border-4 border-red-700 text-black rounded flex items-center glossy-text" // Bold border and glossy-text
-                >
-                  <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" /> Logout
-                </button>
-              )}
+                          
                         </motion.div>
                     )}
                 </div>
             )}
             <Link to="/notifications" title="Notifications" aria-label="Notifications">
-                    <div className="relative ml-2 h-6 w-7 pr-8 mr-4 glossy-text"> {/* Applied glossy-text */}
+                    <div className="relative ml-2 h-6 w-7 pr-8 mr-4"> {/* Applied glossy-text */}
                       <NotificationBadge />
                     </div>
                 </Link>

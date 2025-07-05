@@ -3,7 +3,6 @@ import Shimmer from "./Shimmer"
 const Loader = () => {
   return (
     <div className="min-h-screen bg-white py-6 flex flex-col justify-center sm:py-12 border-2 border-black"> {/* Changed to white background and black border */}
-                    {/* Glossy Text Styles (EXACTLY from SidePanel) */}
                     <style>{`
                         .glossy-text {
                             text-shadow:

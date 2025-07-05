@@ -97,7 +97,7 @@ const NotificationBadge = () => {
             <Link to="/notifications" className="relative text-2xl text-gray-800 hover:text-black">
                 <PiBell  />
                 {unreadNotificationCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs px-1.5 py-0.5 rounded-full">
+                    <span className="absolute -top-0.5 -right-2 bg-red-600 text-white text-xs px-1.5 py-0.5 rounded-full">
                         {unreadNotificationCount}
                     </span>
                 )}

@@ -19,12 +19,12 @@ const HomeFooter = () => {
   }, []);
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-md w-full py-2 border-2 border-black">
+    <footer className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200  shadow-md w-full py-2 border-2 border-black">
       <div className="flex justify-around items-center text-gray-700 dark:text-gray-300 text-xl">
 
         <Link
           to="/profile"
-          className="flex flex-col bg-transparent items-center hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out border-4 border-yellow-500 rounded-lg p-2"
+          className="flex flex-col bg-transparent items-center hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out border-4 border-yellow-500 rounded-lg p-2 glossy-text"
           aria-label="Profile"
         >
           <div className="relative">
@@ -32,7 +32,7 @@ const HomeFooter = () => {
                         <img
                             src={profilePic}
                             alt="Profile"
-                            className="w-8 h-8 md:w-8 rounded-full md:h-8 lg:w-8 lg:h-8 object-cover" // Added bold yellow border
+                            className="w-8 h-8 md:w-8 md:h-8 lg:w-8 lg:h-8 object-cover" // Added bold yellow border
                         />
             <FaCaretUp className="absolute -top-2 -right-2 text-yellow-500 text-sm" />
           </div>
@@ -41,16 +41,16 @@ const HomeFooter = () => {
         {/* Naira Wallet */}
         <Link
           to="/mywallet"
-          className="flex flex-col items-center hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out border-4 border-yellow-500 rounded-lg p-2"
+          className="flex flex-col items-center hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out border-4 border-yellow-500 rounded-lg p-2 glossy-text"
           aria-label="Naira Wallet"
         >
-          <span className="text-lg mb-0.5 glossy-icon-text">₦</span>
+          <span className=" mb-0.5">₦</span>
         </Link>
 
         {/* Ethereum */}
         <Link
           to="/eth"
-          className="flex flex-col items-center hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out border-4 border-yellow-500 rounded-lg p-2"
+          className="flex flex-col items-center hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out border-4 border-yellow-500 rounded-lg p-2 glossy-text"
           aria-label="Ethereum"
         >
           <FaEthereum className="mb-0.5 glossy-icon-text" />

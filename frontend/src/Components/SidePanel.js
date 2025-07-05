@@ -84,15 +84,15 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
         >
           <Dialog.Panel className="relative flex flex-col w-full max-w-sm h-full overflow-hidden bg-white text-black shadow-xl border-2 border-black"> {/* Black border applied */}
             
-            <div className="relative z-10 flex flex-col h-full">
+            <div className="relative z-10 flex flex-col w-full h-full">
               {/* Header */}
-              <div className="flex items-center justify-between px-6 py-10 border-b border-gray-200">
+              <div className="flex items-center justify-between px-6 py-2 mt-6 pt-4 border-b border-gray-200">
                 <button
                   type="button"
                   className="text-gray-500 hover:text-black transition-colors duration-200 glossy-text" // Applied glossy-text
                   onClick={() => setOpen(false)}
                 >
-                  <XMarkIcon className="h-6 w-6" />
+                  <XMarkIcon className="h-8 w-8" />
                 </button>
 
                 <Link to="/home" onClick={handleLinkClick} className="flex items-center">
@@ -105,7 +105,7 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
                 <button
                   onClick={handleLogoutClick}
                   disabled={loading}
-                  className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 disabled:opacity-50 glossy-text border-4 border-yellow-500" // Added bold yellow border and glossy-text
+                  className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white text-xs font-medium py-2 px-4 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 disabled:opacity-50 glossy-text border-4 border-yellow-500" // Added bold yellow border and glossy-text
                 >
                   <ArrowRightOnRectangleIcon className="h-4 w-4" />
                   Logout

@@ -134,7 +134,7 @@ const NetBlog = () => {
               <motion.div
                 key={blog._id}
                 variants={blogCardVariants}
-                className="rounded-2xl overflow-hidden shadow-lg bg-white  border-4 border-yellow-500 transition-all duration-300 hover:scale-[1.015]"
+                className="rounded-2xl overflow-hidden shadow-lg bg-white  border-4 border-yellow-500 transition-all duration-300 hover:scale-[1.015] glossy-text"
               >
                 <div className="p-6 minecraft-font text-xs">
                   <div className="flex justify-between items-center mb-3">

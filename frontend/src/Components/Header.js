@@ -161,7 +161,7 @@ const Header = () => {
   const truncatedMessage = useMemo(() => truncateWords(popupMessage, 10), [popupMessage]);
 
   return (
-    <header className="fixed w-full z-40 bg-white text-black right-0 left-0 top-0 px-4 sm:px-6 lg:px-8 flex flex-col gap-2 sm:mt-8 md:mt-8 lg:mt-8 mt-8 border-2 border-black"> {/* Black border applied */}
+    <header className="fixed z-40 bg-white text-black right-0 left-0 top-0 px-4 sm:px-6 lg:px-8 flex flex-col gap-2 sm:mt-8 md:mt-8 lg:mt-8 mt-8 border-2 border-black "> {/* Black border applied */}
       
       <div className="flex items-center justify-between min-h-[48px]">
         <div className="flex items-center justify-between md:mt-1 md:pt-1 lg:mt-1 lg:pt-1 w-full">
@@ -212,7 +212,7 @@ const Header = () => {
             </div>
 
             <nav className="flex items-center justify-between mx-auto gap-3 text-xs">
-              <Link to="/record" className="px-2 py-1 border-4 border-cyan-700 text-black hover:bg-cyan-600 hover:text-white rounded glossy-text"> {/* Bold border and glossy-text */}
+              <Link to="/record" className="px-2 py-1 border-4 border-cyan-700 text-black hover:bg-cyan-600 hover:text-black rounded glossy-text"> {/* Bold border and glossy-text */}
                 Trade Status
               </Link>
               <Link to="/datapad" className="px-3 py-1 border-4 border-yellow-700 text-black hover:bg-yellow-500 hover:text-black rounded glossy-text"> {/* Bold border and glossy-text */}

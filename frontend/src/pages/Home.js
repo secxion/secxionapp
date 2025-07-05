@@ -376,7 +376,7 @@ const Home = () => {
       </section>
 
       {/* Blog */}
-      <section className="bg-white">
+      <section className="bg-white glossy-text">
         <NetBlog />
       </section>
 
