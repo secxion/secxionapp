@@ -232,30 +232,11 @@ const Home = () => {
     : transactions.slice(0, visibleTransactions);
 
   return (
-    <div className="relative bg-white w-full px-4 py-10 space-y-12 border-2 border-black"> {/* Black border added here */}
-      <style>{`
-        .glossy-text {
-          text-shadow: 
-            -1px -1px 0 #fff,  
-            1px -1px 0 #fff,
-            -1px 1px 0 #fff,
-            1px 1px 0 #fff,
-            2px 2px 5px rgba(0,0,0,0.5); /* Adds a subtle shadow for depth */
-          -webkit-text-stroke: 0.5px #000; /* Subtle black stroke for definition */
-          color: #000; /* Ensures the base text color is black */
-        }
-        .glossy-heading {
-          text-shadow: 
-            0 0 5px rgba(255,255,255,0.7), /* Lighter glow for gloss */
-            0 0 10px rgba(255,255,255,0.5),
-            2px 2px 5px rgba(0,0,0,0.3); /* Subtle shadow for depth */
-          -webkit-text-stroke: 0.7px #333; /* Slightly thicker stroke for headings */
-          color: #000; /* Ensures the base text color is black */
-        }
-      `}</style>
+    <div className="relative bg-white mb-8 w-full px-4 py-10 space-y-12 border-2 border-black"> {/* Black border added here */}
+      
       {/* Hero */}
       <header
-        className="relative h-[60vh] mt-16 bg-cover bg-center rounded-3xl flex items-center justify-center"
+        className="relative h-[60vh] mt-16 bg-center bg-cover flex items-center justify-center"
         style={{ backgroundImage: `url(${currentImage.url})` }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-40" />
@@ -276,7 +257,7 @@ const Home = () => {
       </header>
 
       {/* Stats */}
-      <section className="max-w-7xl mx-auto">
+      <section className="bg-white max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-2xl font-bold text-black glossy-heading">Account Overview</h2> {/* Applied glossy-heading */}
@@ -330,7 +311,7 @@ const Home = () => {
       </section>
 
       {/* Menu */}
-      <section className="max-w-7xl mx-auto">
+      <section className="bg-white max-w-7xl mx-auto">
         <h2 className="text-2xl font-bold text-black mb-6 glossy-heading">Quick Access</h2> {/* Applied glossy-heading */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredMenuItems.map((item, i) => (
@@ -352,7 +333,7 @@ const Home = () => {
       </section>
 
       {/* Transactions */}
-      <section className="max-w-7xl mx-auto">
+      <section className="bg-white max-w-7xl mx-auto">
         <h2 className="text-2xl font-bold text-black mb-4 glossy-heading">Recent Activity</h2> {/* Applied glossy-heading */}
         {transactions.length === 0 ? (
           <p className="text-gray-500 glossy-text">No transactions found.</p> // Applied glossy-text

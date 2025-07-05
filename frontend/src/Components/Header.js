@@ -161,41 +161,22 @@ const Header = () => {
   const truncatedMessage = useMemo(() => truncateWords(popupMessage, 10), [popupMessage]);
 
   return (
-    <header className="fixed w-full z-40 bg-white text-black shadow-sm right-0 left-0 top-0 px-4 sm:px-6 lg:px-8 flex flex-col gap-2 sm:mt-8 md:mt-10 lg:mt-10 mt-8 border-2 border-black"> {/* Black border applied */}
-      <style>{`
-        .glossy-text {
-          text-shadow:
-            -1px -1px 0 #fff,
-            1px -1px 0 #fff,
-            -1px 1px 0 #fff,
-            1px 1px 0 #fff,
-            2px 2px 5px rgba(0,0,0,0.5); /* Adds a subtle shadow for depth */
-          -webkit-text-stroke: 0.5px #000; /* Subtle black stroke for definition */
-          color: #000; /* Ensures the base text color is black */
-        }
-        .glossy-heading {
-          text-shadow:
-            0 0 5px rgba(255,255,255,0.7), /* Lighter glow for gloss */
-            0 0 10px rgba(255,255,255,0.5),
-            2px 2px 5px rgba(0,0,0,0.3); /* Subtle shadow for depth */
-          -webkit-text-stroke: 0.7px #333; /* Slightly thicker stroke for headings */
-          color: #000; /* Ensures the base text color is black */
-        }
-      `}</style>
-      <div className="flex items-center justify-between min-h-[56px]">
-        <div className="flex items-center justify-between w-full">
+    <header className="fixed w-full z-40 bg-white text-black right-0 left-0 top-0 px-4 sm:px-6 lg:px-8 flex flex-col gap-2 sm:mt-8 md:mt-8 lg:mt-8 mt-8 border-2 border-black"> {/* Black border applied */}
+      
+      <div className="flex items-center justify-between min-h-[48px]">
+        <div className="flex items-center justify-between md:mt-1 md:pt-1 lg:mt-1 lg:pt-1 w-full">
           <div className="flex items-center gap-4">
-            <button onClick={toggleMobileMenu} className="text-gray-500 hover:text-blue-600 md:hidden">
-              <FontAwesomeIcon icon={faBars} className="h-5 w-5 glossy-text" /> {/* Applied glossy-text */}
+            <button onClick={toggleMobileMenu} className="text-gray-700 mt-1 md:hidden">
+              <FontAwesomeIcon icon={faBars} className="h-6 w-6 glossy-text" /> {/* Applied glossy-text */}
             </button>
 
-            <div className="md:hidden flex-1 flex items-center justify-center">
-              <div className="flex items-center border-4 border-gray-700 rounded-md px-2 ml-4 py-1 w-full max-w-[200px]"> {/* Bold yellow border */}
-                <BiSearch className="text-yellow-700 h-4 w-4 mr-1 glossy-text" /> {/* Applied glossy-text */}
+            <div className="md:hidden flex-1 flex items-center mt-1 justify-center">
+              <div className="flex items-center ml-4 py-1 w-full max-w-[200px]"> 
+                <BiSearch className="text-yellow-700 h-4 w-4 mr-1 glossy-text" /> 
                 <input
                   type="text"
                   placeholder="gift cards, vc, cc...."
-                  className="bg-transparent text-black text-xs outline-none w-full placeholder:text-[10px] placeholder-gray-500 glossy-text" // Applied glossy-text
+                  className="bg-transparent text-black text-xs outline-none w-full placeholder:text-[14px] placeholder-gray-500 glossy-text" // Applied glossy-text
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -219,8 +200,8 @@ const Header = () => {
               </button>
             )}
 
-            <div className="flex items-center border-4 border-gray-700 rounded-md px-3 py-1 w-64"> {/* Bold yellow border */}
-              <FcSearch className="text-gray-600 h-4 w-4 mr-2 glossy-text" /> {/* Applied glossy-text */}
+            <div className="flex items-center  px-3 py-1 w-64"> 
+              <FcSearch className="text-gray-600 h-4 w-4 mr-2 glossy-text" /> 
               <input
                 type="text"
                 placeholder="gift cards, vc, cc..."
@@ -242,7 +223,7 @@ const Header = () => {
 
           <button
             onClick={toggleSound}
-            className="px-3 py-1 border-4 ml-4 border-gray-700 text-black hover:bg-gray-600 hover:text-white rounded flex items-center glossy-text" // Bold border and glossy-text
+            className="px-3 py-1  ml-4  text-black hover:text-blue-500 rounded flex items-center glossy-text" // Bold border and glossy-text
           >
             <FontAwesomeIcon icon={soundEnabled ? faVolumeUp : faVolumeMute} className="mr-1" />
           </button>

@@ -9,9 +9,9 @@ const GetInTouchFooter = () => {
   };
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 bg-gray-200 dark:bg-gray-800 border-gray-200 dark:border-gray-700 p-4 py-1 pb-2">
-      <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between">
-        <p className="text-gray-700 dark:text-gray-400 text-center sm:text-left mb-2 sm:mb-0">
+    <footer className="fixed bottom-0 left-0 right-0 bg-gray-200 border-gray-200 dark:border-gray-700 p-4 py-1 pb-2">
+      <div className="mx-auto flex flex-col sm:flex-row items-center justify-between">
+        <p className="text-gray-700 text-center sm:text-left mb-2 sm:mb-0">
           Can't find what you looking for?
         </p>
         <button

@@ -8,9 +8,9 @@ const PopAlert = ({ message = "", onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 px-4 sm:px-6 lg:px-8 bg-black bg-opacity-30 backdrop-blur-sm">
-      <div className="bg-white max-w-md w-full rounded-xl shadow-xl p-6 border border-gray-200 relative">
+      <div className="bg-white max-w-md w-full rounded-xl p-6 border border-gray-200 relative">
         <button
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+          className="absolute top-4 right-4 text-gray-400 "
           onClick={onClose}
         >
           <X className="w-5 h-5" />
@@ -23,7 +23,7 @@ const PopAlert = ({ message = "", onClose }) => {
               {' '}
               <Link
                 to="/notifications"
-                className="text-blue-600 hover:text-blue-800 font-medium text-sm underline"
+                className="text-blue-600 font-medium text-sm underline"
                 onClick={onClose}
               >
                 View more

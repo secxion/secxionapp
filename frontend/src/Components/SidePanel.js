@@ -19,7 +19,7 @@ import {
 } from '@heroicons/react/24/outline';
 import Clock from 'react-live-clock';
 import timezones from '../helpers/timeZones';
-import './Header.css'; // Assuming this CSS file contains the glossy styles
+import './Header.css';
 
 const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
   const [timezone, setTimezone] = useState('Africa/Lagos');
@@ -66,7 +66,7 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
           enter="ease-in-out duration-500"
           enterFrom="opacity-0"
           enterTo="opacity-100"
-          leave="ease-in-out duration-400"
+          leave="ease-in-out duration-500"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
@@ -78,31 +78,12 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
           enter="transform ease-in-out duration-500"
           enterFrom="-translate-x-full"
           enterTo="translate-x-0"
-          leave="transform ease-in-out duration-400"
+          leave="transform ease-in-out duration-500"
           leaveFrom="translate-x-0"
           leaveTo="-translate-x-full"
         >
           <Dialog.Panel className="relative flex flex-col w-full max-w-sm h-full overflow-hidden bg-white text-black shadow-xl border-2 border-black"> {/* Black border applied */}
-            <style>{`
-              .glossy-text {
-                text-shadow:
-                  -1px -1px 0 #fff,
-                  1px -1px 0 #fff,
-                  -1px 1px 0 #fff,
-                  1px 1px 0 #fff,
-                  2px 2px 5px rgba(0,0,0,0.5);
-                -webkit-text-stroke: 0.5px #000;
-                color: #000;
-              }
-              .glossy-heading {
-                text-shadow:
-                  0 0 5px rgba(255,255,255,0.7),
-                  0 0 10px rgba(255,255,255,0.5),
-                  2px 2px 5px rgba(0,0,0,0.3);
-                -webkit-text-stroke: 0.7px #333;
-                color: #000;
-              }
-            `}</style>
+            
             <div className="relative z-10 flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between px-6 py-10 border-b border-gray-200">

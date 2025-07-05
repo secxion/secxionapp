@@ -146,20 +146,20 @@ const UserUploadMarket = ({
             <div className="w-full max-w-3xl bg-white p-6 rounded-2xl shadow-xl relative animate-fadeIn
                          border-2 border-yellow-400
                          shadow-md shadow-yellow-400/20
-                         dark:bg-gray-800 dark:border-yellow-500 dark:shadow-yellow-500/50"> {/* Reduced border and shadow intensity */}
+                         "> {/* Reduced border and shadow intensity */}
                 {/* Header */}
-                <div className="flex justify-between items-center border-b pb-4 mb-4 border-gray-200 dark:border-gray-700"> {/* Adjusted border color */}
-                    <h2 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">📦 Upload Product Details</h2> {/* Removed glossy-heading, ensuring black text by default or dark mode white */}
-                    <button onClick={onClose} className="text-gray-500 hover:text-red-500 text-2xl dark:text-gray-400 dark:hover:text-red-400">
+                <div className="flex justify-between items-center border-b pb-4 mb-4 border-gray-200"> {/* Adjusted border color */}
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-800 ">📦 Upload Product Details</h2> {/* Removed glossy-heading, ensuring black text by default or dark mode white */}
+                    <button onClick={onClose} className="text-gray-500 hover:text-red-500 text-2xl ">
                         <CgClose />
                     </button>
                 </div>
 
                 {/* Product Overview */}
                 {productDetails.productImage && (
-                    <div className="flex gap-4 items-center border border-yellow-300 rounded-lg p-4 bg-white mb-6 shadow-sm dark:bg-gray-700 dark:border-yellow-500"> {/* Changed background to white, reduced border intensity */}
+                    <div className="flex gap-4 items-center border border-yellow-300 rounded-lg p-4 bg-white mb-6 shadow-sm"> {/* Changed background to white, reduced border intensity */}
                         <img src={productDetails.productImage} alt="Preview" className="w-24 h-24 object-cover rounded-lg shadow-inner" />
-                        <div className="flex flex-col gap-1 text-sm text-gray-800 dark:text-gray-200"> {/* Ensured text is black/dark mode white */}
+                        <div className="flex flex-col gap-1 text-sm text-gray-800 "> {/* Ensured text is black/dark mode white */}
                             <p><span className="font-semibold">Name:</span> {productDetails.productName}</p> {/* Removed glossy-text */}
                             <p><span className="font-semibold">Currency:</span> {/* Removed glossy-text */}
                                 {flagImageMap[productDetails.currency] && (
@@ -176,10 +176,10 @@ const UserUploadMarket = ({
                 <form className="space-y-6 overflow-y-auto max-h-[60vh] pr-2" onSubmit={handleSubmit}> {/* Added max-h and overflow-y-auto for scrollbar */}
                     {/* Image Upload */}
                     <div>
-                        <label className="block font-semibold text-gray-800 mb-2 dark:text-gray-200">📸 Upload Additional Images</label> {/* Removed glossy-text */}
-                        <label htmlFor="uploadInput" className={`flex flex-col items-center justify-center border-2 border-yellow-400 rounded-lg p-5 bg-white hover:bg-gray-50 cursor-pointer transition ${uploading ? 'opacity-50 pointer-events-none' : ''} dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-yellow-500`}> {/* Changed background to white, reduced border intensity */}
-                            <FaCloudUploadAlt className="text-4xl text-yellow-500 mb-1 dark:text-yellow-400" />
-                            <p className="text-gray-800 dark:text-gray-300">{uploading ? 'Uploading...' : 'Click or drag to upload'}</p> {/* Ensured text is black/dark mode white */}
+                        <label className="block font-semibold text-gray-800 mb-2 ">📸 Upload Additional Images</label> {/* Removed glossy-text */}
+                        <label htmlFor="uploadInput" className={`flex flex-col items-center justify-center border-2 border-yellow-400 rounded-lg p-5 bg-white cursor-pointer transition ${uploading ? 'opacity-50 pointer-events-none' : ''} dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-yellow-500`}> {/* Changed background to white, reduced border intensity */}
+                            <FaCloudUploadAlt className="text-4xl text-yellow-500 mb-1 " />
+                            <p className="text-gray-800 ">{uploading ? 'Uploading...' : 'Click or drag to upload'}</p> {/* Ensured text is black/dark mode white */}
                         </label>
                         <input type="file" id="uploadInput" className="hidden" onChange={handleUploadImage} disabled={uploading} />
                         <div className="flex gap-3 mt-4 flex-wrap">
@@ -199,14 +199,14 @@ const UserUploadMarket = ({
 
                     {/* Total Face Value Input */}
                     <div>
-                        <label className="block font-semibold text-gray-800 mb-2 dark:text-gray-200">💰 Total Face Value ({currencySymbol})</label> {/* Removed glossy-text */}
+                        <label className="block font-semibold text-gray-800 mb-2 ">💰 Total Face Value ({currencySymbol})</label> {/* Removed glossy-text */}
                         <input
                             type="number"
                             name="totalAmount"
                             value={data.totalAmount}
                             onChange={handleOnChange}
                             placeholder="Enter total face value"
-                            className="w-full border border-gray-300 p-3 rounded-lg shadow-sm text-gray-800 focus:ring focus:ring-yellow-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-50 dark:focus:ring-yellow-600" // Changed background to white, border to light gray, text to gray-800
+                            className="w-full border border-gray-300 p-3 rounded-lg shadow-sm text-gray-800 focus:ring focus:ring-yellow-300 bg-white  " // Changed background to white, border to light gray, text to gray-800
                             required
                         />
                     </div>
@@ -214,42 +214,42 @@ const UserUploadMarket = ({
                     {/* Calculated Amount Display */}
                     <div>
                         <label className="block font-semibold text-gray-800 mb-2 dark:text-gray-200">= Calculated Total Amount:</label> {/* Removed glossy-text */}
-                        <div className="p-3 bg-gray-100 rounded-lg border border-gray-300 text-gray-800 font-bold tracking-wide dark:bg-gray-700 dark:border-gray-600 dark:text-gray-50"> {/* Changed background to light gray, border to light gray, text to gray-800 */}
+                        <div className="p-3 bg-gray-100 rounded-lg border border-gray-300 text-gray-800 font-bold tracking-wide"> {/* Changed background to light gray, border to light gray, text to gray-800 */}
                             ₦{parseFloat(data.calculatedTotalAmount || 0).toLocaleString("en-NG", { minimumFractionDigits: 2 })}
                         </div>
                     </div>
 
                     {/* New Code Input */}
                     <div>
-                        <label className="block font-semibold text-gray-800 mb-2 dark:text-gray-200">🔑 Code</label> {/* Removed glossy-text */}
+                        <label className="block font-semibold text-gray-800 mb-2 ">🔑 Code</label> {/* Removed glossy-text */}
                         <input
                             type="text"
                             name="code"
                             value={data.code}
                             onChange={handleOnChange}
                             placeholder="Enter product code (e.g., card code)"
-                            className="w-full border border-gray-300 p-3 rounded-lg shadow-sm text-gray-800 focus:ring focus:ring-yellow-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-50 dark:focus:ring-yellow-600" // Changed background to white, border to light gray, text to gray-800
+                            className="w-full border border-gray-300 p-3 rounded-lg shadow-sm text-gray-800 focus:ring focus:ring-yellow-300 bg-white" // Changed background to white, border to light gray, text to gray-800
                             required
                         />
                     </div>
 
                     {/* Remarks */}
                     <div>
-                        <label className="block font-semibold text-gray-800 mb-2 dark:text-gray-200">📝 Additional Remarks</label> {/* Removed glossy-text */}
+                        <label className="block font-semibold text-gray-800 mb-2 ">📝 Additional Remarks</label> {/* Removed glossy-text */}
                         <textarea
                             name="userRemark"
                             rows={4}
                             placeholder="Code, notes, details..."
                             value={data.userRemark}
                             onChange={handleOnChange}
-                            className="w-full border border-gray-300 p-3 rounded-lg shadow-sm text-gray-800 focus:ring focus:ring-yellow-300 bg-white resize-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-50 dark:focus:ring-yellow-600" // Changed background to white, border to light gray, text to gray-800
+                            className="w-full border border-gray-300 p-3 rounded-lg shadow-sm text-gray-800 focus:ring focus:ring-yellow-300 bg-white resize-none " // Changed background to white, border to light gray, text to gray-800
                         />
                     </div>
 
                     {/* Submit */}
                     <button
                         type="submit"
-                        className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-md hover:shadow-lg transition dark:bg-emerald-700 dark:hover:bg-emerald-600"
+                        className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-md hover:shadow-lg transition"
                         disabled={uploading}
                     >
                         {uploading ? '⏳ Submitting...' : '✅ Submit Product'}

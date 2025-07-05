@@ -94,8 +94,8 @@ const NotificationBadge = () => {
 
     return (
         <div className="relative flex items-center">
-            <Link to="/notifications" className="relative text-2xl text-blue-600">
-                <PiBell className={animate ? 'animate-ping-slow' : ''} />
+            <Link to="/notifications" className="relative text-2xl text-gray-800 hover:text-black">
+                <PiBell  />
                 {unreadNotificationCount > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs px-1.5 py-0.5 rounded-full">
                         {unreadNotificationCount}

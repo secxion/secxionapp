@@ -80,27 +80,6 @@ const UserMarket = () => {
 
     return (
         <div className="w-screen overflow-x-hidden min-h-screen bg-white pt-24 border-2 border-black"> {/* Added black border to main container, white background, and padding */}
-            {/* Glossy Text Styles (EXACTLY from SidePanel) */}
-            <style>{`
-                .glossy-text {
-                    text-shadow:
-                        -1px -1px 0 #fff,
-                        1px -1px 0 #fff,
-                        -1px 1px 0 #fff,
-                        1px 1px 0 #fff,
-                        2px 2px 5px rgba(0,0,0,0.5);
-                    -webkit-text-stroke: 0.5px #000;
-                    color: #000;
-                }
-                .glossy-heading {
-                    text-shadow:
-                        0 0 5px rgba(255,255,255,0.7),
-                        0 0 10px rgba(255,255,255,0.5),
-                        2px 2px 5px rgba(0,0,0,0.3);
-                    -webkit-text-stroke: 0.7px #333;
-                    color: #000;
-                }
-            `}</style>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4"> {/* Centered content */}
                 <div className="bg-white py-2 px-4 flex justify-between items-center border-b-4 border-black shadow-md rounded-b-xl mb-6"> {/* Black bottom border with shadow for embossed feel */}

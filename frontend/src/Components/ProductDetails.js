@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 import UserUploadMarket from './UserUploadMarket';
 import GetInTouchFooter from './GetInTouchFooter';
 import Shimmer from './Shimmer';
-import PDSidePanel from "./PDSidePanel"; // Assuming PDSidePanel is the same as the provided SidePanel
 import SummaryApi from '../common';
 import { setUserDetails } from "../store/userSlice";
 import currencyFullNames from "../helpers/currencyFullNames";
@@ -282,27 +281,7 @@ const ProductDetails = () => {
     if (error) {
         return (
             <div className="min-h-screen bg-white py-6 flex flex-col justify-center sm:py-12 border-2 border-black"> {/* Changed to white background and black border */}
-                 {/* Glossy Text Styles (EXACTLY from SidePanel) */}
-                <style>{`
-                    .glossy-text {
-                        text-shadow:
-                            -1px -1px 0 #fff,
-                            1px -1px 0 #fff,
-                            -1px 1px 0 #fff,
-                            1px 1px 0 #fff,
-                            2px 2px 5px rgba(0,0,0,0.5);
-                        -webkit-text-stroke: 0.5px #000;
-                        color: #000;
-                    }
-                    .glossy-heading {
-                        text-shadow:
-                            0 0 5px rgba(255,255,255,0.7),
-                            0 0 10px rgba(255,255,255,0.5),
-                            2px 2px 5px rgba(0,0,0,0.3);
-                        -webkit-text-stroke: 0.7px #333;
-                        color: #000;
-                    }
-                `}</style>
+                 
                 <div className="relative py-3 sm:max-w-xl sm:mx-auto">
                     <div className="absolute inset-0 bg-red-400 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 rounded-3xl border-4 border-yellow-700"></div> {/* Yellow border */}
                     <div className="relative px-4 py-10 bg-white shadow-lg rounded-3xl sm:p-20 text-center border-4 border-yellow-700"> {/* White background and yellow border */}
@@ -352,35 +331,15 @@ const ProductDetails = () => {
 
     return (
         <div className="w-screen overflow-x-hidden border-2 border-black"> {/* Added black border to the main container */}
-            {/* Glossy Text Styles (EXACTLY from SidePanel) */}
-            <style>{`
-                .glossy-text {
-                    text-shadow:
-                        -1px -1px 0 #fff,
-                        1px -1px 0 #fff,
-                        -1px 1px 0 #fff,
-                        1px 1px 0 #fff,
-                        2px 2px 5px rgba(0,0,0,0.5);
-                    -webkit-text-stroke: 0.5px #000;
-                    color: #000;
-                }
-                .glossy-heading {
-                    text-shadow:
-                        0 0 5px rgba(255,255,255,0.7),
-                        0 0 10px rgba(255,255,255,0.5),
-                        2px 2px 5px rgba(0,0,0,0.3);
-                    -webkit-text-stroke: 0.7px #333;
-                    color: #000;
-                }
-            `}</style>
+            
 
             {/* Header */}
-            <header className="fixed top-0 left-0 w-screen bg-white shadow-sm py-4 px-2 sm:px-4 lg:px-6 rounded-b-xl border-4 border-yellow-700"> {/* Changed to white background and bold yellow border */}
+            <header className="fixed top-0 left-0 right-0 w-screen bg-white shadow-sm px-2 sm:px-4 lg:px-6 rounded-b-xl "> {/* Changed to white background and bold yellow border */}
                 <div className="max-w-7xl mx-auto">
                     {/* Currency Selection */}
                     {hasValidPricing && (
                         <div className="mt-24">
-                            <div className="bg-white p-4 rounded-xl shadow-inner overflow-x-auto py-2 border-4 border-yellow-700"> {/* Changed to white background and bold yellow border */}
+                            <div className="bg-white p-4 rounded-xl shadow-inner overflow-x-auto py-2 "> {/* Changed to white background and bold yellow border */}
                                 <div className="flex items-center space-x-3 px-2" role="tablist" aria-label="Currency selection">
                                     {data.pricing.map((currency) => {
                                         const fullCurrencyName = currencyFullNames[currency.currency] || currency.currency;
@@ -421,7 +380,7 @@ const ProductDetails = () => {
             </header>
 
             {/* Main Content */}
-            <main className="min-h-screen pt-44 mt-8 pb-24 px-4 sm:px-6 lg:px-8 bg-white"> {/* Changed to white background */}
+            <main className="min-h-screen pt-36 mt-8 pb-24 px-4 sm:px-6 lg:px-8 bg-white"> {/* Changed to white background */}
                 <div className="max-w-7xl mx-auto">
                     {/* Product Description */}
                     <div className='border-4 border-yellow-700 rounded-xl p-4 bg-white shadow-sm mb-6'> {/* White background and yellow border */}
@@ -575,11 +534,7 @@ const ProductDetails = () => {
             )}
 
             <GetInTouchFooter />
-            <PDSidePanel
-                isSidePanelOpen={isPDSidePanelOpen}
-                onCloseSidePanel={closePDSidePanel}
-                onLogout={handleLogout}
-            />
+            
         </div>
     );
 };

@@ -47,27 +47,7 @@ const HistoryCard = ({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            {/* Glossy Text Styles (Repeated for self-containment if component used elsewhere, otherwise can rely on parent) */}
-            <style>{`
-                .glossy-text {
-                    text-shadow:
-                        -1px -1px 0 #fff,
-                        1px -1px 0 #fff,
-                        -1px 1px 0 #fff,
-                        1px 1px 0 #fff,
-                        2px 2px 5px rgba(0,0,0,0.5);
-                    -webkit-text-stroke: 0.5px #000;
-                    color: #000;
-                }
-                .glossy-heading {
-                    text-shadow:
-                        0 0 5px rgba(255,255,255,0.7),
-                        0 0 10px rgba(255,255,255,0.5),
-                        2px 2px 5px rgba(0,0,0,0.3);
-                    -webkit-text-stroke: 0.7px #333;
-                    color: #000;
-                }
-            `}</style>
+        
 
             {/* Product Image */}
             {data?.productImage?.[0] && (

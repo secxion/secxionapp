@@ -88,24 +88,6 @@ const NetBlog = () => {
       transition={{ duration: 0.4 }}
       className="container mx-auto mt-32 px-4 max-w-7xl"
     >
-      <style>{`
-        /* Adjusted glossy-text for better readability */
-        .glossy-text {
-          text-shadow:
-            0.5px 0.5px 1px rgba(255,255,255,0.4), /* Reduced white shadow */
-            -0.5px -0.5px 1px rgba(0,0,0,0.2); /* Subtle black shadow */
-          -webkit-text-stroke: 0.2px #000; /* Thinner stroke */
-          color: #333; /* Darker base color for better contrast */
-        }
-        /* Adjusted glossy-heading for better readability */
-        .glossy-heading {
-          text-shadow:
-            0 0 3px rgba(255,255,255,0.5), /* Reduced white glow */
-            1px 1px 3px rgba(0,0,0,0.2); /* Reduced black shadow */
-          -webkit-text-stroke: 0.4px #333; /* Thinner stroke */
-          color: #000; /* Darker base color */
-        }
-      `}</style>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
         <motion.button
           whileTap={{ scale: 0.95 }}
@@ -125,7 +107,7 @@ const NetBlog = () => {
         <div className="flex gap-2">
           <button
             onClick={toggleBlogVisibility}
-            className="text-sm font-semibold text-gray-700 dark:text-gray-300 border-4 border-yellow-500 px-4 py-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition glossy-text" // Applied glossy-text
+            className="text-sm font-semibold text-gray-700 border-4 border-yellow-500 px-4 py-1 rounded-full transition glossy-text" // Applied glossy-text
           >
             {showBlogs ? 'Hide Blogs' : 'Show Blogs'}
           </button>
@@ -137,7 +119,7 @@ const NetBlog = () => {
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500 border-4 border-yellow-500"></div>
         </div>
       ) : errorBlogs ? (
-        <p className="text-red-500 text-center py-8 text-sm minecraft-font glossy-text border-2 border-black"> {/* Applied glossy-text */}
+        <p className="text-red-500 text-center py-8 text-md glossy-text border-2 border-black"> {/* Applied glossy-text */}
           {errorBlogs}
         </p>
       ) : blogs.length > 0 && showBlogs ? (
@@ -152,28 +134,28 @@ const NetBlog = () => {
               <motion.div
                 key={blog._id}
                 variants={blogCardVariants}
-                className="rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-gray-900 border-4 border-yellow-500 transition-all duration-300 hover:scale-[1.015]"
+                className="rounded-2xl overflow-hidden shadow-lg bg-white  border-4 border-yellow-500 transition-all duration-300 hover:scale-[1.015]"
               >
                 <div className="p-6 minecraft-font text-xs">
                   <div className="flex justify-between items-center mb-3">
-                    <h3 className="text-sm font-semibold line-clamp-2 text-gray-800 dark:text-yellow-400 glossy-heading"> {/* Applied glossy-heading */}
+                    <h3 className="text-sm font-semibold line-clamp-2 text-gray-800 glossy-heading"> {/* Applied glossy-heading */}
                       {blog.title}
                     </h3>
                     {blog.isActive && (
-                      <span className="flex items-center text-green-500 text-xs glossy-text"> {/* Applied glossy-text */}
-                        <FaCircle className="mr-1 animate-pulse" /> Active
+                      <span className="flex items-center text-green-500 text-xs">
+                        <FaCircle className="mr-1 animate-pulse" />
                       </span>
                     )}
                   </div>
-                  <p className="text-gray-600 dark:text-gray-300 text-xs line-clamp-3 glossy-text"> {/* Applied glossy-text */}
+                  <p className="text-gray-600 text-xs line-clamp-3 glossy-text"> 
                     {blog.content || 'No content available.'}
                   </p>
-                  <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-3 glossy-text"> {/* Applied glossy-text */}
+                  <p className="text-[10px] text-gray-500 mt-3 glossy-text"> {/* Applied glossy-text */}
                     Published {formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true })}
                   </p>
                   <button
                     onClick={() => setSelectedBlog(blog)}
-                    className="mt-3 text-xs font-medium text-pink-500 hover:text-pink-400 transition-colors focus:outline-none glossy-text border-2 border-black rounded-md px-2 py-1" // Applied glossy-text
+                    className="mt-3 text-xs font-medium text-pink-500 hover:text-pink-400 transition-colors focus:outline-none glossy-text border-2 border-black rounded-md px-2 py-1"
                   >
                     Read More →
                   </button>
