@@ -24,7 +24,7 @@ const HomeFooter = () => {
 
         <Link
           to="/profile"
-          className="flex flex-col bg-transparent items-center hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out border-4 border-yellow-500 rounded-lg p-2 glossy-text"
+          className="flex flex-col bg-transparent items-center text-blue-500 outline-none ring-2 ring-blue-500 ring-offset-1 transition-colors duration-300 ease-in-out border-4 border-yellow-500 rounded-lg p-2 glossy-text"
           aria-label="Profile"
         >
           <div className="relative">
@@ -41,16 +41,16 @@ const HomeFooter = () => {
         {/* Naira Wallet */}
         <Link
           to="/mywallet"
-          className="flex flex-col items-center hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out border-4 border-yellow-500 rounded-lg p-2 glossy-text"
+          className="flex flex-col items-center  outline-none ring-2 ring-green-700 ring-offset-1 transition-colors duration-300 ease-in-out border-4 border-yellow-500 rounded-lg p-2 glossy-text"
           aria-label="Naira Wallet"
         >
-          <span className=" mb-0.5">₦</span>
+          <span className=" mb-0.5 text-green-500">₦</span>
         </Link>
 
         {/* Ethereum */}
         <Link
           to="/eth"
-          className="flex flex-col items-center hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 transition-colors duration-300 ease-in-out border-4 border-yellow-500 rounded-lg p-2 glossy-text"
+          className="flex flex-col items-center focus:outline-none ring-2 ring-indigo-500 ring-offset-1 transition-colors duration-300 ease-in-out border-4 border-yellow-500 rounded-lg p-2 glossy-text"
           aria-label="Ethereum"
         >
           <FaEthereum className="mb-0.5 glossy-icon-text" />
