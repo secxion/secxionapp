@@ -1,15 +1,79 @@
 // LastMarketStatus.js
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react'; // Added useCallback
 import SummaryApi from '../common'; // Assuming SummaryApi is correctly path'd
 import UserContext from "../Context"; // Assuming your UserContext is named 'UserContext' and located here
-import { CircleCheck, CircleX, Loader, Clock, Info, Image } from 'lucide-react'; // Added Info and Image icons
+import { CircleCheck, CircleX, Loader, Clock, Info, Image, X } from 'lucide-react'; // Added X for close button
 import currencyData from '../helpers/currencyData'; // Import the currencyData helper
+
+// ImageModal Component (defined here for simplicity, could be a separate file)
+const ImageModal = ({ imageUrl, onClose }) => {
+    // This component itself is rendered conditionally,
+    // so internal hooks would only run if imageUrl is present.
+    // The useEffect for escape key is now handled in the parent LastMarketStatus.
+    if (!imageUrl) return null;
+
+    return (
+        // Overlay to capture clicks outside the image and dim the background
+        <div
+            className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+            onClick={onClose} // Close when clicking anywhere on the overlay
+        >
+            <div
+                className="relative bg-white p-2 rounded-lg shadow-xl max-w-full max-h-full flex flex-col items-center"
+                onClick={e => e.stopPropagation()} // Prevent clicks on the content from closing the modal
+            >
+                <button
+                    onClick={onClose}
+                    className="absolute top-2 right-2 text-gray-800 hover:text-gray-900 bg-white rounded-full p-1 z-10"
+                    aria-label="Close image viewer"
+                >
+                    <X size={24} />
+                </button>
+                <img
+                    src={imageUrl}
+                    alt="Expanded view"
+                    className="max-w-[90vw] max-h-[90vh] object-contain rounded-md" // Constrain image size
+                />
+            </div>
+        </div>
+    );
+};
+
 
 const LastMarketStatus = () => {
     const [lastMarket, setLastMarket] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { user } = useContext(UserContext); // Get user from context
+
+    // State for the image modal
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [modalImageUrl, setModalImageUrl] = useState('');
+
+    // Function to open the image modal
+    const handleImageClick = (imageUrl) => {
+        setModalImageUrl(imageUrl);
+        setShowImageModal(true);
+    };
+
+    // Function to close the image modal - wrapped in useCallback for useEffect dependency
+    const handleCloseModal = useCallback(() => {
+        setModalImageUrl('');
+        setShowImageModal(false);
+    }, []); // No dependencies, so it's stable across renders
+
+    // useEffect for handling Escape key to close modal - placed here to be unconditional
+    useEffect(() => {
+        const handleEscape = (event) => {
+            if (event.key === 'Escape' && showImageModal) { // Only close if modal is actually open
+                handleCloseModal();
+            }
+        };
+        document.addEventListener('keydown', handleEscape);
+        return () => {
+            document.removeEventListener('keydown', handleEscape);
+        };
+    }, [showImageModal, handleCloseModal]); // Depend on showImageModal and stable handleCloseModal
 
     useEffect(() => {
         const fetchLastMarketStatus = async () => {
@@ -73,7 +137,7 @@ const LastMarketStatus = () => {
             case 'CANCEL':
                 return { icon: <CircleX className="w-5 h-5 text-red-600" />, text: 'Cancelled', color: 'text-red-600' };
             default:
-                return { icon: <Clock className="w-5 h-5 text-gray-500" />, text: 'Unknown', color: 'text-gray-500' };
+                return { icon: <Clock className="w-5 h-5 text-gray-500" />, text: 'Pending', color: 'text-gray-500' };
         }
     };
 
@@ -124,19 +188,107 @@ const LastMarketStatus = () => {
     const lastUpdateDate = new Date(lastMarket.timestamp).toLocaleString();
 
     return (
-        <section className="bg-white max-w-7xl mx-auto my-8 p-4 rounded-xl shadow-lg border border-gray-200">
+        <section className="bg-white max-w-7xl mx-auto my-8 p-4 rounded-xl shadow-lg border-2 border-gray-400">
             <h2 className="text-2xl font-bold text-gray-800 glossy-heading mb-6 border-b pb-3">Last Market Activity</h2>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <div className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100 mb-6 text-gray-700">
+                <div className=" sm:flex-row sm:items-center sm:justify-between gap-y-2 text-sm">
+                    <div className="flex items-center gap-x-2">
+                        <span className="font-semibold text-gray-600">Market ID:</span>
+                        <span className="text-gray-800">{lastMarket._id || 'N/A'}</span>
+                    </div>
+                    <div className="flex items-center gap-x-2">
+                        <span className="font-semibold text-gray-600">Status:</span>
+                        <span className={`font-semibold text-base flex items-center ${statusDisplay.color}`}>
+                            <span className="ml-1">{statusDisplay.text}</span>
+                        </span>
+                    </div>
+                    <div className="flex items-center gap-x-2">
+                        <span className="font-semibold text-gray-600">Last Updated:</span>
+                        <span className="text-gray-800">{lastUpdateDate}</span>
+                    </div>
+                </div>
+            </div>
+ 
+            <div className="grid grid-cols-1">
+                <div className="bg-white p-3 shadow-md hover:shadow-lg">
+                    {lastMarket.pricing && lastMarket.pricing.length > 0 ? (
+                        lastMarket.pricing.map((priceBlock, pbIndex) => (
+                            <div key={pbIndex} className="mb-4 pb-4 border-b last:border-b-0 last:pb-0">
+                                <p className="font-bold text-gray-700 text-base mb-2">
+                                    {priceBlock.currency || 'N/A'}
+                                </p>
+                                {priceBlock.faceValues && priceBlock.faceValues.length > 0 ? (
+                                    <ul className="list-disc list-inside text-sm text-gray-700">
+                                        {priceBlock.faceValues.map((fv, fvIndex) => (
+                                            <><li key={fvIndex} className="mb-1">
+                                                Face Value: <span className="font-medium">{fv.faceValue || 'N/A'}</span>
+                                            </li>
+                                            <span className="mb-1 ml-5">
+                                                     Rate: <span className="font-medium">{formatCurrency(fv.sellingPrice, priceBlock.currency)}</span>
+                                                </span>
+                                                </>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="text-gray-500 text-sm italic">No face values specified for this currency.</p>
+                                )}
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-gray-500 text-base">No pricing information available.</p>
+                    )}
+                </div>
                 {/* Left Card: Core Product Info & Status */}
                 <div className="bg-white border-4 border-yellow-500 rounded-xl p-6 shadow-md hover:shadow-lg">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-3">{lastMarket.productName || 'N/A'}</h3>
-                    
+                    <h3 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                        {lastMarket.productName || 'N/A'}
+                        
+                        {/* Product Image Thumbnail */}
+                        {lastMarket.productImage && lastMarket.productImage.length > 0 && (
+                            <div className="ml-3 flex -space-x-2 overflow-hidden">
+                                {lastMarket.productImage.slice(0, 3).map((img, idx) => ( // Show max 3 thumbnails
+                                    <img
+                                        key={idx}
+                                        src={img}
+                                        alt={`${lastMarket.productName} thumbnail ${idx + 1}`}
+                                        className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover cursor-pointer hover:ring-blue-500 transition-all duration-200"
+                                    />
+                                ))}
+                                {lastMarket.productImage.length > 3 && (
+                                    <span className="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-gray-200 text-gray-600 flex items-center justify-center text-xs font-bold cursor-pointer hover:bg-gray-300 transition-all duration-200"
+                                          onClick={() => handleImageClick(lastMarket.productImage[0])}>
+                                        +{lastMarket.productImage.length - 3}
+                                    </span>
+                                )}
+                            </div>
+                        )}
+                    </h3>
+
                     <div className="text-sm text-gray-600 space-y-2 mb-4">
-                        {/* Check if category/description are truthy before displaying, otherwise they will be 'N/A' */}
-                        <p><strong>Category:</strong> {lastMarket.category ? lastMarket.category : 'N/A'}</p>
-                        <p><strong>Description:</strong> {lastMarket.description ? lastMarket.description : 'N/A'}</p>
+                        <p><strong>Remark:</strong> {lastMarket.userRemark ? lastMarket.userRemark : 'N/A'}</p>
                         {lastMarket.cardcode && <p><strong>Card Code:</strong> {lastMarket.cardcode}</p>}
+                        <h3 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                        {/* Product Image Thumbnail */}
+                        {lastMarket.Image.length > 0 && (
+                            <div className="ml-3 flex -space-x-2 overflow-hidden">
+                                {lastMarket.Image.slice(0, 3).map((img, idx) => ( // Show max 3 thumbnails
+                                    <img
+                                        key={idx}
+                                        src={img}
+                                        alt={`${lastMarket._id} thumbnail ${idx + 1}`}
+                                        className="inline-block h-12 w-12 ring-2 ring-white object-cover cursor-pointer hover:ring-blue-500 transition-all duration-200"
+                                        onClick={() => handleImageClick(img)}
+                                    />
+                                ))}
+                                {lastMarket.productImage.length > 3 && (
+                                    <span className="inline-block h-12 w-12 ring-2 ring-white bg-gray-200 text-gray-600 flex items-center justify-center text-xs font-bold cursor-pointer hover:bg-gray-300 transition-all duration-200"
+                                          onClick={() => handleImageClick(lastMarket.Image[0])}>
+                                        +{lastMarket.Image.length - 3}
+                                    </span>
+                                )}
+                            </div>
+                        )}
+                    </h3>
                     </div>
 
                     <div className="space-y-2 mb-4">
@@ -159,13 +311,9 @@ const LastMarketStatus = () => {
                             <span className="text-gray-600 text-base">Status:</span>
                             <span className={`font-semibold text-lg flex items-center ${statusDisplay.color}`}>
                                 {statusDisplay.icon}
-                                <span className="ml-2">{statusDisplay.text}</span>
                             </span>
                         </div>
-                        <div className="flex items-center justify-between text-sm text-gray-500">
-                            <span>Last Update:</span>
-                            <span>{lastUpdateDate}</span>
-                        </div>
+                       
 
                         {lastMarket.status === 'CANCEL' && lastMarket.cancelReason && (
                             <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
@@ -176,10 +324,15 @@ const LastMarketStatus = () => {
                         {lastMarket.status === 'CANCEL' && lastMarket.crImage && lastMarket.crImage.length > 0 && (
                             <div className="mt-4">
                                 <p className="font-medium flex items-center text-gray-700"><Image className="w-4 h-4 mr-2" />Cancellation Images:</p>
-                                <div className="grid grid-cols-2 gap-2 mt-2">
+                                <div className="grid grid-cols-3 gap-2 mt-2">
                                     {lastMarket.crImage.map((img, idx) => (
-                                        <img key={idx} src={img} alt={`Cancellation Proof ${idx + 1}`} 
-                                             className="w-full h-auto object-cover rounded-md shadow-sm border border-gray-200 max-h-32" />
+                                        <img
+                                            key={idx}
+                                            src={img}
+                                            alt={`Cancellation Proof ${idx + 1}`}
+                                            className="w-full h-24 object-cover rounded-md shadow-sm border border-gray-200 cursor-pointer hover:border-blue-500 transition-all duration-200"
+                                            onClick={() => handleImageClick(img)}
+                                        />
                                     ))}
                                 </div>
                             </div>
@@ -188,33 +341,11 @@ const LastMarketStatus = () => {
                 </div>
 
                 {/* Right Card: Pricing Details */}
-                <div className="bg-white border-4 border-blue-500 rounded-xl p-6 shadow-md hover:shadow-lg">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-3">Pricing Details</h3>
-                    {lastMarket.pricing && lastMarket.pricing.length > 0 ? (
-                        lastMarket.pricing.map((priceBlock, pbIndex) => (
-                            <div key={pbIndex} className="mb-4 pb-4 border-b last:border-b-0 last:pb-0">
-                                <p className="font-bold text-gray-700 text-base mb-2">
-                                    Trade Currency: {priceBlock.currency || 'N/A'}
-                                </p>
-                                {priceBlock.faceValues && priceBlock.faceValues.length > 0 ? (
-                                    <ul className="list-disc list-inside text-sm text-gray-700">
-                                        {priceBlock.faceValues.map((fv, fvIndex) => (
-                                            <li key={fvIndex} className="mb-1">
-                                                Face Value: <span className="font-medium">{fv.faceValue || 'N/A'}</span>, Selling Price: <span className="font-medium">{formatCurrency(fv.sellingPrice, priceBlock.currency)}</span>
-                                                {fv.description && <span className="text-gray-500 italic ml-2">({fv.description})</span>}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <p className="text-gray-500 text-sm italic">No face values specified for this currency.</p>
-                                )}
-                            </div>
-                        ))
-                    ) : (
-                        <p className="text-gray-500 text-base">No pricing information available.</p>
-                    )}
-                </div>
+                
             </div>
+
+            {/* Image Modal Component - Renders only when showImageModal is true */}
+            <ImageModal imageUrl={modalImageUrl} onClose={handleCloseModal} />
         </section>
     );
 };

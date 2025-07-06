@@ -344,7 +344,7 @@ const Home = () => {
 
       {/* Transactions */}
       <section className="bg-white max-w-7xl mx-auto">
-        <h2 className="text-2xl font-bold text-black mb-4 glossy-heading">Recent Activity</h2> {/* Applied glossy-heading */}
+        <h2 className="text-2xl font-bold text-black mb-4 glossy-heading">Recent Transactions</h2> {/* Applied glossy-heading */}
         {transactions.length === 0 ? (
           <p className="text-gray-500 glossy-text">No transactions found.</p> // Applied glossy-text
         ) : (
