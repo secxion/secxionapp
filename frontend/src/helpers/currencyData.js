@@ -1,14 +1,6 @@
 const currencyData = [
   { label: "USD - United States Dollar", value: "USD", symbol: "$" },
-  { label: "EUR - Euro", value: "EUR", symbol: "€" },
-  { label: "EUR - Euro (Portugal)", value: "EUR_PT", symbol: "€" },
-  { label: "EUR - Euro (Germany)", value: "EUR_DE", symbol: "€" },
-  { label: "EUR - Euro (Greece)", value: "EUR_GR", symbol: "€" },
-  { label: "EUR - Euro (France)", value: "EUR_FR", symbol: "€" },
-  { label: "EUR - Euro (Italy)", value: "EUR_IT", symbol: "€" },
-  { label: "EUR - Euro (Spain)", value: "EUR_ES", symbol: "€" },
-  { label: "EUR - Euro (Netherlands)", value: "EUR_NL", symbol: "€" },
-  { label: "EUR - Euro (Belgium)", value: "EUR_BE", symbol: "€" },
+ 
   { label: "EUR - Euro (Austria)", value: "EUR_AT", symbol: "€" },
   { label: "EUR - Euro (Ireland)", value: "EUR_IE", symbol: "€" },
   { label: "EUR - Euro (Luxembourg)", value: "EUR_LU", symbol: "€" },

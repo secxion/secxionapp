@@ -1,12 +1,8 @@
+// LastMarketStatus.js
 import React, { useEffect, useState, useContext } from 'react';
 import SummaryApi from '../common'; // Assuming SummaryApi is correctly path'd
-import UserContext from "../Context";
-import { CircleCheck, CircleX, Loader, Clock } from 'lucide-react'; // Icons for status
-
-// You'll need to define a new API endpoint in SummaryApi for this:
-// Example in common/index.js (hypothetical):
-// lastUserMarketStatus: { url: "/api/user/last-market-status", method: "GET" },
-// This API should ideally return the *single latest* user product/market entry.
+import UserContext from "../Context"; // Assuming your UserContext is named 'UserContext' and located here
+import { CircleCheck, CircleX, Loader, Clock, Info, Image } from 'lucide-react'; // Added Info and Image icons
 
 const LastMarketStatus = () => {
     const [lastMarket, setLastMarket] = useState(null);
@@ -25,9 +21,6 @@ const LastMarketStatus = () => {
             setLoading(true);
             setError(null);
             try {
-                // IMPORTANT: Replace SummaryApi.lastUserMarketStatus.url with your actual API endpoint
-                // This endpoint should fetch the single latest user product/market entry for the logged-in user.
-                // If you don't have such an API, you'd fetch all user products and sort/pick the latest here.
                 const response = await fetch(SummaryApi.lastUserMarketStatus.url, {
                     headers: {
                         "Authorization": `Bearer ${localStorage.getItem("token")}`
@@ -35,17 +28,27 @@ const LastMarketStatus = () => {
                     credentials: "include",
                 });
 
+                // Check for non-OK responses before parsing JSON
+                if (!response.ok) {
+                    const errorText = await response.text(); // Read as text to see HTML or other non-JSON
+                    console.error("Non-OK response for last market status:", response.status, errorText);
+                    setError(`Failed to fetch last market status: ${response.status} ${response.statusText}. Check server logs for details.`);
+                    setLastMarket(null);
+                    setLoading(false);
+                    return;
+                }
+
                 const dataResponse = await response.json();
 
                 if (dataResponse.success) {
-                    setLastMarket(dataResponse.data); // Assuming data.data holds the last product object
+                    setLastMarket(dataResponse.data);
                 } else {
                     setError(dataResponse.message || "Failed to fetch last market status.");
                     setLastMarket(null);
                 }
             } catch (err) {
                 console.error("Error fetching last market status:", err);
-                setError("An error occurred while fetching data.");
+                setError("An error occurred while fetching data. Please try again.");
                 setLastMarket(null);
             } finally {
                 setLoading(false);
@@ -73,9 +76,37 @@ const LastMarketStatus = () => {
         }
     };
 
+    // Helper to format currency
+    const formatCurrency = (amount, currencyCode = '') => {
+        if (typeof amount !== 'number') return 'N/A';
+
+        const options = {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        };
+
+        let symbol = '';
+        if (currencyCode) {
+            switch (currencyCode) {
+                case 'USD': symbol = '$'; break;
+                case 'GBP': symbol = '£'; break;
+                case 'CAD': symbol = 'C$'; break;
+                case 'CNY': symbol = '¥'; break;
+                case 'SGD': symbol = 'S$'; break;
+                case 'AUD': symbol = 'A$'; break;
+                default: symbol = currencyCode; // Fallback to code if symbol not defined
+            }
+        } else {
+            symbol = ''; // No currency code provided, no symbol
+        }
+        
+        return `${symbol} ${amount.toLocaleString(undefined, options)}`;
+    };
+
+
     if (loading) {
         return (
-            <div className="bg-white border-4 border-yellow-500 rounded-xl p-6 shadow hover:shadow-lg flex items-center justify-center h-48">
+            <div className="bg-white border-4 border-yellow-500 rounded-xl p-6 shadow hover:shadow-lg flex items-center justify-center h-48 my-8">
                 <Loader className="w-8 h-8 animate-spin text-yellow-500" />
                 <p className="ml-3 text-lg text-gray-700">Loading last market status...</p>
             </div>
@@ -84,7 +115,7 @@ const LastMarketStatus = () => {
 
     if (error) {
         return (
-            <div className="bg-white border-4 border-red-500 rounded-xl p-6 shadow hover:shadow-lg flex items-center justify-center h-48 text-red-600">
+            <div className="bg-white border-4 border-red-500 rounded-xl p-6 shadow hover:shadow-lg flex items-center justify-center h-48 my-8 text-red-600">
                 <CircleX className="w-6 h-6 mr-2" />
                 <p>{error}</p>
             </div>
@@ -93,7 +124,7 @@ const LastMarketStatus = () => {
 
     if (!lastMarket) {
         return (
-            <div className="bg-white border-4 border-gray-300 rounded-xl p-6 shadow hover:shadow-lg flex items-center justify-center h-48 text-gray-500">
+            <div className="bg-white border-4 border-gray-300 rounded-xl p-6 shadow hover:shadow-lg flex items-center justify-center h-48 my-8 text-gray-500">
                 <Clock className="w-6 h-6 mr-2" />
                 <p>No recent market activities found.</p>
             </div>
@@ -101,57 +132,98 @@ const LastMarketStatus = () => {
     }
 
     const statusDisplay = getStatusDisplay(lastMarket.status);
-    const lastTradeDate = new Date(lastMarket.timestamp).toLocaleString();
+    const lastUpdateDate = new Date(lastMarket.timestamp).toLocaleString();
 
     return (
-        <section className="bg-white max-w-7xl mx-auto mt-8"> {/* Added mt-8 for spacing */}
-            <h2 className="text-2xl font-bold text-black glossy-heading mb-6">Last Market Status</h2>
+        <section className="bg-white max-w-7xl mx-auto my-8 p-4 rounded-xl shadow-lg border border-gray-200">
+            <h2 className="text-2xl font-bold text-gray-800 glossy-heading mb-6 border-b pb-3">Last Market Activity</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white border-4 border-yellow-500 rounded-xl p-6 shadow hover:shadow-lg">
-                    <p className="text-gray-600 text-sm glossy-text mb-2">Last Product/Trade</p>
-                    <h3 className="text-xl font-semibold text-black mb-1">{lastMarket.productName}</h3>
-                    <p className="text-sm text-gray-700 mb-4">{lastMarket.description}</p>
-
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-gray-600 text-sm">Status:</span>
-                        <span className={`font-semibold text-lg flex items-center ${statusDisplay.color}`}>
-                            {statusDisplay.icon}
-                            <span className="ml-2">{statusDisplay.text}</span>
-                        </span>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Left Card: Core Product Info & Status */}
+                <div className="bg-white border-4 border-yellow-500 rounded-xl p-6 shadow-md hover:shadow-lg">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-3">{lastMarket.productName || 'N/A'}</h3>
+                    
+                    <div className="text-sm text-gray-600 space-y-2 mb-4">
+                        <p><strong>Category:</strong> {lastMarket.category || 'N/A'}</p>
+                        <p><strong>Description:</strong> {lastMarket.description || 'N/A'}</p>
+                        {lastMarket.cardcode && <p><strong>Card Code:</strong> {lastMarket.cardcode}</p>}
                     </div>
 
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-gray-600 text-sm">Amount:</span>
-                        <span className="font-semibold text-lg text-black">
-                            {lastMarket.totalAmount ? `${lastMarket.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'N/A'}
-                        </span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-sm text-gray-500">
-                        <span>Last Update:</span>
-                        <span>{lastTradeDate}</span>
-                    </div>
-
-                    {lastMarket.status === 'CANCEL' && lastMarket.cancelReason && (
-                        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
-                            <p className="font-medium">Cancel Reason:</p>
-                            <p>{lastMarket.cancelReason}</p>
+                    <div className="space-y-2 mb-4">
+                        <div className="flex items-center justify-between text-lg">
+                            <span className="text-gray-700">Total Amount:</span>
+                            <span className="font-bold text-green-700">
+                                {formatCurrency(lastMarket.totalAmount)}
+                            </span>
                         </div>
+                        <div className="flex items-center justify-between text-lg">
+                            <span className="text-gray-700">Calculated Amount:</span>
+                            <span className="font-bold text-blue-700">
+                                {formatCurrency(lastMarket.calculatedTotalAmount)}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="border-t pt-4 mt-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-gray-600 text-base">Status:</span>
+                            <span className={`font-semibold text-lg flex items-center ${statusDisplay.color}`}>
+                                {statusDisplay.icon}
+                                <span className="ml-2">{statusDisplay.text}</span>
+                            </span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm text-gray-500">
+                            <span>Last Update:</span>
+                            <span>{lastUpdateDate}</span>
+                        </div>
+
+                        {lastMarket.status === 'CANCEL' && lastMarket.cancelReason && (
+                            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
+                                <p className="font-medium flex items-center"><Info className="w-4 h-4 mr-2" />Cancel Reason:</p>
+                                <p className="ml-6">{lastMarket.cancelReason}</p>
+                            </div>
+                        )}
+                        {lastMarket.status === 'CANCEL' && lastMarket.crImage && lastMarket.crImage.length > 0 && (
+                            <div className="mt-4">
+                                <p className="font-medium flex items-center text-gray-700"><Image className="w-4 h-4 mr-2" />Cancellation Images:</p>
+                                <div className="grid grid-cols-2 gap-2 mt-2">
+                                    {lastMarket.crImage.map((img, idx) => (
+                                        <img key={idx} src={img} alt={`Cancellation Proof ${idx + 1}`} 
+                                             className="w-full h-auto object-cover rounded-md shadow-sm border border-gray-200 max-h-32" />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Right Card: Pricing Details */}
+                <div className="bg-white border-4 border-blue-500 rounded-xl p-6 shadow-md hover:shadow-lg">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-3">Pricing Details</h3>
+                    {lastMarket.pricing && lastMarket.pricing.length > 0 ? (
+                        lastMarket.pricing.map((priceBlock, pbIndex) => (
+                            <div key={pbIndex} className="mb-4 pb-4 border-b last:border-b-0 last:pb-0">
+                                <p className="font-bold text-gray-700 text-base mb-2">
+                                    Trade Currency: {priceBlock.currency || 'N/A'}
+                                </p>
+                                {priceBlock.faceValues && priceBlock.faceValues.length > 0 ? (
+                                    <ul className="list-disc list-inside text-sm text-gray-700">
+                                        {priceBlock.faceValues.map((fv, fvIndex) => (
+                                            <li key={fvIndex} className="mb-1">
+                                                Face Value: <span className="font-medium">{fv.faceValue || 'N/A'}</span>, Selling Price: <span className="font-medium">{formatCurrency(fv.sellingPrice, priceBlock.currency)}</span>
+                                                {fv.description && <span className="text-gray-500 italic ml-2">({fv.description})</span>}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="text-gray-500 text-sm italic">No face values specified for this currency.</p>
+                                )}
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-gray-500 text-base">No pricing information available.</p>
                     )}
                 </div>
-
-                {/* You can add another card here if you want to display something else,
-                    or just remove the grid-cols-2 if only one card is needed. */}
-                <div className="bg-white border-4 border-yellow-500 rounded-xl p-6 shadow hover:shadow-lg flex flex-col justify-center items-center">
-                   <p className="text-gray-600 text-lg glossy-text text-center mb-4">
-                       "Your most recent transaction's status at a glance."
-                   </p>
-                   <p className="text-gray-500 text-sm text-center">
-                       This card provides a quick overview of your last market activity.
-                   </p>
-                </div>
-
             </div>
         </section>
     );
