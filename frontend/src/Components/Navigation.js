@@ -9,7 +9,7 @@ const Navigation = ({ currentPage }) => {
 
   // Define all navigation items
   const allNavItems = [
-    { id: 'home', name: '', href: '/', icon: Home },
+    { id: 'home', name: '/', href: '/', icon: Home },
     { id: 'about', name: 'About Us', href: '/about-us', icon: Info },
     { id: 'privacy', name: 'Privacy', href: '/privacy', icon: Shield },
     { id: 'terms', name: 'Terms', href: '/terms', icon: FileText },
