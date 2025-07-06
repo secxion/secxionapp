@@ -20,6 +20,7 @@ import {
 import Clock from 'react-live-clock';
 import timezones from '../helpers/timeZones';
 import './Header.css';
+import LogoShimmer from "./LogoShimmer";
 
 const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
   const [timezone, setTimezone] = useState('Africa/Lagos');
@@ -95,12 +96,20 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
                   <XMarkIcon className="h-8 w-8" />
                 </button>
 
-                <Link to="/home" onClick={handleLinkClick} className="flex items-center">
-                  <div className="logo-wrapper">
-                    <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 glossy-heading">SXN</h1> {/* Applied glossy-heading */}
-                    <div className="h-1 w-full bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 rounded-full mt-1 border border-yellow-700"></div> {/* Added yellow border */}
-                  </div>
-                </Link>
+                <Link to="/home" className="relative md:flex items-center font-bold text-yellow-600 tracking-wide">
+                            <div className="bg-white flex py-1 flex-col justify-center">
+                                    <div className="relative py-2  sm:mx-auto ">
+                                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 rounded-3xl border-4 border-yellow-700"></div> {/* Yellow border */}
+                                        <div className="relative px-4 p-1.5 bg-white shadow-lg rounded-2xl sm:p-1.5 border-4 border-yellow-700">
+                                            <div className="">
+                                                <div className="grid grid-cols-1">                        
+                                                    <LogoShimmer type="button" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                          </Link>
 
                 <button
                   onClick={handleLogoutClick}

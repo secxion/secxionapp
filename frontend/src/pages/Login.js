@@ -3,10 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SummaryApi from "../common";
 import Context from "../Context";
-// import "./Login.css"; // Assuming this might contain global or base styles - consider removing if all styles are Tailwind
 import loginBackground from "./loginbk.png"; // Keep background image, adjust overlay
 import thumbsUpGif from "./thumbsup.gif";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import icons for consistency
+import LogoShimmer from "../Components/LogoShimmer";
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
@@ -147,14 +147,19 @@ const Login = () => {
       <div className="shape-lines relative bg-gray-900 bg-opacity-95 p-6 sm:p-8 w-full max-w-md rounded-2xl shadow-2xl border border-gray-700 z-10">
         {/* Logo - updated gradient for black and yellow theme */}
         <div className="flex justify-center mb-5">
-          <Link
-            to="/"
-            className="font-bold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 tracking-wide"
-          >
-            <div className="logo-wrapper">
-              <h1 className="text-3xl logo-text font-extrabold tracking-wide">SXN</h1>
-              <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full" /> {/* Updated logo accent */}
-            </div>
+           <Link to="/" className="relative hidden md:flex items-center font-bold text-yellow-600 tracking-wide">
+            <div className="bg-white flex py-1 flex-col justify-center">
+                    <div className="relative py-2  sm:mx-auto ">
+                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 rounded-3xl border-4 border-yellow-700"></div> {/* Yellow border */}
+                        <div className="relative px-4 p-1.5 bg-white shadow-lg rounded-2xl sm:p-1.5 border-4 border-yellow-700">
+                            <div className="">
+                                <div className="grid grid-cols-1">                        
+                                    <LogoShimmer type="button" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
           </Link>
         </div>
 

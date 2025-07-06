@@ -5,7 +5,6 @@ import uploadImage from "../helpers/uploadImage";
 import SummaryApi from "../common";
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
-// import "./Login.css"; // Removed, assuming all styles are now Tailwind
 import signupBackground from "./signupbk.png";
 
 const SignUp = () => {

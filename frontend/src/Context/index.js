@@ -12,26 +12,33 @@ export const ContextProvider = ({ children }) => {
     const [walletBalance, setWalletBalance] = useState(null);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        const storedToken = localStorage.getItem("token");
+   useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
 
-        if (storedUser) {
-            try {
-                const parsedUser = JSON.parse(storedUser);
+    if (storedUser && storedToken) {
+        try {
+            const parsedUser = JSON.parse(storedUser);
+
+            // Check token validity before restoring state
+            if (!isTokenExpired(storedToken)) {
                 setUser(parsedUser);
-                if (storedToken) {
-                    setToken(storedToken);
-                }
-            } catch (error) {
-                console.error("Error parsing user/token:", error);
+                setToken(storedToken);
+            } else {
+                // Clear expired/invalid session
                 localStorage.removeItem("user");
                 localStorage.removeItem("token");
             }
+        } catch (error) {
+            console.error("Error parsing user/token:", error);
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
         }
+    }
 
-        setLoading(false);
-    }, []);
+    setLoading(false);
+}, [isTokenExpired]);
+
 
     const getAuthHeaders = useCallback(() => {
         const headers = {
@@ -43,18 +50,18 @@ export const ContextProvider = ({ children }) => {
         return headers;
     }, [token]);
 
-    // Enhanced logout function
-    const logout = useCallback(() => {
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        setUser(null);
-        setToken(null);
-        setWalletBalance(null);
-        dispatch(setUserDetails(null));
-        
-        // Redirect to login page
-        window.location.href = '/login';
-    }, [dispatch]);
+   const logout = useCallback(() => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    setUser(null);
+    setToken(null);
+    setWalletBalance(null);
+    dispatch(clearState()); // better than setUserDetails(null)
+
+    // Force redirect
+    window.location.href = '/login';
+}, [dispatch]);
+
 
     // Check if token is expired
     const isTokenExpired = useCallback((token) => {

@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, User, Home, Settings, Shield } from "lucide-react";
+import { ArrowRight, Home, Settings, Shield } from "lucide-react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { FaCaretDown } from "react-icons/fa";
@@ -8,7 +8,7 @@ import ROLE from "../common/role";
 import "./Net.css";
 import SummaryApi from "../common";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faSignOutAlt, faVolumeUp, faVolumeMute, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import Context from "../Context";
@@ -240,7 +240,7 @@ const Net = ({ blogs }) => {
                     
                     <div className="ml-2 md:ml-3 flex items-center cursor-pointer group" onClick={toggleDropdown}>
 
-                        <FaCaretDown className="w-7 h-7 md:w-7 md:h-7 ml-1 md:ml-1.5 text-gray-500   glossy-text" /> 
+                        <FaCaretDown className="w-7 h-7 md:w-7 md:h-7 ml-1 md:ml-1.5 text-gray-500 hover:text-black  glossy-text" /> 
                     </div>
 
                     {/* Dropdown Menu */}
@@ -301,7 +301,7 @@ const Net = ({ blogs }) => {
                 </div>
             )}
             <Link to="/notifications" title="Notifications" aria-label="Notifications">
-                    <div className="relative ml-2 h-6 w-7 pr-8 mr-4"> {/* Applied glossy-text */}
+                    <div className="relative ml-2 h-6 w-7 pr-8 mr-4">
                       <NotificationBadge />
                     </div>
                 </Link>

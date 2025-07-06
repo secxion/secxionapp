@@ -15,6 +15,7 @@ import SummaryApi from "../common";
 import { BiSearch } from 'react-icons/bi';
 import SidePanel from "./SidePanel";
 import NotificationBadge from "../helper/NotificationBadge";
+import LogoShimmer from "./LogoShimmer";
 
 
 const Header = () => {
@@ -184,13 +185,19 @@ const Header = () => {
             </div>
           </div>
 
-          <Link to="/home" className="relative hidden md:flex items-center font-bold text-xl text-yellow-600 tracking-wide">
-            <h1 className="font-extrabold tracking-wide">
-                <h1 className="font-extrabold text-2xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 glossy-heading"> {/* Updated logo gradient and applied glossy-heading */}
-                  SXN
-                </h1>
-                <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full border border-yellow-700"></div> {/* Updated underline gradient and added border */}
-            </h1>
+          <Link to="/home" className="relative hidden md:flex items-center font-bold text-yellow-600 tracking-wide">
+            <div className="bg-white flex py-1 flex-col justify-center">
+                    <div className="relative py-2  sm:mx-auto ">
+                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 rounded-3xl border-4 border-yellow-700"></div> {/* Yellow border */}
+                        <div className="relative px-4 p-1.5 bg-white shadow-lg rounded-2xl sm:p-1.5 border-4 border-yellow-700">
+                            <div className="">
+                                <div className="grid grid-cols-1">                        
+                                    <LogoShimmer type="button" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
           </Link>
 
           <div className="hidden md:flex gap-3 items-center">
