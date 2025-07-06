@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useCallback, useContext } from "react";
 import { useDispatch } from "react-redux";
-import { clearState, setUserDetails } from "../store/userSlice";
+import { setUserDetails } from "../store/userSlice";
 import SummaryApi from "../common";
 
 const Context = createContext(null);
@@ -12,33 +12,26 @@ export const ContextProvider = ({ children }) => {
     const [walletBalance, setWalletBalance] = useState(null);
     const dispatch = useDispatch();
 
-   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        const storedToken = localStorage.getItem("token");
 
-    if (storedUser && storedToken) {
-        try {
-            const parsedUser = JSON.parse(storedUser);
-
-            // Check token validity before restoring state
-            if (!isTokenExpired(storedToken)) {
+        if (storedUser) {
+            try {
+                const parsedUser = JSON.parse(storedUser);
                 setUser(parsedUser);
-                setToken(storedToken);
-            } else {
-                // Clear expired/invalid session
+                if (storedToken) {
+                    setToken(storedToken);
+                }
+            } catch (error) {
+                console.error("Error parsing user/token:", error);
                 localStorage.removeItem("user");
                 localStorage.removeItem("token");
             }
-        } catch (error) {
-            console.error("Error parsing user/token:", error);
-            localStorage.removeItem("user");
-            localStorage.removeItem("token");
         }
-    }
 
-    setLoading(false);
-}, [isTokenExpired]);
-
+        setLoading(false);
+    }, []);
 
     const getAuthHeaders = useCallback(() => {
         const headers = {
@@ -50,18 +43,18 @@ export const ContextProvider = ({ children }) => {
         return headers;
     }, [token]);
 
-   const logout = useCallback(() => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    setUser(null);
-    setToken(null);
-    setWalletBalance(null);
-    dispatch(clearState()); // better than setUserDetails(null)
-
-    // Force redirect
-    window.location.href = '/login';
-}, [dispatch]);
-
+    // Enhanced logout function
+    const logout = useCallback(() => {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        setUser(null);
+        setToken(null);
+        setWalletBalance(null);
+        dispatch(setUserDetails(null));
+        
+        // Redirect to login page
+        window.location.href = '/login';
+    }, [dispatch]);
 
     // Check if token is expired
     const isTokenExpired = useCallback((token) => {
