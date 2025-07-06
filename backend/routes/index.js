@@ -186,7 +186,7 @@ router.post("/upload-market", authToken, UserUploadMarketController);
 router.get("/get-market", authToken, getMarketController);
 router.get("/get-market/:marketId", authToken, getMarketByIdController);
 router.get("/market-record", authToken, marketRecordController);
-router.get('/user/last-market-status', authToken, getLastUserMarketStatusController);
+router.get('/last-market-status', authToken, getLastUserMarketStatusController);
 
 
 // System blog

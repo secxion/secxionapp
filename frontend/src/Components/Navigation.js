@@ -36,10 +36,11 @@ const Navigation = ({ currentPage }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          {/* <Link to="/" className="flex items-center space-x-2">
             <div className="flex items-center">
             <a href="/" className="relative">
-              <div className="relative py-2  sm:mx-auto ">
+               <div className=" flex py-1 flex-col justify-center">
+                                                              <div className="relative py-2  sm:mx-auto ">
                                                                   <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform rounded-3xl border-4 border-yellow-700"></div>
                                                                   <div className="relative px-4 p-1.5 bg-white shadow-lg rounded-2xl sm:p-1.5 border-4 border-yellow-700">
                                                                       <div className="">
@@ -49,14 +50,13 @@ const Navigation = ({ currentPage }) => {
                                                                       </div>
                                                                   </div>
                                                               </div>
-              <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full"></div>
-            
+                                                          </div>
+                          <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full"></div>
+              
             </a>
           </div>
-            {/* <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Secxion
-            </span> */}
-          </Link>
+           
+          </Link> */}
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">

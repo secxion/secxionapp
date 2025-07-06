@@ -111,8 +111,8 @@ confirmReset: {
         method : 'get'
     },
     lastUserMarketStatus: {
-        url: "/api/user/last-market-status", // **Define this backend endpoint**
-        method: "GET"
+        url: `${backendDomain}/api/last-market-status`,
+        method: "get"
     },
     allUserMarkets : {
         url : `${backendDomain}/api/get-all-users-market`,

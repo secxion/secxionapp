@@ -148,24 +148,26 @@ const Login = () => {
       <div className="absolute inset-0 bg-black/70 z-0"></div>
 
       {/* Login Form Box - updated for black and yellow theme */}
-      <div className="shape-lines relative bg-gray-900 bg-opacity-95 p-6 sm:p-8 mt-6 w-full max-w-md rounded-2xl shadow-2xl border border-gray-700 z-10">
+      <div className="shape-lines relative bg-gray-900 bg-opacity-95 p-6 sm:p-8 mt-16 w-full max-w-md rounded-2xl shadow-2xl border border-gray-700 z-10">
         {/* Logo - updated gradient for black and yellow theme */}
-        <div className="flex justify-center mb-5">
-           <Link to="/" className="relative md:flex items-center font-bold text-yellow-600 tracking-wide">
-            <div className=" flex py-1 flex-col justify-center">
-                                    <div className="relative py-2  sm:mx-auto ">
-                                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform rounded-3xl border-4 border-yellow-700"></div>
-                                        <div className="relative px-4 p-1.5 bg-white shadow-lg rounded-2xl sm:p-1.5 border-4 border-yellow-700">
-                                            <div className="">
-                                                <div className="grid grid-cols-1">                    
-                                                    <LogoShimmer type="button" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-          </Link>
-        </div>
+          <div className="flex items-center">
+                        <a href="/" className="relative">
+                           <div className=" flex py-1 flex-col justify-center">
+                                                                          <div className="relative py-2  sm:mx-auto ">
+                                                                              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform rounded-3xl border-4 border-yellow-700"></div>
+                                                                              <div className="relative px-4 p-1.5 bg-white shadow-lg rounded-2xl sm:p-1.5 border-4 border-yellow-700">
+                                                                                  <div className="">
+                                                                                      <div className="grid grid-cols-1">                    
+                                                                                          <LogoShimmer type="button" />
+                                                                                      </div>
+                                                                                  </div>
+                                                                              </div>
+                                                                          </div>
+                                                                      </div>
+                                      <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full"></div>
+                          
+                        </a>
+                      </div>
 
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-gray-100">Welcome Back!</h1> {/* Updated text color */}
