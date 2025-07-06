@@ -49,6 +49,7 @@ import { getPaystackBanks, resolveBankAccount, } from '../controller/wallet/pays
 import { getUserEthWallet, saveEthWalletAddress, withdrawEth } from '../controller/wallet/ethWalletController.js';
 import { createEthWithdrawalRequest, getAllEthWithdrawalRequests, getEthWithdrawalStatus, getSingleEthWithdrawalRequest, updateEthWithdrawalStatus } from '../controller/ethWithdrawalController.js';
 import { generateSliderVerification } from "../utils/sliderVerification.js";
+import getLastUserMarketStatusController from '../controller/product/getLastUserMarketStatusController.js';
 
 const router = express.Router();
 
@@ -185,6 +186,8 @@ router.post("/upload-market", authToken, UserUploadMarketController);
 router.get("/get-market", authToken, getMarketController);
 router.get("/get-market/:marketId", authToken, getMarketByIdController);
 router.get("/market-record", authToken, marketRecordController);
+router.get('/user/last-market-status', authToken, getLastUserMarketStatusController);
+
 
 // System blog
 router.post("/create-blog", createBlogNote);

@@ -21,6 +21,7 @@ import giftCardImages from "../helper/heroimages";
 import HomeFooter from "../Components/HomeFooter";
 import NetBlog from "../Components/NetBlog";
 import HiRateSlider from "../Components/HiRateSlider";
+import LastMarketStatus from "../Components/LastMarketStatus";
 
 const menuItems = [
   {
@@ -316,6 +317,8 @@ const Home = () => {
           ))}
         </div>
       </section>
+
+      <LastMarketStatus />
 
       {/* Menu */}
       <section className="bg-white max-w-7xl mx-auto">

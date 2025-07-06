@@ -30,6 +30,7 @@ import {
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import HiRateSlider from "../Components/HiRateSlider";
+import LogoShimmer from "../Components/LogoShimmer";
 
 
 const Button = ({ children, className = "", variant = "default", ...props }) => {
@@ -209,15 +210,18 @@ export default function Landing() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <div className="relative">
-                <h1 className="font-extrabold text-2xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600"> {/* Updated logo gradient */}
-                  SXN
-                </h1>
-                <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full"></div> {/* Updated underline gradient */}
-              
-              </div>
-            </div>
+            <div className=" flex py-1 flex-col justify-center">
+                                                <div className="relative py-2  sm:mx-auto ">
+                                                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform rounded-3xl border-4 border-yellow-700"></div>
+                                                    <div className="relative px-4 p-1.5 bg-white shadow-lg rounded-2xl sm:p-1.5 border-4 border-yellow-700">
+                                                        <div className="">
+                                                            <div className="grid grid-cols-1">                    
+                                                                <LogoShimmer type="button" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
             
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
