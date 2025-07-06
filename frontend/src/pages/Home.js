@@ -279,15 +279,6 @@ const Home = () => {
             >
               {showBalance ? <Eye className="w-5 h-5 text-gray-700" /> : <EyeOff className="w-5 h-5 text-gray-700" />}
             </button>
-            {/* 🔄 Refresh Button */}
-            <button
-              onClick={refreshAllData}
-              disabled={isRefreshing}
-              title="Refresh Data"
-              className="p-2 rounded-full hover:bg-gray-100"
-            >
-              <RefreshCw className={`w-5 h-5 text-gray-700 ${isRefreshing ? "animate-spin" : ""}`} />
-            </button>
           </div>
         </div>
 
