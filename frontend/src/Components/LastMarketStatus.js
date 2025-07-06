@@ -3,6 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import SummaryApi from '../common'; // Assuming SummaryApi is correctly path'd
 import UserContext from "../Context"; // Assuming your UserContext is named 'UserContext' and located here
 import { CircleCheck, CircleX, Loader, Clock, Info, Image } from 'lucide-react'; // Added Info and Image icons
+import currencyData from '../helpers/currencyData'; // Import the currencyData helper
 
 const LastMarketStatus = () => {
     const [lastMarket, setLastMarket] = useState(null);
@@ -76,7 +77,7 @@ const LastMarketStatus = () => {
         }
     };
 
-    // Helper to format currency
+    // Helper to format currency using currencyData
     const formatCurrency = (amount, currencyCode = '') => {
         if (typeof amount !== 'number') return 'N/A';
 
@@ -85,24 +86,12 @@ const LastMarketStatus = () => {
             maximumFractionDigits: 2,
         };
 
-        let symbol = '';
-        if (currencyCode) {
-            switch (currencyCode) {
-                case 'USD': symbol = '$'; break;
-                case 'GBP': symbol = '£'; break;
-                case 'CAD': symbol = 'C$'; break;
-                case 'CNY': symbol = '¥'; break;
-                case 'SGD': symbol = 'S$'; break;
-                case 'AUD': symbol = 'A$'; break;
-                default: symbol = currencyCode; // Fallback to code if symbol not defined
-            }
-        } else {
-            symbol = ''; // No currency code provided, no symbol
-        }
-        
+        // Find the currency symbol from currencyData
+        const currencyInfo = currencyData.find(c => c.value === currencyCode);
+        const symbol = currencyInfo ? currencyInfo.symbol : currencyCode; // Fallback to code if symbol not found
+
         return `${symbol} ${amount.toLocaleString(undefined, options)}`;
     };
-
 
     if (loading) {
         return (
@@ -144,8 +133,9 @@ const LastMarketStatus = () => {
                     <h3 className="text-xl font-semibold text-gray-800 mb-3">{lastMarket.productName || 'N/A'}</h3>
                     
                     <div className="text-sm text-gray-600 space-y-2 mb-4">
-                        <p><strong>Category:</strong> {lastMarket.category || 'N/A'}</p>
-                        <p><strong>Description:</strong> {lastMarket.description || 'N/A'}</p>
+                        {/* Check if category/description are truthy before displaying, otherwise they will be 'N/A' */}
+                        <p><strong>Category:</strong> {lastMarket.category ? lastMarket.category : 'N/A'}</p>
+                        <p><strong>Description:</strong> {lastMarket.description ? lastMarket.description : 'N/A'}</p>
                         {lastMarket.cardcode && <p><strong>Card Code:</strong> {lastMarket.cardcode}</p>}
                     </div>
 
