@@ -7,6 +7,8 @@ import loginBackground from "./loginbk.png"; // Keep background image, adjust ov
 import thumbsUpGif from "./thumbsup.gif";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import icons for consistency
 import LogoShimmer from "../Components/LogoShimmer";
+import Navigation from '../Components/Navigation';
+
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
@@ -140,6 +142,8 @@ const Login = () => {
       className="login-page min-h-screen flex items-center justify-center relative bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${loginBackground})` }}
     >
+            <Navigation currentPage="signin" />
+
       {/* Overlay for dark mode compatibility on background - adjusted opacity for black theme */}
       <div className="absolute inset-0 bg-black/70 z-0"></div>
 

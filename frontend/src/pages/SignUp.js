@@ -6,6 +6,9 @@ import SummaryApi from "../common";
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
 import signupBackground from "./signupbk.png";
+import LogoShimmer from "../Components/LogoShimmer";
+import Navigation from '../Components/Navigation';
+
 
 const SignUp = () => {
   const [step, setStep] = useState(1);
@@ -187,6 +190,8 @@ const SignUp = () => {
       className="fixed inset-0 flex flex-col justify-between z-50 bg-cover bg-center"
       style={{ backgroundImage: `url(${signupBackground})` }}
     >
+                  <Navigation currentPage="dashboard" />
+      
       {/* Overlay for dark mode compatibility on background */}
       <div className="absolute inset-0 bg-black/70 z-0"></div> {/* Increased opacity for theme */}
 
