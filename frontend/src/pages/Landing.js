@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import HiRateSlider from "../Components/HiRateSlider";
 
 
 const Button = ({ children, className = "", variant = "default", ...props }) => {
@@ -202,7 +203,6 @@ export default function Landing() {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-yellow-700/20 rounded-full"></div> {/* Updated border color */}
         <div className="absolute bottom-20 right-10 w-24 h-24 bg-gradient-to-br from-yellow-800/30 to-yellow-700/30 transform rotate-12 animate-pulse"></div> {/* Updated background */}
       </div>
-
       {/* Navigation Header */}
       <motion.header
         className="fixed top-0 left-0 right-0 z-50 bg-gray-950/95 backdrop-blur-xl border-b border-gray-700/10" // Updated background and border
@@ -306,9 +306,12 @@ export default function Landing() {
       </motion.div>
     )}
   </AnimatePresence>
+  <div className="mt-8">
+    <HiRateSlider />
+  </div>
       </motion.header>
 
-      <main className=" relative z-10">
+      <main className=" relative z-10 mt-16 md:mt-24 lg:mt-2">
 
         {/* Hero Section */}
         <motion.section
@@ -320,8 +323,8 @@ export default function Landing() {
             <div className="absolute top-1/2 right-1/4 w-96 h-96 bg-yellow-800/30 rounded-full filter blur-3xl opacity-50 animate-pulse"></div> {/* Updated blur circles */}
             <div className="absolute bottom-1/4 left-1/2 w-80 h-80 bg-yellow-700/30 rounded-full filter blur-3xl opacity-50 animate-pulse"></div> {/* Updated blur circles */}
           </div>
-          
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
             <div className="text-center max-w-5xl mx-auto">
               <motion.h1
                 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-tight mb-6"
@@ -329,11 +332,11 @@ export default function Landing() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.8 }}
               >
-              
+
                 <span className="bg-gradient-to-r from-gray-100 via-yellow-400 to-yellow-600 bg-clip-text text-transparent"> {/* Updated text gradient */}
                 Welcome to secxion
                 </span>
-                
+
                 <br />
                 
               </motion.h1>

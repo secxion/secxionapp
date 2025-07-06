@@ -43,6 +43,7 @@ import DataPad from '../pages/DataPad';
 import Landing from "../pages/Landing";
 import EthWallet from "../pages/EthWallet";
 import AdminEthWithdrawals from "../pages/AdminEthWithdrawals";
+import HiRateSlider from "../Components/HiRateSlider";
 
 const publicRoutes = [
   {
@@ -77,12 +78,16 @@ const publicRoutes = [
     path:"/",
     element: <Landing/>
   },
+
   {
     path:"/verify-email",
     element: <VerifyEmail/>
   },
   { path: "reset",
     element: <Reset /> 
+  },
+  { path: "rateslider",
+    element: <HiRateSlider /> 
   },
 
 ];
@@ -111,9 +116,10 @@ const protectedRoutes = [
 
 const adminRoutes = [
   { path: "all-users", element: <AllUsers /> },
-  { path: "all-products", element: <AllProducts /> },
   { path: "users-market", element: <UsersMarket /> },
   { path: "users-datapad", element: <AdminGetAllData /> },
+      { path: "all-products", element: <AllProducts /> },
+
   { path: "system-blog", element: <BlogManagementPage /> },
   { path: "admin-report", element: <AdminReports /> },
   { path: "admin-rpr", element: <AdminRPR /> },

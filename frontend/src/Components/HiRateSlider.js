@@ -15,7 +15,6 @@ const HiRateSlider = () => {
         const [productRes, ethRes] = await Promise.all([
           fetch(SummaryApi.allProduct.url, {
             method: "GET",
-            credentials: "include",
           }),
           fetch(ethApiUrl),
         ]);
