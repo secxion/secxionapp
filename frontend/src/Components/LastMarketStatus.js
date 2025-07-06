@@ -193,7 +193,7 @@ const LastMarketStatus = () => {
   <div className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100 mb-6 text-gray-700">
                 <div className=" sm:flex-row sm:items-center sm:justify-between gap-y-2 text-sm">
                     <div className="flex items-center gap-x-2">
-                        <span className="font-semibold text-gray-600">Market ID:</span>
+                        <span className="font-semibold text-gray-600">ID:</span>
                         <span className="text-gray-800">{lastMarket._id || 'N/A'}</span>
                     </div>
                     <div className="flex items-center gap-x-2">
