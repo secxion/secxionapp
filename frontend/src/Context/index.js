@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useCallback, useContext } from "react";
 import { useDispatch } from "react-redux";
-import { setUserDetails } from "../store/userSlice";
+import { clearState, setUserDetails } from "../store/userSlice";
 import SummaryApi from "../common";
 
 const Context = createContext(null);
@@ -12,16 +12,35 @@ export const ContextProvider = ({ children }) => {
     const [walletBalance, setWalletBalance] = useState(null);
     const dispatch = useDispatch();
 
+    // ✅ Define isTokenExpired early to avoid "cannot access before initialization"
+    const isTokenExpired = useCallback((token) => {
+        if (!token) return true;
+
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const currentTime = Date.now() / 1000;
+            return payload.exp < currentTime;
+        } catch (error) {
+            console.error("Error checking token expiry:", error);
+            return true;
+        }
+    }, []);
+
+    // ✅ Safe localStorage rehydration
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
         const storedToken = localStorage.getItem("token");
 
-        if (storedUser) {
+        if (storedUser && storedToken) {
             try {
                 const parsedUser = JSON.parse(storedUser);
-                setUser(parsedUser);
-                if (storedToken) {
+
+                if (!isTokenExpired(storedToken)) {
+                    setUser(parsedUser);
                     setToken(storedToken);
+                } else {
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("token");
                 }
             } catch (error) {
                 console.error("Error parsing user/token:", error);
@@ -31,7 +50,7 @@ export const ContextProvider = ({ children }) => {
         }
 
         setLoading(false);
-    }, []);
+    }, [isTokenExpired]);
 
     const getAuthHeaders = useCallback(() => {
         const headers = {
@@ -43,34 +62,17 @@ export const ContextProvider = ({ children }) => {
         return headers;
     }, [token]);
 
-    // Enhanced logout function
     const logout = useCallback(() => {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         setUser(null);
         setToken(null);
         setWalletBalance(null);
-        dispatch(setUserDetails(null));
-        
-        // Redirect to login page
+        dispatch(clearState());
+
         window.location.href = '/login';
     }, [dispatch]);
 
-    // Check if token is expired
-    const isTokenExpired = useCallback((token) => {
-        if (!token) return true;
-        
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            const currentTime = Date.now() / 1000;
-            return payload.exp < currentTime;
-        } catch (error) {
-            console.error("Error checking token expiry:", error);
-            return true;
-        }
-    }, []);
-
-    // Enhanced API call wrapper with auto-logout on token expiry
     const makeAuthenticatedRequest = useCallback(async (url, options = {}) => {
         if (!token || isTokenExpired(token)) {
             console.warn("Token expired or missing, logging out...");
@@ -88,7 +90,6 @@ export const ContextProvider = ({ children }) => {
                 credentials: "include",
             });
 
-            // Check for 401 Unauthorized or 403 Forbidden (token expired/invalid)
             if (response.status === 401 || response.status === 403) {
                 console.warn("Authentication failed, logging out...");
                 logout();
@@ -104,13 +105,13 @@ export const ContextProvider = ({ children }) => {
 
     const fetchUserDetails = useCallback(async () => {
         if (!token) return;
-        
+
         try {
             const response = await makeAuthenticatedRequest(SummaryApi.current_user.url, {
                 method: SummaryApi.current_user.method,
             });
 
-            if (!response) return; // Already handled logout in makeAuthenticatedRequest
+            if (!response) return;
 
             const data = await response.json();
             if (response.ok && data && data._id) {
@@ -128,7 +129,7 @@ export const ContextProvider = ({ children }) => {
 
     const fetchWalletBalance = useCallback(async () => {
         if (!token && !user?._id) return;
-        
+
         try {
             let url = SummaryApi.walletBalance.url;
             let requestOptions = {
@@ -140,11 +141,11 @@ export const ContextProvider = ({ children }) => {
                 requestOptions.headers = { "Content-Type": "application/json" };
             }
 
-            const response = token 
+            const response = token
                 ? await makeAuthenticatedRequest(url, requestOptions)
                 : await fetch(url, { ...requestOptions, credentials: "include" });
 
-            if (!response) return; // Already handled logout in makeAuthenticatedRequest
+            if (!response) return;
 
             const data = await response.json();
             if (response.ok && data.success) {
@@ -152,8 +153,7 @@ export const ContextProvider = ({ children }) => {
             } else {
                 setWalletBalance(null);
                 console.warn("Wallet fetch failed:", data.message);
-                
-                // If it's an auth error, logout
+
                 if (response.status === 401 || response.status === 403) {
                     logout();
                 }
@@ -164,7 +164,6 @@ export const ContextProvider = ({ children }) => {
         }
     }, [token, user, makeAuthenticatedRequest, logout]);
 
-    // Periodic token validation
     useEffect(() => {
         if (!token) return;
 
@@ -175,19 +174,12 @@ export const ContextProvider = ({ children }) => {
             }
         };
 
-        // Check token every 5 minutes
         const interval = setInterval(validateToken, 5 * 60 * 1000);
-        
-        // Also check on window focus (when user returns to tab)
-        const handleFocus = () => {
-            validateToken();
-        };
-        
-        window.addEventListener('focus', handleFocus);
-        
+        window.addEventListener('focus', validateToken);
+
         return () => {
             clearInterval(interval);
-            window.removeEventListener('focus', handleFocus);
+            window.removeEventListener('focus', validateToken);
         };
     }, [token, isTokenExpired, logout]);
 
@@ -204,7 +196,6 @@ export const ContextProvider = ({ children }) => {
             return;
         }
 
-        // Validate token before storing
         if (isTokenExpired(userToken)) {
             console.error("Cannot login with expired token");
             return;
@@ -221,24 +212,25 @@ export const ContextProvider = ({ children }) => {
     const isLoggedIn = !!user && !!token && !isTokenExpired(token);
 
     return (
-        <Context.Provider value={{
-            user,
-            token,
-            login,
-            logout,
-            getAuthHeaders,
-            fetchUserDetails,
-            isLoggedIn,
-            loading,
-            walletBalance,
-            fetchWalletBalance,
-            makeAuthenticatedRequest, // Expose this for other components to use
-        }}>
+        <Context.Provider
+            value={{
+                user,
+                token,
+                login,
+                logout,
+                getAuthHeaders,
+                fetchUserDetails,
+                isLoggedIn,
+                loading,
+                walletBalance,
+                fetchWalletBalance,
+                makeAuthenticatedRequest,
+            }}
+        >
             {children}
         </Context.Provider>
     );
 };
 
 export const useAuth = () => useContext(Context);
-
 export default Context;
