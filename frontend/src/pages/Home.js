@@ -20,6 +20,7 @@ import SummaryApi from "../common";
 import giftCardImages from "../helper/heroimages";
 import HomeFooter from "../Components/HomeFooter";
 import NetBlog from "../Components/NetBlog";
+import HiRateSlider from "../Components/HiRateSlider";
 
 const menuItems = [
   {
@@ -232,15 +233,19 @@ const Home = () => {
     : transactions.slice(0, visibleTransactions);
 
   return (
-    <div className="relative bg-white mb-8 w-full px-4 py-16 space-y-12 border-2 border-black"> {/* Black border added here */}
-      
+    <div className="relative bg-white mb-16 mt-20 w-full px-4 space-y-16 border-2 border-black"> {/* Black border added here */}
+            <div>
+              <div>
+                <HiRateSlider />
+              </div>
+             
       {/* Hero */}
       <header
-        className="relative h-[60vh] mt-16 bg-center bg-cover flex items-center justify-center"
+        className="relative h-[60vh] bg-center mt-12 sm:mt-12 md:mt-14 lg:mt-14 border-yellow-800 border-4 bg-cover flex items-center justify-center"
         style={{ backgroundImage: `url(${currentImage.url})` }}
       >
-        <div className="absolute inset-0 bg-black bg-opacity-40" />
-        <div className="relative z-10 text-center">
+        <div className="absolute inset-0 bg-black bg-opacity-40  " />
+        <div className="relative z-10 text-center ">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -255,7 +260,9 @@ const Home = () => {
           </motion.div>
         </div>
       </header>
-
+</div>
+            
+        
       {/* Stats */}
       <section className="bg-white max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
