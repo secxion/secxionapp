@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useCallback, useContext } from "react";
 import { useDispatch } from "react-redux";
-import { setUserDetails } from "../store/userSlice";
+import { clearState, setUserDetails } from "../store/userSlice";
 import SummaryApi from "../common";
 
 const Context = createContext(null);
