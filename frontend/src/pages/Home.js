@@ -232,7 +232,7 @@ const Home = () => {
     : transactions.slice(0, visibleTransactions);
 
   return (
-    <div className="relative bg-white mb-8 w-full px-4 py-10 space-y-12 border-2 border-black"> {/* Black border added here */}
+    <div className="relative bg-white mb-8 w-full px-4 py-16 space-y-12 border-2 border-black"> {/* Black border added here */}
       
       {/* Hero */}
       <header

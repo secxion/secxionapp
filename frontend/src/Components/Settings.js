@@ -96,136 +96,133 @@ const Settings = () => {
     };
 
     return (
-        <div className="mt-16 px-6 py-8 max-w-xl mx-auto bg-white rounded-lg shadow-lg space-y-8">
-            <h2 className="text-2xl font-semibold text-gray-900 text-center">Edit Profile</h2>
-            {error && <p className="text-red-600 text-center font-medium">{error}</p>}
+        <div className="mt-16 px-6 py-8 max-w-xl mx-auto bg-white space-y-8">
+            <h2 className="text-2xl font-semibold text-black text-center glossy-heading">Edit Profile</h2>
+            {error && <p className="text-red-600 text-center font-medium glossy-text">{error}</p>}
 
             <div className="text-center">
-                <label className="block text-gray-700 mb-2 font-medium">Profile Picture</label>
-                <div className="w-28 h-28 mx-auto rounded-full overflow-hidden bg-gray-100 border border-gray-300 flex items-center justify-center mb-3">
+                <label className="block text-black mb-2 font-medium glossy-text">Profile Picture</label>
+                <div className="w-28 h-28 mx-auto rounded-full overflow-hidden bg-yellow-100 border border-yellow-300 flex items-center justify-center mb-3">
                     {newlyUploadedPic ? (
                         <img src={newlyUploadedPic} alt="Preview" className="w-full h-full object-cover" />
                     ) : profilePic ? (
                         <img src={profilePic} alt="Current" className="w-full h-full object-cover" />
                     ) : (
-                        <FaUserCircle size={56} className="text-gray-400" />
+                        <FaUserCircle size={56} className="text-yellow-400" />
                     )}
                 </div>
                 <input
                     type="file"
                     accept="image/*"
                     onChange={handleUploadPic}
-                    className="mx-auto block w-full max-w-xs cursor-pointer text-sm text-gray-600 file:mr-4 file:py-2 file:px-4
+                    className="mx-auto block w-full max-w-xs cursor-pointer text-sm text-black file:mr-4 file:py-2 file:px-4
                         file:rounded file:border-0 file:text-sm file:font-semibold
-                        file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                        file:bg-yellow-50 file:text-yellow-800 hover:file:bg-yellow-100"
                 />
-                {uploadingImage && <p className="text-xs text-gray-500 mt-1">Uploading...</p>}
+                {uploadingImage && <p className="text-xs text-yellow-600 mt-1">Uploading...</p>}
             </div>
 
             <div className="space-y-4">
                 <div>
-                    <label className="block mb-1 font-medium text-gray-700">Name</label>
+                    <label className="block mb-1 font-medium text-black glossy-text">Name</label>
                     <input
                         type="text"
                         value={name}
                         onChange={e => setName(e.target.value)}
-                        className="input w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                        className="input w-full border border-yellow-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                     />
                 </div>
 
                 <div>
-                    <label className="block mb-1 font-medium text-gray-700">Tag</label>
+                    <label className="block mb-1 font-medium text-black glossy-text">Tag</label>
                     <input
                         type="text"
                         value={tag}
                         onChange={e => setTag(e.target.value)}
-                        className="input w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                        className="input w-full border border-yellow-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                     />
                 </div>
 
                 <div>
-                    <label className="block mb-1 font-medium text-gray-700">Email</label>
+                    <label className="block mb-1 font-medium text-black glossy-text">Email</label>
                     <input
                         type="text"
                         value={state?.email || ''}
                         readOnly
                         onClick={() => setShowEmailModal(true)}
-                        className="input w-full bg-gray-100 text-gray-500 cursor-pointer border border-gray-300 rounded px-3 py-2"
+                        className="input w-full bg-yellow-100 text-yellow-700 cursor-pointer border border-yellow-300 rounded px-3 py-2"
                         title="Email cannot be changed here"
                     />
-                    <p className="text-xs text-gray-500 mt-1 italic">Click to contact support for email change.</p>
+                    <p className="text-xs text-red-800 mt-1 italic">Click to contact support for email change.</p>
                 </div>
 
                 <div>
-                    <label className="block mb-1 font-medium text-gray-700">Telegram</label>
+                    <label className="block mb-1 font-medium text-black glossy-text">Telegram</label>
                     <input
                         type="text"
                         value={telegramNumber}
                         onChange={e => setTelegramNumber(e.target.value)}
-                        className="input w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                        className="input w-full border border-yellow-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                     />
                 </div>
 
                 <div>
-                    <label className="block mb-1 font-medium text-gray-700">Current Password</label>
+                    <label className="block mb-1 font-medium text-black glossy-text">Current Password</label>
                     <input
                         type="password"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                         placeholder="Enter current password"
-                        className="input w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                        className="input w-full border border-yellow-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                         autoComplete="current-password"
                     />
                 </div>
 
                 <div>
-                    <label className="block mb-1 font-medium text-gray-700">New Password</label>
+                    <label className="block mb-1 font-medium text-black glossy-text">New Password</label>
                     <input
                         type="password"
                         value={newPassword}
                         onChange={e => setNewPassword(e.target.value)}
                         placeholder="Enter new password"
-                        className="input w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                        className="input w-full border border-yellow-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                         autoComplete="new-password"
                     />
                 </div>
             </div>
 
-            {/* Buttons */}
             <div className="flex justify-end space-x-4 mt-6">
                 <button
                     onClick={() => navigate("/profile")}
                     disabled={loading || uploadingImage}
-                    className="btn-gray px-6 py-2 rounded border text-red-600 border-gray-400 hover:bg-gray-100 disabled:opacity-50"
+                    className="px-6 py-2 rounded border text-red-600 border-yellow-400 hover:bg-yellow-100 disabled:opacity-50"
                 >
                     Cancel
                 </button>
                 <button
                     onClick={handleSaveChanges}
                     disabled={loading || uploadingImage}
-                    className="btn-indigo px-6 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50"
+                    className="px-6 py-2 rounded bg-emerald-700 text-white hover:bg-yellow-600 disabled:opacity-50"
                 >
                     {loading ? 'Saving...' : 'Save Changes'}
                 </button>
             </div>
 
-
-            {/* Email Modal */}
             {showEmailModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
                     <div className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-md text-center">
-                        <h3 className="text-xl font-semibold mb-4 text-gray-900">Change Email?</h3>
-                        <p className="text-gray-700 mb-6">To change your email, please contact support via the Report section.</p>
+                        <h3 className="text-xl font-semibold mb-4 text-black glossy-heading">Change Email?</h3>
+                        <p className="text-yellow-800 mb-6 glossy-text">To change your email, please contact support via the Report section.</p>
                         <div className="flex justify-center space-x-4">
                             <button
                                 onClick={() => setShowEmailModal(false)}
-                                className="px-5 py-2 rounded border border-gray-300 hover:bg-gray-100"
+                                className="px-5 py-2 rounded border border-yellow-400 hover:bg-yellow-100"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={() => navigate("/report")}
-                                className="px-5 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-700"
+                                className="px-5 py-2 rounded bg-emerald-700 text-white hover:bg-yellow-600"
                             >
                                 Go to Report
                             </button>

@@ -238,10 +238,17 @@ const Net = ({ blogs }) => {
                 <div className="user-profile-section relative flex items-center mr-3 md:mr-6 lg:mr-8 shrink-0">
                    
                     
-                    <div className="ml-2 md:ml-3 flex items-center cursor-pointer group" onClick={toggleDropdown}>
+                    <div
+  className="ml-2 md:ml-3 flex items-center cursor-pointer group"
+  onClick={toggleDropdown}
+>
+  <FaCaretDown
+    className={`w-7 h-7 md:w-7 md:h-7 ml-1 md:ml-1.5 text-gray-500 hover:text-black transition-transform duration-300 glossy-text ${
+      isDropdownOpen ? 'rotate-180' : ''
+    }`}
+  />
+</div>
 
-                        <FaCaretDown className="w-7 h-7 md:w-7 md:h-7 ml-1 md:ml-1.5 text-gray-500 hover:text-black  glossy-text" /> 
-                    </div>
 
                     {/* Dropdown Menu */}
                     {isDropdownOpen && (
@@ -251,7 +258,7 @@ const Net = ({ blogs }) => {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -10, scale: 0.95 }}
                             transition={{ duration: 0.2 }}
-                            className="absolute top-full left-0 mt-3 w-52 bg-white rounded-xl shadow-lg py-2 z-50 border-4 border-yellow-500" // Added bold yellow border
+                            className="absolute top-full left-0 mt-2 w-52 bg-white rounded-xl shadow-lg py-2 z-50 border-4 border-yellow-500" // Added bold yellow border
                         >
                             <div className=" flex px-4 py-3 border-b border-gray-100">
                                 <p className="text-sm font-bold text-gray-800 truncate glossy-text">{name}</p> {/* Applied glossy-text */}

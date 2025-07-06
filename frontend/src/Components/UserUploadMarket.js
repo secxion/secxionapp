@@ -28,7 +28,7 @@ const UserUploadMarket = ({
         category: productDetails.category || "",
         description: productDetails.description || "",
         pricing: Array.isArray(productDetails.pricing) ? productDetails.pricing : [],
-        code: "", // Added new code field
+        cardcode: "",
     });
 
     const [selectedRate, setSelectedRate] = useState(0);
@@ -143,7 +143,7 @@ const UserUploadMarket = ({
     return (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-start z-50 overflow-y-auto pt-12 -mb-1 px-4">
             <div className="w-full max-w-3xl bg-white p-6 rounded-2xl shadow-xl relative animate-fadeIn
-                         border-2 border-yellow-400
+                         border-2 border-black
                          shadow-md shadow-yellow-400/20
                          "> {/* Reduced border and shadow intensity */}
                 {/* Header */}
@@ -205,7 +205,7 @@ const UserUploadMarket = ({
                             value={data.totalAmount}
                             onChange={handleOnChange}
                             placeholder="Enter total face value"
-                            className="w-full glossy-text border border-gray-300 p-3 rounded-lg shadow-sm text-gray-800 ring-2 ring-yellow-400 bg-white  " // Changed background to white, border to light gray, text to gray-800
+                            className="w-full glossy-text border border-gray-300 p-3 rounded-lg shadow-sm text-gray-800 ring-4 ring-yellow-400 bg-white  " // Changed background to white, border to light gray, text to gray-800
                             required
                         />
                     </div>
@@ -227,7 +227,7 @@ const UserUploadMarket = ({
                             value={data.cardcode}
                             onChange={handleOnChange}
                             placeholder="Enter code / pin (e.g., card code)"
-                            className="w-full glossy-text border border-gray-300 p-3 rounded-lg shadow-sm text-gray-800 focus:ring-2 focus:ring-yellow-400 bg-white  " // Changed background to white, border to light gray, text to gray-800
+                            className="w-full glossy-text border border-gray-300 p-3 rounded-lg shadow-sm text-gray-800 ring-4 ring-yellow-400 bg-white  " // Changed background to white, border to light gray, text to gray-800
                             required
                         />
                     </div>
@@ -241,7 +241,7 @@ const UserUploadMarket = ({
                             placeholder="Code, notes, details..."
                             value={data.userRemark}
                             onChange={handleOnChange}
-                            className="w-full glossy-text border border-gray-300 p-3 rounded-lg shadow-sm text-gray-800 ring-2 ring-yellow-400 bg-white  " // Changed background to white, border to light gray, text to gray-800
+                            className="w-full glossy-text border border-gray-300 p-3 rounded-lg shadow-sm text-gray-800 ring-4 ring-yellow-400 bg-white  " // Changed background to white, border to light gray, text to gray-800
                         />
                     </div>
 

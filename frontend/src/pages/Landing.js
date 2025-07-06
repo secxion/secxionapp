@@ -525,44 +525,80 @@ export default function Landing() {
         </motion.button>
       )}
 
-      {/* Footer */}
-      <footer className="bg-gray-950 text-gray-400 py-12 relative overflow-hidden"> {/* Updated background */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600"></div> {/* Updated border gradient */}
-        </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="md:col-span-1 mb-6 md:mb-0">
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="relative">
-                  <h1 className="font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600">SXN</h1> {/* Updated logo gradient */}
-                  <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full"></div> {/* Updated underline gradient */}
-                </div>
-              </div>
-              <Link to={"/contact-us"} className="text-sm text-gray-300 hover:text-yellow-400">Send us a message</Link> {/* Updated text and hover color */}
-            </div>
-            
-            <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
-            
-              <div>
-                <h3 className="font-semibold text-gray-100 mb-4">Company</h3> {/* Updated text color */}
-                <ul className="space-y-2">
-                  <li><a href="/about-us" className="text-gray-300 hover:text-yellow-400 transition-colors">About Us</a></li> {/* Updated text and hover color */}
-                  <li><a href="/terms" className="text-gray-300 hover:text-yellow-400 transition-colors">Terms of Service</a></li> {/* Updated text and hover color */}
-                  <li><a href="/privacy" className="text-gray-300 hover:text-yellow-400 transition-colors">Privacy Policy</a></li> {/* Updated text and hover color */}
-                </ul>
-              </div>
-                
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-700 mt-12 pt-8 text-center text-sm"> {/* Updated border color */}
-            <p className="text-gray-400"> {/* Updated text color */}
-              © {new Date().getFullYear()} Secxion. All Rights Reserved. Built with ❤️ by <span className="font-semibold text-yellow-400">BMXII.org</span>. {/* Updated text color */}
-            </p>
+      <footer className="bg-gray-950 text-gray-400 py-16 relative overflow-hidden">
+  <div className="absolute inset-0 pointer-events-none">
+    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 animate-pulse"></div>
+  </div>
+
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+      
+      {/* Branding Section */}
+      <div className="md:col-span-1">
+        <div className="flex items-center space-x-3 mb-6">
+          <div className="italic underline text-green-600 text-sm animate-fade-in">signature:</div>
+          <div className="relative">
+            <h1 className="text-3xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600">
+              SXN
+            </h1>
+            <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-full"></div>
           </div>
         </div>
-      </footer>
+        <Link to="/contact-us" className="text-sm text-gray-300 hover:text-yellow-400 transition duration-300">
+          Send us a direct message
+        </Link>
+      </div>
+
+      {/* Navigation Sections */}
+      <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
+        
+        <div>
+          <h3 className="font-semibold text-gray-100 mb-4 uppercase tracking-wide">Company</h3>
+          <ul className="space-y-2 text-sm">
+            <li><a href="/about-us" className="hover:text-yellow-400 transition duration-300">About Us</a></li>
+            <li><a href="/terms" className="hover:text-yellow-400 transition duration-300">Terms of Service</a></li>
+            <li><a href="/privacy" className="hover:text-yellow-400 transition duration-300">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="font-semibold text-gray-100 mb-4 uppercase tracking-wide">Social</h3>
+          <ul className="space-y-2 text-sm">
+            <li><a href="https://t.me/secxion" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-400 transition duration-300">Telegram: @secxion</a></li>
+            <li><a href="https://facebook.com/secxion" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-400 transition duration-300">Facebook: @secxion</a></li>
+            <li><a href="https://dev.to/secxion" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-400 transition duration-300">Dev: @secxion</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="font-semibold text-gray-100 mb-4 uppercase tracking-wide">More</h3>
+          <ul className="space-y-2 text-sm">
+            <li><a href="https://twitch.tv/secxion" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-400 transition duration-300">Twitch: @secxion</a></li>
+            <li><a href="https://x.com/secxion" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-400 transition duration-300">X / Twitter: @secxion</a></li>
+            <li><a href="https://instagram.com/secxionapp" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-400 transition duration-300">Instagram: @secxionapp</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    {/* Footer Bottom Line */}
+    <div className="border-t border-gray-700 mt-12 pt-6 text-center text-sm">
+      <p className="text-gray-500">
+        © {new Date().getFullYear()} <span className="text-yellow-500 font-semibold">Secxion</span>. All Rights Reserved. Built with ❤️ by{" "}
+        <a
+          href="https://bmxii.org"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-yellow-400 hover:underline"
+        >
+          BMXII.org
+        </a>.
+      </p>
+    </div>
+  </div>
+</footer>
+
+
 
      {/* Custom Styles */}
       <style jsx>{`

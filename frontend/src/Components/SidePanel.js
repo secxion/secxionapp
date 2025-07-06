@@ -83,26 +83,26 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
           leaveFrom="translate-x-0"
           leaveTo="-translate-x-full"
         >
-          <Dialog.Panel className="relative flex flex-col w-full max-w-sm h-full overflow-hidden bg-white text-black shadow-xl border-2 border-black"> {/* Black border applied */}
+          <Dialog.Panel className="relative flex flex-col w-full max-w-sm h-full overflow-hidden bg-white text-black border-2 border-black shadow-xl ">
             
             <div className="relative z-10 flex flex-col w-full h-full">
               {/* Header */}
               <div className="flex items-center justify-between px-6 py-2 mt-6 pt-4 border-b border-gray-200">
                 <button
                   type="button"
-                  className="text-gray-500 hover:text-black transition-colors duration-200 glossy-text" // Applied glossy-text
+                  className="text-gray-500 hover:text-black transition-colors duration-200 glossy-text"
                   onClick={() => setOpen(false)}
                 >
                   <XMarkIcon className="h-8 w-8" />
                 </button>
 
                 <Link to="/home" className="relative md:flex items-center font-bold text-yellow-600 tracking-wide">
-                            <div className="bg-white flex py-1 flex-col justify-center">
+                            <div className=" flex py-1 flex-col justify-center">
                                     <div className="relative py-2  sm:mx-auto ">
-                                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 rounded-3xl border-4 border-yellow-700"></div> {/* Yellow border */}
+                                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform rounded-3xl border-4 border-yellow-700"></div>
                                         <div className="relative px-4 p-1.5 bg-white shadow-lg rounded-2xl sm:p-1.5 border-4 border-yellow-700">
                                             <div className="">
-                                                <div className="grid grid-cols-1">                        
+                                                <div className="grid grid-cols-1">                    
                                                     <LogoShimmer type="button" />
                                                 </div>
                                             </div>

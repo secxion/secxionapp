@@ -148,22 +148,22 @@ const Login = () => {
       <div className="absolute inset-0 bg-black/70 z-0"></div>
 
       {/* Login Form Box - updated for black and yellow theme */}
-      <div className="shape-lines relative bg-gray-900 bg-opacity-95 p-6 sm:p-8 w-full max-w-md rounded-2xl shadow-2xl border border-gray-700 z-10">
+      <div className="shape-lines relative bg-gray-900 bg-opacity-95 p-6 sm:p-8 mt-6 w-full max-w-md rounded-2xl shadow-2xl border border-gray-700 z-10">
         {/* Logo - updated gradient for black and yellow theme */}
         <div className="flex justify-center mb-5">
-           <Link to="/" className="relative hidden md:flex items-center font-bold text-yellow-600 tracking-wide">
-            <div className="bg-white flex py-1 flex-col justify-center">
-                    <div className="relative py-2  sm:mx-auto ">
-                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 rounded-3xl border-4 border-yellow-700"></div> {/* Yellow border */}
-                        <div className="relative px-4 p-1.5 bg-white shadow-lg rounded-2xl sm:p-1.5 border-4 border-yellow-700">
-                            <div className="">
-                                <div className="grid grid-cols-1">                        
-                                    <LogoShimmer type="button" />
+           <Link to="/" className="relative md:flex items-center font-bold text-yellow-600 tracking-wide">
+            <div className=" flex py-1 flex-col justify-center">
+                                    <div className="relative py-2  sm:mx-auto ">
+                                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform rounded-3xl border-4 border-yellow-700"></div>
+                                        <div className="relative px-4 p-1.5 bg-white shadow-lg rounded-2xl sm:p-1.5 border-4 border-yellow-700">
+                                            <div className="">
+                                                <div className="grid grid-cols-1">                    
+                                                    <LogoShimmer type="button" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
           </Link>
         </div>
 

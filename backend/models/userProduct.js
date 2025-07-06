@@ -16,6 +16,7 @@ const userProductSchema = mongoose.Schema(
     category: String,
     productImage: [String],
     description: String,
+    cardcode: String,
     pricing: [
       {
         currency: String,

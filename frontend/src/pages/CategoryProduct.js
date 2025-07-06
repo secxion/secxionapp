@@ -86,7 +86,7 @@ const CategoryProduct = () => {
   return (
     <div className="p-2 fixed top-[80px] left-0 right-0 bottom-0 rounded-2xl flex flex-col md:flex-row bg-white text-white"> {/* Changed rounded-md to rounded-2xl */}
       {/* Mobile Top Bar Filter */}
-      <div className="md:hidden w-full bg-white px-2 py-3 flex overflow-x-auto gap-3 scrollbar-thin scrollbar-thumb-gray-400"> {/* Bold yellow border applied */}
+      <div className="md:hidden w-full bg-white px-2 py-1 flex overflow-x-auto gap-3 scrollbar-thin scrollbar-thumb-gray-400"> {/* Bold yellow border applied */}
         {productCategory.map((category) => (
           <label key={category.id} className="flex items-center gap-1 bg-gray-900 px-2 py-2 rounded whitespace-nowrap text-xs border border-gray-700 hover:border-yellow-400 transition-all duration-200"> {/* Applied glossy-text and hover border */}
             {iconMap[category.value]}
@@ -135,11 +135,11 @@ const CategoryProduct = () => {
       <main className="flex-1 bg-gray-950 p-3 overflow-hidden border-2 border-black rounded-tr-xl rounded-br-xl"> {/* Black border applied, Added rounded corners to match parent */}
         <div className="h-full flex flex-col">
           {filterCategoryList.length > 0 && (
-            <p className="mb-2 text-xs text-blue-300 glossy-text"> {/* Applied glossy-text */}
+            <p className="mb-2 text-xs text-blue-400 "> {/* Applied glossy-text */}
               Showing:{" "}
               {filterCategoryList.map((cat, i) => (
                 <span key={cat}>
-                  <span className="text-white font-semibold glossy-text"> {/* Applied glossy-text */}
+                  <span className="text-gray-400 font-semibold"> {/* Applied glossy-text */}
                     {productCategory.find((p) => p.value === cat)?.label || cat}
                   </span>
                   {i < filterCategoryList.length - 1 ? ", " : ""}

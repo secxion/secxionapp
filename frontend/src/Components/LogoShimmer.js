@@ -2,10 +2,10 @@ import React from 'react';
 import './LogoSimmer.css';
 
 const LogoShimmer = ({ type }) => {
-  const className = `shimmer-wrapper ${type}`;
+  const className = `lshimmer-wrapper ${type}`;
   return (
     <div className={className}>
-      <div className="shimmer-effect"></div>
+      <div className="lshimmer-effect"></div>
     </div>
   );
 };

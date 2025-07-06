@@ -196,23 +196,22 @@ const SignUp = () => {
       <div className="absolute inset-0 bg-black/70 z-0"></div> {/* Increased opacity for theme */}
 
       {/* Sign Up Form Box - Updated for black and yellow theme */}
-      <div className="relative z-10 flex items-center justify-center grow px-4 py-8">
-        <div className="bg-gray-900 bg-opacity-95 w-full max-w-lg p-8 shadow-2xl rounded-2xl border border-gray-700 backdrop-blur-md"> {/* Updated background, border, and removed dark: prefix as it's the default now */}
-          {/* Logo - Updated gradient for black and yellow theme */}
+      <div className="relative z-10 flex items-center justify-center mt-6 grow px-4 py-8">
+        <div className="bg-gray-900 bg-opacity-95 w-full max-w-lg p-8 shadow-2xl rounded-2xl border border-gray-700 backdrop-blur-md">
           <div className="flex justify-center mb-5">
-            <Link to="/" className="relative hidden md:flex items-center font-bold text-yellow-600 tracking-wide">
-            <div className="bg-white flex py-1 flex-col justify-center">
-                    <div className="relative py-2  sm:mx-auto ">
-                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 rounded-3xl border-4 border-yellow-700"></div> {/* Yellow border */}
-                        <div className="relative px-4 p-1.5 bg-white shadow-lg rounded-2xl sm:p-1.5 border-4 border-yellow-700">
-                            <div className="">
-                                <div className="grid grid-cols-1">                        
-                                    <LogoShimmer type="button" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <Link to="/" className="relative md:flex items-center font-bold text-yellow-600 tracking-wide">
+            <div className=" flex py-1 flex-col justify-center">
+                                                <div className="relative py-2  sm:mx-auto ">
+                                                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform rounded-3xl border-4 border-yellow-700"></div>
+                                                    <div className="relative px-4 p-1.5 bg-white shadow-lg rounded-2xl sm:p-1.5 border-4 border-yellow-700">
+                                                        <div className="">
+                                                            <div className="grid grid-cols-1">                    
+                                                                <LogoShimmer type="button" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
           </Link>
           </div>
 
