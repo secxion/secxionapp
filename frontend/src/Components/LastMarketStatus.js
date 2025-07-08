@@ -218,17 +218,114 @@ const LastMarketStatus = () => {
                                     {priceBlock.currency || 'N/A'}
                                 </p>
                                 {priceBlock.faceValues && priceBlock.faceValues.length > 0 ? (
-                                    <ul className="list-disc list-inside text-sm text-gray-700">
+                                    <><ul className="list-disc list-inside text-sm text-gray-700">
                                         {priceBlock.faceValues.map((fv, fvIndex) => (
                                             <><li key={fvIndex} className="mb-1">
                                                 Face Value: <span className="font-medium">{fv.faceValue || 'N/A'}</span>
                                             </li>
-                                            <span className="mb-1 ml-5">
-                                                     Rate: <span className="font-medium">{formatCurrency(fv.sellingPrice, priceBlock.currency)}</span>
+                                                <span className="mb-1 ml-5">
+                                                    Rate: <span className="font-medium">{(fv.sellingPrice)}</span>
                                                 </span>
-                                                </>
+                                            </>
                                         ))}
                                     </ul>
+                                    
+                                    <div className="bg-white border-4 border-yellow-500 rounded-xl p-6 shadow-md hover:shadow-lg">
+                                            <h3 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                                                {lastMarket.productName || 'N/A'}
+
+                                                {/* Product Image Thumbnail */}
+                                                {lastMarket.productImage && lastMarket.productImage.length > 0 && (
+                                                    <div className="ml-3 flex -space-x-2 overflow-hidden">
+                                                        {lastMarket.productImage.slice(0, 3).map((img, idx) => ( // Show max 3 thumbnails
+                                                            <img
+                                                                key={idx}
+                                                                src={img}
+                                                                alt={`${lastMarket.productName} thumbnail ${idx + 1}`}
+                                                                className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover cursor-pointer hover:ring-blue-500 transition-all duration-200" />
+                                                        ))}
+                                                        {lastMarket.productImage.length > 3 && (
+                                                            <span className="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-gray-200 text-gray-600 flex items-center justify-center text-xs font-bold cursor-pointer hover:bg-gray-300 transition-all duration-200"
+                                                                onClick={() => handleImageClick(lastMarket.productImage[0])}>
+                                                                +{lastMarket.productImage.length - 3}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </h3>
+
+                                            <div className="text-sm text-gray-600 space-y-2 mb-4">
+                                                <p><strong>Remark:</strong> {lastMarket.userRemark ? lastMarket.userRemark : 'N/A'}</p>
+                                                {lastMarket.cardcode && <p><strong>Card Code:</strong> {lastMarket.cardcode}</p>}
+                                                <h3 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                                                    {/* Product Image Thumbnail */}
+                                                    {lastMarket.Image.length > 0 && (
+                                                        <div className="ml-3 flex -space-x-2 overflow-hidden">
+                                                            {lastMarket.Image.slice(0, 3).map((img, idx) => ( // Show max 3 thumbnails
+                                                                <img
+                                                                    key={idx}
+                                                                    src={img}
+                                                                    alt={`${lastMarket._id} thumbnail ${idx + 1}`}
+                                                                    className="inline-block h-12 w-12 ring-2 ring-white object-cover cursor-pointer hover:ring-blue-500 transition-all duration-200"
+                                                                    onClick={() => handleImageClick(img)} />
+                                                            ))}
+                                                            {lastMarket.productImage.length > 3 && (
+                                                                <span className="inline-block h-12 w-12 ring-2 ring-white bg-gray-200 text-gray-600 flex items-center justify-center text-xs font-bold cursor-pointer hover:bg-gray-300 transition-all duration-200"
+                                                                    onClick={() => handleImageClick(lastMarket.Image[0])}>
+                                                                    +{lastMarket.Image.length - 3}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </h3>
+                                            </div>
+
+                                            <div className="space-y-2 mb-4">
+                                                <div className="flex items-center justify-between text-lg">
+                                                    <span className="text-gray-700">Total FV:</span>
+                                                    <span className="font-bold text-green-700">
+                                                        {priceBlock.currency} {formatCurrency(lastMarket.totalAmount)}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center justify-between text-lg">
+                                                    <span className="text-gray-700">CTA:</span>
+                                                    <span className="font-bold text-blue-700">
+                                                        ₦{formatCurrency(lastMarket.calculatedTotalAmount)}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div className="border-t pt-4 mt-4">
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <span className="text-gray-600 text-base">Status:</span>
+                                                    <span className={`font-semibold text-lg flex items-center ${statusDisplay.color}`}>
+                                                        {statusDisplay.icon}
+                                                    </span>
+                                                </div>
+
+                                                {lastMarket.status === 'CANCEL' && lastMarket.cancelReason && (
+                                                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
+                                                        <p className="font-medium flex items-center"><Info className="w-4 h-4 mr-2" />Cancel Reason:</p>
+                                                        <p className="ml-6">{lastMarket.cancelReason}</p>
+                                                    </div>
+                                                )}
+                                                {lastMarket.status === 'CANCEL' && lastMarket.crImage && lastMarket.crImage.length > 0 && (
+                                                    <div className="mt-4">
+                                                        <p className="font-medium flex items-center text-gray-700"><Image className="w-4 h-4 mr-2" />Cancellation Images:</p>
+                                                        <div className="grid grid-cols-3 gap-2 mt-2">
+                                                            {lastMarket.crImage.map((img, idx) => (
+                                                                <img
+                                                                    key={idx}
+                                                                    src={img}
+                                                                    alt={`Cancellation Proof ${idx + 1}`}
+                                                                    className="w-full h-24 object-cover rounded-md shadow-sm border border-gray-200 cursor-pointer hover:border-blue-500 transition-all duration-200"
+                                                                    onClick={() => handleImageClick(img)} />
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div></> 
                                 ) : (
                                     <p className="text-gray-500 text-sm italic">No face values specified for this currency.</p>
                                 )}
@@ -237,111 +334,7 @@ const LastMarketStatus = () => {
                     ) : (
                         <p className="text-gray-500 text-base">No pricing information available.</p>
                     )}
-                </div>
-                {/* Left Card: Core Product Info & Status */}
-                <div className="bg-white border-4 border-yellow-500 rounded-xl p-6 shadow-md hover:shadow-lg">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
-                        {lastMarket.productName || 'N/A'}
-                        
-                        {/* Product Image Thumbnail */}
-                        {lastMarket.productImage && lastMarket.productImage.length > 0 && (
-                            <div className="ml-3 flex -space-x-2 overflow-hidden">
-                                {lastMarket.productImage.slice(0, 3).map((img, idx) => ( // Show max 3 thumbnails
-                                    <img
-                                        key={idx}
-                                        src={img}
-                                        alt={`${lastMarket.productName} thumbnail ${idx + 1}`}
-                                        className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover cursor-pointer hover:ring-blue-500 transition-all duration-200"
-                                    />
-                                ))}
-                                {lastMarket.productImage.length > 3 && (
-                                    <span className="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-gray-200 text-gray-600 flex items-center justify-center text-xs font-bold cursor-pointer hover:bg-gray-300 transition-all duration-200"
-                                          onClick={() => handleImageClick(lastMarket.productImage[0])}>
-                                        +{lastMarket.productImage.length - 3}
-                                    </span>
-                                )}
-                            </div>
-                        )}
-                    </h3>
-
-                    <div className="text-sm text-gray-600 space-y-2 mb-4">
-                        <p><strong>Remark:</strong> {lastMarket.userRemark ? lastMarket.userRemark : 'N/A'}</p>
-                        {lastMarket.cardcode && <p><strong>Card Code:</strong> {lastMarket.cardcode}</p>}
-                        <h3 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
-                        {/* Product Image Thumbnail */}
-                        {lastMarket.Image.length > 0 && (
-                            <div className="ml-3 flex -space-x-2 overflow-hidden">
-                                {lastMarket.Image.slice(0, 3).map((img, idx) => ( // Show max 3 thumbnails
-                                    <img
-                                        key={idx}
-                                        src={img}
-                                        alt={`${lastMarket._id} thumbnail ${idx + 1}`}
-                                        className="inline-block h-12 w-12 ring-2 ring-white object-cover cursor-pointer hover:ring-blue-500 transition-all duration-200"
-                                        onClick={() => handleImageClick(img)}
-                                    />
-                                ))}
-                                {lastMarket.productImage.length > 3 && (
-                                    <span className="inline-block h-12 w-12 ring-2 ring-white bg-gray-200 text-gray-600 flex items-center justify-center text-xs font-bold cursor-pointer hover:bg-gray-300 transition-all duration-200"
-                                          onClick={() => handleImageClick(lastMarket.Image[0])}>
-                                        +{lastMarket.Image.length - 3}
-                                    </span>
-                                )}
-                            </div>
-                        )}
-                    </h3>
-                    </div>
-
-                    <div className="space-y-2 mb-4">
-                        <div className="flex items-center justify-between text-lg">
-                            <span className="text-gray-700">Total Amount:</span>
-                            <span className="font-bold text-green-700">
-                                {formatCurrency(lastMarket.totalAmount)}
-                            </span>
-                        </div>
-                        <div className="flex items-center justify-between text-lg">
-                            <span className="text-gray-700">Calculated Amount:</span>
-                            <span className="font-bold text-blue-700">
-                                {formatCurrency(lastMarket.calculatedTotalAmount)}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="border-t pt-4 mt-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-gray-600 text-base">Status:</span>
-                            <span className={`font-semibold text-lg flex items-center ${statusDisplay.color}`}>
-                                {statusDisplay.icon}
-                            </span>
-                        </div>
-                       
-
-                        {lastMarket.status === 'CANCEL' && lastMarket.cancelReason && (
-                            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
-                                <p className="font-medium flex items-center"><Info className="w-4 h-4 mr-2" />Cancel Reason:</p>
-                                <p className="ml-6">{lastMarket.cancelReason}</p>
-                            </div>
-                        )}
-                        {lastMarket.status === 'CANCEL' && lastMarket.crImage && lastMarket.crImage.length > 0 && (
-                            <div className="mt-4">
-                                <p className="font-medium flex items-center text-gray-700"><Image className="w-4 h-4 mr-2" />Cancellation Images:</p>
-                                <div className="grid grid-cols-3 gap-2 mt-2">
-                                    {lastMarket.crImage.map((img, idx) => (
-                                        <img
-                                            key={idx}
-                                            src={img}
-                                            alt={`Cancellation Proof ${idx + 1}`}
-                                            className="w-full h-24 object-cover rounded-md shadow-sm border border-gray-200 cursor-pointer hover:border-blue-500 transition-all duration-200"
-                                            onClick={() => handleImageClick(img)}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                {/* Right Card: Pricing Details */}
-                
+                </div>                               
             </div>
 
             {/* Image Modal Component - Renders only when showImageModal is true */}

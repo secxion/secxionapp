@@ -71,14 +71,12 @@ const HiRateSlider = () => {
         const sortedRates = combinedProductRates.sort(
           (a, b) => b.sellingPrice - a.sellingPrice
         );
-        // --- End Currency Filtering and Sorting Logic ---
-
         const ethSlide = {
           productName: "Ethereum",
           image: null,
           isEthereum: true,
           sellingPrice: ethRate,
-          currency: "USD", // Ethereum is always USD in this context
+          currency: "USD",
         };
 
         const topProductsToShow = 20;
@@ -160,8 +158,8 @@ const HiRateSlider = () => {
               </span>
               <span className="slide-price">
                 {/* Use a conditional render for the currency display */}
-                {slide.currency === "GBP" ? "£" : `${slide.currency}`}{" "}
-                {Number(slide.sellingPrice).toLocaleString(undefined, {
+                1 {slide.currency === "GBP" ? "£" : `${slide.currency}`}{" "}
+                = {Number(slide.sellingPrice).toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}
