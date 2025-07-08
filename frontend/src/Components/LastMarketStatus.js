@@ -224,7 +224,7 @@ const LastMarketStatus = () => {
                                                 Face Value: <span className="font-medium">{fv.faceValue || 'N/A'}</span>
                                             </li>
                                                 <span className="mb-1 ml-5">
-                                                    Rate: <span className="font-medium">{(fv.sellingPrice)}</span>
+                                                    Rate: <span className="font-medium">{formatCurrency(fv.sellingPrice)}</span>
                                                 </span>
                                             </>
                                         ))}
@@ -242,7 +242,7 @@ const LastMarketStatus = () => {
                                                                 key={idx}
                                                                 src={img}
                                                                 alt={`${lastMarket.productName} thumbnail ${idx + 1}`}
-                                                                className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover cursor-pointer hover:ring-blue-500 transition-all duration-200" />
+                                                                className="inline-block h-8 w-8 rounded-full ring-2 object-cover cursor-pointer ring-blue-500 transition-all duration-200" />
                                                         ))}
                                                         {lastMarket.productImage.length > 3 && (
                                                             <span className="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-gray-200 text-gray-600 flex items-center justify-center text-xs font-bold cursor-pointer hover:bg-gray-300 transition-all duration-200"
