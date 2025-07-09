@@ -1,5 +1,9 @@
 import express from 'express';
 import axios from 'axios';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 
 import userSignUpController from '../controller/user/userSignUp.js';
 import userSignInController from '../controller/user/userSignin.js';
@@ -52,86 +56,92 @@ import { generateSliderVerification } from "../utils/sliderVerification.js";
 import getLastUserMarketStatusController from '../controller/product/getLastUserMarketStatusController.js';
 
 const router = express.Router();
-
-// Cache structure: { [key: string]: { data: any, expiry: number } }
 const cache = {};
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const CACHE_TTL = 5 * 60 * 1000; 
+function verifyApiKey(req, res, next) {
+  const apiKey = req.header('x-api-key');
+  if (!apiKey || apiKey !== process.env.ETH_PRICE_API_KEY) {
+    return res.status(401).json({ error: 'Unauthorized: Invalid API Key' });
+  }
+  next();
+}
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-/**
- * Retry axios GET with exponential backoff and logging
- * @param {string} url - request URL
- * @param {object} options - axios options
- * @param {number} retries - max retry attempts
- * @param {number} backoff - initial backoff delay in ms
- */
 async function axiosGetWithRetry(url, options = {}, retries = 3, backoff = 500) {
   try {
-    console.log(`[axiosGetWithRetry] Attempting GET: ${url} with params:`, options.params);
     const response = await axios.get(url, options);
-    console.log(`[axiosGetWithRetry] Success GET: ${url}`);
     return response;
   } catch (error) {
     const status = error.response?.status;
-    console.error(`[axiosGetWithRetry] Error GET: ${url} | Status: ${status} | Retries left: ${retries} | Error: ${error.message}`);
-
-    if (status === 401 || status === 429) {
-      console.warn(`[axiosGetWithRetry] Not retrying due to status ${status}`);
-      throw error;
-    }
-
-    if (retries === 0) throw error;
+    if ([401, 429].includes(status) || retries === 0) throw error;
     await sleep(backoff);
     return axiosGetWithRetry(url, options, retries - 1, backoff * 2);
   }
 }
 
-router.get('/eth-price', async (req, res) => {
+// /api/eth-price → ETH price in NGN (fallback to USD)
+router.get('/eth-price', verifyApiKey, async (req, res) => {
   const cacheKey = 'eth-price';
   const now = Date.now();
 
-  const sendCachedResponse = () => {
-    console.log(`[eth-price] Serving cached data immediately`);
-    res.json(cache[cacheKey].data);
-  };
-
-  const fetchAndUpdateCache = async () => {
-    try {
-      const { data } = await axiosGetWithRetry('https://api.coingecko.com/api/v3/simple/price', {
-        params: { ids: 'ethereum', vs_currencies: 'ngn' },
-      });
-      cache[cacheKey] = { data, expiry: Date.now() + CACHE_TTL };
-      console.log(`[eth-price] Cache updated in background`);
-    } catch (error) {
-      console.error(`[eth-price] Background fetch failed:`, error.message);
-    }
-  };
-
   if (cache[cacheKey] && cache[cacheKey].expiry > now) {
-    sendCachedResponse();
-    fetchAndUpdateCache();
-    return;
+    return res.json(cache[cacheKey].data);
   }
 
   try {
     const { data } = await axiosGetWithRetry('https://api.coingecko.com/api/v3/simple/price', {
       params: { ids: 'ethereum', vs_currencies: 'ngn' },
     });
-    cache[cacheKey] = { data, expiry: Date.now() + CACHE_TTL };
-    console.log(`[eth-price] Fresh data fetched and cached`);
+    cache[cacheKey] = { data, expiry: now + CACHE_TTL };
     res.json(data);
   } catch (error) {
-    console.error(`[eth-price] Fetch failed:`, error.message);
-    if (cache[cacheKey]) {
-      console.log(`[eth-price] Returning stale cached data due to fetch failure`);
-      sendCachedResponse();
-    } else {
-      res.status(500).json({ message: 'Error fetching ETH price', error: error.message });
-    }
+    console.error('[eth-price] Fetch failed:', error.message);
+    res.status(500).json({ error: 'Failed to fetch ETH price' });
   }
 });
+
+// /api/eth-price-usd → ETH price in USD only
+router.get('/eth-price-usd', verifyApiKey, async (req, res) => {
+  const cacheKey = 'eth-price-usd';
+  const now = Date.now();
+
+  if (cache[cacheKey] && cache[cacheKey].expiry > now) {
+    return res.json(cache[cacheKey].data);
+  }
+
+  try {
+    const { data } = await axiosGetWithRetry('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+    cache[cacheKey] = { data, expiry: now + CACHE_TTL };
+    res.json(data);
+  } catch (error) {
+    console.error('[eth-price-usd] Fetch failed:', error.message);
+    res.status(500).json({ error: 'Failed to fetch ETH price (USD)' });
+  }
+});
+
+// /api/usd-to-ngn → USD to NGN conversion (secure)
+router.get('/usd-to-ngn', verifyApiKey, async (req, res) => {
+  const cacheKey = 'usd-to-ngn';
+  const now = Date.now();
+
+  if (cache[cacheKey] && cache[cacheKey].expiry > now) {
+    return res.json(cache[cacheKey].data);
+  }
+
+  try {
+    const { data } = await axiosGetWithRetry('https://open.er-api.com/v6/latest/USD');
+    const rate = data?.rates?.NGN;
+    if (!rate) throw new Error('NGN rate not found');
+    const result = { rate };
+    cache[cacheKey] = { data: result, expiry: now + CACHE_TTL };
+    res.json(result);
+  } catch (error) {
+    console.error('[usd-to-ngn] Fetch failed:', error.message);
+    res.status(500).json({ error: 'Failed to fetch USD to NGN rate' });
+  }
+});
+
 
 router.get("/slider-verification", (req, res) => {
   const { target, signature } = generateSliderVerification();
