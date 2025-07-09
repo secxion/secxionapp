@@ -207,7 +207,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute right-3 top-3 text-yellow-500 hover:text-yellow-400" // Updated icon color
+                className="absolute right-3 top-3 text-yellow-500 hover:text-yellow-400"
                 tabIndex={-1}
               >
                 {showPassword ? <FaEyeSlash className="h-5 w-5" /> : <FaEye className="h-5 w-5" />} {/* Using Lucide icons */}

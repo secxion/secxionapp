@@ -249,7 +249,7 @@ const SignUp = () => {
 
   return (
     <section
-      className=" fixed inset-0 min-h-screen flex flex-col justify-between z-50 bg-cover bg-center "
+      className="inset-0 min-h-screen flex flex-col justify-between z-50 bg-cover bg-center "
       style={{ backgroundImage: `url(${signupBackground})` }}
     >
                   <Navigation currentPage="dashboard" />
@@ -395,10 +395,12 @@ const SignUp = () => {
               Login
             </Link>
           </div>
+          
         </div>
+        
       </div>
 
-      <footer className="relative z-10 text-center text-xs text-gray-400 p-3 bg-black/50 backdrop-blur-sm shadow-inner sm:shadow-none"> {/* Updated text color and background opacity */}
+      <footer className="relative z-10 mt-2 text-center text-xs text-gray-400 p-3 bg-black/50 backdrop-blur-sm shadow-inner sm:shadow-none"> {/* Updated text color and background opacity */}
         Contact Us | © {new Date().getFullYear()} secxion.com
         <br />
         {clock.toLocaleDateString()} {clock.toLocaleTimeString()}
@@ -428,9 +430,8 @@ const InputField = ({ label, name, value, onChange, type = "text", placeholder =
 const PasswordField = ({ label, name, value, onChange, show, toggle }) => (
   <div>
     <label htmlFor={name} className="block text-sm font-medium text-gray-300 mb-1">{label}</label>
-    <div
-      className="flex items-center p-2 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500" 
-    >
+                <div className="relative flex items-center w-full p-1 rounded-lg border-2 border-yellow-600 bg-gray-800 focus-within:ring-2 focus-within:ring-yellow-500"> {/* Updated border and background */}
+
       <input
         id={name}
         type={show ? "text" : "password"}
@@ -439,10 +440,12 @@ const PasswordField = ({ label, name, value, onChange, show, toggle }) => (
         onChange={onChange}
         placeholder={`Enter ${label.toLowerCase()}`}
         required
-        className="flex-1 bg-transparent outline-none text-sm text-gray-100 placeholder-gray-400"
+                className="flex-1 bg-transparent outline-none text-gray-100 placeholder-gray-400" // Updated text/placeholder
       />
-      <button type="button" onClick={toggle} className="text-yellow-500 mr-2 pl-3 p-1 rounded-full hover:bg-gray-700 transition-colors"> 
-        {show ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+      <button type="button" onClick={toggle}
+                      className="absolute right-3 top-3 text-yellow-500 hover:text-yellow-400"
+>
+        {show ? <FaEyeSlash className="h-5 w-5" /> : <FaEye className="h-5 w-5" />}
       </button>
     </div>
   </div>
