@@ -409,8 +409,8 @@ const SignUp = () => {
 
 const InputField = ({ label, name, value, onChange, type = "text", placeholder = "", required = false }) => (
   <div>
-    <label htmlFor={name} className="block text-sm font-medium text-gray-300 mb-1">{label}</label> {/* Updated text color */}
-    <div className="flex items-center p-2 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500"> {/* Updated background, border, and focus ring */}
+    <label htmlFor={name} className="block text-sm font-medium text-gray-300 mb-1">{label}</label> 
+    <div className="flex items-center p-2 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500"> 
       <input
         id={name}
         type={type}
@@ -441,7 +441,7 @@ const PasswordField = ({ label, name, value, onChange, show, toggle }) => (
         required
         className="flex-1 bg-transparent outline-none text-sm text-gray-100 placeholder-gray-400"
       />
-      <button type="button" onClick={toggle} className="text-yellow-500 ml-4 p-1 rounded-full hover:bg-gray-700 transition-colors"> 
+      <button type="button" onClick={toggle} className="text-yellow-500 mr-4 p-1 rounded-full hover:bg-gray-700 transition-colors"> 
         {show ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
       </button>
     </div>
