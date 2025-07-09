@@ -249,7 +249,7 @@ const SignUp = () => {
 
   return (
     <section
-      className="fixed inset-0 flex flex-col justify-between z-50 bg-cover bg-center"
+      className=" fixed inset-0 min-h-screen flex flex-col justify-between z-50 bg-cover bg-center "
       style={{ backgroundImage: `url(${signupBackground})` }}
     >
                   <Navigation currentPage="dashboard" />
@@ -447,7 +447,7 @@ const PasswordField = ({ label, name, value, onChange, show, toggle }) => (
         required
         className="flex-1 bg-transparent outline-none text-sm text-gray-100 placeholder-gray-400" // Updated text/placeholder
       />
-      <button type="button" onClick={toggle} className="text-yellow-500 ml-2 p-1 rounded-full hover:bg-gray-700 transition-colors"> {/* Updated icon color and hover background */}
+      <button type="button" onClick={toggle} className="text-yellow-500 ml-4 p-1 rounded-full hover:bg-gray-700 transition-colors"> {/* Updated icon color and hover background */}
         {show ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
       </button>
     </div>

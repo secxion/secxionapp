@@ -8,6 +8,8 @@ import thumbsUpGif from "./thumbsup.gif";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import icons for consistency
 import LogoShimmer from "../Components/LogoShimmer";
 import Navigation from '../Components/Navigation';
+import "./Login.css";
+
 
 
 const Login = () => {
