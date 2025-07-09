@@ -3,13 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SummaryApi from "../common";
 import Context from "../Context";
-import loginBackground from "./loginbk.png"; // Keep background image, adjust overlay
+import loginBackground from "./loginbk.png";
 import thumbsUpGif from "./thumbsup.gif";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import icons for consistency
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import LogoShimmer from "../Components/LogoShimmer";
 import Navigation from '../Components/Navigation';
 import "./Login.css";
-
 
 
 const Login = () => {
@@ -52,7 +51,7 @@ const Login = () => {
   const handleSliderChange = (e) => {
     const val = Number(e.target.value);
     setSliderValue(val);
-    setIsVerified(Math.abs(val - targetValue) <= 3); // Allow a small tolerance
+    setIsVerified(Math.abs(val - targetValue) <= 3);
   };
 
   const handleVerificationComplete = async () => {
@@ -61,7 +60,7 @@ const Login = () => {
       return;
     }
     setVerifying(true);
-    setErrorMessage(""); // Clear previous errors
+    setErrorMessage("");
 
     try {
       const response = await fetch(SummaryApi.signIn.url, {
@@ -135,7 +134,7 @@ const Login = () => {
       return;
     }
     setErrorMessage(""); 
-    setVerificationVisible(true); // Show the verification modal
+    setVerificationVisible(true);
     setFormSubmitting(true); 
   };
 
@@ -146,12 +145,9 @@ const Login = () => {
     >
             <Navigation currentPage="signin" />
 
-      {/* Overlay for dark mode compatibility on background - adjusted opacity for black theme */}
       <div className="absolute inset-0 bg-black/70 z-0"></div>
 
-      {/* Login Form Box - updated for black and yellow theme */}
       <div className="shape-lines relative bg-gray-900 bg-opacity-95 p-6 sm:p-8 mt-16 w-full max-w-md rounded-2xl shadow-2xl border border-gray-700 z-10">
-        {/* Logo - updated gradient for black and yellow theme */}
           <div className="flex items-center">
                         <a href="/" className="relative">
                            <div className=" flex py-1 flex-col justify-center">

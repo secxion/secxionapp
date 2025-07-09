@@ -254,10 +254,8 @@ const SignUp = () => {
     >
                   <Navigation currentPage="dashboard" />
 
-      {/* Overlay for dark mode compatibility on background */}
-      <div className="absolute inset-0 bg-black/70 z-0"></div> {/* Increased opacity for theme */}
+      <div className="absolute inset-0 bg-black/70 z-0"></div> 
 
-      {/* Sign Up Form Box - Updated for black and yellow theme */}
       <div className="relative z-10 flex items-center justify-center mt-11 grow px-4 py-8">
         <div className="bg-gray-900 bg-opacity-95 w-full max-w-lg p-8 pt-4 py-2 shadow-2xl rounded-2xl border border-gray-700 backdrop-blur-md">
             <div className="flex items-center">
@@ -279,13 +277,13 @@ const SignUp = () => {
                         </a>
                       </div>
 
-          <h2 className="text-xl font-bold mb-6 text-center text-gray-100">Sign Up Wizard</h2> {/* Updated text color */}
+          <h2 className="text-xl font-bold mb-6 text-center text-gray-100">Sign Up Wizard</h2>
           <div className="flex items-center justify-between mb-4">
             {[1, 2, 3, 4, 5].map((n) => (
               <div
                 key={n}
                 className={`h-2 flex-1 mx-1 rounded-full transition-all ${
-                  n <= step ? "bg-yellow-600" : "bg-gray-700" // Updated progress bar colors
+                  n <= step ? "bg-yellow-600" : "bg-gray-700"
                 }`}
               />
             ))}
@@ -334,8 +332,7 @@ const SignUp = () => {
               {step === 5 && (
                 <motion.div key="step5" variants={stepVariants} initial="hidden" animate="visible" exit="exit" className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Profile Picture</label> {/* Updated text color */}
-                    {/* Add a flex container for input and loader */}
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Profile Picture</label>
                     <div className="flex items-center gap-2">
                       <input
                         type="file"
@@ -356,24 +353,24 @@ const SignUp = () => {
 
                   {data.profilePic && (
                     <div className="flex justify-center my-4">
-                       <img src={data.profilePic} alt="Profile Preview" className="h-24 w-24 rounded-full object-cover shadow-lg border-2 border-yellow-500" /> {/* Updated border color */}
+                       <img src={data.profilePic} alt="Profile Preview" className="h-24 w-24 rounded-full object-cover shadow-lg border-2 border-yellow-500" /> 
                     </div>
                   )}
 
                   <div className="flex items-center space-x-2">
-                    <div className="flex items-center px-1 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500"> {/* Updated colors */}
+                    <div className="flex items-center px-1 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500">
                       <input
                         type="checkbox"
                         id="terms"
                         checked={agreedToTerms}
                         onChange={(e) => setAgreedToTerms(e.target.checked)}
-                        className="w-4 h-4 text-yellow-600 border-gray-700 rounded focus:ring-yellow-500 bg-gray-800 checked:bg-yellow-500" // Updated checkbox colors
+                        className="w-4 h-4 text-yellow-600 border-gray-700 rounded focus:ring-yellow-500 bg-gray-800 checked:bg-yellow-500"
                       />
                     </div>
 
-                    <label htmlFor="terms" className="text-sm text-gray-300 leading-snug"> {/* Updated text color */}
+                    <label htmlFor="terms" className="text-sm text-gray-300 leading-snug">
                       I agree to the{" "}
-                      <Link to="/terms" className="text-yellow-500 hover:underline">terms and conditions</Link> {/* Updated link color */}
+                      <Link to="/terms" className="text-yellow-500 hover:underline">terms and conditions</Link>
                     </label>
                   </div>
 
@@ -392,16 +389,15 @@ const SignUp = () => {
             </AnimatePresence>
           </form>
 
-          <div className="mt-6 text-center text-sm text-gray-400"> {/* Updated text color */}
+          <div className="mt-6 text-center text-sm text-gray-400">
             Already have an account?{" "}
-            <Link to="/login" className="text-yellow-500 hover:underline font-medium"> {/* Updated link color */}
+            <Link to="/login" className="text-yellow-500 hover:underline font-medium">
               Login
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Footer - Updated for black and yellow theme */}
       <footer className="relative z-10 text-center text-xs text-gray-400 p-3 bg-black/50 backdrop-blur-sm shadow-inner sm:shadow-none"> {/* Updated text color and background opacity */}
         Contact Us | © {new Date().getFullYear()} secxion.com
         <br />
@@ -411,7 +407,6 @@ const SignUp = () => {
   );
 };
 
-// Reusable InputField component - Updated for black and yellow theme
 const InputField = ({ label, name, value, onChange, type = "text", placeholder = "", required = false }) => (
   <div>
     <label htmlFor={name} className="block text-sm font-medium text-gray-300 mb-1">{label}</label> {/* Updated text color */}
@@ -424,18 +419,17 @@ const InputField = ({ label, name, value, onChange, type = "text", placeholder =
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className="w-full p-2 bg-transparent text-sm rounded focus:ring-0 focus:outline-none text-gray-100 placeholder-gray-400" // Removed redundant border, updated text/placeholder
+        className="w-full p-2 bg-transparent text-sm rounded focus:ring-0 focus:outline-none text-gray-100 placeholder-gray-400"
       />
     </div>
   </div>
 );
 
-// Reusable PasswordField component - Updated for black and yellow theme
 const PasswordField = ({ label, name, value, onChange, show, toggle }) => (
   <div>
-    <label htmlFor={name} className="block text-sm font-medium text-gray-300 mb-1">{label}</label> {/* Updated text color */}
+    <label htmlFor={name} className="block text-sm font-medium text-gray-300 mb-1">{label}</label>
     <div
-      className="flex items-center p-2 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500" // Updated background, border, and focus ring
+      className="flex items-center p-2 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500" 
     >
       <input
         id={name}
@@ -445,9 +439,9 @@ const PasswordField = ({ label, name, value, onChange, show, toggle }) => (
         onChange={onChange}
         placeholder={`Enter ${label.toLowerCase()}`}
         required
-        className="flex-1 bg-transparent outline-none text-sm text-gray-100 placeholder-gray-400" // Updated text/placeholder
+        className="flex-1 bg-transparent outline-none text-sm text-gray-100 placeholder-gray-400"
       />
-      <button type="button" onClick={toggle} className="text-yellow-500 ml-4 p-1 rounded-full hover:bg-gray-700 transition-colors"> {/* Updated icon color and hover background */}
+      <button type="button" onClick={toggle} className="text-yellow-500 ml-4 p-1 rounded-full hover:bg-gray-700 transition-colors"> 
         {show ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
       </button>
     </div>
