@@ -234,7 +234,7 @@ const Home = () => {
     : transactions.slice(0, visibleTransactions);
 
   return (
-    <div className="relative bg-white mb-16 mt-20 w-full px-4 space-y-16 border-2 border-black"> {/* Black border added here */}
+    <div className="relative bg-white mb-16 mt-20 w-full px-4 space-y-16"> {/* Black border added here */}
             <div>
               <div>
                 <HiRateSlider />

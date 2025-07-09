@@ -83,7 +83,7 @@ const SidePanel = ({ open, setOpen, handleLogout, loading, onCloseMenu }) => {
           leaveFrom="translate-x-0"
           leaveTo="-translate-x-full"
         >
-          <Dialog.Panel className="relative flex flex-col w-full max-w-sm h-full overflow-hidden bg-white text-black border-2 border-black shadow-xl ">
+          <Dialog.Panel className="relative flex flex-col w-full max-w-sm h-full overflow-hidden bg-white text-black shadow-xl ">
             
             <div className="relative z-10 flex flex-col w-full h-full">
               {/* Header */}
