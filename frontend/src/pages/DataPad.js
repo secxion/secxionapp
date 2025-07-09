@@ -43,7 +43,6 @@ const DataPad = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  // Fetch data pads with error handling and retry logic
   const fetchDataPads = useCallback(async (showToast = false) => {
     if (!user) {
       setIsLoading(false);
@@ -225,7 +224,6 @@ const DataPad = () => {
     );
   }
 
-  // Render error state
   if (error && dataPads.length === 0) {
     return (
       <motion.div
@@ -260,7 +258,6 @@ const DataPad = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      {/* Header - Fixed at top */}
       <div className="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700 mt-24 lg:mt-28 sticky top-16 lg:top-20 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -274,7 +271,6 @@ const DataPad = () => {
             </div>
             
             <div className="flex items-center space-x-3">
-              {/* Refresh Button */}
               <button
                 onClick={handleRefresh}
                 disabled={isLoading}
@@ -284,7 +280,6 @@ const DataPad = () => {
                 <MdRefresh className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
               </button>
 
-              {/* View Mode Toggle */}
               <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
                 <button
                   onClick={() => setViewMode(VIEW_MODES.LIST)}

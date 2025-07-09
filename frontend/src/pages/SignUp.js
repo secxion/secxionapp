@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa"; // Added FaSpinner
 import { Link, useNavigate } from "react-router-dom";
 import uploadImage from "../helpers/uploadImage";
 import SummaryApi from "../common";
@@ -15,11 +15,12 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [uploading, setUploading] = useState(false); // Controls the spinning loader
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [clock, setClock] = useState(new Date());
 
   const [data, setData] = useState(() => {
+    // Attempt to load saved data from localStorage, or initialize with empty strings
     const saved = localStorage.getItem("signupData");
     return saved
       ? JSON.parse(saved)
@@ -36,15 +37,19 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
+  // Save data to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("signupData", JSON.stringify(data));
   }, [data]);
 
+  // Update clock every second
   useEffect(() => {
     const interval = setInterval(() => setClock(new Date()), 1000);
+    // Cleanup interval on component unmount
     return () => clearInterval(interval);
   }, []);
 
+  // Effect to log step changes - this is crucial for debugging
   useEffect(() => {
     console.log("Current form step state:", step);
   }, [step]);
@@ -54,12 +59,15 @@ const SignUp = () => {
     setData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Validation functions
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isValidPassword = (password) => password.length >= 6;
+  // Regex for Telegram number: optional '+' followed by 7 to 15 digits
   const isValidTelegram = (number) => /^(\+?\d{7,15})$/.test(number);
 
+  // Helper function to resize image using Canvas API
   const resizeImage = (file) => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (event) => {
         const img = new Image();
@@ -70,6 +78,7 @@ const SignUp = () => {
           let width = img.width;
           let height = img.height;
 
+          // Calculate new dimensions to maintain aspect ratio
           if (width > height) {
             if (width > MAX_WIDTH) {
               height *= MAX_WIDTH / width;
@@ -89,19 +98,19 @@ const SignUp = () => {
           ctx.drawImage(img, 0, 0, width, height);
 
           // Convert canvas content to a Blob (image file)
+          // Try with 90% quality first, if still too large, try with 70%
           canvas.toBlob((blob) => {
-            // Check the size of the resized blob
-            if (blob.size > 2 * 1024 * 1024) { // Still too large after initial resize
-                // Further compress if needed, e.g., by reducing quality
+            if (blob.size > 2 * 1024 * 1024) {
                 canvas.toBlob((smallerBlob) => {
                     resolve(smallerBlob);
-                }, 'image/jpeg', 0.7); // Reduce quality to 70%
+                }, 'image/jpeg', 0.7); // Reduce quality to 70% if still too large
             } else {
                 resolve(blob);
             }
           }, 'image/jpeg', 0.9); // Default quality 90%
         };
       };
+      reader.onerror = (error) => reject(error);
       reader.readAsDataURL(file);
     });
   };
@@ -113,39 +122,35 @@ const SignUp = () => {
       return;
     }
 
-    setUploading(true);
-    toast.info("Processing image... ⏳");
+    setUploading(true); // Start the spinning loader
 
     try {
       let imageToUpload = file;
 
-      // Only attempt to resize if the file is potentially large
-      if (file.size > 1 * 1024 * 1024) { // If original file is larger than 1MB, attempt resize
+      // Only attempt to resize if the file is potentially large (e.g., > 1MB)
+      if (file.size > 1 * 1024 * 1024) {
         const resizedBlob = await resizeImage(file);
         imageToUpload = new File([resizedBlob], file.name, {
             type: resizedBlob.type,
             lastModified: Date.now(),
         });
-        toast.info("Image resized. Uploading... ⏳");
-      } else {
-        toast.info("Uploading image... ⏳");
       }
 
       // Final check for size before upload, in case resizing still didn't get it below 2MB
       if (imageToUpload.size > 2 * 1024 * 1024) {
         toast.error("Even after processing, the image is too large. Please choose a different image.");
-        setUploading(false);
+        setUploading(false); // Stop loader on error
         return;
       }
 
       const uploadedImage = await uploadImage(imageToUpload);
       setData((prev) => ({ ...prev, profilePic: uploadedImage.url }));
-      toast.success("Profile picture uploaded successfully! 📸");
+      toast.success("Your avatar successfully uploaded! 📸"); // Simplified success notification
     } catch (error) {
       console.error("Upload or resize error:", error);
       toast.error("Failed to process or upload image. Please try again.");
     } finally {
-      setUploading(false);
+      setUploading(false); // Stop the spinning loader regardless of success or failure
     }
   };
 
@@ -154,6 +159,7 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Client-side validation before API call
     if (!data.name) {
       toast.error("Please enter your name.");
       return setStep(1);
@@ -162,7 +168,7 @@ const SignUp = () => {
       toast.error("Please enter a valid email address.");
       return setStep(2);
     }
-    if (data.telegramNumber && !isValidTelegram(data.telegramNumber)) {
+    if (data.telegramNumber && !isValidTelegram(data.telegramNumber)) { // Telegram is optional, but if provided, validate
       toast.error("Please enter a valid Telegram number (7-15 digits, optional leading +).");
       return setStep(3);
     }
@@ -214,8 +220,8 @@ const SignUp = () => {
             backendMessage.includes("display name") &&
             (backendMessage.includes("already exists") || backendMessage.includes("already taken"))
         ) {
-          toast.error(responseData.message);
-          setStep(1);
+          toast.error(responseData.message); // Display the specific name error
+          setStep(1); // Direct user back to name step
           console.log("Setting step to 1 for name error (generic check matched).");
         }
         else if (backendMessage.includes("password")) {
@@ -248,8 +254,10 @@ const SignUp = () => {
     >
                   <Navigation currentPage="dashboard" />
 
-      <div className="absolute inset-0 bg-black/70 z-0"></div>
+      {/* Overlay for dark mode compatibility on background */}
+      <div className="absolute inset-0 bg-black/70 z-0"></div> {/* Increased opacity for theme */}
 
+      {/* Sign Up Form Box - Updated for black and yellow theme */}
       <div className="relative z-10 flex items-center justify-center mt-11 grow px-4 py-8">
         <div className="bg-gray-900 bg-opacity-95 w-full max-w-lg p-8 pt-4 py-2 shadow-2xl rounded-2xl border border-gray-700 backdrop-blur-md">
             <div className="flex items-center">
@@ -271,13 +279,13 @@ const SignUp = () => {
                         </a>
                       </div>
 
-          <h2 className="text-xl font-bold mb-6 text-center text-gray-100">Sign Up Wizard</h2>
+          <h2 className="text-xl font-bold mb-6 text-center text-gray-100">Sign Up Wizard</h2> {/* Updated text color */}
           <div className="flex items-center justify-between mb-4">
             {[1, 2, 3, 4, 5].map((n) => (
               <div
                 key={n}
                 className={`h-2 flex-1 mx-1 rounded-full transition-all ${
-                  n <= step ? "bg-yellow-600" : "bg-gray-700"
+                  n <= step ? "bg-yellow-600" : "bg-gray-700" // Updated progress bar colors
                 }`}
               />
             ))}
@@ -290,8 +298,8 @@ const SignUp = () => {
                   <InputField label="Display Name" name="name" value={data.name} onChange={handleOnChange} required placeholder="Your unique username or display name" />
                   <InputField label="Tag (Optional)" name="tag" value={data.tag} onChange={handleOnChange} placeholder="e.g., ProTrader, CryptoEnthusiast" />
                   <div className="flex justify-between mt-6">
-                    <div />
-                    <button type="button" onClick={() => goToStep(2)} className="btn-next bg-yellow-600 hover:bg-yellow-700 text-gray-900 font-medium py-2 px-4 rounded transition">Next →</button>
+                    <div /> {/* Empty div for alignment */}
+                    <button type="button" onClick={() => goToStep(2)} className="btn-next bg-yellow-600 hover:bg-yellow-700 text-gray-900 font-medium py-2 px-4 rounded transition">Next →</button> {/* Updated button styling */}
                   </div>
                 </motion.div>
               )}
@@ -299,8 +307,8 @@ const SignUp = () => {
                 <motion.div key="step2" variants={stepVariants} initial="hidden" animate="visible" exit="exit" className="space-y-4">
                   <InputField label="Email" name="email" type="email" value={data.email} onChange={handleOnChange} required placeholder="you@example.com" />
                   <div className="flex justify-between mt-6">
-                    <button type="button" onClick={() => goToStep(1)} className="btn-back bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded transition">← Back</button>
-                    <button type="button" onClick={() => goToStep(3)} className="btn-next bg-yellow-600 hover:bg-yellow-700 text-gray-900 font-medium py-2 px-4 rounded transition">Next →</button>
+                    <button type="button" onClick={() => goToStep(1)} className="btn-back bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded transition">← Back</button> {/* Updated button styling */}
+                    <button type="button" onClick={() => goToStep(3)} className="btn-next bg-yellow-600 hover:bg-yellow-700 text-gray-900 font-medium py-2 px-4 rounded transition">Next →</button> {/* Updated button styling */}
                   </div>
                 </motion.div>
               )}
@@ -308,8 +316,8 @@ const SignUp = () => {
                 <motion.div key="step3" variants={stepVariants} initial="hidden" animate="visible" exit="exit" className="space-y-4">
                   <InputField label="Telegram Number (Optional)" name="telegramNumber" value={data.telegramNumber} onChange={handleOnChange} placeholder="+1234567890 (optional)" />
                   <div className="flex justify-between mt-6">
-                    <button type="button" onClick={() => goToStep(2)} className="btn-back bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded transition">← Back</button>
-                    <button type="button" onClick={() => goToStep(4)} className="btn-next bg-yellow-600 hover:bg-yellow-700 text-gray-900 font-medium py-2 px-4 rounded transition">Next →</button>
+                    <button type="button" onClick={() => goToStep(2)} className="btn-back bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded transition">← Back</button> {/* Updated button styling */}
+                    <button type="button" onClick={() => goToStep(4)} className="btn-next bg-yellow-600 hover:bg-yellow-700 text-gray-900 font-medium py-2 px-4 rounded transition">Next →</button> {/* Updated button styling */}
                   </div>
                 </motion.div>
               )}
@@ -318,56 +326,63 @@ const SignUp = () => {
                   <PasswordField label="Password" name="password" value={data.password} onChange={handleOnChange} show={showPassword} toggle={() => setShowPassword((prev) => !prev)} />
                   <PasswordField label="Confirm Password" name="confirmPassword" value={data.confirmPassword} onChange={handleOnChange} show={showConfirmPassword} toggle={() => setShowConfirmPassword((prev) => !prev)} />
                   <div className="flex justify-between mt-6">
-                    <button type="button" onClick={() => goToStep(3)} className="btn-back bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded transition">← Back</button>
-                    <button type="button" onClick={() => goToStep(5)} className="btn-next bg-yellow-600 hover:bg-yellow-700 text-gray-900 font-medium py-2 px-4 rounded transition">Next →</button>
+                    <button type="button" onClick={() => goToStep(3)} className="btn-back bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded transition">← Back</button> {/* Updated button styling */}
+                    <button type="button" onClick={() => goToStep(5)} className="btn-next bg-yellow-600 hover:bg-yellow-700 text-gray-900 font-medium py-2 px-4 rounded transition">Next →</button> {/* Updated button styling */}
                   </div>
                 </motion.div>
               )}
               {step === 5 && (
                 <motion.div key="step5" variants={stepVariants} initial="hidden" animate="visible" exit="exit" className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Profile Picture</label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleUploadPic}
-                      className="w-full p-2 border-2 border-yellow-600 bg-gray-800 text-sm rounded
-                                 text-gray-100
-                                 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
-                                 file:text-sm file:font-semibold file:bg-yellow-500 file:text-gray-900
-                                 hover:file:bg-yellow-600"
-                    />
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Profile Picture</label> {/* Updated text color */}
+                    {/* Add a flex container for input and loader */}
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleUploadPic}
+                        className="flex-1 p-2 border-2 border-yellow-600 bg-gray-800 text-sm rounded
+                                   text-gray-100
+                                   file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
+                                   file:text-sm file:font-semibold file:bg-yellow-500 file:text-gray-900
+                                   hover:file:bg-yellow-600" // Updated colors for file input
+                      />
+                      {/* Spinning loader */}
+                      {uploading && (
+                        <FaSpinner className="animate-spin text-yellow-500 text-2xl" />
+                      )}
+                    </div>
                   </div>
 
                   {data.profilePic && (
                     <div className="flex justify-center my-4">
-                       <img src={data.profilePic} alt="Profile Preview" className="h-24 w-24 rounded-full object-cover shadow-lg border-2 border-yellow-500" />
+                       <img src={data.profilePic} alt="Profile Preview" className="h-24 w-24 rounded-full object-cover shadow-lg border-2 border-yellow-500" /> {/* Updated border color */}
                     </div>
                   )}
 
                   <div className="flex items-center space-x-2">
-                    <div className="flex items-center px-1 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500">
+                    <div className="flex items-center px-1 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500"> {/* Updated colors */}
                       <input
                         type="checkbox"
                         id="terms"
                         checked={agreedToTerms}
                         onChange={(e) => setAgreedToTerms(e.target.checked)}
-                        className="w-4 h-4 text-yellow-600 border-gray-700 rounded focus:ring-yellow-500 bg-gray-800 checked:bg-yellow-500"
+                        className="w-4 h-4 text-yellow-600 border-gray-700 rounded focus:ring-yellow-500 bg-gray-800 checked:bg-yellow-500" // Updated checkbox colors
                       />
                     </div>
 
-                    <label htmlFor="terms" className="text-sm text-gray-300 leading-snug">
+                    <label htmlFor="terms" className="text-sm text-gray-300 leading-snug"> {/* Updated text color */}
                       I agree to the{" "}
-                      <Link to="/terms" className="text-yellow-500 hover:underline">terms and conditions</Link>
+                      <Link to="/terms" className="text-yellow-500 hover:underline">terms and conditions</Link> {/* Updated link color */}
                     </label>
                   </div>
 
                   <div className="flex justify-between mt-6">
-                    <button type="button" onClick={() => goToStep(4)} className="btn-back bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded transition">← Back</button>
+                    <button type="button" onClick={() => goToStep(4)} className="btn-back bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded transition">← Back</button> {/* Updated button styling */}
                     <button
                       type="submit"
                       disabled={loading || uploading || !data.profilePic || !agreedToTerms}
-                      className="bg-yellow-600 hover:bg-yellow-700 text-gray-900 text-sm font-medium py-2 px-4 rounded transition disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="bg-yellow-600 hover:bg-yellow-700 text-gray-900 text-sm font-medium py-2 px-4 rounded transition disabled:opacity-50 disabled:cursor-not-allowed" // Updated button styling
                     >
                       {loading ? "Signing Up..." : uploading ? "Uploading..." : "Sign Up 🚀"}
                     </button>
@@ -377,16 +392,17 @@ const SignUp = () => {
             </AnimatePresence>
           </form>
 
-          <div className="mt-6 text-center text-sm text-gray-400">
+          <div className="mt-6 text-center text-sm text-gray-400"> {/* Updated text color */}
             Already have an account?{" "}
-            <Link to="/login" className="text-yellow-500 hover:underline font-medium">
+            <Link to="/login" className="text-yellow-500 hover:underline font-medium"> {/* Updated link color */}
               Login
             </Link>
           </div>
         </div>
       </div>
 
-      <footer className="relative z-10 text-center text-xs text-gray-400 p-3 bg-black/50 backdrop-blur-sm shadow-inner sm:shadow-none">
+      {/* Footer - Updated for black and yellow theme */}
+      <footer className="relative z-10 text-center text-xs text-gray-400 p-3 bg-black/50 backdrop-blur-sm shadow-inner sm:shadow-none"> {/* Updated text color and background opacity */}
         Contact Us | © {new Date().getFullYear()} secxion.com
         <br />
         {clock.toLocaleDateString()} {clock.toLocaleTimeString()}
@@ -395,10 +411,11 @@ const SignUp = () => {
   );
 };
 
+// Reusable InputField component - Updated for black and yellow theme
 const InputField = ({ label, name, value, onChange, type = "text", placeholder = "", required = false }) => (
   <div>
-    <label htmlFor={name} className="block text-sm font-medium text-gray-300 mb-1">{label}</label>
-    <div className="flex items-center p-2 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500">
+    <label htmlFor={name} className="block text-sm font-medium text-gray-300 mb-1">{label}</label> {/* Updated text color */}
+    <div className="flex items-center p-2 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500"> {/* Updated background, border, and focus ring */}
       <input
         id={name}
         type={type}
@@ -407,17 +424,18 @@ const InputField = ({ label, name, value, onChange, type = "text", placeholder =
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className="w-full p-2 bg-transparent text-sm rounded focus:ring-0 focus:outline-none text-gray-100 placeholder-gray-400"
+        className="w-full p-2 bg-transparent text-sm rounded focus:ring-0 focus:outline-none text-gray-100 placeholder-gray-400" // Removed redundant border, updated text/placeholder
       />
     </div>
   </div>
 );
 
+// Reusable PasswordField component - Updated for black and yellow theme
 const PasswordField = ({ label, name, value, onChange, show, toggle }) => (
   <div>
-    <label htmlFor={name} className="block text-sm font-medium text-gray-300 mb-1">{label}</label>
+    <label htmlFor={name} className="block text-sm font-medium text-gray-300 mb-1">{label}</label> {/* Updated text color */}
     <div
-      className="flex items-center p-2 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500"
+      className="flex items-center p-2 bg-gray-800 border-2 border-yellow-600 rounded focus-within:ring-yellow-500 focus-within:border-yellow-500" // Updated background, border, and focus ring
     >
       <input
         id={name}
@@ -427,9 +445,9 @@ const PasswordField = ({ label, name, value, onChange, show, toggle }) => (
         onChange={onChange}
         placeholder={`Enter ${label.toLowerCase()}`}
         required
-        className="flex-1 bg-transparent outline-none text-sm text-gray-100 placeholder-gray-400"
+        className="flex-1 bg-transparent outline-none text-sm text-gray-100 placeholder-gray-400" // Updated text/placeholder
       />
-      <button type="button" onClick={toggle} className="text-yellow-500 ml-2 p-1 rounded-full hover:bg-gray-700 transition-colors">
+      <button type="button" onClick={toggle} className="text-yellow-500 ml-2 p-1 rounded-full hover:bg-gray-700 transition-colors"> {/* Updated icon color and hover background */}
         {show ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
       </button>
     </div>
