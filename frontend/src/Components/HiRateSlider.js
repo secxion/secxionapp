@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SummaryApi from "../common";
-import { FaFire, FaEthereum } from 'react-icons/fa'; // Import FaEthereum
+import { FaFire, FaEthereum } from 'react-icons/fa';
 
-// Public API for fetching the current price of Ethereum in USD
 const ethApiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd";
 
 const HiRateSlider = () => {
@@ -11,7 +10,6 @@ const HiRateSlider = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. Fetch both product data and Ethereum price at the same time
         const [productRes, ethRes] = await Promise.all([
           fetch(SummaryApi.allProduct.url, {
             method: "GET",
@@ -23,10 +21,8 @@ const HiRateSlider = () => {
         const ethData = await ethRes.json();
 
         const allProducts = productData?.data || [];
-        // Safely get the Ethereum price, with a fallback of 0
         const ethRate = ethData?.ethereum?.usd || 0;
 
-        // --- Currency Filtering and Sorting Logic ---
         const selectedCurrencies = ["USD", "GBP", "CAD", "CNY", "SGD", "AUD"];
         const topNPerNewCurrency = 2;
 
@@ -133,17 +129,11 @@ const HiRateSlider = () => {
   }
 
   const animationDuration = slides.length * 5;
-
-  // No longer need a separate getCurrencySymbol helper if we're mostly showing codes,
-  // or it can be simplified to just handle GBP for the symbol.
-  // For other currencies, we'll just display the slide.currency directly.
-
   return (
     <div className="fixed top-20 py-1 mt-1 left-0 right-0 border-black border-r-2 border-l-2 md:mt-4 lg:mt-4 z-30 w-full bg-white overflow-hidden">
       <div className="hirate-slider-track" style={{ animationDuration: `${animationDuration}s` }}>
         {slides.map((slide, index) => (
           <div key={index} className="hirate-slide">
-            {/* Conditionally render FaEthereum icon or image */}
             {slide.isEthereum ? (
               <FaEthereum className="slide-ethereum-icon" />
             ) : (
@@ -157,7 +147,6 @@ const HiRateSlider = () => {
                 {slide.productName}
               </span>
               <span className="slide-price">
-                {/* Use a conditional render for the currency display */}
                 1 {slide.currency === "GBP" ? "£" : `${slide.currency}`}{" "}
                 = {Number(slide.sellingPrice).toLocaleString(undefined, {
                   minimumFractionDigits: 2,

@@ -1,26 +1,20 @@
-// LastMarketStatus.js
-import React, { useEffect, useState, useContext, useCallback } from 'react'; // Added useCallback
-import SummaryApi from '../common'; // Assuming SummaryApi is correctly path'd
-import UserContext from "../Context"; // Assuming your UserContext is named 'UserContext' and located here
-import { CircleCheck, CircleX, Loader, Clock, Info, Image, X } from 'lucide-react'; // Added X for close button
-import currencyData from '../helpers/currencyData'; // Import the currencyData helper
+import React, { useEffect, useState, useContext, useCallback } from 'react';
+import SummaryApi from '../common'; 
+import UserContext from "../Context"; 
+import { CircleCheck, CircleX, Loader, Clock, Info, Image, X } from 'lucide-react';
+import currencyData from '../helpers/currencyData';
 
-// ImageModal Component (defined here for simplicity, could be a separate file)
 const ImageModal = ({ imageUrl, onClose }) => {
-    // This component itself is rendered conditionally,
-    // so internal hooks would only run if imageUrl is present.
-    // The useEffect for escape key is now handled in the parent LastMarketStatus.
     if (!imageUrl) return null;
 
     return (
-        // Overlay to capture clicks outside the image and dim the background
         <div
             className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
-            onClick={onClose} // Close when clicking anywhere on the overlay
+            onClick={onClose} 
         >
             <div
                 className="relative bg-white p-2 rounded-lg shadow-xl max-w-full max-h-full flex flex-col items-center"
-                onClick={e => e.stopPropagation()} // Prevent clicks on the content from closing the modal
+                onClick={e => e.stopPropagation()}
             >
                 <button
                     onClick={onClose}
@@ -32,7 +26,7 @@ const ImageModal = ({ imageUrl, onClose }) => {
                 <img
                     src={imageUrl}
                     alt="Expanded view"
-                    className="max-w-[90vw] max-h-[90vh] object-contain rounded-md" // Constrain image size
+                    className="max-w-[90vw] max-h-[90vh] object-contain rounded-md"
                 />
             </div>
         </div>
@@ -44,28 +38,24 @@ const LastMarketStatus = () => {
     const [lastMarket, setLastMarket] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { user } = useContext(UserContext); // Get user from context
+    const { user } = useContext(UserContext);
 
-    // State for the image modal
     const [showImageModal, setShowImageModal] = useState(false);
     const [modalImageUrl, setModalImageUrl] = useState('');
 
-    // Function to open the image modal
     const handleImageClick = (imageUrl) => {
         setModalImageUrl(imageUrl);
         setShowImageModal(true);
     };
 
-    // Function to close the image modal - wrapped in useCallback for useEffect dependency
     const handleCloseModal = useCallback(() => {
         setModalImageUrl('');
         setShowImageModal(false);
-    }, []); // No dependencies, so it's stable across renders
+    }, []); 
 
-    // useEffect for handling Escape key to close modal - placed here to be unconditional
     useEffect(() => {
         const handleEscape = (event) => {
-            if (event.key === 'Escape' && showImageModal) { // Only close if modal is actually open
+            if (event.key === 'Escape' && showImageModal) {
                 handleCloseModal();
             }
         };
@@ -73,7 +63,7 @@ const LastMarketStatus = () => {
         return () => {
             document.removeEventListener('keydown', handleEscape);
         };
-    }, [showImageModal, handleCloseModal]); // Depend on showImageModal and stable handleCloseModal
+    }, [showImageModal, handleCloseModal]);
 
     useEffect(() => {
         const fetchLastMarketStatus = async () => {
@@ -93,9 +83,8 @@ const LastMarketStatus = () => {
                     credentials: "include",
                 });
 
-                // Check for non-OK responses before parsing JSON
                 if (!response.ok) {
-                    const errorText = await response.text(); // Read as text to see HTML or other non-JSON
+                    const errorText = await response.text();
                     console.error("Non-OK response for last market status:", response.status, errorText);
                     setError(`Failed to fetch last market status: ${response.status} ${response.statusText}. Check server logs for details.`);
                     setLastMarket(null);
@@ -121,13 +110,10 @@ const LastMarketStatus = () => {
         };
 
         fetchLastMarketStatus();
+        const interval = setInterval(fetchLastMarketStatus, 30000);
+        return () => clearInterval(interval);
+    }, [user]);
 
-        // Optional: Refresh status every X seconds (e.g., every 30 seconds)
-        const interval = setInterval(fetchLastMarketStatus, 30000); // Refresh every 30 seconds
-        return () => clearInterval(interval); // Clean up on unmount
-    }, [user]); // Rerun if user changes
-
-    // Helper to get status icon and color
     const getStatusDisplay = (status) => {
         switch (status) {
             case 'DONE':
@@ -141,7 +127,6 @@ const LastMarketStatus = () => {
         }
     };
 
-    // Helper to format currency using currencyData
     const formatCurrency = (amount, currencyCode = '') => {
         if (typeof amount !== 'number') return 'N/A';
 
@@ -150,7 +135,6 @@ const LastMarketStatus = () => {
             maximumFractionDigits: 2,
         };
 
-        // Find the currency symbol from currencyData
         const currencyInfo = currencyData.find(c => c.value === currencyCode);
         const symbol = currencyInfo ? currencyInfo.symbol : currencyCode; // Fallback to code if symbol not found
 
@@ -234,7 +218,6 @@ const LastMarketStatus = () => {
                                             <h3 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
                                                 {lastMarket.productName || 'N/A'}
 
-                                                {/* Product Image Thumbnail */}
                                                 {lastMarket.productImage && lastMarket.productImage.length > 0 && (
                                                     <div className="ml-3 flex -space-x-2 overflow-hidden">
                                                         {lastMarket.productImage.slice(0, 3).map((img, idx) => ( // Show max 3 thumbnails
@@ -337,7 +320,6 @@ const LastMarketStatus = () => {
                 </div>                               
             </div>
 
-            {/* Image Modal Component - Renders only when showImageModal is true */}
             <ImageModal imageUrl={modalImageUrl} onClose={handleCloseModal} />
         </section>
     );
