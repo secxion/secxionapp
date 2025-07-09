@@ -441,7 +441,7 @@ const PasswordField = ({ label, name, value, onChange, show, toggle }) => (
         required
         className="flex-1 bg-transparent outline-none text-sm text-gray-100 placeholder-gray-400"
       />
-      <button type="button" onClick={toggle} className="text-yellow-500 mr-4 p-1 rounded-full hover:bg-gray-700 transition-colors"> 
+      <button type="button" onClick={toggle} className="text-yellow-500 mr-2 pl-3 p-1 rounded-full hover:bg-gray-700 transition-colors"> 
         {show ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
       </button>
     </div>
