@@ -212,12 +212,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
-               <div className="flex items-center space-x-2">
-                 <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                 <p className="text-yellow-400 text-sm font-mono tracking-wider">
-                   System Design in Progress<span className="animate-blink">_</span>
-                 </p>
-               </div>
+               
                <a href="/" className="relative">
                   <div className=" flex py-1 flex-col justify-center">
                                                                 <div className="relative py-2  sm:mx-auto ">
@@ -233,8 +228,7 @@ export default function Landing() {
                                                             </div>
                  <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full"></div>
                </a>
-             </div>
-            
+             </div>            
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
               <NavLink href="/about-us">About</NavLink>
@@ -242,6 +236,8 @@ export default function Landing() {
               <NavLink href="/privacy">Privacy</NavLink>
               <NavLink href="/contact-us">Contact</NavLink>
             </nav>
+
+             
 
             <div className="hidden md:flex items-center space-x-4">
               {isLoggedIn ? (
@@ -321,14 +317,24 @@ export default function Landing() {
         </div>
       </motion.div>
     )}
+
+              <div className="flex items-center space-x-2">
+                 <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                 <p className="text-yellow-400 text-sm font-mono tracking-wider">
+                   System Design in Progress<span className="animate-blink">_</span>
+                 </p>
+              </div>
+
   </AnimatePresence>
+  
   <div className="mt-8">
     <HiRateSlider />
   </div>
+
+   
       </motion.header>
 
       <main className=" relative z-10 mt-16 md:mt-24 lg:mt-2">
-
         {/* Hero Section */}
         <motion.section
           className="relative overflow-hidden py-10 lg:py-32"
