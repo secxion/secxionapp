@@ -162,7 +162,7 @@ const Header = () => {
   const truncatedMessage = useMemo(() => truncateWords(popupMessage, 10), [popupMessage]);
 
   return (
-    <header className="fixed z-40 bg-white text-black right-0 left-0 top-0 px-4 sm:px-6 lg:px-8 flex flex-col gap-2 sm:mt-8 md:mt-8 lg:mt-8 mt-8 border-2 border-black "> {/* Black border applied */}
+    <header className="fixed z-40 bg-white text-black right-0 left-0 top-0 px-4 sm:px-6 lg:px-8 shadow-sm flex flex-col gap-2 sm:mt-9 md:mt-9 lg:mt-9 mt-9 "> {/* Black border applied */}
       
       <div className="flex items-center justify-between min-h-[48px]">
         <div className="flex items-center justify-between md:mt-1 md:pt-1 lg:mt-1 lg:pt-1 w-full">
@@ -171,7 +171,7 @@ const Header = () => {
               <FontAwesomeIcon icon={faBars} className="h-6 w-6 glossy-text" /> {/* Applied glossy-text */}
             </button>
 
-            <div className="md:hidden flex-1 flex items-center mt-1 justify-center">
+            <div className="md:hidden flex-1 flex items-center shadow-md mt-1 justify-center">
               <div className="flex items-center ml-4 py-1 w-full max-w-[200px]"> 
                 <BiSearch className="text-yellow-700 h-4 w-4 mr-1 glossy-text" /> 
                 <input
@@ -207,7 +207,7 @@ const Header = () => {
               </button>
             )}
 
-            <div className="flex items-center  px-3 py-1 w-64"> 
+            <div className="flex items-center shadow-md px-3 py-1 w-64"> 
               <FcSearch className="text-gray-600 h-4 w-4 mr-2 glossy-text" /> 
               <input
                 type="text"

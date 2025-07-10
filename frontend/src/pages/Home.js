@@ -234,7 +234,7 @@ const Home = () => {
     : transactions.slice(0, visibleTransactions);
 
   return (
-    <div className="relative bg-white mb-16 mt-20 w-full px-4 space-y-16 border-2 border-black"> {/* Black border added here */}
+    <div className="relative bg-white mb-16 mt-36  w-full px-4 space-y-16">
             <div>
               <div>
                 <HiRateSlider />
@@ -242,10 +242,10 @@ const Home = () => {
              
       {/* Hero */}
       <header
-        className="relative h-[60vh] bg-center mt-12 sm:mt-12 md:mt-14 lg:mt-14 border-yellow-800 border-4 bg-cover flex items-center justify-center"
+        className="relative h-[60vh] bg-center mt-20  sm:mt-20 md:mt-24 lg:mt-24 border-yellow-800 border-4 bg-cover flex items-center justify-center"
         style={{ backgroundImage: `url(${currentImage.url})` }}
       >
-        <div className="absolute inset-0 bg-black bg-opacity-40  " />
+        <div className="absolute inset-0 bg-black bg-opacity-40" />
         <div className="relative z-10 text-center ">
           <motion.div
             initial={{ opacity: 0 }}

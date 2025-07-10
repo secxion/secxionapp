@@ -103,26 +103,6 @@ router.get('/eth-price', verifyApiKey, async (req, res) => {
   }
 });
 
-// /api/eth-price-usd → ETH price in USD only
-router.get('/eth-price-usd', verifyApiKey, async (req, res) => {
-  const cacheKey = 'eth-price-usd';
-  const now = Date.now();
-
-  if (cache[cacheKey] && cache[cacheKey].expiry > now) {
-    return res.json(cache[cacheKey].data);
-  }
-
-  try {
-    const { data } = await axiosGetWithRetry('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
-    cache[cacheKey] = { data, expiry: now + CACHE_TTL };
-    res.json(data);
-  } catch (error) {
-    console.error('[eth-price-usd] Fetch failed:', error.message);
-    res.status(500).json({ error: 'Failed to fetch ETH price (USD)' });
-  }
-});
-
-// /api/usd-to-ngn → USD to NGN conversion (secure)
 router.get('/usd-to-ngn', verifyApiKey, async (req, res) => {
   const cacheKey = 'usd-to-ngn';
   const now = Date.now();

@@ -230,7 +230,7 @@ const Net = ({ blogs }) => {
     const getContentLength = () => screenSize.isMobile ? 20 : screenSize.isTablet ? 60 : 120;
 
     return (
-        <div className="net-container fixed top-0 left-0 w-full bg-yellow-400 h-9 md:h-11 px-2 md:px-4 lg:px-6 flex items-center font-mono text-gray-900 transition-all duration-300 z-50 border-2 border-black"> {/* Black border applied */}
+        <div className="net-container fixed top-0 left-0 w-full bg-yellow-400 h-9 shadow-sm md:h-11 px-2 md:px-4 lg:px-6 flex items-center font-mono text-gray-900 transition-all duration-300 z-50"> {/* Black border applied */}
 
             
             {/* User Profile Section */}
