@@ -207,12 +207,12 @@ export default function Landing() {
       {/* Navigation Header */}
       
       <motion.header
-        className="fixed top-0 left-0 right-0 z-50 bg-gray-950/95 backdrop-blur-xl border-b border-gray-700/10" // Updated background and border
+        className="fixed top-0 h-24 left-0 right-0 z-50 bg-gray-950/95 backdrop-blur-xl border-b border-gray-700/10" // Updated background and border
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-24">
             <div className="flex items-center space-x-4">
-               
+                                   
                <a href="/" className="relative">
                   <div className=" flex py-1 flex-col justify-center">
                                                                 <div className="relative py-2  sm:mx-auto ">
@@ -228,7 +228,16 @@ export default function Landing() {
                                                             </div>
                  <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full"></div>
                </a>
-             </div>            
+
+               <div className="md:hidden flex items-center space-x-2">
+                 <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                 <p className="text-yellow-400 text-sm font-mono tracking-wider">
+                   System Design in Progress<span className="animate-blink">_</span>
+                 </p>
+              </div>
+            
+             </div>      
+                   
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
               <NavLink href="/about-us">About</NavLink>
@@ -237,7 +246,7 @@ export default function Landing() {
               <NavLink href="/contact-us">Contact</NavLink>
             </nav>
 
-             
+    
 
             <div className="hidden md:flex items-center space-x-4">
               {isLoggedIn ? (
@@ -318,12 +327,12 @@ export default function Landing() {
       </motion.div>
     )}
 
-              <div className="flex items-center space-x-2">
-                 <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                 <p className="text-yellow-400 text-sm font-mono tracking-wider">
-                   System Design in Progress<span className="animate-blink">_</span>
-                 </p>
-              </div>
+              <div className="hidden lg:flex items-center space-x-2">
+              <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+              <p className="text-yellow-400 text-sm font-mono tracking-wider">
+                System Design in Progress<span className="animate-blink">_</span>
+              </p>
+            </div>
 
   </AnimatePresence>
   
@@ -354,7 +363,12 @@ export default function Landing() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.8 }}
               >
-
+<div className="hidden lg:flex md:flex items-center space-x-2">
+                                    <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                                    <p className="text-yellow-400 text-sm font-mono tracking-wider">
+                                      System Design in Progress<span className="animate-blink">_</span>
+                                    </p>
+                                  </div>
                 <span className="bg-gradient-to-r from-gray-100 via-yellow-400 to-yellow-600 bg-clip-text text-transparent"> {/* Updated text gradient */}
                 Welcome to secxion
                 </span>
