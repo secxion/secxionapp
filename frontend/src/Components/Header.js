@@ -171,7 +171,7 @@ const Header = () => {
               <FontAwesomeIcon icon={faBars} className="h-6 w-6 glossy-text" /> {/* Applied glossy-text */}
             </button>
 
-            <div className="md:hidden flex-1 flex items-center shadow-md mt-1 justify-center">
+            <div className="md:hidden flex-1 flex items-center mt-1 justify-center">
               <div className="flex items-center ml-4 py-1 w-full max-w-[200px]"> 
                 <BiSearch className="text-yellow-700 h-4 w-4 mr-1 glossy-text" /> 
                 <input
@@ -207,7 +207,7 @@ const Header = () => {
               </button>
             )}
 
-            <div className="flex items-center shadow-md px-3 py-1 w-64"> 
+            <div className="flex items-center  px-3 py-1 w-64"> 
               <FcSearch className="text-gray-600 h-4 w-4 mr-2 glossy-text" /> 
               <input
                 type="text"

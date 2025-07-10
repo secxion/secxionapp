@@ -205,29 +205,35 @@ export default function Landing() {
         <div className="absolute bottom-20 right-10 w-24 h-24 bg-gradient-to-br from-yellow-800/30 to-yellow-700/30 transform rotate-12 animate-pulse"></div> {/* Updated background */}
       </div>
       {/* Navigation Header */}
+      
       <motion.header
         className="fixed top-0 left-0 right-0 z-50 bg-gray-950/95 backdrop-blur-xl border-b border-gray-700/10" // Updated background and border
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-                        <a href="/" className="relative">
-                           <div className=" flex py-1 flex-col justify-center">
-                                                                          <div className="relative py-2  sm:mx-auto ">
-                                                                              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform rounded-3xl border-4 border-yellow-700"></div>
-                                                                              <div className="relative px-4 p-1.5 bg-white shadow-lg rounded-2xl sm:p-1.5 border-4 border-yellow-700">
-                                                                                  <div className="">
-                                                                                      <div className="grid grid-cols-1">                    
-                                                                                          <LogoShimmer type="button" />
-                                                                                      </div>
-                                                                                  </div>
-                                                                              </div>
-                                                                          </div>
-                                                                      </div>
-                                      <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full"></div>
-                          
-                        </a>
-                      </div>
+            <div className="flex items-center space-x-4">
+               <div className="flex items-center space-x-2">
+                 <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                 <p className="text-yellow-400 text-sm font-mono tracking-wider">
+                   System Design in Progress<span className="animate-blink">_</span>
+                 </p>
+               </div>
+               <a href="/" className="relative">
+                  <div className=" flex py-1 flex-col justify-center">
+                                                                <div className="relative py-2  sm:mx-auto ">
+                                                                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg transform rounded-3xl border-4 border-yellow-700"></div>
+                                                                    <div className="relative px-4 p-1.5 bg-white shadow-lg rounded-2xl sm:p-1.5 border-4 border-yellow-700">
+                                                                        <div className="">
+                                                                            <div className="grid grid-cols-1">                    
+                                                                                <LogoShimmer type="button" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                 <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full"></div>
+               </a>
+             </div>
             
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
@@ -621,6 +627,12 @@ export default function Landing() {
         }
         .animate-scroll {
           animation: animate-scroll 30s linear infinite;
+        }
+        @keyframes blink {
+          50% { opacity: 0; }
+        }
+        .animate-blink {
+          animation: blink 1s step-end infinite;
         }
       `}</style>
     </motion.div>
