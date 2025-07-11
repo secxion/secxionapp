@@ -32,7 +32,6 @@ const allowedOrigins = [
   process.env.FRONTEND_URL?.trim() || '',
   'http://localhost:3000',
   'https://secxion.com',
-  'https://secxion.onrender.com',
 ];
 
 

@@ -35,9 +35,7 @@ const Terms = () => {
         onClick={isExpandable ? () => toggleSection(id) : undefined}
       >
         <div className="flex items-center">
-          {/* Icon color changed to a vibrant yellow */}
           {Icon && <Icon className="h-6 w-6 text-yellow-400 mr-3" />} 
-          {/* Title text color changed to a lighter shade for contrast */}
           <h2 className="text-2xl font-bold text-gray-100">{title}</h2>
         </div>
         {isExpandable && (
@@ -46,7 +44,6 @@ const Terms = () => {
           </div>
         )}
       </div>
-      {/* Content text color adjusted for readability on dark backgrounds */}
       <div className={`text-gray-300 leading-relaxed space-y-4 ${isExpandable && !expandedSections[id] ? 'hidden' : ''}`}>
         {children}
       </div>
@@ -55,7 +52,6 @@ const Terms = () => {
 
   return (
     <motion.div
-      // Main background gradient changed to black and dark gray
       className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800"
       initial="hidden"
       animate="visible"
@@ -63,7 +59,7 @@ const Terms = () => {
     >
       <Navigation currentPage="terms" />
       
-      {/* Geometric Background Elements - Updated colors for black theme */}
+      {/* Geometric Background Elements */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-20 left-10 w-32 h-32 border-2 border-gray-700/30 rotate-45 animate-spin [animation-duration:20s]"></div>
         <div className="absolute top-1/3 right-20 w-20 h-20 bg-gradient-to-r from-yellow-900/40 to-yellow-800/40 rounded-full animate-pulse"></div>
@@ -77,19 +73,15 @@ const Terms = () => {
             className="text-center mb-16"
             variants={itemVariants}
           >
-            {/* Header icon background changed to black and yellow gradient */}
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-black to-yellow-700 rounded-2xl mb-6 shadow-lg"> 
-              <FileText className="h-8 w-8 text-yellow-400" /> {/* Icon color changed to yellow */}
+              <FileText className="h-8 w-8 text-yellow-400" />
             </div>
-            {/* Header title text color changed to a lighter shade */}
             <h1 className="text-4xl sm:text-5xl font-bold text-gray-100 mb-4">
               Terms of Service
             </h1>
-            {/* Header paragraph text color adjusted */}
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
               Understanding our terms helps create a transparent and trustworthy experience for everyone.
             </p>
-            {/* Last Updated text color adjusted */}
             <div className="flex items-center justify-center mt-6 text-sm text-gray-500">
               <Calendar className="h-4 w-4 mr-2" />
               Last Updated: April 16, 2025
@@ -98,17 +90,15 @@ const Terms = () => {
 
           {/* Content */}
           <motion.div
-            // Content background changed to a dark gray with shadows
             className="bg-gray-900 rounded-3xl shadow-2xl p-8 sm:p-12 relative overflow-hidden"
             variants={itemVariants}
           >
-            {/* Decorative elements - Updated colors for black theme */}
+            {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-gray-800 to-gray-700 rounded-full transform translate-x-16 -translate-y-16 opacity-50"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-gray-700 to-gray-600 rounded-full transform -translate-x-12 translate-y-12 opacity-50"></div>
 
             <div className="relative z-10">
               <motion.p
-                // Introductory message background and border changed to dark gray and yellow
                 className="text-lg text-gray-300 leading-relaxed mb-8 p-4 bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl border-l-4 border-yellow-500"
                 variants={itemVariants}
               >
@@ -119,7 +109,6 @@ const Terms = () => {
               </motion.p>
 
               <Section id="acceptance" title="1. Acceptance of Terms" icon={Shield} isExpandable={true}>
-                {/* Section content background changed to dark gray */}
                 <div className="bg-gray-800 p-4 rounded-lg"> 
                   <p className="text-gray-300">
                     These Terms constitute a legally binding agreement between you and Secxion.com. You
@@ -129,7 +118,6 @@ const Terms = () => {
               </Section>
 
               <Section id="service" title="2. Description of Service" icon={FileText} isExpandable={true}>
-                {/* Section content background changed to dark gray */}
                 <div className="bg-gray-800 p-4 rounded-lg"> 
                   <p className="text-gray-300">
                     Secxion.com currently provides a platform that allows users to sell their valid gift cards
@@ -149,9 +137,9 @@ const Terms = () => {
                     "You will comply with all applicable laws and regulations.",
                     "You will not engage in any fraudulent or unlawful activities through the Service."
                   ].map((item, index) => (
-                    <div key={index} className="flex items-center p-3 bg-gray-800 rounded-lg"> {/* Section item background changed to dark gray */}
-                      <div className="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div> {/* Bullet color changed to yellow */}
-                      <span className="text-gray-300">{item}</span> {/* Text color adjusted */}
+                    <div key={index} className="flex items-center p-3 bg-gray-800 rounded-lg">
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div>
+                      <span className="text-gray-300">{item}</span>
                     </div>
                   ))}
                 </div>
@@ -166,16 +154,15 @@ const Terms = () => {
                     "Payment will be processed using the methods specified on the Service. Processing times may vary.",
                     "Secxion.com is not responsible for any errors in payment information provided by the user."
                   ].map((item, index) => (
-                    <div key={index} className="flex items-center p-3 bg-gray-800 rounded-lg"> {/* Section item background changed to dark gray */}
-                      <div className="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div> {/* Bullet color changed to yellow */}
-                      <span className="text-gray-300">{item}</span> {/* Text color adjusted */}
+                    <div key={index} className="flex items-center p-3 bg-gray-800 rounded-lg">
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div>
+                      <span className="text-gray-300">{item}</span>
                     </div>
                   ))}
                 </div>
               </Section>
 
               <Section id="intellectual" title="5. Intellectual Property" icon={Shield} isExpandable={true}>
-                {/* Section content background and border changed to dark gray and yellow */}
                 <div className="bg-gradient-to-r from-gray-800 to-gray-700 p-6 rounded-xl border border-yellow-500"> 
                   <p className="text-gray-300">
                     The Service and its original content, features, and functionality are and will remain the exclusive
@@ -185,7 +172,6 @@ const Terms = () => {
               </Section>
 
               <Section id="warranties" title="6. Disclaimer of Warranties" icon={FileText} isExpandable={true}>
-                {/* Section content background and border changed to dark gray and yellow */}
                 <div className="bg-gray-800 p-4 rounded-lg border border-yellow-500">
                   <p className="text-gray-300">
                     THE SERVICE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS. SECXION.COM MAKES NO WARRANTIES,
@@ -196,7 +182,6 @@ const Terms = () => {
               </Section>
 
               <Section id="liability" title="7. Limitation of Liability" icon={Shield} isExpandable={true}>
-                {/* Section content background and border changed to dark gray and yellow */}
                 <div className="bg-gray-800 p-4 rounded-lg border border-yellow-500"> 
                   <p className="text-gray-300">
                     TO THE MAXIMUM EXTENT PERMITTED BY LAW, SECXION.COM SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL,
@@ -206,7 +191,6 @@ const Terms = () => {
               </Section>
 
               <Section id="indemnification" title="8. Indemnification" icon={Users} isExpandable={true}>
-                {/* Section content background changed to dark gray */}
                 <div className="bg-gray-800 p-4 rounded-lg"> 
                   <p className="text-gray-300">
                     You agree to indemnify and hold harmless Secxion.com and its affiliates from any claims arising out of
@@ -216,7 +200,6 @@ const Terms = () => {
               </Section>
 
               <Section id="governing" title="9. Governing Law" icon={FileText} isExpandable={true}>
-                {/* Section content background changed to dark gray */}
                 <div className="bg-gray-800 p-4 rounded-lg"> 
                   <p className="text-gray-300">
                     These Terms shall be governed by the laws of Nigeria, without regard to its conflict of law principles.
@@ -225,7 +208,6 @@ const Terms = () => {
               </Section>
 
               <Section id="changes" title="10. Changes to These Terms" icon={FileText} isExpandable={true}>
-                {/* Section content background changed to dark gray */}
                 <div className="bg-gray-800 p-4 rounded-lg"> 
                   <p className="text-gray-300">
                     Secxion.com reserves the right to update these Terms at any time without prior notice. Continued use
@@ -235,14 +217,12 @@ const Terms = () => {
               </Section>
 
               <Section title="11. Contact Us" icon={Mail}>
-                {/* Contact Us section background and border changed to dark gray and yellow */}
                 <div className="bg-gradient-to-r from-gray-800 to-gray-700 p-6 rounded-xl border border-yellow-500"> 
                   <p className="mb-4 text-gray-300">
                     If you have questions or concerns about these Terms of Service, please reach out to us:
                   </p>
                   <div className="flex items-center">
-                    <Mail className="h-5 w-5 text-yellow-400 mr-3" /> {/* Icon color changed to yellow */}
-                    {/* Link color changed to yellow */}
+                    <Mail className="h-5 w-5 text-yellow-400 mr-3" />
                     <a href="mailto:Secxion@mail.com" className="text-yellow-400 hover:text-yellow-300 font-medium underline">
                       Secxion@mail.com
                     </a>
@@ -258,9 +238,9 @@ const Terms = () => {
             variants={itemVariants}
           >
             <div className="flex items-center justify-center mb-4">
-              <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent w-64"></div> {/* Divider color adjusted */}
+              <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent w-64"></div>
             </div>
-            <p className="text-gray-400">© 2025 Secxion.com. All rights reserved.</p> {/* Footer text color adjusted */}
+            <p className="text-gray-400">© 2025 Secxion.com. All rights reserved.</p>
           </motion.footer>
         </div>
       </main>
