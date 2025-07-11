@@ -14,30 +14,21 @@ import { fileURLToPath } from 'url';
 dotenv.config();
 
 const app = express();
-const isProduction = process.env.NODE_ENV === 'production'
 
-// Trust proxy to handle HTTPS redirection on platforms like Render/Heroku
-if (isProduction) {
-  app.set('trust proxy', 1);
+// Always trust proxy (for HTTPS redirects if you want to add them manually later)
+app.set('trust proxy', 1);
 
- app.use((req, res, next) => {
-    if (req.headers['x-forwarded-proto'] !== 'https') {
-      return res.redirect(`https://${req.headers.host}${req.url}`);
-    }
-    next();
-  });
-}
+// Remove HTTPS redirect middleware; add manually if needed
 
-const allowedOrigins = [
-  process.env.FRONTEND_URL?.trim() || '',
-  'http://localhost:3000',
-  'https://secxion.com',
-];
+// Parse allowed origins from env, fallback empty array
+const allowedOrigins = process.env.FRONTEND_URLS
+  ? process.env.FRONTEND_URLS.split(',').map(origin => origin.trim())
+  : [];
 
-
-// ✅ CORS Config
+// CORS config
 const corsOptions = {
   origin: (origin, callback) => {
+    // allow requests with no origin (like curl or server-to-server)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -49,38 +40,27 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
-// 🛡️ Middlewares
+// Middlewares
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
-app.use(xss()); // 🧼 Sanitize input from XSS
-app.use(mongoSanitize()); // 🧽 Prevent NoSQL injection
+app.use(xss());
+app.use(mongoSanitize());
 
-// 🔀 API Routing
+// API routes
 app.use('/api', router);
 
-// 🛠 Catch unmatched API routes in development
-if (!isProduction) {
-  app.use('/api/*', (req, res) => {
-    res.status(404).json({ error: 'API route not found in development mode' });
+// Serve frontend build static files (always enabled)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const frontendBuildPath = path.join(__dirname, 'client_build');
+app.use(express.static(frontendBuildPath));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
+    if (err) res.status(500).send(err);
   });
-}
-
-// 🌐 Serve Frontend in Production
-if (isProduction) {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-
-  const frontendBuildPath = path.join(__dirname, 'client_build');
-  app.use(express.static(frontendBuildPath));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
-      if (err) res.status(500).send(err);
-    });
-  });
-}
+});
 
 const PORT = process.env.PORT || 5000;
 
@@ -90,7 +70,7 @@ connectDB()
     console.log(`✅ MongoDB Connected at ${db.host}:${db.port}/${db.name}`);
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running at ${isProduction ? 'https://secxion.com' : `http://localhost:${PORT}`}`);
+      console.log(`🚀 Server running at http://localhost:${PORT}`);
       console.log('🌐 Allowed origins:', allowedOrigins);
     });
   })
